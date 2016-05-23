@@ -1,0 +1,28 @@
+ <?php 
+					  $get_users_SQL = "SELECT * FROM `test_table`";
+					  echo $get_users_SQL;
+					  
+					  $user_count = 0;
+	
+					  $result_get_users = mysqli_query($con,$get_users_SQL);
+					  // while loop
+					  while($row_get_users = mysqli_fetch_array($result_get_users)) {
+					  
+					  ?>
+					  <tr>
+					    <td colspan="2">OK</td>
+					  </tr>	
+					  <tr>
+					    <td><?php echo $row_get_users['name']; ?></td>
+					    <td><?php echo $row_get_users['id']; ?></td>
+					  </tr>
+					  
+					  <?php 
+					  
+					  $user_count = $user_count + 1;
+					  
+					  } // end while loop
+					  ?>
+					  
+					  <tr>
+					    <th>TOTAL: <?php echo $user_count; ?></th>

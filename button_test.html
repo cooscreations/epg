@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery Show Hide Elements Using Radio Buttons</title>
+<style type="text/css">
+    .box{
+        padding: 20px;
+        display: none;
+        margin-top: 20px;
+        border: 1px solid #000;
+    }
+    .out{ background: #ff0000; }
+    .in{ background: #00ff00; }
+</style>
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+
+</head>
+<body>
+
+
+
+    <script type="text/javascript">
+$(document).ready(function(){
+
+
+			// SET DEFAULT SHOW DIV STATE:
+            $(".box").not(".in").hide();
+            $(".in").show();
+
+    $('input[type="radio"]').click(function(){
+        if($(this).attr("value")=="in"){
+            $(".box").not(".in").hide();
+            $(".in").show();
+        }
+        if($(this).attr("value")=="out"){
+            $(".box").not(".out").hide();
+            $(".out").show();
+        }
+    });
+});
+</script>
+    
+    
+     <div class="form-group">
+												<label class="col-md-3 control-label">In or Out?:</label>
+												<div class="col-md-2">
+													<div class="radio-custom radio-success">
+														<input type="radio" id="value_direction" name="value_direction" checked="" value="in">
+														<label for="radioExample3">Parts In</label>
+													</div>
+						
+													<div class="radio-custom radio-warning">
+														<input type="radio" id="value_direction" name="value_direction" value="out">
+														<label for="radioExample4">Parts Out</label>
+													</div>
+												</div>
+</div>
+    
+    
+    
+    
+    <div class="in box"><label class="col-md-1 control-label">IQC Status: (IN ONLY)</label>
+												<div class="col-md-2">
+													<select data-plugin-selectTwo class="form-control populate" name="status_ID">
+													
+														<option value="1">OK</option>
+														<option value="2">OK 1</option>
+														<option value="3">OK 2</option>
+														<option value="4">OK 3</option>
+													</select>
+												</div>
+												
+												<div class="col-md-1">
+													<a href="batch_status.php" class="mb-xs mt-xs mr-xs btn btn-info pull-right"><i class="fa fa-question"></i></a>
+												</div></div>
+    <div class="out box">This option is not applicable for checking out parts</div>
+</body>
+</html>                                		

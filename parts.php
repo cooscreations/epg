@@ -1,0 +1,219 @@
+<?php 
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+/*//////*/      session_start();        /*//////*/
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//  now check the user is OK to view this page  //
+/*//////// require ('page_access.php'); /*//////*/
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+
+header('Content-Type: text/html; charset=utf-8');
+require ('page_functions.php'); 
+include 'db_conn.php';
+
+/* -- NO USER SESSIONS YET...
+if (isset($_SESSION['user_id'])) {
+	header("Location: user_home.php"); // send them to the user home...
+}
+*/
+
+$page_id = 8;
+
+// pull the header and template stuff:
+pagehead($page_id); ?>
+
+
+
+<!-- START MAIN PAGE BODY : -->
+
+				<section role="main" class="content-body">
+					<header class="page-header">
+						<h2>Parts</h2>
+					
+						<div class="right-wrapper pull-right">
+							<ol class="breadcrumbs">
+								<li>
+									<a href="index.php">
+										<i class="fa fa-home"></i>
+									</a>
+								</li>
+								<li><span>Parts</span></li>
+							</ol>
+					
+							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+						</div>
+					</header>
+
+					<!-- start: page -->
+					
+					<?php 
+					
+					// run notifications function:
+					$msg = 0;
+					if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
+					$action = 0;
+					if (isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
+					$change_record_id = 0;
+					if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
+					$page_record_id = 0;
+					if (isset($record_id)) { $page_record_id = $record_id; }
+					
+					// now run the function:
+					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
+					?>
+					
+					<div class="row">
+						<div class="col-md-11">
+						<!-- PART TYPE JUMPER -->
+                            <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+                              <option value="#" selected="selected">SELECT PART TYPE:</option>
+                              <option value="parts.php">View All</option>
+                              <?php 	
+										
+							$get_part_types_SQL = "SELECT * FROM  `part_type`";
+					  		// echo $get_part_types_SQL;
+	
+					  		$result_get_part_types = mysqli_query($con,$get_part_types_SQL);
+					  		// while loop
+					  		while($row_get_part_types = mysqli_fetch_array($result_get_part_types)) {
+					  			$part_types_ID = $row_get_part_types['ID'];
+					  			$part_types_EN = $row_get_part_types['name_EN'];
+					  			$part_types_CN = $row_get_part_types['name_CN'];
+										
+							   ?>
+                              <option value="parts.php?type_id=<?php echo $part_types_ID; ?>"><?php echo $part_types_EN; ?> / <?php echo $part_types_CN; ?> (_?)</option>
+                              <?php 
+							  } // end get part list 
+							  ?>
+                              <option value="parts.php">View All</option>
+                             </select>
+                            <!-- / PART TYPE JUMPER -->
+						</div>
+					
+						<div class="row">
+					 		<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+					 	</div>
+					</div>
+					
+					
+					
+					
+					<div class="table-responsive">
+					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					
+					  <tr>
+					    <th>Code</th>
+					    <th>Name</th>
+					    <th>名字</th>
+					    <th>Rev #</th>
+					    <th>Type</th>
+					    <th>Classification</th>
+					  </tr>
+					  
+					  <?php 
+					  
+					  if (isset($_REQUEST['type_id'])) {
+					  	$WHERE_SQL = " WHERE `type_ID` = '" . $_REQUEST['type_id'] . "'";
+					  }
+					  else {
+					  	$WHERE_SQL = "";
+					  }
+					  
+					  $get_parts_SQL = "SELECT * FROM `parts`" . $WHERE_SQL . " ORDER BY `part_code` ASC";
+					  // echo $get_parts_SQL;
+					  
+					  $part_count = 0;
+	
+					  $result_get_parts = mysqli_query($con,$get_parts_SQL);
+					  // while loop
+					  while($row_get_parts = mysqli_fetch_array($result_get_parts)) {
+					  
+					  	// GET PART TYPE:
+					  	
+					  	$part_ID = $row_get_parts['ID'];
+					  	
+					  	$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $row_get_parts['type_ID'] . "'";
+					  	// echo $get_part_type_SQL;
+	
+					  	$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
+					  	// while loop
+					  	while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
+					  		$part_type_EN = $row_get_part_type['name_EN'];
+					  		$part_type_CN = $row_get_part_type['name_CN'];
+					  	}
+					  	
+					  	// GET PART CLASSIFICATION:
+					  	
+					  	$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $row_get_parts['classification_ID'] . "'";
+					  	// echo $get_part_class_SQL;
+	
+					  	$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+					  	// while loop
+					  	while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+					  		$part_class_EN = $row_get_part_class['name_EN'];
+					  		$part_class_CN = $row_get_part_class['name_CN'];
+					  	}
+					  	
+					  	
+								
+								// get part revision info:
+								$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `part_ID` ='" . $part_ID . "' ORDER BY `revision_number` ASC LIMIT 0, 1";
+
+								$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+								// while loop
+								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+									
+									// now print each record:  
+									$rev_id = $row_get_part_rev['ID'];
+									$rev_part_id = $row_get_part_rev['part_ID'];
+									$rev_number = $row_get_part_rev['revision_number'];
+									$rev_remarks = $row_get_part_rev['remarks'];
+									$rev_date = $row_get_part_rev['date_approved'];
+									$rev_user = $row_get_part_rev['user_ID'];
+																							
+								}
+					  
+					  ?>
+					  
+					  <tr>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['part_code']; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['name_EN']; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['name_CN']; ?></a></td>
+					    <td><?php echo $rev_number; ?></td>
+					    <td><a href="part_type_view.php?id="<?php echo $row_get_parts['type_ID']; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
+					    <td><a href="part_classification_view.php?id="<?php echo $row_get_parts['classification_ID']; ?>"><?php echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?></a></td>
+					  </tr>
+					  
+					  <?php 
+					  
+					  $part_count = $part_count + 1;
+					  
+					  } // end while loop
+					  ?>
+					  
+					  <tr>
+					    <th colspan="6">TOTAL: <?php echo $part_count; ?></th>
+					  </tr>
+					  
+					  
+					 </table>
+					</div>
+					
+					<div class="row">
+					 	<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+					 </div>
+					
+					<!-- end: page -->
+				</section>
+				
+<!-- : END MAIN PAGE BODY -->
+
+<?php 
+// now close the page out:
+pagefoot($page_id);
+
+?>
