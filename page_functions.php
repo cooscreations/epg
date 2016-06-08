@@ -826,6 +826,18 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								
 								
 								<?php } ?>
+								<!--  Login error -->
+								<?php if ($_REQUEST['error'] == 'invalid_login') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-exclamation fa-stack-1x"></i>
+								</span>
+								
+								<h4>Invalid username or password.</h4>
+								
+								
+								<?php } ?>
 							</div>
 						<?php
 						}
@@ -848,5 +860,53 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+				function _base64_encrypt($str,$passw=null){
+					$r='';
+					$md=$passw?substr(md5($passw),0,16):'';
+					$str=base64_encode($md.$str);
+					$abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+					$a=str_split('+/='.$abc);
+					$b=strrev('-_='.$abc);
+					if($passw){
+						$b=_mixing_passw($b,$passw);
+					}else{
+						$r=rand(10,65);
+						$b=mb_substr($b,$r).mb_substr($b,0,$r);
+					}
+					$s='';
+					$b=str_split($b);
+					$str=str_split($str);
+					$lens=count($str);
+					$lena=count($a);
+					for($i=0;$i<$lens;$i++){
+						for($j=0;$j<$lena;$j++){
+							if($str[$i]==$a[$j]){
+								$s.=$b[$j];
+							}
+						};
+					};
+					return $s.$r;
+				};
+				
+				function _mixing_passw($b,$passw){
+					$s='';
+					$c=$b;
+					$b=str_split($b);
+					$passw=str_split(sha1($passw));
+					$lenp=count($passw);
+					$lenb=count($b);
+					for($i=0;$i<$lenp;$i++){
+						for($j=0;$j<$lenb;$j++){
+							if($passw[$i]==$b[$j]){
+								$c=str_replace($b[$j],'',$c);
+								if(!preg_match('/'.$b[$j].'/',$s)){
+									$s.=$b[$j];
+								}
+							}
+						};
+					};
+					return $c.''.$s;
+				};
 
 ?>
