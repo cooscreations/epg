@@ -16,11 +16,10 @@ require ('page_functions.php');
 include 'db_conn.php';
 include ('qrcode-generator/index_2.php');
 
-/* -- NO USER SESSIONS YET...
-if (isset($_SESSION['user_id'])) {
-	header("Location: user_home.php"); // send them to the user home...
+/* session check */
+if (!isset($_SESSION['username'])) {
+	header("Location: login.php"); // send them to the Login page.
 }
-*/
 
 $page_id = 10;
 
