@@ -38,10 +38,16 @@ $result = mysqli_query ( $con, $sql );
 $count = $result->num_rows;
 
 if ($count == 1) {
-	echo "found result";
 	// update session.
 	$_SESSION['username']= $username;
-	header ( "Location: index.php" );
+	
+	//Update last login date in users table.
+	$update_last_login_SQL = "UPDATE `users` SET `last_login_date` = SYSDATE() WHERE email='$username' ";
+	
+	if (mysqli_query($con, $update_last_login_SQL)) {
+		header ( "Location: index.php" );
+	}
+	
 } else {
 	//Show error.
 	header("Location: login.php?msg=NG&error=invalid_login");
