@@ -340,13 +340,22 @@
 					<span class="separator"></span>
 			
 					<div id="userbox" class="userbox">
+					<?php
+						//Granb user name from the session. 
+						$username = $_SESSION['username'];
+						$get_logged_in_user_details_SQL = "SELECT * FROM  `users` where email='$username' ";
+						$result = mysqli_query ( $con, $get_logged_in_user_details_SQL );
+						$count = $result->num_rows;
+						while($result_row = mysqli_fetch_array($result)) {
+
+					?>
 						<a href="#" data-toggle="dropdown">
 							<figure class="profile-picture">
-								<img src="assets/images/!logged-user.jpg" alt="Joseph Doe" class="img-circle" data-lock-picture="assets/images/!logged-user.jpg" />
+								<img src="assets/images/users/user_<?php echo $result_row['ID']; ?>.png" alt="<?php echo $result_row['first_name']; echo ' ' . $result_row['middle_name']; echo ' ' . $result_row['last_name']; ?>" class="img-circle" data-lock-picture="assets/images/!logged-user.jpg" />
 							</figure>
-							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
-								<span class="name">John Doe Junior</span>
-								<span class="role">administrator</span>
+							<div class="profile-info" data-lock-name="<?php echo $result_row['first_name']; echo ' ' . $result_row['last_name']; ?>" data-lock-email="<?php echo $result_row['email']; ?>">
+								<span class="name"><?php echo $result_row['first_name']; echo ' ' . $result_row['middle_name']; echo ' ' . $result_row['last_name']; ?></span>
+								<span class="role"><?php echo $result_row['position']; ?></span>
 							</div>
 			
 							<i class="fa custom-caret"></i>
@@ -356,16 +365,20 @@
 							<ul class="list-unstyled">
 								<li class="divider"></li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> My Profile</a>
+									<a role="menuitem" tabindex="-1" href="user_view.php?id=<?php echo $result_row['ID']; ?>"><i class="fa fa-user"></i> My Profile</a>
 								</li>
 								<li>
 									<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Lock Screen</a>
 								</li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="pages-signin.html"><i class="fa fa-power-off"></i> Logout</a>
+									<a role="menuitem" tabindex="-1" href="logout.php"><i class="fa fa-power-off"></i> Logout</a>
 								</li>
 							</ul>
 						</div>
+					<?php 
+					  
+					  } // end of the IF.
+					?>	
 					</div>
 				</div>
 				<!-- end: search & user box -->
@@ -887,6 +900,37 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 						};
 					};
 					return $s.$r;
+				};
+				
+				function _base64_decrypt($str,$passw=null){
+					$abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+					$a=str_split('+/='.$abc);
+					$b=strrev('-_='.$abc);
+					if($passw){
+						$b=_mixing_passw($b,$passw);
+					}else{
+						$r=mb_substr($str,-2);
+						$str=mb_substr($str,0,-2);
+						$b=mb_substr($b,$r).mb_substr($b,0,$r);
+					}
+					$s='';
+					$b=str_split($b);
+					$str=str_split($str);
+					$lens=count($str);
+					$lenb=count($b);
+					for($i=0;$i<$lens;$i++){
+						for($j=0;$j<$lenb;$j++){
+							if($str[$i]==$b[$j]){
+								$s.=$a[$j];
+							}
+						};
+					};
+					$s=base64_decode($s);
+					if($passw&&substr($s,0,16)==substr(md5($passw),0,16)){
+						return substr($s,16);
+					}else{
+						return $s;
+					}
 				};
 				
 				function _mixing_passw($b,$passw){
