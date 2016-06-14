@@ -596,7 +596,7 @@
 			
 							<div class="sidebar-widget widget-calendar">
 								<h6>Upcoming Tasks</h6>
-								<div data-plugin-datepicker data-plugin-skin="dark" ></div>
+								<div data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' data-plugin-skin="dark" ></div>
 			
 								<ul>
 									<li>

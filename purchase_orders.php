@@ -64,10 +64,17 @@ pagehead($page_id); ?>
 					// now run the function:
 					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
 					?>
+					
+				
 				<div class="col-md-12">	
 					
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
+					 	<tr >
+							<th colspan="3"></th>
+							<th class="text-center"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+							</th>
+						</tr>
 						 <tr>
 							<th>P.O. number</th>
 							<th>Created Date</th>
@@ -76,8 +83,9 @@ pagehead($page_id); ?>
 						</tr>
 					  </thead>
 					  <tbody>
+					  
 					  <?php 
-					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` ORDER BY  `PO_number` ASC";
+					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` ORDER BY  `created_date` DESC";
 					  // echo $get_mats_SQL;
 					  
 					  $PO_count = 0;
