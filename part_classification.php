@@ -103,7 +103,7 @@ pagehead ( $page_id );
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
                     <a href="part_classification_edit.php?id=<?php echo $row_get_part_classification['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-					<a href="part_classification_delete_do.php?id=<?php echo $row_get_part_classification['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+					<a href="record_delete_do.php?table_name=part_classification&src_page=part_classification.php&id=<?php echo $row_get_part_classification['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
 			</tr>
 						  
