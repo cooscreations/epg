@@ -352,7 +352,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 									</div>
 
 									<h2 class="panel-title">
-										<span class="label label-primary label-sm text-normal va-middle mr-sm">3</span>
 										<span class="va-middle">Contact Details</span>
 									</h2>
 								</header>

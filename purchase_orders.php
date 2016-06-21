@@ -124,6 +124,7 @@ if (isset($_REQUEST['year'])) {
 				
 				<div class="col-md-12">	
 					
+    <div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
 					 	<tr >
@@ -269,7 +270,7 @@ if (isset($_REQUEST['year'])) {
 					    		?>
 					    	</a>
 					    </td>
-					    <td>
+					    <td class="text-right">
 					    <!-- COUNT BATCHES -->
 					    <?php 
 					    	// count variants for this material
@@ -315,6 +316,8 @@ if (isset($_REQUEST['year'])) {
 					  </tfoot>
 					  
 					 </table>
+					 
+					 </div>
 					
 					 
 					<!-- end: page -->
