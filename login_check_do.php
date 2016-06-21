@@ -34,6 +34,7 @@ $sql = "SELECT * FROM `users` WHERE email='$username' and password='$pwd'";
 
 $result = mysqli_query ( $con, $sql );
 
+<<<<<<< HEAD
 // while loop
 while($row_get_user = mysqli_fetch_array($result)) {
 	$user_ID = $row_get_user['ID'];
@@ -55,13 +56,18 @@ while($row_get_user = mysqli_fetch_array($result)) {
 	
 } // end get user info WHILE loop
 
+=======
+>>>>>>> master
 
 $count = $result->num_rows;
 
 if ($count == 1) {
 	// update session.
 	$_SESSION['username']= $username;
+<<<<<<< HEAD
 	$_SESSION['user_level']= $user_level;
+=======
+>>>>>>> master
 	
 	//Update last login date in users table.
 	$update_last_login_SQL = "UPDATE `users` SET `last_login_date` = SYSDATE() WHERE email='$username' ";

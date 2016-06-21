@@ -236,7 +236,7 @@ if ($record_id != 0) {
 														<span class="input-group-addon">
 															<i class="fa fa-calendar"></i>
 														</span>
-														<input type="text" data-plugin-datepicker class="form-control" placeholder="YYYY-MM-DD" name="date_added">
+														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added">
 													</div>
 												</div>
 												

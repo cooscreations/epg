@@ -14,12 +14,6 @@
 require ('page_functions.php'); 
 include 'db_conn.php';
 
-/* -- NO USER SESSIONS YET...
-if (isset($_SESSION['user_id'])) {
-	header("Location: user_home.php"); // send them to the user home...
-}
-*/
-
 $page_id = 19;
 
 // DON'T pull the header and template stuff because it's the log in form - no menus or headers required!
