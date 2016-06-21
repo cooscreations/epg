@@ -43,6 +43,7 @@ while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 		$PO_number = $row_get_PO['PO_number'];
 		$PO_created_date = $row_get_PO['created_date'];
 		$PO_description = $row_get_PO['description'];
+		$PO_record_status = $row_get_PO['record_status'];
 		
 		// count variants for this purchase order
         $count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $record_id;
@@ -132,6 +133,36 @@ pagehead($page_id);
 					 					    <th>Total Batches:</th>
 					 					    <td><?php echo $total_batches; ?> (see below)</td>
 					 					  </tr>
+					 					  <tr>
+					 					    <th>DB Record Status:</th>
+					 					    <?php 
+					 					    
+					 					    if ($PO_record_status == 0) {
+					 					    	?>
+					 					    	<td class="danger">
+					 					    	DELETED
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    else if ($PO_record_status == 1) {
+					 					    	?>
+					 					    	<td class="warning">
+					 					    	PENDING
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    else {
+					 					    	?>
+					 					    	<td class="success">
+					 					    	OK
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    
+					 					    
+					 					    ?>
+					 					  </tr>
+					 					  
 					 					</table>
 					 				</div>
 									

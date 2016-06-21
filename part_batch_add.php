@@ -50,7 +50,7 @@ if ($record_id != 0) {
 			$PO_description = $row_get_PO['description'];
 			
 			// count variants for this purchase order
-	   	 	$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $record_id;
+	   	 	$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $record_id . " AND `record_status` = 2";
 	   	 	$count_batches_query = mysqli_query($con, $count_batches_sql);
 	   	 	$count_batches_row = mysqli_fetch_row($count_batches_query);
 	   	 	$total_batches = $count_batches_row[0];
@@ -130,7 +130,7 @@ if ($record_id != 0) {
 									<div class="col-md-5">
 										<select data-plugin-selectTwo class="form-control populate" name="PO_ID">
 													<?php
-													$get_PO_SQL = "SELECT * FROM  `purchase_orders`";
+													$get_PO_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` = 2";
 													$result_get_PO = mysqli_query($con,$get_PO_SQL);
 													// while loop
 													while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
@@ -142,7 +142,7 @@ if ($record_id != 0) {
 															$PO_description = $row_get_PO['description'];
 		
 															// count variants for this purchase order
-													        $count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $_REQUEST['id'];
+													        $count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE `PO_ID` = " . $_REQUEST['id'] . " AND `record_status` = 2";
 													        $count_batches_query = mysqli_query($con, $count_batches_sql);
 													        $count_batches_row = mysqli_fetch_row($count_batches_query);
 													        $total_batches = $count_batches_row[0];
@@ -166,7 +166,7 @@ if ($record_id != 0) {
 													<select data-plugin-selectTwo class="form-control populate" name="part_rev_ID">
 													<?php 
 													// get parts list
-													$get_parts_SQL = "SELECT * FROM  `parts` ORDER BY `part_code` ASC";
+													$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = 2 ORDER BY `part_code` ASC";
 													// echo $get_parts_SQL;
 																		  
 													$part_count = 0;
@@ -189,7 +189,7 @@ if ($record_id != 0) {
 					  	
 														// GET PART CLASSIFICATION:
 					  	
-														$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE  `ID` ='" . $row_get_parts['classification_ID'] . "'";
+														$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $row_get_parts['classification_ID'] . "'";
 														// echo $get_part_class_SQL;
 		
 														$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
@@ -206,7 +206,7 @@ if ($record_id != 0) {
 													
 													// now list the revisions for this part:
 													
-													$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE  `part_ID` =" . $row_get_parts['ID'];
+													$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `part_ID` =" . $row_get_parts['ID'] . " AND `record_status`=2";
 													$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
 													// while loop
 													while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
@@ -260,7 +260,7 @@ if ($record_id != 0) {
 													<select data-plugin-selectTwo class="form-control populate" name="user_ID">
 													<?php 
 													// get batch list
-													$get_user_list_SQL = "SELECT * FROM `users`";
+													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
 													$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
 													// while loop
 													while($row_get_user_list = mysqli_fetch_array($result_get_user_list)) {
