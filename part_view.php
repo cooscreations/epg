@@ -45,7 +45,6 @@ while($row_get_part = mysqli_fetch_array($result_get_part)) {
 	$description = $row_get_part['description'];
 	$type_ID = $row_get_part['type_ID'];
 	$classification_ID = $row_get_part['classification_ID'];
-	$parent_ID = $row_get_part['parent_ID'];
 	
 	// GET PART TYPE:
 	$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` =" . $type_ID;

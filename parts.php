@@ -107,12 +107,12 @@ pagehead($page_id); ?>
 					
 					  <tr>
 					    <th>Photo</th>
-					    <th>Code</th>
-					    <th>Name</th>
-					    <th>名字</th>
+					    <th><a href="parts.php?sort=part_code">Code</a></th>
+					    <th><a href="parts.php?sort=name_EN">Name</a></th>
+					    <th><a href="parts.php?sort=name_CN">名字</a></th>
 					    <th>Rev #</th>
-					    <th>Type</th>
-					    <th>Classification</th>
+					    <th><a href="parts.php?sort=type_ID">Type</a></th>
+					    <th><a href="parts.php?sort=classification_ID">Classification</a></th>
 					  </tr>
 					  
 					  <?php 
@@ -124,7 +124,15 @@ pagehead($page_id); ?>
 					  	$WHERE_SQL = "";
 					  }
 					  
-					  $get_parts_SQL = "SELECT * FROM `parts`" . $WHERE_SQL . " ORDER BY `part_code` ASC";
+					  
+					  if (isset($_REQUEST['sort'])) {
+					  	$order_by = ' ORDER BY `' . $_REQUEST['sort'] . '` ASC';
+					  }
+					  else {
+					  	$order_by = ' ORDER BY `part_code` ASC';
+					  }
+					  
+					  $get_parts_SQL = "SELECT * FROM `parts`" . $WHERE_SQL . $order_by;
 					  // echo $get_parts_SQL;
 					  
 					  $part_count = 0;
@@ -136,8 +144,18 @@ pagehead($page_id); ?>
 					  	// GET PART TYPE:
 					  	
 					  	$part_ID = $row_get_parts['ID'];
+						$part_code = $row_get_parts['part_code'];
+						$part_name_EN = $row_get_parts['name_EN'];
+						$part_name_CN = $row_get_parts['name_CN'];
+						$part_description = $row_get_parts['description'];
+						$part_type_ID = $row_get_parts['type_ID'];
+						$part_classification_ID = $row_get_parts['classification_ID'];
+						$part_parent_ID = $row_get_parts['parent_ID'];
+						$part_default_supplier_ID = $row_get_parts['default_suppler_ID'];
+						$part_part_assy_ID = $row_get_parts['part_assy_ID'];
+						$part_record_status = $row_get_parts['record_status'];
 					  	
-					  	$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $row_get_parts['type_ID'] . "'";
+					  	$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $part_type_ID . "'";
 					  	// echo $get_part_type_SQL;
 	
 					  	$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
@@ -149,7 +167,7 @@ pagehead($page_id); ?>
 					  	
 					  	// GET PART CLASSIFICATION:
 					  	
-					  	$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $row_get_parts['classification_ID'] . "'";
+					  	$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $part_classification_ID . "'";
 					  	// echo $get_part_class_SQL;
 	
 					  	$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
@@ -222,13 +240,34 @@ pagehead($page_id); ?>
 					  ?>
 					  
 					  <tr>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><img src="<?php echo $rev_photo_location; ?>" class="rounded img-responsive" alt="<?php echo $row_get_parts['part_code']; ?> - <?php echo $row_get_parts['name_EN']; if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { ?> / <?php echo $row_get_parts['name_CN']; } ?>" style="width:50px;"></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['part_code']; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['name_EN']; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { echo $row_get_parts['name_CN']; } ?></a></td>
+					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><img src="<?php echo $rev_photo_location; ?>" class="rounded img-responsive" alt="<?php echo $row_get_parts['part_code']; ?> - <?php echo $row_get_parts['name_EN']; if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { ?> / <?php echo $row_get_parts['name_CN']; } ?>" style="width:100px;"></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
 					    <td><?php echo $rev_number; ?></td>
-					    <td><a href="part_type_view.php?id="<?php echo $row_get_parts['type_ID']; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
-					    <td><a href="part_classification_view.php?id="<?php echo $row_get_parts['classification_ID']; ?>"><?php echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?></a></td>
+					    <td><a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
+					    <?php 
+					    if ($part_classification_ID == 1) { ?>
+					    
+							<td class="danger">
+						
+							<i class="fa fa-exclamation-triangle fa-2x"></i><?php }
+							
+					    else if ($part_classification_ID == 3) { ?>
+					    
+							<td class="" style="background: #666666; color: white;">
+						
+							<i class="fa fa-times-circle fa-2x"></i><?php }
+					    else { ?>
+					    
+							<td class="primary">
+						
+							<i class="fa fa-check-square fa-2x"></i><?php }
+					    
+					    
+					    ?>
+					    
+					    <?php echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?></td>
 					  </tr>
 					  
 					  <?php 

@@ -33,7 +33,7 @@ else { // no id = nothing to see here!
 // pull the header and template stuff:
 pagehead($page_id); 
 
-// now get the part info:
+// now get the record info:
 $get_sups_SQL = "SELECT * FROM `suppliers` WHERE `ID` = " . $record_id;
                                                                      // echo $get_sups_SQL;
 
@@ -95,7 +95,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 				$part_class_color = $row_get_part_class['color'];
 			}
 	
-} // end get user info WHILE loop
+} // end get record WHILE loop
 
 ?>
 
@@ -205,6 +205,122 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 
         </div>
         
+        <br />
+        <!-- ********************************************************************* -->
+        
+        <div class="row">
+        
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+                </div>
+
+                <h2 class="panel-title">PURCHASE ORDERS / 订单</h2>
+            </header>
+
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+					 <thead>
+					 	<tr >
+							<th colspan="4">&nbsp;</th>
+							<th class="text-center"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+							</th>
+						</tr>
+						 <tr>
+							<th>P.O. number</th>
+							<th>Created Date</th>
+							<th># Batches</th>
+							<th>Status</th>
+							<th class="text-center">Actions</th>
+						</tr>
+					  </thead>
+					  <tbody>
+					  
+					  <?php 
+					  $order_by = " ORDER BY `record_status` DESC, `PO_number` DESC";
+					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE  `supplier_ID` =" . $record_id . $order_by;
+					  // echo $get_mats_SQL;
+					  
+					  $PO_count = 0;
+	
+					  $result_get_POs = mysqli_query($con,$get_POs_SQL);
+					  // while loop
+					  while($row_get_POs = mysqli_fetch_array($result_get_POs)) {
+					  
+					  ?>
+					  
+					  <tr>
+					    <td><a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>"><?php echo $row_get_POs['PO_number']; ?></a></td>
+					    <td><a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>">
+					    
+					    		<?php 
+					    		// print time with DATE only (remove '00:00:00'
+								$datetime = explode(" ",$row_get_POs['created_date']); echo $datetime[0];
+					    		?></a></td>
+					    <td>
+					    <!-- COUNT BATCHES -->
+					    <?php 
+					    	// count variants for this material
+                        	$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $row_get_POs['ID']; 
+                        	$count_batches_query = mysqli_query($con, $count_batches_sql);
+                        	$count_batches_row = mysqli_fetch_row($count_batches_query);
+                        	$total_batches = $count_batches_row[0];
+					    ?>
+					    <a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>"><?php echo $total_batches; ?></a>
+					    <!-- COUNT BATCHES -->
+					    </td>
+					    <td><?php 
+					    if ($row_get_POs['record_status'] == 0) {
+					    	// deleted
+					    	?><i class="fa fa-times fa-2x text-danger" title="STATUS: DELETED"></i><?php
+					    }
+					    else if ($row_get_POs['record_status'] == 1) {
+					    	// pending
+					    	?><i class="fa fa-question-cirlce fa-2x text-warning" title="STATUS: PENDING / UNDER REVIEW"></i><?php
+					    }
+					    else {
+					    	// OK
+					    	?><i class="fa fa-check fa-2x text-success" title="STATUS: OK"></i><?php
+					    }
+					    ?></td>
+						<td class="text-center">
+                   			 <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
+                  			 <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
+               		   	     <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
+							 <a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+               			 </td>
+					  </tr>
+					  
+					  <?php 
+					  
+					  $PO_count = $PO_count + 1;
+					  
+					  } // end while loop
+					  ?>
+					  </tbody>
+					  <tfoot>
+						<tr>
+							<th colspan="4">TOTAL: <?php echo $PO_count; ?></th>
+							<th class="text-center"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+							</th>
+						</tr>
+					  </tfoot>
+					  
+					 </table>
+                </div>
+
+            </div>
+
+        </div>
+        
+        
+        <!-- ********************************************************************* -->
+        
+        
+        
+        
         </div>
 								
 				<div class="col-md-4 col-lg-3">
@@ -268,13 +384,13 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 										  	<a href="<?php echo $sup_web; ?>" target="_blank" title="Launch in a new window"><?php echo $sup_web; ?></a>
 										  </li>
 										</ul>
+								    </div>
 								  </div>
 								  <div class="panel-footer">
 									<div class="text-right">
 										<a class="text-uppercase text-muted" href="#">(Edit)</a>
 									</div>
 								  </div>
-								</div>
 							</section>
 					
 					<section class="panel">
@@ -285,7 +401,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 							</div>
 
 							<h2 class="panel-title">
-								<span class="label label-primary label-sm text-normal va-middle mr-sm">3</span>
 								<span class="va-middle">Certificates</span>
 							</h2>
 						</header>

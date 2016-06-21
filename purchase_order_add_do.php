@@ -29,11 +29,14 @@ $po_number = $_REQUEST['po_number'];
 $user_ID = $_REQUEST['user_ID'];
 $date_added = $_REQUEST['date_added'] . " 00:00:00";
 $description = $_REQUEST['description'];
+$record_status = 2;
+$supplier_ID = $_REQUEST['sup_ID'];
 
 $update_note = "Adding a new purchase order to the system.";
 
-$add_purchaseorder_SQL = "INSERT INTO `purchase_orders`(`ID`, `PO_number`, `created_date`, `description`) VALUES (NULL,'".$po_number."','".$date_added."','".$description."')";
-
+// $add_purchaseorder_SQL = "INSERT INTO `purchase_orders`(`ID`, `PO_number`, `created_date`, `description`) VALUES (NULL,'".$po_number."','".$date_added."','".$description."')";
+// ADDING SUPPLIER ID, USER ID AND RECORD STATUS (defaulted to '2')
+$add_purchaseorder_SQL = "INSERT INTO `purchase_orders`(`ID`, `PO_number`, `created_date`, `description`, `record_status`, `supplier_ID`, `created_by`) VALUES (NULL,'".$po_number."','".$date_added."','".$description."', '".$record_status."', '".$supplier_ID."', '". $user_ID ."')";
 
 // echo $add_movement_SQL;
 

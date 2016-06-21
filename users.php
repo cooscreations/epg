@@ -65,14 +65,19 @@ pagehead($page_id); ?>
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+            
             <tr>
+                <th class="text-left" colspan="8"><a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
+            </tr>
+            <tr>
+                <th>Photo</th>
                 <th>Name</th>
                 <th>名字</th>
                 <th>E-mail</th>
+                <th>Phone</th>
                 <th>Position</th>
                 <th>Last Log In</th>
                 <th>Level</th>
-                <th>Photo</th>
                 <th class="text-center">Actions</th>
             </tr>
 
@@ -89,6 +94,8 @@ pagehead($page_id); ?>
 					  ?>
 
             <tr>
+                <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>">
+                    <img src="assets/images/users/user_<?php echo $row_get_users['ID']; ?>.png" title="<?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?>" style="width:100px;" /></a></td>
                 <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>"><?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?></a></td>
                 <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>"><?php 
                 if (($row_get_users['name_CN']!='中文名')&&($row_get_users['name_CN']!='')) {
@@ -96,6 +103,7 @@ pagehead($page_id); ?>
                 }
                 ?></a></td>
                 <td><a href="mailto:<?php echo $row_get_users['email']; ?>" title="Click to send an email"><?php echo $row_get_users['email']; ?></a></td>
+                <td><a href="tel:<?php echo $row_get_users['mobile_number']; ?>"><?php echo $row_get_users['mobile_number']; ?><a/></td>
                 <td><?php echo $row_get_users['position']; ?></td>
                 <td><?php 
                 if ($row_get_users['last_login_date']!='0000-00-00 00:00:00') {
@@ -106,8 +114,6 @@ pagehead($page_id); ?>
                 }
                 ?></td>
                 <td><?php echo $row_get_users['user_level']; ?></td>
-                <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>">
-                    <img src="assets/images/users/user_<?php echo $row_get_users['ID']; ?>.png" title="<?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?>" style="width:100px;" /></a></td>
                 <td class="text-center">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
@@ -124,8 +130,8 @@ pagehead($page_id); ?>
 					  ?>
 
             <tr>
-                <th colspan="7">TOTAL: <?php echo $user_count; ?></th>
                 <th class="text-center"><a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
+                <th colspan="7">TOTAL: <?php echo $user_count; ?></th>
             </tr>
 
 

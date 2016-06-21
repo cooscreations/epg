@@ -79,13 +79,16 @@ pagehead($page_id); ?>
 											<tr>
 												<th class="text-center">Icon</th>
 												<th class="text-center"><a href="index.php?sort=name_EN">Name / 中文名</a></th>
+												<th class="text-center">USER ACTION</th>
+												<?php if ($_SESSION['user_level'] > 79) { ?>
 												<th class="text-center">Menu?</th>
 												<th class="text-center">Privacy</th>
 												<th class="text-center"><a href="index.php?sort=og_type">Type</a></th>
 												<th class="text-center">Min. <br />User Level</th>
 												<th class="text-center">Lookup Table</th>
 												<th class="text-center">Sub <br />Pages</th>
-												<th class="text-center">ACTION</th>
+												<th class="text-center">ADMIN ACTION</th>
+												<?php } ?>
 											</tr>
 										</thead>
 										<tbody>
@@ -98,7 +101,9 @@ pagehead($page_id); ?>
 											$sort_SQL = "order";		
 										}
 					
-					$get_pages_SQL = "SELECT * FROM `pages` ORDER BY `" . $sort_SQL . "` ASC";
+					$add_SQL = " WHERE `og_type` = 'list'";
+					
+					$get_pages_SQL = "SELECT * FROM `pages`". $add_SQL ." ORDER BY `" . $sort_SQL . "` ASC";
 					// echo $get_pages_SQL;
 					  
 					  $page_count = 0;
@@ -188,6 +193,13 @@ pagehead($page_id); ?>
 														<?php echo $page_name_EN; if (($page_name_CN!='')&&($page_name_CN!='中文名')) { echo ' / ' . $page_name_CN; } ?>
 													</a>
 												</td>
+												<td>
+													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-info"><i class="fa fa-list"></i></a>
+													<a href="#" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus-square"></i></a>
+												</td>
+												
+												<?php if ($_SESSION['user_level'] > 79) { ?>
+												
 												<td class="text-center"><?php 
 												if ($page_main_menu == 1) {
 													?>
@@ -531,8 +543,8 @@ pagehead($page_id); ?>
 													
 													<a href="page_edit.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 													<a href="delete_page.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
-													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-arrow-right"></i></a>
 												</td>
+												<?php } // END SHOW ADMIN TO 80 LEVEL USERS ?>
 											</tr>
 											
 						

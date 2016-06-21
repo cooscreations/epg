@@ -163,7 +163,22 @@ if ($record_id != 0) {
                             <label class="col-md-3 control-label">Level:</label>
                             <div class="col-md-5">
                                 <input type="number" class="form-control" id="inputDefault" name="level_text" min="10" max="100" />
+                            
+                            
+                            <select data-plugin-selectTwo class="form-control populate" name="level_text">
+													
+														<option value="10">10</option>
+														<option value="20">20</option>
+														<option value="30">30</option>
+														<option value="40">40</option>
+														<option value="50">50</option>
+														<option value="60">60</option>
+														<option value="70">70</option>
+														<option value="80">80</option>
+													
+													</select>
                             </div>
+                            
 
                             <div class="col-md-1">
                                 &nbsp;
