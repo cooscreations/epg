@@ -117,7 +117,7 @@ pagehead($page_id);
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Part Profile - <?php echo $part_code; ?> - <?php echo $name_EN; ?> / <?php echo $name_CN; ?></h2>
+						<h2>Part Profile - <?php echo $part_code; ?> - <?php echo $name_EN; if (($name_CN!='')&&($name_CN!='中文名')) { ?> / <?php echo $name_CN; } ?></h2>
 					
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -248,6 +248,48 @@ pagehead($page_id);
 											$rev_user_name_CN = $row_get_rev_user['name_CN'];
 									}
 									
+									// now get the part revision photo!
+									
+									$num_rev_photos_found = 0;
+									
+									$get_part_rev_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $rev_body_id;
+									// echo "<h1>".$get_part_rev_photo_SQL."</h1>";
+									$result_get_part_rev_photo = mysqli_query($con,$get_part_rev_photo_SQL);
+									// while loop
+									while($row_get_part_rev_photo = mysqli_fetch_array($result_get_part_rev_photo)) {
+									
+										$num_rev_photos_found = $num_rev_photos_found + 1;
+									
+										// now print each record:  
+										$rev_photo_id = $row_get_part_rev_photo['ID'];
+										$rev_photo_name_EN = $row_get_part_rev_photo['name_EN'];
+										$rev_photo_name_CN = $row_get_part_rev_photo['name_CN'];
+										$rev_photo_filename = $row_get_part_rev_photo['filename'];
+										$rev_photo_filetype_ID = $row_get_part_rev_photo['filetype_ID'];
+										$rev_photo_location = $row_get_part_rev_photo['file_location'];
+										$rev_photo_lookup_table = $row_get_part_rev_photo['lookup_table'];
+										$rev_photo_lookup_id = $row_get_part_rev_photo['lookup_ID'];
+										$rev_photo_document_category = $row_get_part_rev_photo['document_category'];
+										$rev_photo_record_status = $row_get_part_rev_photo['record_status'];
+										$rev_photo_created_by = $row_get_part_rev_photo['created_by'];
+										$rev_photo_date_created = $row_get_part_rev_photo['date_created'];
+										$rev_photo_filesize_bytes = $row_get_part_rev_photo['filesize_bytes'];
+										$rev_photo_document_icon = $row_get_part_rev_photo['document_icon'];
+										$rev_photo_document_remarks = $row_get_part_rev_photo['document_remarks'];
+										$rev_photo_doc_revision = $row_get_part_rev_photo['doc_revision'];
+										
+									}
+									
+									// echo "<h1>Revs Found: " . $num_rev_photos_found . "</h1>";
+										
+									if ($num_rev_photos_found != 0) {
+										$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
+									}
+									else {
+										$rev_photo_location = "assets/images/no_image_found.jpg";
+									}
+									
+									
 									?>
 									
 						
@@ -263,7 +305,7 @@ pagehead($page_id);
 									<section class="panel">
 								<div class="panel-body">
 									<div class="thumb-info mb-md">
-										<img src="assets/images/parts/01312.png" class="rounded img-responsive" alt="<?php echo $part_code; ?>; ?> - Part Name / 名字">
+										<img src="<?php echo $rev_photo_location; ?>" class="rounded img-responsive" alt="<?php echo $part_code; ?> - <?php echo $name_EN; if (($name_CN!='')&&($name_CN!='中文名')) { ?> / <?php echo $name_CN; } ?>">
 										<div class="thumb-info-title">
 											<span class="thumb-info-inner"><?php echo $part_code; ?></span>
 											<span class="thumb-info-type">Rev. <?php echo $rev_body_number; ?></span>

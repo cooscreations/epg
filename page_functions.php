@@ -176,6 +176,7 @@
 			
 					<span class="separator"></span>
 			
+				<!-- 
 					<ul class="notifications">
 						<li>
 							<a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
@@ -336,6 +337,8 @@
 							</div>
 						</li>
 					</ul>
+					
+					-->
 			
 					<span class="separator"></span>
 			
@@ -596,7 +599,7 @@
 			
 							<div class="sidebar-widget widget-calendar">
 								<h6>Upcoming Tasks</h6>
-								<div data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' data-plugin-skin="dark" ></div>
+								<div data-plugin-datepicker data-plugin-skin="dark" ></div>
 			
 								<ul>
 									<li>
@@ -722,235 +725,4 @@
 		<script src="assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
 		<script src="assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
 		<script src="assets/vendor/select2/select2.js"></script>
-		<script src="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
-		<script src="assets/vendor/jquery-maskedinput/jquery.maskedinput.js"></script>
-		<script src="assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-		<script src="assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
-		<script src="assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
-		<script src="assets/vendor/fuelux/js/spinner.js"></script>
-		<script src="assets/vendor/dropzone/dropzone.js"></script>
-		<script src="assets/vendor/bootstrap-markdown/js/markdown.js"></script>
-		<script src="assets/vendor/bootstrap-markdown/js/to-markdown.js"></script>
-		<script src="assets/vendor/bootstrap-markdown/js/bootstrap-markdown.js"></script>
-		<script src="assets/vendor/codemirror/lib/codemirror.js"></script>
-		<script src="assets/vendor/codemirror/addon/selection/active-line.js"></script>
-		<script src="assets/vendor/codemirror/addon/edit/matchbrackets.js"></script>
-		<script src="assets/vendor/codemirror/mode/javascript/javascript.js"></script>
-		<script src="assets/vendor/codemirror/mode/xml/xml.js"></script>
-		<script src="assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-		<script src="assets/vendor/codemirror/mode/css/css.js"></script>
-		<script src="assets/vendor/summernote/summernote.js"></script>
-		<script src="assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
-		<script src="assets/vendor/ios7-switch/ios7-switch.js"></script>
-		<script src="assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js"></script>
-			
-			<!-- Theme Base, Components and Settings -->
-			<script src="assets/javascripts/theme.js"></script>
-			
-			<!-- Theme Custom -->
-			<script src="assets/javascripts/theme.custom.js"></script>
-			
-			<!-- Theme Initialization Files -->
-			<script src="assets/javascripts/theme.init.js"></script>
-
-		</section>
-	</body>
-</html>
-	
-	
-	<?
-	
-	
-	}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
-					////////////////////////////////////////////////////////////
-					// MESSAGE NOTIFICATIONS
-					////////////////////////////////////////////////////////////
-					if (isset($_REQUEST['msg'])) { ?>
-					<div class="row">
-						<div class="col-md-12">
-						<?php 
-						if ($_REQUEST['msg'] == 'OK') {
-						?>
-							<div class="alert alert-success">
-								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-								<!--  ADD -->
-								<?php if ($_REQUEST['action'] == 'add') { ?>
-								
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-								
-								
-								<strong>Well done!</strong> You successfully added a record to the database. You can see it below.
-								
-								<?php } ?>
-								
-								<!--  UPDATE -->
-								<?php if ($_REQUEST['action'] == 'edit') { ?>
-								
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-								
-								
-								<strong>Well done!</strong> You successfully updated the record in the database. You can see it below.
-								<?php } ?>
-								
-								<!--  DELETE -->
-								<?php if ($_REQUEST['action'] == 'delete') { ?>
-								
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-								
-								
-								<strong>Well done!</strong> You successfully deleted the record in the database.
-								<?php } ?>
-								
-							</div>
-						<?php 
-						} // END OF SUCCESS MESSAGES
-						else if ($_REQUEST['msg'] == 'NG') {
-						?>
-							<div class="alert alert-warning">
-								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-								<?php if ($_REQUEST['error'] == 'no_id') { ?>
-								
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-exclamation fa-stack-1x"></i>
-								</span>
-								
-								<strong>Oh No!</strong> You must select a record from the list below in order to view a single record page.
-								
-								
-								<?php } ?>
-								<!--  Login error -->
-								<?php if ($_REQUEST['error'] == 'invalid_login') { ?>
-								
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-exclamation fa-stack-1x"></i>
-								</span>
-								
-								<h4>Invalid username or password.</h4>
-								
-								
-								<?php } ?>
-							</div>
-						<?php
-						}
-						?>
-						</div>
-					</div>
-					<?php 
-					}
-					
-					////////////////////////////////////////////////////////////
-					// END MESSAGE NOTIFICATIONS
-					////////////////////////////////////////////////////////////
-				} // end function
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-				function _base64_encrypt($str,$passw=null){
-					$r='';
-					$md=$passw?substr(md5($passw),0,16):'';
-					$str=base64_encode($md.$str);
-					$abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-					$a=str_split('+/='.$abc);
-					$b=strrev('-_='.$abc);
-					if($passw){
-						$b=_mixing_passw($b,$passw);
-					}else{
-						$r=rand(10,65);
-						$b=mb_substr($b,$r).mb_substr($b,0,$r);
-					}
-					$s='';
-					$b=str_split($b);
-					$str=str_split($str);
-					$lens=count($str);
-					$lena=count($a);
-					for($i=0;$i<$lens;$i++){
-						for($j=0;$j<$lena;$j++){
-							if($str[$i]==$a[$j]){
-								$s.=$b[$j];
-							}
-						};
-					};
-					return $s.$r;
-				};
-				
-				function _base64_decrypt($str,$passw=null){
-					$abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-					$a=str_split('+/='.$abc);
-					$b=strrev('-_='.$abc);
-					if($passw){
-						$b=_mixing_passw($b,$passw);
-					}else{
-						$r=mb_substr($str,-2);
-						$str=mb_substr($str,0,-2);
-						$b=mb_substr($b,$r).mb_substr($b,0,$r);
-					}
-					$s='';
-					$b=str_split($b);
-					$str=str_split($str);
-					$lens=count($str);
-					$lenb=count($b);
-					for($i=0;$i<$lens;$i++){
-						for($j=0;$j<$lenb;$j++){
-							if($str[$i]==$b[$j]){
-								$s.=$a[$j];
-							}
-						};
-					};
-					$s=base64_decode($s);
-					if($passw&&substr($s,0,16)==substr(md5($passw),0,16)){
-						return substr($s,16);
-					}else{
-						return $s;
-					}
-				};
-				
-				function _mixing_passw($b,$passw){
-					$s='';
-					$c=$b;
-					$b=str_split($b);
-					$passw=str_split(sha1($passw));
-					$lenp=count($passw);
-					$lenb=count($b);
-					for($i=0;$i<$lenp;$i++){
-						for($j=0;$j<$lenb;$j++){
-							if($passw[$i]==$b[$j]){
-								$c=str_replace($b[$j],'',$c);
-								if(!preg_match('/'.$b[$j].'/',$s)){
-									$s.=$b[$j];
-								}
-							}
-						};
-					};
-					return $c.''.$s;
-				};
-
-?>
+		<script src="assets/vendor/bootstrap-mu

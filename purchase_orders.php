@@ -85,7 +85,8 @@ pagehead($page_id); ?>
 					  <tbody>
 					  
 					  <?php 
-					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` ORDER BY  `created_date` DESC";
+					  $order_by = " ORDER BY  `purchase_orders`.`PO_number` DESC";
+					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE `record_status` =2" . $order_by;
 					  // echo $get_mats_SQL;
 					  
 					  $PO_count = 0;
