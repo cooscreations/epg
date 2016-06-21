@@ -236,7 +236,7 @@ pagehead($page_id);
 					  $movement_in_total = 0;
 					  
 					  // GET BATCHES: 
-						$get_batches_SQL = "SELECT * FROM `part_batch` WHERE `PO_ID` = " . $_REQUEST['id'];
+						$get_batches_SQL = "SELECT * FROM `part_batch` WHERE `PO_ID` = " . $_REQUEST['id'] . "  order by part_ID asc";
 						$result_get_batches = mysqli_query($con,$get_batches_SQL);
 						// while loop
 						while($row_get_batches = mysqli_fetch_array($result_get_batches)) {
@@ -327,7 +327,6 @@ pagehead($page_id);
 					  <tfoot>
 						  <tr>
 							<th colspan="5">TOTAL: <?php echo $batch_count; ?></th>
-							<th><?php echo $movement_in_total; ?></th>
 						  </tr>
 					  </tfoot>
 					  
