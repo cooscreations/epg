@@ -25,20 +25,26 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 
 */
 $id = $_REQUEST['id'];
+$table_name = $_REQUEST['table_name'];
+$src_page = $_REQUEST['src_page'];
+$update_note = "Marking record as deleted in the system.";
 
-$update_note = "Deleting a part treatment record in the system.";
+$delete_SQL = "UPDATE ".$table_name." set record_status=0 WHERE `ID` = '".$id."' ";
 
-$delete_part_treatment_SQL = "DELETE FROM `part_treatment` WHERE `ID` = '".$id."' ";
+echo $delete_SQL;
 
-
-if (mysqli_query($con, $delete_part_treatment_SQL)) {
+if (mysqli_query($con, $delete_SQL)) {
 	
 	
-    $record_delete_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_treatment','" . $id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'DELETE')";
+		// AWESOME! We added the record
+    $record_delete_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'".$table_name."','" . $id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'DELETE')";
+    // echo $record_delete_SQL;
 		
 		if (mysqli_query($con, $record_delete_SQL)) {	
+			// AWESOME! We added the change record to the database
 				
-            header("Location: part_treatment.php?msg=OK&action=delete");
+				// regular add - send them to the revisions list for that part	
+            header("Location: ".$src_page."?msg=OK&action=delete");
 			
 			exit();
 			
@@ -49,7 +55,7 @@ if (mysqli_query($con, $delete_part_treatment_SQL)) {
 		
 }
 else {
-	echo "<h4>Failed to delete existing part treatment record with SQL: <br />" . $delete_part_treatment_SQL . "</h4>";
+	echo "<h4>Failed to delete existing record with SQL: <br />" . $delete_SQL . "</h4>";
 }
 
 ?>

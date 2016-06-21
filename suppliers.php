@@ -15,11 +15,10 @@ header('Content-Type: text/html; charset=utf-8');
 require ('page_functions.php'); 
 include 'db_conn.php';
 
-/* -- NO USER SESSIONS YET...
-if (isset($_SESSION['user_id'])) {
-	header("Location: user_home.php"); // send them to the user home...
+/* session check */
+if (!isset($_SESSION['username'])) {
+	header("Location: login.php"); // send them to the Login page.
 }
-*/
 
 $page_id = 7;
 
@@ -69,14 +68,21 @@ pagehead($page_id); ?>
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-condensed mb-none">
             <tr>
+                <th><abbr title="(EPG Supplier ID, NOT Database Unique ID!)">ID</abbr></ht>
                 <th>Name</th>
-                <th>名字</th>
-                <th>Website</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Product Type</th>
+                <th>Cert.</th>
+                <th>Expires</th>
+                <th><i class="fa fa-globe"></i></th>
                 <th class="text-center">Actions</th>
             </tr>
 
             <?php 
-					  $get_sups_SQL = "SELECT * FROM  `suppliers` ORDER BY `name_EN` ASC";
+            		  $order_by = " ORDER BY  `record_status` DESC ,  `part_classification` ASC, `epg_supplier_ID` ASC";
+            
+					  $get_sups_SQL = "SELECT * FROM  `suppliers`" . $order_by;
 					  // echo $get_sups_SQL;
 					  
 					  $sup_count = 0;
@@ -85,17 +91,109 @@ pagehead($page_id); ?>
 					  // while loop
 					  while($row_get_sups = mysqli_fetch_array($result_get_sups)) {
 					  
+						$sup_ID = $row_get_sups['ID'];
+						$sup_en = $row_get_sups['name_EN'];
+						$sup_cn = $row_get_sups['name_CN'];
+						$sup_web = $row_get_sups['website'];
+						$sup_internal_ID = $row_get_sups['epg_supplier_ID'];
+						$sup_status = $row_get_sups['record_status'];
+						$sup_part_classification = $row_get_sups['part_classification']; // look up
+						$sup_item_supplied = $row_get_sups['items_supplied'];
+						$sup_part_type_ID = $row_get_sups['part_type_ID']; // look up
+						$sup_certs = $row_get_sups['certifications'];
+						$sup_cert_exp_date = $row_get_sups['certification_expiry_date'];
+						$sup_evaluation_date = $row_get_sups['evaluation_date'];
+						$sup_address_EN = $row_get_sups['address_EN'];
+						$sup_address_CN = $row_get_sups['address_CN'];
+						$sup_country_ID = $row_get_sups['country_ID']; // look up
+						$sup_contact_person = $row_get_sups['contact_person'];
+						$sup_mobile_phone = $row_get_sups['mobile_phone'];
+						$sup_telephone = $row_get_sups['telephone'];
+						$sup_fax = $row_get_sups['fax'];
+						$sup_email_1 = $row_get_sups['email_1'];
+						$sup_email_2 = $row_get_sups['email_2'];
+						
+						
+	
+								// VENDOR CLASSIFICATION BY STATUS:
+						
+								$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
+								// echo $get_vendor_status_SQL;
+	
+								$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
+								// while loop
+								while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
+									$sup_status_ID = $row_get_sup_status['ID'];
+									$sup_status_name_EN = $row_get_sup_status['name_EN'];
+									$sup_status_name_CN = $row_get_sup_status['name_CN'];
+									$sup_status_level = $row_get_sup_status['status_level'];
+									$sup_status_description = $row_get_sup_status['status_description'];
+									$sup_status_color_code = $row_get_sup_status['color_code'];
+									$sup_status_icon = $row_get_sup_status['icon'];
+								}
+	
+	
+	
+								// GET PART CLASSIFICATION:
+								$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $sup_part_classification . "'";
+								// echo $get_part_class_SQL;
+	
+								$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+								// while loop
+								while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+									$part_class_EN = $row_get_part_class['name_EN'];
+									$part_class_CN = $row_get_part_class['name_CN'];
+									$part_class_description = $row_get_part_class['description'];
+									$part_class_color = $row_get_part_class['color'];
+								}
+					  
 					  ?>
 
             <tr>
-                <td><a href="supplier_view.php?id=<?php echo $row_get_sups['ID']; ?>"><?php echo $row_get_sups['name_EN']; ?></a></td>
-                <td><a href="supplier_view.php?id=<?php echo $row_get_sups['ID']; ?>"><?php echo $row_get_sups['name_CN']; ?></a></td>
-                <td><a href="<?php echo $row_get_sups['website']; ?>" target="_blank" title="Launch in a new window"><?php echo $row_get_sups['website']; ?></a></td>
+            	<td><?php echo $sup_internal_ID; ?></td>
+                <td><a href="supplier_view.php?id=<?php echo $sup_ID; ?>"><?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></a></td>
+                <td class="<?php echo $sup_status_color_code; ?>">
+                	<i class="fa <?php echo $sup_status_icon; ?>"></i> <?php echo $sup_status_name_EN; if (($sup_status_name_EN!='')&&($sup_status_name_EN!='中文名')) { ?> <br /><?php echo $sup_status_name_CN; }?>
+                </td>
+                <td><?php 
+                  if ($sup_part_classification == 1) { 
+                	?><span class="text-danger">CRITICAL</span><?php  
+                  } 
+                  else { 
+                	?><span class="text-success">NON-CRITICAL</span><?php 
+                  }?></td>
+                <td><?php echo $sup_part_type_ID; ?> / <?php echo $sup_item_supplied; ?></td>
+                <td><?php echo $sup_certs; ?></td>
+                <td><?php 
+                  if ($sup_cert_exp_date != '0000-00-00') {
+                		
+                	?><span class="text-<?php
+                	// now check to see if it's expired!
+					if ($sup_cert_exp_date < date("Y-m-d")) {  echo 'danger'; }
+					else { echo 'success'; }
+					
+					?>"><?php
+
+                	echo $sup_cert_exp_date; 
+                	
+                	?></span><?php
+                	
+                  
+                  } ?></td>
+                <td>
+                <?php 
+                if ($sup_web != '') { 
+                	?>
+                	<a href="<?php echo $sup_web; ?>" target="_blank" title="Launch in a new window"><i class="fa fa-external-link"></i></a>
+                	<?php 
+                } 
+                ?></td>
                 <td class="text-center">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
-                    <a href="supplier_edit.php?id=<?php echo $row_get_sups['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-					<a href="supplier_delete_do.php?id=<?php echo $row_get_sups['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+                    <a href="supplier_view.php?id=<?php echo $sup_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-eye"></i></a>
+                    <a href="supplier_edit.php?id=<?php echo $sup_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
+					<a href="record_delete_do.php?table_name=suppliers&src_page=suppliers.php&id=<?php echo $sup_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
             </tr>
 
@@ -107,7 +205,7 @@ pagehead($page_id); ?>
 					  ?>
 
             <tr>
-                <th colspan="3">TOTAL: <?php echo $sup_count; ?></th>
+                <th colspan="8">TOTAL: <?php echo $sup_count; ?></th>
                 <th class="text-center"><a href="supplier_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
             </tr>
 

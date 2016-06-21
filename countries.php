@@ -17,12 +17,10 @@ header ( 'Content-Type: text/html; charset=utf-8' );
 require ('page_functions.php');
 include 'db_conn.php';
 
-/*
- * -- NO USER SESSIONS YET...
- * if (isset($_SESSION['user_id'])) {
- * header("Location: user_home.php"); // send them to the user home...
- * }
- */
+/* session check */
+if (!isset($_SESSION['username'])) {
+	header("Location: login.php"); // send them to the Login page.
+}
 
 $page_id = 99;
 
@@ -106,7 +104,7 @@ pagehead ( $page_id );
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
                     <a href="country_edit.php?id=<?php echo $row_get_cons['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-                    <a href="country_delete_do.php?id=<?php echo $row_get_cons['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+                    <a href="record_delete_do.php?table_name=countries&src_page=countries.php&id=<?php echo $row_get_cons['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
             </tr>
 

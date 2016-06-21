@@ -1,4 +1,4 @@
-<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php 
+<?php 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -15,15 +15,15 @@ header('Content-Type: text/html; charset=utf-8');
 require ('page_functions.php'); 
 include 'db_conn.php';
 
-/* -- NO USER SESSIONS YET...
-if (isset($_SESSION['user_id'])) {
-	header("Location: user_home.php"); // send them to the user home...
+/* session check */
+if (!isset($_SESSION['username'])) {
+	header("Location: login.php"); // send them to the Login page.
 }
-*/
 
 $page_id = 31;
 
 if (isset($_REQUEST['id'])) { 
+	echo "id=".$_REQUEST['id'];
 	$record_id = $_REQUEST['id']; 
 }
 else { // no id = nothing to see here!	
@@ -33,10 +33,8 @@ else { // no id = nothing to see here!
 
 // pull the header and template stuff:
 pagehead($page_id); 
-
 // now get the user info:
 $get_user_SQL = "SELECT * FROM `users` WHERE `ID` = " . $record_id;
-                                                                     // echo $get_user_SQL;
 
 $result_get_user = mysqli_query($con,$get_user_SQL);
 
@@ -48,7 +46,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	$user_ln = $row_get_user['last_name'];
 	$user_name_cn = $row_get_user['name_CN'];
 	$user_email = $row_get_user['email'];
-	$user_pwd = _base64_decrypt($row_get_user['password']);
+	//$user_pwd = _base64_decrypt($row_get_user['password']); May not need this. Why woud we display the password plain text ?
 	$user_level = $row_get_user['user_level'];
 	$user_position = $row_get_user['position'];
 	$user_last_login_date = $row_get_user['last_login_date'];
@@ -60,56 +58,8 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	
 } // end get user info WHILE loop
 
-function _base64_decrypt($str,$passw=null){
-    $abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    $a=str_split('+/='.$abc);
-    $b=strrev('-_='.$abc);
-    if($passw){
-        $b=_mixing_passw($b,$passw);
-    }else{
-        $r=mb_substr($str,-2);
-        $str=mb_substr($str,0,-2);
-        $b=mb_substr($b,$r).mb_substr($b,0,$r);
-    }
-    $s='';
-    $b=str_split($b);
-    $str=str_split($str);
-    $lens=count($str);
-    $lenb=count($b);
-    for($i=0;$i<$lens;$i++){
-        for($j=0;$j<$lenb;$j++){
-            if($str[$i]==$b[$j]){
-                $s.=$a[$j];
-            }
-        };
-    };
-    $s=base64_decode($s);
-    if($passw&&substr($s,0,16)==substr(md5($passw),0,16)){
-        return substr($s,16);
-    }else{
-        return $s;
-    }
-};
 
-function _mixing_passw($b,$passw){
-    $s='';
-    $c=$b;
-    $b=str_split($b);
-    $passw=str_split(sha1($passw));
-    $lenp=count($passw);
-    $lenb=count($b);
-    for($i=0;$i<$lenp;$i++){
-        for($j=0;$j<$lenb;$j++){
-            if($passw[$i]==$b[$j]){
-                $c=str_replace($b[$j],'',$c);
-                if(!preg_match('/'.$b[$j].'/',$s)){
-                    $s.=$b[$j];
-                }
-            }
-        };
-    };
-    return $c.''.$s;
-};
+
 
 ?>
 

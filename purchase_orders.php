@@ -15,11 +15,10 @@ header('Content-Type: text/html; charset=utf-8');
 require ('page_functions.php'); 
 include 'db_conn.php';
 
-/* -- NO USER SESSIONS YET...
-if (isset($_SESSION['user_id'])) {
-	header("Location: user_home.php"); // send them to the user home...
+/* session check */
+if (!isset($_SESSION['username'])) {
+	header("Location: login.php"); // send them to the Login page.
 }
-*/
 
 $page_id = 9;
 
@@ -65,10 +64,17 @@ pagehead($page_id); ?>
 					// now run the function:
 					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
 					?>
+					
+				
 				<div class="col-md-12">	
 					
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
+					 	<tr >
+							<th colspan="3"></th>
+							<th class="text-center"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+							</th>
+						</tr>
 						 <tr>
 							<th>P.O. number</th>
 							<th>Created Date</th>
@@ -77,8 +83,9 @@ pagehead($page_id); ?>
 						</tr>
 					  </thead>
 					  <tbody>
+					  
 					  <?php 
-					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` ORDER BY  `PO_number` ASC";
+					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` ORDER BY  `created_date` DESC";
 					  // echo $get_mats_SQL;
 					  
 					  $PO_count = 0;
@@ -108,7 +115,7 @@ pagehead($page_id); ?>
                    			 <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                   			 <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
                		   	     <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-							 <a href="purchase_order_delete_do.php?id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+							 <a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                			 </td>
 					  </tr>
 					  

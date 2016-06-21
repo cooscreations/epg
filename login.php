@@ -65,6 +65,20 @@ $page_id = 19;
 		<title>Log In</title>
 		
 	</head>
+	<?php
+							
+							// run notifications function:
+							$msg = 0;
+							if (isset ( $_REQUEST ['msg'] )) {
+								$msg = $_REQUEST ['msg'];
+							}
+							$action = 0;
+							if (isset ( $_REQUEST ['action'] )) {
+								$action = $_REQUEST ['action'];
+							}
+							// now run the function:
+							notify_me ( $page_id, $msg, $action, null, null );
+	?>
 	<body>
 
 
@@ -80,7 +94,7 @@ $page_id = 19;
 						<h2 class="title text-uppercase text-bold m-none"><i class="fa fa-user mr-xs"></i> Sign In</h2>
 					</div>
 					<div class="panel-body">
-						<form action="index.html" method="post">
+						<form method="post" action="login_check_do.php">
 							<div class="form-group mb-lg">
 								<label>Username</label>
 								<div class="input-group input-group-icon">
