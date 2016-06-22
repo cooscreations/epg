@@ -72,10 +72,18 @@ pagehead($page_id); ?>
                 <th>Name</th>
                 <th>Status</th>
                 <th>Type</th>
+<<<<<<< HEAD
+                <th>Product Type <br />(Notes)</th>
+                <th>Cert.</th>
+                <th>Expires</th>
+                <th><i class="fa fa-globe"></i></th>
+                <th># <abbr title="Purchase Orders / 订单">PO</abbr>s</th>
+=======
                 <th>Product Type</th>
                 <th>Cert.</th>
                 <th>Expires</th>
                 <th><i class="fa fa-globe"></i></th>
+>>>>>>> master
                 <th class="text-center">Actions</th>
             </tr>
 
@@ -114,6 +122,27 @@ pagehead($page_id); ?>
 						$sup_email_2 = $row_get_sups['email_2'];
 						
 						
+<<<<<<< HEAD
+								// look up the part type info:
+								$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` =" . $sup_part_type_ID;
+								// echo $get_part_type_SQL;
+								$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
+								// while loop
+								while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
+									$part_type_EN = $row_get_part_type['name_EN'];
+									$part_type_CN = $row_get_part_type['name_CN'];
+								}
+						
+		
+								// count # purchase orders for this vendor
+								$count_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE  `supplier_ID` = " . $sup_ID .' AND `record_status` = 2';
+								$count_POs_query = mysqli_query($con, $count_POs_sql);
+								$count_POs_row = mysqli_fetch_row($count_POs_query);
+								$total_POs = $count_POs_row[0];
+						
+						
+=======
+>>>>>>> master
 	
 								// VENDOR CLASSIFICATION BY STATUS:
 						
@@ -162,7 +191,22 @@ pagehead($page_id); ?>
                   else { 
                 	?><span class="text-success">NON-CRITICAL</span><?php 
                   }?></td>
+<<<<<<< HEAD
+                <td>
+                	<a href="part_type.php?id=<?php echo $sup_part_type_ID; ?>">
+                	<?php echo $part_type_EN; 
+                	if (($part_type_CN!='')&&($part_type_CN!='中文名')) {
+                		echo " / " . $part_type_CN;
+                	}
+                	?>
+                	
+                	</a>
+                	<br />
+                	(<?php echo $sup_item_supplied; ?>)
+                </td>
+=======
                 <td><?php echo $sup_part_type_ID; ?> / <?php echo $sup_item_supplied; ?></td>
+>>>>>>> master
                 <td><?php echo $sup_certs; ?></td>
                 <td><?php 
                   if ($sup_cert_exp_date != '0000-00-00') {
@@ -188,6 +232,10 @@ pagehead($page_id); ?>
                 	<?php 
                 } 
                 ?></td>
+<<<<<<< HEAD
+                <td><?php echo $total_POs ?></td>
+=======
+>>>>>>> master
                 <td class="text-center">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
@@ -205,7 +253,11 @@ pagehead($page_id); ?>
 					  ?>
 
             <tr>
+<<<<<<< HEAD
+                <th colspan="9">TOTAL: <?php echo $sup_count; ?></th>
+=======
                 <th colspan="8">TOTAL: <?php echo $sup_count; ?></th>
+>>>>>>> master
                 <th class="text-center"><a href="supplier_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
             </tr>
 

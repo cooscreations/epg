@@ -167,7 +167,7 @@
 			
 					<form action="pages-search-results.html" class="search nav-form">
 						<div class="input-group input-search">
-							<input type="text" class="form-control" name="q" id="q" placeholder="Search...">
+							<input type="text" class="form-control" name="q" id="q" placeholder="COMING SOON...">
 							<span class="input-group-btn">
 								<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
 							</span>
@@ -341,6 +341,8 @@
 					-->
 			
 					<span class="separator"></span>
+					
+					-->
 			
 					<div id="userbox" class="userbox">
 					<?php
@@ -599,7 +601,7 @@
 			
 							<div class="sidebar-widget widget-calendar">
 								<h6>Upcoming Tasks</h6>
-								<div data-plugin-datepicker data-plugin-skin="dark" ></div>
+								<div data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' data-plugin-skin="dark" ></div>
 			
 								<ul>
 									<li>

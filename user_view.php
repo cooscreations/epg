@@ -55,6 +55,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	$user_twitter = $row_get_user['twitter_profile'];	
 	$user_wechat = $row_get_user['wechat_profile'];	
 	$user_skype = $row_get_user['skype_profile'];	
+	$user_mobile_number = $row_get_user['mobile_number'];
 	
 } // end get user info WHILE loop
 
@@ -202,7 +203,11 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                         </tr>
                         <tr>
                             <th>E-mail:</th>
-                            <td><?php echo $user_email; ?></td>
+                            <td>
+                              <a href="mailto:<?php echo $user_email; ?>">
+                            	<?php echo $user_email; ?>
+                        	  </a>
+                            </td>
                         </tr>
                         <tr>
                             <th>Level:</th>
@@ -222,6 +227,14 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                             	echo '<span class="text-danger">NEVER</span>';
                             }
                             ?></td>
+                        </tr>
+                        <tr>
+                            <th>Mobile Number:</th>
+                            <td>
+								<a hred="tel:<?php echo $user_mobile_number; ?>"><?php 
+									echo $user_mobile_number;
+								?></a>
+                            </td>
                         </tr>
                     </table>
                 </div>
