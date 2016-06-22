@@ -20,6 +20,7 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
+$session_user_id = $_SESSION['username'];
 $page_id = 12;
 
 // pull the header and template stuff:
@@ -311,8 +312,9 @@ $(document).ready(function(){
 														$user_first_name = $row_get_user_list['first_name'];
 														$user_last_name = $row_get_user_list['last_name'];
 														$user_name_CN = $row_get_user_list['name_CN'];
+														$user_email = $row_get_user_list['email'];
 													?>
-														<option value="<?php echo $user_id; ?>"><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo " / " . $user_name_CN; }?></option>
+														<option value="<?php echo $user_id; ?>"<?php if ($user_email == $session_user_id) { ?> selected=""<?php } ?>><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo $user_name_CN; }?></option>
 														
 														<?php 
 														}
@@ -334,7 +336,7 @@ $(document).ready(function(){
 														<span class="input-group-addon">
 															<i class="fa fa-calendar"></i>
 														</span>
-														<input type="text" data-plugin-datepicker class="form-control" placeholder="YYYY-MM-DD" name="date_added" required>
+														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" required>
 													</div>
 												</div>
 												

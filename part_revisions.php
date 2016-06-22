@@ -102,7 +102,8 @@ pagehead ( $page_id );
 															" FROM `part_revisions`, `parts`, `part_status`, `users`  WHERE ".
 															" `part_revisions`.`part_ID` = `parts`.`ID` " .
 															" AND `part_revisions`.`status_ID` = `part_status`.`ID` ".
-															" AND `part_revisions`.`user_ID` = `users`.`ID` ";
+															" AND `part_revisions`.`user_ID` = `users`.`ID` ".
+															" AND `part_revisions`.`record_status` = 2 "; 
 								
 								$part_revision_count = 0;
 								
@@ -124,7 +125,7 @@ pagehead ( $page_id );
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
                     <a href="part_revision_edit.php?id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-					<a href="part_revision_delete_do.php?id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+					<a href="record_delete_do.php?table_name=part_revisions&src_page=part_revisions.php&id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
 			</tr>
 						  

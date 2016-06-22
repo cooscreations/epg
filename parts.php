@@ -70,8 +70,8 @@ pagehead($page_id); ?>
 						<div class="col-md-11">
 						<!-- PART TYPE JUMPER -->
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
-                              <option value="#" selected="selected">SELECT PART TYPE:</option>
-                              <option value="parts.php">View All</option>
+                              <option value="#" selected="selected">SELECT PART TYPE / 选择产品零件类型:</option>
+                              <option value="parts.php">View All / 看全部</option>
                               <?php 	
 										
 							$get_part_types_SQL = "SELECT * FROM  `part_type`";
@@ -85,11 +85,11 @@ pagehead($page_id); ?>
 					  			$part_types_CN = $row_get_part_types['name_CN'];
 										
 							   ?>
-                              <option value="parts.php?type_id=<?php echo $part_types_ID; ?>"><?php echo $part_types_EN; ?> / <?php echo $part_types_CN; ?> (_?)</option>
+                              <option value="parts.php?type_id=<?php echo $part_types_ID; ?>"><?php echo $part_types_EN; if (($part_types_CN!='')&&($part_types_CN!='中文名')) { ?> / <?php echo $part_types_CN; } ?></option>
                               <?php 
 							  } // end get part list 
 							  ?>
-                              <option value="parts.php">View All</option>
+                              <option value="parts.php">View All / 看全部</option>
                              </select>
                             <!-- / PART TYPE JUMPER -->
 						</div>
@@ -106,6 +106,7 @@ pagehead($page_id); ?>
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					
 					  <tr>
+					    <th>Photo</th>
 					    <th>Code</th>
 					    <th>Name</th>
 					    <th>名字</th>
@@ -176,13 +177,55 @@ pagehead($page_id); ?>
 									$rev_user = $row_get_part_rev['user_ID'];
 																							
 								}
+								
+								// now get the part revision photo!
+									
+									$num_rev_photos_found = 0;
+									
+									$get_part_rev_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $rev_id;
+									// echo "<h1>".$get_part_rev_photo_SQL."</h1>";
+									$result_get_part_rev_photo = mysqli_query($con,$get_part_rev_photo_SQL);
+									// while loop
+									while($row_get_part_rev_photo = mysqli_fetch_array($result_get_part_rev_photo)) {
+									
+										$num_rev_photos_found = $num_rev_photos_found + 1;
+									
+										// now print each record:  
+										$rev_photo_id = $row_get_part_rev_photo['ID'];
+										$rev_photo_name_EN = $row_get_part_rev_photo['name_EN'];
+										$rev_photo_name_CN = $row_get_part_rev_photo['name_CN'];
+										$rev_photo_filename = $row_get_part_rev_photo['filename'];
+										$rev_photo_filetype_ID = $row_get_part_rev_photo['filetype_ID'];
+										$rev_photo_location = $row_get_part_rev_photo['file_location'];
+										$rev_photo_lookup_table = $row_get_part_rev_photo['lookup_table'];
+										$rev_photo_lookup_id = $row_get_part_rev_photo['lookup_ID'];
+										$rev_photo_document_category = $row_get_part_rev_photo['document_category'];
+										$rev_photo_record_status = $row_get_part_rev_photo['record_status'];
+										$rev_photo_created_by = $row_get_part_rev_photo['created_by'];
+										$rev_photo_date_created = $row_get_part_rev_photo['date_created'];
+										$rev_photo_filesize_bytes = $row_get_part_rev_photo['filesize_bytes'];
+										$rev_photo_document_icon = $row_get_part_rev_photo['document_icon'];
+										$rev_photo_document_remarks = $row_get_part_rev_photo['document_remarks'];
+										$rev_photo_doc_revision = $row_get_part_rev_photo['doc_revision'];
+										
+									}
+									
+									// echo "<h1>Revs Found: " . $num_rev_photos_found . "</h1>";
+										
+									if ($num_rev_photos_found != 0) {
+										$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
+									}
+									else {
+										$rev_photo_location = "assets/images/no_image_found.jpg";
+									}
 					  
 					  ?>
 					  
 					  <tr>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><img src="<?php echo $rev_photo_location; ?>" class="rounded img-responsive" alt="<?php echo $row_get_parts['part_code']; ?> - <?php echo $row_get_parts['name_EN']; if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { ?> / <?php echo $row_get_parts['name_CN']; } ?>" style="width:50px;"></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['part_code']; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['name_EN']; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $row_get_parts['name_CN']; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { echo $row_get_parts['name_CN']; } ?></a></td>
 					    <td><?php echo $rev_number; ?></td>
 					    <td><a href="part_type_view.php?id="<?php echo $row_get_parts['type_ID']; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
 					    <td><a href="part_classification_view.php?id="<?php echo $row_get_parts['classification_ID']; ?>"><?php echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?></a></td>
@@ -196,7 +239,7 @@ pagehead($page_id); ?>
 					  ?>
 					  
 					  <tr>
-					    <th colspan="6">TOTAL: <?php echo $part_count; ?></th>
+					    <th colspan="7">TOTAL: <?php echo $part_count; ?></th>
 					  </tr>
 					  
 					  
