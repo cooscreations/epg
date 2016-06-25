@@ -199,6 +199,7 @@ pagehead($page_id); ?>
 								// now get the part revision photo!
 									
 									$num_rev_photos_found = 0;
+									$rev_photo_location = "assets/images/no_image_found.jpg";
 									
 									$get_part_rev_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $rev_id;
 									// echo "<h1>".$get_part_rev_photo_SQL."</h1>";
@@ -226,21 +227,136 @@ pagehead($page_id); ?>
 										$rev_photo_document_remarks = $row_get_part_rev_photo['document_remarks'];
 										$rev_photo_doc_revision = $row_get_part_rev_photo['doc_revision'];
 										
+										// now apply filename
+										$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
+										
 									}
 									
 									// echo "<h1>Revs Found: " . $num_rev_photos_found . "</h1>";
-										
-									if ($num_rev_photos_found != 0) {
-										$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
-									}
-									else {
-										$rev_photo_location = "assets/images/no_image_found.jpg";
-									}
 					  
 					  ?>
 					  
 					  <tr>
-					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><img src="<?php echo $rev_photo_location; ?>" class="rounded img-responsive" alt="<?php echo $row_get_parts['part_code']; ?> - <?php echo $row_get_parts['name_EN']; if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { ?> / <?php echo $row_get_parts['name_CN']; } ?>" style="width:100px;"></a></td>
+					    <td class="text-center">
+					    	
+					    	<a class="popup-with-form btn btn-default" href="#product_box_<?php echo $part_ID; ?>">
+					    	
+					    	<img src="<?php 
+					    		echo $rev_photo_location; 
+					    	?>" class="rounded img-responsive" alt="<?php 
+					    		echo $row_get_parts['part_code']; 
+					    	?> - <?php 
+					    		echo $row_get_parts['name_EN']; 
+					    		
+					    		if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { 
+					    			?> / <?php echo $row_get_parts['name_CN']; 
+					    		} 
+					    	?>" style="width:100px;">
+					    	
+					    	
+					    	
+					    	<!-- START MODAL POP-UP FORM -->
+					    	
+					    	
+					    	
+					    	<td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
+					    <td><?php echo $rev_number; ?></td>
+					    <td><a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
+					    <?php 
+					    if ($part_classification_ID == 1) { ?>
+					    
+							<td class="danger">
+						
+							<i class="fa fa-exclamation-triangle fa-2x"></i><?php }
+							
+					    else if ($part_classification_ID == 3) { ?>
+					    
+							<td class="" style="background: #666666; color: white;">
+						
+							<i class="fa fa-times-circle fa-2x"></i><?php }
+					    else { ?>
+					    
+							<td class="primary">
+						
+							<i class="fa fa-check-square fa-2x"></i><?php }
+					    
+					    // now write the classification in EN and CN:
+					    echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } 
+					    
+					    ?></td>
+					  </tr>
+					    	
+					    	
+					    	
+					    	
+					    	
+									<form id="product_box_<?php echo $part_ID; ?>" class="white-popup-block mfp-hide form-horizontal">
+										<div class="row">
+											<div class="col-sm-12">
+												<h3>Record Overview</h3>
+												<p class="mb-lg">This is a deeper look at this record.</p>
+												<h4><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php 
+													echo $part_code; 
+												?> - <?php 
+													echo $part_name_EN; 
+												 
+												if (($part_name_CN!='')&&($part_name_CN!='中文名')) { 
+												 	echo $part_name_CN; 
+												} 
+												?></a></h4>
+												
+												<ul>
+												  <li><strong>Classification:</strong> <?php 
+					    if ($part_classification_ID == 1) { ?>
+						
+							<i class="fa fa-exclamation-triangle fa-2x text-danger"></i><?php }
+							
+					    else if ($part_classification_ID == 3) { ?>
+						
+							<i class="fa fa-times-circle fa-2x text-info"></i><?php }
+					    else { ?>
+						
+							<i class="fa fa-check-square fa-2x text-success"></i><?php }
+					   
+					   // NOW PRINT THE WORDING:
+					   		echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?>
+					    
+					    ?></li>
+												</ul>
+												
+											</div>
+										</div>
+
+										
+
+										<div class="row mb-lg">
+											<div class="col-sm-9 col-sm-offset-3">
+												<a href="part_view.php?id=?????" class="btn btn-primary">
+													VIEW
+												</a>
+												
+												
+												<a href="part_view.php?id=?????" class="btn btn-warning">
+													EDIT
+												</a>
+												
+												
+												
+												<a href="part_view.php?id=?????" class="btn btn-danger">
+													DELETE
+												</a>
+												
+											</div>
+										</div>
+
+									</form>
+					    	
+					    	<!-- END MODAL POP-UP FORM -->
+					    
+					    
+					    	</a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
