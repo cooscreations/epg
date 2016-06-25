@@ -337,8 +337,6 @@
 							</div>
 						</li>
 					</ul>
-					
-					-->
 			
 					<span class="separator"></span>
 					
@@ -700,11 +698,11 @@
 			<script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 			<script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
 			<script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
-		
 			<!-- Specific Page Vendor - PROFILE -->
 			<script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
 			
 			<!-- Specific Page Vendor -->
+			
 			<?php 
 			
 			if ($page_id == 2) {
@@ -727,7 +725,127 @@
 		<script src="assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
 		<script src="assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
 		<script src="assets/vendor/select2/select2.js"></script>
-		<script src="assets/vendor/bootstrap-mu
+		<script src="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+		<script src="assets/vendor/jquery-maskedinput/jquery.maskedinput.js"></script>
+		<script src="assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+		<script src="assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+		<script src="assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+		<script src="assets/vendor/fuelux/js/spinner.js"></script>
+		<script src="assets/vendor/dropzone/dropzone.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/markdown.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/to-markdown.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+		<script src="assets/vendor/codemirror/lib/codemirror.js"></script>
+		<script src="assets/vendor/codemirror/addon/selection/active-line.js"></script>
+		<script src="assets/vendor/codemirror/addon/edit/matchbrackets.js"></script>
+		<script src="assets/vendor/codemirror/mode/javascript/javascript.js"></script>
+		<script src="assets/vendor/codemirror/mode/xml/xml.js"></script>
+		<script src="assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+		<script src="assets/vendor/codemirror/mode/css/css.js"></script>
+		<script src="assets/vendor/summernote/summernote.js"></script>
+		<script src="assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+		<script src="assets/vendor/ios7-switch/ios7-switch.js"></script>
+		<script src="assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js"></script>
+			
+			<!-- Theme Base, Components and Settings -->
+			<script src="assets/javascripts/theme.js"></script>
+			
+			<!-- Theme Custom -->
+			<script src="assets/javascripts/theme.custom.js"></script>
+			
+			<!-- Theme Initialization Files -->
+			<script src="assets/javascripts/theme.init.js"></script>
+			
+			<!--  Form validator -->
+			<script src="assets/vendor/jquery-validation/jquery.validate.js"></script>
+			<script src="assets/javascripts/forms/examples.validation.js"></script>
+
+		</section>
+	</body>
+</html>
+	
+	
+	<?
+	
+	
+	}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
+					////////////////////////////////////////////////////////////
+					// MESSAGE NOTIFICATIONS
+					////////////////////////////////////////////////////////////
+					if (isset($_REQUEST['msg'])) { ?>
+					<div class="row">
+						<div class="col-md-12">
+						<?php 
+						if ($_REQUEST['msg'] == 'OK') {
+						?>
+							<div class="alert alert-success">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+								<!--  ADD -->
+								<?php if ($_REQUEST['action'] == 'add') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+								
+								
+								<strong>Well done!</strong> You successfully added a record to the database. You can see it below.
+								
+								<?php } ?>
+								
+								<!--  UPDATE -->
+								<?php if ($_REQUEST['action'] == 'edit') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+								
+								
+								<strong>Well done!</strong> You successfully updated the record in the database. You can see it below.
+								<?php } ?>
+								
+								<!--  DELETE -->
+								<?php if ($_REQUEST['action'] == 'delete') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+								
+								
+								<strong>Well done!</strong> You successfully deleted the record in the database.
+								<?php } ?>
+								
+							</div>
+						<?php 
+						} // END OF SUCCESS MESSAGES
+						else if ($_REQUEST['msg'] == 'NG') {
+						?>
+							<div class="alert alert-warning">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+								<?php if ($_REQUEST['error'] == 'no_id') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-exclamation fa-stack-1x"></i>
+								</span>
+								
+								<strong>Oh No!</strong> You must select a record from the list below in order to view a single record page.
+								
+								
+								<?php } ?>
 								<!--  Login error -->
 								<?php if ($_REQUEST['error'] == 'invalid_login') { ?>
 								
@@ -740,6 +858,28 @@
 								
 								
 								<?php } ?>
+							</div>
+						<?php
+						}
+						?>
+						</div>
+					</div>
+					<?php 
+					}
+					
+					////////////////////////////////////////////////////////////
+					// END MESSAGE NOTIFICATIONS
+					////////////////////////////////////////////////////////////
+				} // end function
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 				function _base64_encrypt($str,$passw=null){
 					$r='';
@@ -819,3 +959,5 @@
 					};
 					return $c.''.$s;
 				};
+
+?>

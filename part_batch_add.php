@@ -112,7 +112,7 @@ if ($record_id != 0) {
 						<div class="col-md-12">
 						
 						<!-- START THE FORM! -->
-						<form class="form-horizontal form-bordered" action="part_batch_add_do.php" method="post">
+						<form id="form" class="form-horizontal form-bordered"  action="part_batch_add_do.php" method="post">
 						
 							<section class="panel">
 								<header class="panel-heading">
@@ -126,9 +126,9 @@ if ($record_id != 0) {
 								<div class="panel-body">
 								
 								<div class="form-group">
-									<label class="col-md-3 control-label">PO #:</label>
+									<label class="col-md-3 control-label">PO #:<span class="required">*</label>
 									<div class="col-md-5">
-										<select data-plugin-selectTwo class="form-control populate" name="PO_ID">
+										<select data-plugin-selectTwo class="form-control populate" name="PO_ID" required>
 													<?php
 													$get_PO_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` = 2";
 													$result_get_PO = mysqli_query($con,$get_PO_SQL);
@@ -161,9 +161,10 @@ if ($record_id != 0) {
 								</div>
 								
 								<div class="form-group">
-												<label class="col-md-3 control-label">Part / Revision #:</label>
+												<label class="col-md-3 control-label">Part / Revision #:<span class="required">*</label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="part_rev_ID">
+													<select data-plugin-selectTwo class="form-control populate" name="part_rev_ID" required>
+													<option value=""></option>
 													<?php 
 													// get parts list
 													$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = 2 ORDER BY `part_code` ASC";
@@ -208,6 +209,7 @@ if ($record_id != 0) {
 													
 													$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `part_ID` =" . $row_get_parts['ID'] . " AND `record_status`=2";
 													$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+
 													// while loop
 													while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 	
@@ -220,7 +222,7 @@ if ($record_id != 0) {
 														$rev_user = $row_get_part_rev['user_ID'];
 													
 													?>
-													<option value="<?php echo $rev_id; ?>"<?php if ((isset($_REQUEST['new_record_id']))&&($_REQUEST['new_record_id'] == $rev_id)) { ?> selected=""<?php } ?>><?php echo $row_get_parts['part_code']; ?> - <?php echo $rev_number; ?></option>
+													<option value="<?php echo $rev_id; ?>"><?php echo $row_get_parts['part_code']; ?> - <?php echo $rev_number; ?></option>
 													<?php
 													
 													} // end revision look-up loop
@@ -244,9 +246,9 @@ if ($record_id != 0) {
 											
 											
 								<div class="form-group">
-									<label class="col-md-3 control-label">Batch #:</label>
+									<label class="col-md-3 control-label">Batch #:<span class="required">*</span></label>
 									<div class="col-md-5">
-										<input type="text" class="form-control" id="inputDefault" placeholder="" name="batch_number" />
+										<input type="text" class="form-control" placeholder="" name="batch_number" required />
 									</div>
 									
 									<div class="col-md-1">
@@ -255,9 +257,9 @@ if ($record_id != 0) {
 								</div>
 								
 								<div class="form-group">
-												<label class="col-md-3 control-label">User:</label>
+												<label class="col-md-3 control-label">User:<span class="required">*</label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="user_ID">
+													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
 													<?php 
 													// get batch list
 													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
@@ -288,13 +290,13 @@ if ($record_id != 0) {
 											
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">Date:</label>
+												<label class="col-md-3 control-label">Date:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<div class="input-group">
 														<span class="input-group-addon">
 															<i class="fa fa-calendar"></i>
 														</span>
-														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added">
+														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" required>
 													</div>
 												</div>
 												
