@@ -599,7 +599,7 @@
 			
 							<div class="sidebar-widget widget-calendar">
 								<h6>Upcoming Tasks</h6>
-								<div data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' data-plugin-skin="dark" ></div>
+								<div data-plugin-datepicker data-plugin-skin="dark" ></div>
 			
 								<ul>
 									<li>
@@ -698,11 +698,11 @@
 			<script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 			<script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
 			<script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+		
 			<!-- Specific Page Vendor - PROFILE -->
 			<script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
 			
 			<!-- Specific Page Vendor -->
-			
 			<?php 
 			
 			if ($page_id == 2) {
@@ -756,7 +756,7 @@
 			<!-- Theme Initialization Files -->
 			<script src="assets/javascripts/theme.init.js"></script>
 			
-			<!--  Form validator -->
+			<!--  Validations -->
 			<script src="assets/vendor/jquery-validation/jquery.validate.js"></script>
 			<script src="assets/javascripts/forms/examples.validation.js"></script>
 

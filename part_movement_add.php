@@ -121,7 +121,7 @@ if (isset($_REQUEST['batch_id'])) { $record_id = $_REQUEST['batch_id']; }
 						<div class="col-md-12">
 						
 						<!-- START THE FORM! -->
-						<form class="form-horizontal form-bordered" action="part_movement_add_do.php" method="post">
+						<form id="form" class="form-horizontal form-bordered" action="part_movement_add_do.php" method="post">
 						
 							<section class="panel">
 								<header class="panel-heading">
@@ -135,9 +135,9 @@ if (isset($_REQUEST['batch_id'])) { $record_id = $_REQUEST['batch_id']; }
 								<div class="panel-body">
 									
 											<div class="form-group">
-												<label class="col-md-3 control-label">Batch #:</label>
+												<label class="col-md-3 control-label">Batch #:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="batch_ID">
+													<select data-plugin-selectTwo class="form-control populate" name="batch_ID" required>
 													<?php 
 													// get batch list
 													$get_batch_list_SQL = "SELECT `part_batch`.`ID`, 
@@ -215,10 +215,10 @@ $(document).ready(function(){
 </script>
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">In or Out?:</label>
+												<label class="col-md-3 control-label">In or Out?:<span class="required">*</span></label>
 												<div class="col-md-2">
 													<div class="radio-custom radio-success">
-														<input type="radio" id="value_direction" name="value_direction" checked="" value="in">
+														<input type="radio" id="value_direction" name="value_direction"  value="in" required>
 														<label for="radioExample3">Parts In</label>
 													</div>
 						
@@ -230,13 +230,14 @@ $(document).ready(function(){
 												
 												
 												
-												<label class="col-md-1 control-label">IQC Status:</label>
+												<label class="col-md-1 control-label">IQC Status:<span class="required">*</span></label>
 												<div class="col-md-2">
 												
 												  <div class="in box">
 												
 												
-													<select data-plugin-selectTwo class="form-control populate" name="status_ID">
+													<select data-plugin-selectTwo class="form-control populate" name="status_ID" required>
+													<option value=""></option>
 													<?php 
 													// get batch list
 													$get_status_list_SQL = "SELECT * FROM `part_batch_status`";
@@ -273,7 +274,7 @@ $(document).ready(function(){
 											
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">Amount:</label>
+												<label class="col-md-3 control-label">Amount:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<input type="text" class="form-control" id="inputDefault" placeholder="Enter whole numbers ONLY" name="amount" required>
 												</div>
@@ -285,9 +286,9 @@ $(document).ready(function(){
 											</div>
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">Remarks:</label>
+												<label class="col-md-3 control-label">Remarks:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<textarea class="form-control" rows="3" id="textareaDefault" name="remarks"></textarea>
+													<textarea class="form-control" rows="3" id="textareaDefault" name="remarks" required></textarea>
 												</div>
 												
 									
@@ -297,9 +298,9 @@ $(document).ready(function(){
 											</div>
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">User:</label>
+												<label class="col-md-3 control-label">User:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="user_ID">
+													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
 													<?php 
 													// get batch list
 													$get_user_list_SQL = "SELECT * FROM `users`";
@@ -330,7 +331,7 @@ $(document).ready(function(){
 											
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">Date:</label>
+												<label class="col-md-3 control-label">Date:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<div class="input-group">
 														<span class="input-group-addon">

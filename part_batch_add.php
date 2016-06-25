@@ -161,7 +161,7 @@ if ($record_id != 0) {
 								</div>
 								
 								<div class="form-group">
-												<label class="col-md-3 control-label">Part / Revision #:<span class="required">*</label>
+												<label class="col-md-3 control-label">Part / Revision #:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<select data-plugin-selectTwo class="form-control populate" name="part_rev_ID" required>
 													<option value=""></option>
