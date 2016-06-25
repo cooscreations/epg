@@ -71,13 +71,29 @@
 
 		<title>EPG Connect <?php 
 		
-		echo ' - ' . $page_name_EN; 
-		
-		if (($page_name_CN!='中文名')&&($page_name_CN!='')){ echo ' / ' . $page_name_CN; }
-		
-		</title>
-		<meta name="keywords" content="EPG Connect, <?php $page_name_EN; if (($page_name_CN!='中文名')&&($page_name_CN!='')){ echo ', ' . $page_name_CN } ?>" />
-		<meta name="description" content="EPG Connecct is a system to connect EPG data, people and systems. This page: <?php echo $page_og_desc; ?>">
+		if ($page_id == 1) { ?> - Welcome<? }
+		else if ($page_id == 2) { ?> - Logs<? } 
+		else if ($page_id == 3) { ?> - Products<? } 
+		else if ($page_id == 4) { ?> - Product Profile<? } 
+		else if ($page_id == 5) { ?> - Users<? } 
+		else if ($page_id == 6) { ?> - Materials<? }  
+		else if ($page_id == 7) { ?> - Suppliers<? }  
+		else if ($page_id == 8) { ?> - Parts<? }  
+		else if ($page_id == 9) { ?> - Purchase Orders<? } 
+		else if ($page_id == 10) { ?> - Purchase Order Record<? } 
+		else if ($page_id == 11) { ?> - Batch Records<? } 
+		else if ($page_id == 12) { ?> - Record Part Quantity Change<? }
+		else if ($page_id == 13) { ?> - Create New Batch Record<? }
+		else if ($page_id == 14) { ?> - Batch Log<? }
+		else if ($page_id == 15) { ?> - Warehouse Stock Log<? }
+		else if ($page_id == 16) { ?> - Part Revision List<? }
+		else if ($page_id == 17) { ?> - Add Part Revision Record<? }
+		else if ($page_id == 18) { ?> - Part Profile<? }
+		else if ($page_id == 19) { ?> - Log In Page<? }
+		else if ($page_id == 20) { ?> - Material Variants<? }
+		else {?> - (No Page Name Set)<?php } ?></title>
+		<meta name="keywords" content="EPG Connect" />
+		<meta name="description" content="A system to connect EPG data, people and systems">
 		<meta name="author" content="MarkClulow.com">
 
 		<!-- Mobile Metas -->
@@ -100,11 +116,6 @@
 			?>
 			<link rel="stylesheet" href="assets/vendor/select2/select2.css" />
 			<link rel="stylesheet" href="assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
-			<?php 
-		}
-		else if ($page_id == 54) { // GALLERY
-			?>
-			<link rel="stylesheet" href="assets/vendor/isotope/jquery.isotope.css" />
 			<?php 
 		}
 		?>
@@ -394,7 +405,7 @@
 						<div class="nano-content">
 							<nav id="menu" class="nav-main" role="navigation">
 								<ul class="nav nav-main">
-									<li class="<?php if ($page_id == 1) { ?> nav-active<?php } ?>">
+									<li<?php if ($page_id == 1) { ?> nav-active<?php } ?>>
 										<a href="index.php">
 											<i class="fa fa-home" aria-hidden="true"></i>
 											<span>Dashboard</span>
@@ -687,7 +698,6 @@
 			<script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 			<script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
 			<script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
-			<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
 		
 			<!-- Specific Page Vendor - PROFILE -->
 			<script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
@@ -706,15 +716,7 @@
 		
 				<?
 			}
-			else if ($page_id == 54) { // GALLERY
-				?>
-				<script src="assets/vendor/isotope/jquery.isotope.js"></script>
-
-
-				<!-- Examples -->
-				<script src="assets/javascripts/pages/examples.mediagallery.js"></script>
-				<?
-			}
+			
 			?>
 			
 			
