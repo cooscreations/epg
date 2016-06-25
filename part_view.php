@@ -136,7 +136,6 @@ pagehead($page_id);
 					<!-- start: page -->
 					
 					
-					
 					<div class="row">
 						<div class="col-md-12">
 						<!-- PART JUMPER -->
@@ -668,8 +667,7 @@ pagehead($page_id);
 						<!-- close TAB CONTENT -->	
 						</div>
 					<!-- close TABS -->
-					</div>
-							
+					</div>	
 					<!-- end: page -->
 				</section>
 				
