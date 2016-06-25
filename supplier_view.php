@@ -62,41 +62,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 	$sup_fax = $row_get_sup['fax'];
 	$sup_email_1 = $row_get_sup['email_1'];
 	$sup_email_2 = $row_get_sup['email_2'];
-<<<<<<< HEAD
-=======
-	
-			// VENDOR CLASSIFICATION BY STATUS:
-						
-			$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
-			// echo $get_vendor_status_SQL;
-	
-			$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
-			// while loop
-			while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
-				$sup_status_ID = $row_get_sup_status['ID'];
-				$sup_status_name_EN = $row_get_sup_status['name_EN'];
-				$sup_status_name_CN = $row_get_sup_status['name_CN'];
-				$sup_status_level = $row_get_sup_status['status_level'];
-				$sup_status_description = $row_get_sup_status['status_description'];
-				$sup_status_color_code = $row_get_sup_status['color_code'];
-				$sup_status_icon = $row_get_sup_status['icon'];
-			}
-	
-	
-	
-			// GET PART CLASSIFICATION:
-			$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $sup_part_classification . "'";
-			// echo $get_part_class_SQL;
-	
-			$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
-			// while loop
-			while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
-				$part_class_EN = $row_get_part_class['name_EN'];
-				$part_class_CN = $row_get_part_class['name_CN'];
-				$part_class_description = $row_get_part_class['description'];
-				$part_class_color = $row_get_part_class['color'];
-			}
->>>>>>> master
 	
 			// VENDOR CLASSIFICATION BY STATUS:
 						
@@ -194,7 +159,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
         
         
         
-<<<<<<< HEAD
         <div class="row">
         
         
@@ -202,15 +166,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
         
         <div class="row">
         
-=======
-        <div class="row">
-        
-        
-        <div class="col-md-8 col-lg-9">
-        
-        <div class="row">
-        
->>>>>>> master
             <header class="panel-heading">
                 <div class="panel-actions">
                     <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
@@ -230,7 +185,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
                         <tr>
                             <th>名字:</th>
                             <td><?php  if (($sup_cn!='') && ($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } else { echo '<span class="text-danger">没有中文公司名字</span>'; } ?></td>
-<<<<<<< HEAD
                         </tr>
                         <tr>
                             <th>Supplier #:</th>
@@ -241,18 +195,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
                             <td><?php echo '<em>coming soon</em>'; ?></td>
                         </tr>
                         <tr>
-=======
-                        </tr>
-                        <tr>
-                            <th>Supplier #:</th>
-                            <td><?php echo $sup_internal_ID; ?></td>
-                        </tr>
-                        <tr>
-                            <th>Items Supplied:</th>
-                            <td><?php echo '<em>coming soon</em>'; ?></td>
-                        </tr>
-                        <tr>
->>>>>>> master
                             <th>Part Type:</th>
                             <td><?php echo '<em>coming soon</em>'; ?></td>
                         </tr>
@@ -263,7 +205,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 
         </div>
         
-<<<<<<< HEAD
         <br />
         <!-- ********************************************************************* -->
         
@@ -380,8 +321,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
         
         
         
-=======
->>>>>>> master
         </div>
 								
 				<div class="col-md-4 col-lg-3">
@@ -413,10 +352,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 									</div>
 
 									<h2 class="panel-title">
-<<<<<<< HEAD
-=======
-										<span class="label label-primary label-sm text-normal va-middle mr-sm">3</span>
->>>>>>> master
 										<span class="va-middle">Contact Details</span>
 									</h2>
 								</header>
@@ -448,20 +383,13 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 										  	<a href="<?php echo $sup_web; ?>" target="_blank" title="Launch in a new window"><?php echo $sup_web; ?></a>
 										  </li>
 										</ul>
-<<<<<<< HEAD
 								    </div>
-=======
->>>>>>> master
 								  </div>
 								  <div class="panel-footer">
 									<div class="text-right">
 										<a class="text-uppercase text-muted" href="#">(Edit)</a>
 									</div>
 								  </div>
-<<<<<<< HEAD
-=======
-								</div>
->>>>>>> master
 							</section>
 					
 					<section class="panel">
@@ -472,10 +400,6 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 							</div>
 
 							<h2 class="panel-title">
-<<<<<<< HEAD
-=======
-								<span class="label label-primary label-sm text-normal va-middle mr-sm">3</span>
->>>>>>> master
 								<span class="va-middle">Certificates</span>
 							</h2>
 						</header>

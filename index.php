@@ -195,7 +195,47 @@ pagehead($page_id); ?>
 												</td>
 												<td>
 													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-info"><i class="fa fa-list"></i></a>
-													<a href="#" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus-square"></i></a>
+													<?php 
+													
+													// NOW FIND THE ADD PAGE IN THE DATABASE
+													$get_add_page_SQL = "SELECT * FROM  `pages` WHERE  `parent_ID` LIKE  '" . $page_ID . "' AND  `og_type` LIKE  'add'";
+													// echo $get_add_page_SQL;
+
+													$result_get_add_page = mysqli_query($con,$get_add_page_SQL);
+													// while loop
+			  
+			  
+													while($row_get_add_page = mysqli_fetch_array($result_get_add_page)) {
+				
+														$add_page_ID = $row_get_add_page['ID'];
+														$add_page_name_EN = $row_get_add_page['name_EN'];
+														$add_page_name_CN = $row_get_add_page['name_CN'];
+														$add_page_parent_ID = $row_get_add_page['parent_ID'];
+														$add_page_dept_ID = $row_get_add_page['dept_ID'];
+														$add_page_main_menu = $row_get_add_page['main_menu'];
+														$add_page_footer_menu = $row_get_add_page['footer_menu'];
+														$add_page_filename = $row_get_add_page['filename'];
+														$add_page_created_by = $row_get_add_page['created_by'];
+														$add_page_date_created = $row_get_add_page['date_created'];
+														$add_page_status = $row_get_add_page['status'];
+														$add_page_privacy = $row_get_add_page['privacy'];
+														$add_page_min_user_level = $row_get_add_page['min_user_level'];
+														$add_page_order = $row_get_add_page['order'];
+														$add_page_icon = $row_get_add_page['icon'];
+														$add_page_og_locale = $row_get_add_page['og_locale'];
+														$add_page_og_type = $row_get_add_page['og_type'];
+														$add_page_og_desc = $row_get_add_page['og_desc'];
+														$add_page_og_section = $row_get_add_page['og_section'];
+														$add_page_side_bar_config = $row_get_add_page['side_bar_config'];
+														$add_page_lookup_table = $row_get_add_page['lookup_table'];
+													
+														?>
+														<a href="<?php echo $add_page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus-square"></i></a>
+														<?php
+									
+													}
+													
+													?>
 												</td>
 												
 												<?php if ($_SESSION['user_level'] > 79) { ?>

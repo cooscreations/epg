@@ -95,7 +95,7 @@ pagehead($page_id); ?>
 						</div>
 					
 						<div class="row">
-					 		<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+					 		<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
 					 	</div>
 					</div>
 					
@@ -286,7 +286,7 @@ pagehead($page_id); ?>
 					</div>
 					
 					<div class="row">
-					 	<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+					 	<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
 					 </div>
 					
 					<!-- end: page -->
