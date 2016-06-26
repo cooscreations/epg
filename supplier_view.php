@@ -33,7 +33,7 @@ else { // no id = nothing to see here!
 // pull the header and template stuff:
 pagehead($page_id); 
 
-// now get the part info:
+// now get the supplier info:
 $get_sups_SQL = "SELECT * FROM `suppliers` WHERE `ID` = " . $record_id;
                                                                      // echo $get_sups_SQL;
 
@@ -103,7 +103,11 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Supplier Profile - <?php echo $sup_en; ?> / <?php echo $sup_cn; ?></h2>
+        <h2>Supplier Profile - <?php echo $sup_en; 
+        if (($sup_cn!='')&&($sup_cn!='中文名')){
+         	?> / <?php echo $sup_cn; 
+        }
+        ?></h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">

@@ -59,7 +59,15 @@
 	
 	?>
 	<!doctype html>
-<html class="fixed sidebar-left-collapsed">
+	
+	<!--
+	
+	<html class="fixed js flexbox flexboxlegacy no-touch csstransforms csstransforms3d no-overflowscrolling no-mobile-device custom-scroll sidebar-left-collapsed">
+	
+	-->
+	
+	<html class="fixed sidebar-left-collapsed">
+	
 	<head>
 	
 		
@@ -69,31 +77,21 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-		<title>EPG Connect <?php 
+		<title>EPG Connect - <?php 
+		// get the page name from our result set now ^_^
+		echo $page_name_EN;
 		
-		if ($page_id == 1) { ?> - Welcome<? }
-		else if ($page_id == 2) { ?> - Logs<? } 
-		else if ($page_id == 3) { ?> - Products<? } 
-		else if ($page_id == 4) { ?> - Product Profile<? } 
-		else if ($page_id == 5) { ?> - Users<? } 
-		else if ($page_id == 6) { ?> - Materials<? }  
-		else if ($page_id == 7) { ?> - Suppliers<? }  
-		else if ($page_id == 8) { ?> - Parts<? }  
-		else if ($page_id == 9) { ?> - Purchase Orders<? } 
-		else if ($page_id == 10) { ?> - Purchase Order Record<? } 
-		else if ($page_id == 11) { ?> - Batch Records<? } 
-		else if ($page_id == 12) { ?> - Record Part Quantity Change<? }
-		else if ($page_id == 13) { ?> - Create New Batch Record<? }
-		else if ($page_id == 14) { ?> - Batch Log<? }
-		else if ($page_id == 15) { ?> - Warehouse Stock Log<? }
-		else if ($page_id == 16) { ?> - Part Revision List<? }
-		else if ($page_id == 17) { ?> - Add Part Revision Record<? }
-		else if ($page_id == 18) { ?> - Part Profile<? }
-		else if ($page_id == 19) { ?> - Log In Page<? }
-		else if ($page_id == 20) { ?> - Material Variants<? }
-		else {?> - (No Page Name Set)<?php } ?></title>
-		<meta name="keywords" content="EPG Connect" />
-		<meta name="description" content="A system to connect EPG data, people and systems">
+		if (($page_name_CN!='')&&($page_name_CN!='中文名')) {
+			echo " / " . $page_name_CN;
+		} ?></title>
+		<meta name="keywords" content="EPG Connect, <?php 
+		// get the page name from our result set now ^_^
+		echo $page_name_EN;
+		
+		if (($page_name_CN!='')&&($page_name_CN!='中文名')) {
+			echo ", " . $page_name_CN;
+		} ?>" />
+		<meta name="description" content="A system to connect EPG data, people and systems. <?php if ($page_og_desc!='') { ?>On this page: <?php echo $page_og_desc; } ?>">
 		<meta name="author" content="MarkClulow.com">
 
 		<!-- Mobile Metas -->
@@ -165,9 +163,9 @@
 				<!-- start: search & user box -->
 				<div class="header-right">
 			
-					<form action="pages-search-results.html" class="search nav-form">
+					<form action="search.php" class="search nav-form">
 						<div class="input-group input-search">
-							<input type="text" class="form-control" name="q" id="q" placeholder="Search...">
+							<input type="text" class="form-control" name="query" id="query" placeholder="Search...">
 							<span class="input-group-btn">
 								<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
 							</span>
@@ -337,10 +335,10 @@
 							</div>
 						</li>
 					</ul>
-					
-					-->
 			
 					<span class="separator"></span>
+					
+					-->
 			
 					<div id="userbox" class="userbox">
 					<?php
@@ -568,7 +566,14 @@
 	<?
 	
 		if ($pages_found == 0) {
-			echo '<span class="btn btn-danger">Page not found in the database. Please contact the system administrator.</span>';
+			echo '
+			<section role="main" class="content-body">
+			  <div class="row">
+				<span class="btn btn-danger">Page not found in the database. Please contact the system administrator.</span>
+			  </div>
+			</section>
+			
+			';
 		}
 	
 	
@@ -698,6 +703,11 @@
 			<script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 			<script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
 			<script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+			
+			<!-- Specific Page Vendor (LIGHTBOX) -->
+			<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
+			<!-- Examples (LIGHTBOX) -->
+			<script src="assets/javascripts/ui-elements/examples.lightbox.js"></script>
 		
 			<!-- Specific Page Vendor - PROFILE -->
 			<script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
@@ -725,4 +735,239 @@
 		<script src="assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
 		<script src="assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
 		<script src="assets/vendor/select2/select2.js"></script>
-		<script src="assets/vendor/bootstrap-mu
+		<script src="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+		<script src="assets/vendor/jquery-maskedinput/jquery.maskedinput.js"></script>
+		<script src="assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+		<script src="assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+		<script src="assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+		<script src="assets/vendor/fuelux/js/spinner.js"></script>
+		<script src="assets/vendor/dropzone/dropzone.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/markdown.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/to-markdown.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+		<script src="assets/vendor/codemirror/lib/codemirror.js"></script>
+		<script src="assets/vendor/codemirror/addon/selection/active-line.js"></script>
+		<script src="assets/vendor/codemirror/addon/edit/matchbrackets.js"></script>
+		<script src="assets/vendor/codemirror/mode/javascript/javascript.js"></script>
+		<script src="assets/vendor/codemirror/mode/xml/xml.js"></script>
+		<script src="assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+		<script src="assets/vendor/codemirror/mode/css/css.js"></script>
+		<script src="assets/vendor/summernote/summernote.js"></script>
+		<script src="assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+		<script src="assets/vendor/ios7-switch/ios7-switch.js"></script>
+		<script src="assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js"></script>
+			
+			<!-- Theme Base, Components and Settings -->
+			<script src="assets/javascripts/theme.js"></script>
+			
+			<!-- Theme Custom -->
+			<script src="assets/javascripts/theme.custom.js"></script>
+			
+			<!-- Theme Initialization Files -->
+			<script src="assets/javascripts/theme.init.js"></script>
+			
+			<!--  Validations -->
+			<script src="assets/vendor/jquery-validation/jquery.validate.js"></script>
+			<script src="assets/javascripts/forms/examples.validation.js"></script>
+
+		</section>
+	</body>
+</html>
+	
+	
+	<?
+	
+	
+	}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
+					////////////////////////////////////////////////////////////
+					// MESSAGE NOTIFICATIONS
+					////////////////////////////////////////////////////////////
+					if (isset($_REQUEST['msg'])) { ?>
+					<div class="row">
+						<div class="col-md-12">
+						<?php 
+						if ($_REQUEST['msg'] == 'OK') {
+						?>
+							<div class="alert alert-success">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+								<!--  ADD -->
+								<?php if ($_REQUEST['action'] == 'add') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+								
+								
+								<strong>Well done!</strong> You successfully added a record to the database. You can see it below.
+								
+								<?php } ?>
+								
+								<!--  UPDATE -->
+								<?php if ($_REQUEST['action'] == 'edit') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+								
+								
+								<strong>Well done!</strong> You successfully updated the record in the database. You can see it below.
+								<?php } ?>
+								
+								<!--  DELETE -->
+								<?php if ($_REQUEST['action'] == 'delete') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+								
+								
+								<strong>Well done!</strong> You successfully deleted the record in the database.
+								<?php } ?>
+								
+							</div>
+						<?php 
+						} // END OF SUCCESS MESSAGES
+						else if ($_REQUEST['msg'] == 'NG') {
+						?>
+							<div class="alert alert-warning">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+								<?php if ($_REQUEST['error'] == 'no_id') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-exclamation fa-stack-1x"></i>
+								</span>
+								
+								<strong>Oh No!</strong> You must select a record from the list below in order to view a single record page.
+								
+								
+								<?php } ?>
+								<!--  Login error -->
+								<?php if ($_REQUEST['error'] == 'invalid_login') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-exclamation fa-stack-1x"></i>
+								</span>
+								
+								<h4>Invalid username or password.</h4>
+								
+								
+								<?php } ?>
+							</div>
+						<?php
+						}
+						?>
+						</div>
+					</div>
+					<?php 
+					}
+					
+					////////////////////////////////////////////////////////////
+					// END MESSAGE NOTIFICATIONS
+					////////////////////////////////////////////////////////////
+				} // end function
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+				function _base64_encrypt($str,$passw=null){
+					$r='';
+					$md=$passw?substr(md5($passw),0,16):'';
+					$str=base64_encode($md.$str);
+					$abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+					$a=str_split('+/='.$abc);
+					$b=strrev('-_='.$abc);
+					if($passw){
+						$b=_mixing_passw($b,$passw);
+					}else{
+						$r=rand(10,65);
+						$b=mb_substr($b,$r).mb_substr($b,0,$r);
+					}
+					$s='';
+					$b=str_split($b);
+					$str=str_split($str);
+					$lens=count($str);
+					$lena=count($a);
+					for($i=0;$i<$lens;$i++){
+						for($j=0;$j<$lena;$j++){
+							if($str[$i]==$a[$j]){
+								$s.=$b[$j];
+							}
+						};
+					};
+					return $s.$r;
+				};
+				
+				function _base64_decrypt($str,$passw=null){
+					$abc='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+					$a=str_split('+/='.$abc);
+					$b=strrev('-_='.$abc);
+					if($passw){
+						$b=_mixing_passw($b,$passw);
+					}else{
+						$r=mb_substr($str,-2);
+						$str=mb_substr($str,0,-2);
+						$b=mb_substr($b,$r).mb_substr($b,0,$r);
+					}
+					$s='';
+					$b=str_split($b);
+					$str=str_split($str);
+					$lens=count($str);
+					$lenb=count($b);
+					for($i=0;$i<$lens;$i++){
+						for($j=0;$j<$lenb;$j++){
+							if($str[$i]==$b[$j]){
+								$s.=$a[$j];
+							}
+						};
+					};
+					$s=base64_decode($s);
+					if($passw&&substr($s,0,16)==substr(md5($passw),0,16)){
+						return substr($s,16);
+					}else{
+						return $s;
+					}
+				};
+				
+				function _mixing_passw($b,$passw){
+					$s='';
+					$c=$b;
+					$b=str_split($b);
+					$passw=str_split(sha1($passw));
+					$lenp=count($passw);
+					$lenb=count($b);
+					for($i=0;$i<$lenp;$i++){
+						for($j=0;$j<$lenb;$j++){
+							if($passw[$i]==$b[$j]){
+								$c=str_replace($b[$j],'',$c);
+								if(!preg_match('/'.$b[$j].'/',$s)){
+									$s.=$b[$j];
+								}
+							}
+						};
+					};
+					return $c.''.$s;
+				};
+
+?>
