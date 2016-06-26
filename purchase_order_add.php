@@ -127,7 +127,7 @@ if ($record_id != 0) {
 													<?php 
 													// get batch list
 													$order_by = " ORDER BY `record_status` DESC";
-													$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
+													$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = 2 and `supplier_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
 													echo "<!-- DEBUG: " . $get_sup_list_SQL . " -->";
 													$result_get_sup_list = mysqli_query($con,$get_sup_list_SQL);
 													// while loop
