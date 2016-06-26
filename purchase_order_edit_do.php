@@ -29,10 +29,11 @@ $po_number = $_REQUEST['po_number'];
 $user_ID = $_REQUEST['user_ID'];
 $date_added = $_REQUEST['date_added'] . " 00:00:00";
 $description = $_REQUEST['description'];
+$supplier_ID = $_REQUEST['sup_ID'];
 
 $update_note = "Editing a purchase order to the system.";
 
-$edit_purchaseorder_SQL = "UPDATE `purchase_orders` SET `PO_number` = '".$po_number."', `created_date` = '".$date_added."', `description` = '".$description."' WHERE `ID` = '".$po_id."' ";
+$edit_purchaseorder_SQL = "UPDATE `purchase_orders` SET `PO_number` = '".$po_number."', `created_date` = '".$date_added."', `description` = '".$description."', `supplier_ID` = '".$supplier_ID."', `created_by` = '".$user_ID."' WHERE `ID` = '".$po_id."' ";
 
 
 // echo $edit_purchaseorder_SQL;
@@ -62,7 +63,7 @@ if (mysqli_query($con, $edit_purchaseorder_SQL)) {
 		
 }
 else {
-	echo "<h4>Failed to update existing user with SQL: <br />" . $add_purchaseorder_SQL . "</h4>";
+	echo "<h4>Failed to update existing purchase order with SQL: <br />" . $edit_purchaseorder_SQL . "</h4>";
 }
 
 ?>

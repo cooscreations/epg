@@ -20,6 +20,7 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
+$session_user_id = $_SESSION['username'];
 $page_id = 99;
 
 // pull the header and template stuff:
@@ -76,8 +77,23 @@ if ($record_id != 0) {
 					<div class="row">
 						<div class="col-md-12">
 						
+						<?php 
+					
+							// run notifications function:
+							$msg = 0;
+							if (isset ( $_REQUEST ['msg'] )) {
+								$msg = $_REQUEST ['msg'];
+							}
+							$action = 0;
+							if (isset ( $_REQUEST ['action'] )) {
+								$action = $_REQUEST ['action'];
+							}
+							// now run the function:
+							notify_me ( $page_id, $msg, $action, null, null );
+					?>
+					
 						<!-- START THE FORM! -->
-						<form class="form-horizontal form-bordered" action="purchase_order_add_do.php" method="post">
+						<form id="form" class="form-horizontal form-bordered" action="purchase_order_add_do.php" method="post">
 						
 							<section class="panel">
 								<header class="panel-heading">
@@ -90,9 +106,9 @@ if ($record_id != 0) {
 								</header>
 								<div class="panel-body">
 								<div class="form-group">
-									<label class="col-md-3 control-label">P.O. Number:</label>
+									<label class="col-md-3 control-label">P.O. Number:<span class="required">*</span></label>
 									<div class="col-md-5">
-										<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" />
+										<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" required/>
 									</div>
 									
 									<div class="col-md-1">
@@ -105,9 +121,9 @@ if ($record_id != 0) {
 											
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">Supplier:</label>
+												<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="sup_ID">
+													<select data-plugin-selectTwo class="form-control populate" name="sup_ID" required>
 													<?php 
 													// get batch list
 													$order_by = " ORDER BY `record_status` DESC";
@@ -160,9 +176,9 @@ if ($record_id != 0) {
 											</div>
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">Description:</label>
+												<label class="col-md-3 control-label">Description:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<textarea class="form-control" rows="3" id="textareaDefault" name="description"></textarea>
+													<textarea class="form-control" rows="3" id="textareaDefault" name="description" required></textarea>
 												</div>
 												
 									
@@ -174,9 +190,9 @@ if ($record_id != 0) {
 											
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">User:</label>
+												<label class="col-md-3 control-label">User:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="user_ID">
+													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
 													<?php 
 													// get batch list
 													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
@@ -206,13 +222,13 @@ if ($record_id != 0) {
 											</div>
 											
 											<div class="form-group">
-												<label class="col-md-3 control-label">Created Date:</label>
+												<label class="col-md-3 control-label">Created Date:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<div class="input-group">
 														<span class="input-group-addon">
 															<i class="fa fa-calendar"></i>
 														</span>
-														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added">
+														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" value="<?php echo date("Y-m-d")?>" required />
 													</div>
 												</div>
 												<div class="col-md-1">

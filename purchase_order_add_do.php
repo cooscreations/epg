@@ -32,6 +32,17 @@ $description = $_REQUEST['description'];
 $record_status = 2;
 $supplier_ID = $_REQUEST['sup_ID'];
 
+/*
+ *  Check if PO# already exists in the database.
+ */
+
+$select_by_po = "select `po_number` from `purchase_orders` where `po_number` = '" . $po_number . "'";
+$result_select_by_po = mysqli_query($con,$select_by_po);
+while($row_select_by_po = mysqli_fetch_array($result_select_by_po)) {
+	header("Location: purchase_order_add.php?msg=NG&error=duplicate&field=".$po_number);
+	exit();
+}
+
 $update_note = "Adding a new purchase order to the system.";
 
 // $add_purchaseorder_SQL = "INSERT INTO `purchase_orders`(`ID`, `PO_number`, `created_date`, `description`) VALUES (NULL,'".$po_number."','".$date_added."','".$description."')";

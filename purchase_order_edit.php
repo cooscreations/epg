@@ -36,7 +36,7 @@ else {
 }
 
 if ($record_id != 0) {
-	$get_po_SQL = "SELECT `ID`,`PO_number`, date(`created_date`) as 'created_date', `description`  FROM  `purchase_orders` WHERE `ID` = " . $record_id;
+	$get_po_SQL = "SELECT `ID`,`PO_number`, date(`created_date`) as 'created_date', `description`,`created_by`, `supplier_ID`  FROM  `purchase_orders` WHERE `ID` = " . $record_id;
 	$result_get_po = mysqli_query($con,$get_po_SQL);
 	// while loop
 	while($row_get_po = mysqli_fetch_array($result_get_po)) {
@@ -46,6 +46,8 @@ if ($record_id != 0) {
 			$po_number = $row_get_po['PO_number'];
 			$po_created_date = $row_get_po['created_date'];
 			$po_description = $row_get_po['description'];
+			$po_created_by_user = $row_get_po['created_by'];
+			$po_supplier_id = $row_get_po['supplier_ID'];
 			
 	} // end while loop
 }
@@ -92,47 +94,131 @@ if ($record_id != 0) {
 									<h2 class="panel-title">Edit Purchase Order Details:</h2>
 								</header>
 								<div class="panel-body">
-								<div class="form-group">
-									<label class="col-md-3 control-label">P.O. Number:</label>
-									<div class="col-md-5">
-										<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" value="<?php echo $po_number; ?>"/>
-										<input type="hidden" name="po_id" value="<?php echo $po_id; ?>"/>
+									<div class="form-group">
+										<label class="col-md-3 control-label">P.O. Number:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" value="<?php echo $po_number; ?>" required/>
+											<input type="hidden" name="po_id" value="<?php echo $po_id; ?>"/>
+										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>	
+									
+									<div class="form-group">
+										<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<select data-plugin-selectTwo class="form-control populate" name="sup_ID" required>
+											<?php 
+											// get batch list
+											$order_by = " ORDER BY `record_status` DESC";
+											$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
+											echo "<!-- DEBUG: " . $get_sup_list_SQL . " -->";
+											$result_get_sup_list = mysqli_query($con,$get_sup_list_SQL);
+											// while loop
+											while($row_get_sup_list = mysqli_fetch_array($result_get_sup_list)) {
+
+													// now print each record:  
+													$sup_id = $row_get_sup_list['ID']; 
+													$sup_epg_supplier_ID = $row_get_sup_list['epg_supplier_ID'];
+													$sup_name_EN = $row_get_sup_list['name_EN'];
+													$sup_name_CN = $row_get_sup_list['name_CN'];
+													$sup_website = $row_get_sup_list['website'];
+													$sup_record_status = $row_get_sup_list['record_status'];
+													$sup_part_classification = $row_get_sup_list['part_classification'];
+													$sup_items_supplied = $row_get_sup_list['items_supplied'];
+													$sup_part_type_ID = $row_get_sup_list['part_type_ID'];
+													$sup_certifications = $row_get_sup_list['certifications'];
+													$sup_certification_expiry_date = $row_get_sup_list['certification_expiry_date'];
+													$sup_evaluation_date = $row_get_sup_list['evaluation_date'];
+													$sup_address_EN = $row_get_sup_list['address_EN'];
+													$sup_address_CN = $row_get_sup_list['address_CN'];
+													$sup_country_ID = $row_get_sup_list['country_ID'];
+													$sup_contact_person = $row_get_sup_list['contact_person'];
+													$sup_mobile_phone = $row_get_sup_list['mobile_phone'];
+													$sup_telephone = $row_get_sup_list['telephone'];
+													$sup_fax = $row_get_sup_list['fax'];
+													$sup_email_1 = $row_get_sup_list['email_1'];
+													$sup_email_2 = $row_get_sup_list['email_2'];
+												
+													?>
+													<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $po_supplier_id) { ?> selected="selected"<?php } ?>>
+														<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
+													</option>
+													<?php
+												}
+												?>
+											</select>
+										</div>
+										
+										
+										
+										
+							
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+												
+									<div class="form-group">
+										<label class="col-md-3 control-label">Description:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="description" required><?php echo $po_description; ?></textarea>
+										</div>
+										
+							
+										<div class="col-md-1">
+											&nbsp;
+										</div>
 									</div>
 									
-									<div class="col-md-1">
-										&nbsp;
-									</div>
-								</div>	
-											
-											<div class="form-group">
-												<label class="col-md-3 control-label">Description:</label>
+									<div class="form-group">
+												<label class="col-md-3 control-label">User:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<textarea class="form-control" rows="3" id="textareaDefault" name="description"><?php echo $po_description; ?></textarea>
+													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
+													<?php 
+													// get batch list
+													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
+													$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
+													// while loop
+													while($row_get_user_list = mysqli_fetch_array($result_get_user_list)) {
+	
+														// now print each record:  
+														$user_id = $row_get_user_list['ID']; 
+														$user_first_name = $row_get_user_list['first_name'];
+														$user_last_name = $row_get_user_list['last_name'];
+														$user_name_CN = $row_get_user_list['name_CN'];
+														$user_email = $row_get_user_list['email'];
+													?>
+														<option value="<?php echo $user_id; ?>"<?php if ($user_id == $po_created_by_user) { ?> selected="selected"<?php } ?>><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo  ' / ' . $user_name_CN; }?></option>
+														
+														<?php 
+														}
+														?>
+													</select>
 												</div>
 												
+												<div class="col-md-1">
+													<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+												</div>
+												
+									</div>
 									
-												<div class="col-md-1">
-													&nbsp;
-												</div>
+									<div class="form-group">
+										<label class="col-md-3 control-label">Created Date:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+												<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" value="<?php echo $po_created_date; ?>" required>
 											</div>
-											
-											<div class="form-group">
-												<label class="col-md-3 control-label">Created Date:</label>
-												<div class="col-md-5">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="fa fa-calendar"></i>
-														</span>
-														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" value="<?php echo $po_created_date; ?>">
-													</div>
-												</div>
-												<div class="col-md-1">
-													&nbsp;
-												</div>
-											</div>
-											
-											
-					 
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
 								</div>
 								
 								
