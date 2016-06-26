@@ -31,7 +31,8 @@ $date_added = $_REQUEST['date_added'] . " 00:00:00";
 $description = $_REQUEST['description'];
 $record_status = 2;
 $supplier_ID = $_REQUEST['sup_ID'];
-
+$supplier_name_en = $_REQUEST['supplier_name_en'];
+$supplier_status = 3;
 /*
  *  Check if PO# already exists in the database.
  */
@@ -43,9 +44,28 @@ while($row_select_by_po = mysqli_fetch_array($result_select_by_po)) {
 	exit();
 }
 
+/* Add supplier Begin */
+if ($supplier_name_en != ""){
+	$update_note = "Adding a new supplier to the system.";
+	$add_supplier_SQL = "INSERT INTO `suppliers`(`ID`, `name_EN`,`supplier_status`) VALUES (NULL,'".$supplier_name_en."','".$supplier_status."')";
+	if (mysqli_query($con, $add_supplier_SQL)) {
+		$supplier_ID = mysqli_insert_id($con);
+		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'suppliers','" . $supplier_ID . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
+		if (mysqli_query($con, $record_edit_SQL)) {
+		}
+		else {
+			echo "<h4>Failed to record the change in the edit log with SQL: <br />" . $record_edit_SQL . "</h4>";
+		}
+	}
+	else {
+		echo "<h4>Failed to add new supplier with SQL: <br />" . $add_supplier_SQL . "</h4>";
+	}
+}
+
+
+/* Add PO Begin*/
 $update_note = "Adding a new purchase order to the system.";
 
-// $add_purchaseorder_SQL = "INSERT INTO `purchase_orders`(`ID`, `PO_number`, `created_date`, `description`) VALUES (NULL,'".$po_number."','".$date_added."','".$description."')";
 // ADDING SUPPLIER ID, USER ID AND RECORD STATUS (defaulted to '2')
 $add_purchaseorder_SQL = "INSERT INTO `purchase_orders`(`ID`, `PO_number`, `created_date`, `description`, `record_status`, `supplier_ID`, `created_by`) VALUES (NULL,'".$po_number."','".$date_added."','".$description."', '".$record_status."', '".$supplier_ID."', '". $user_ID ."')";
 
@@ -54,8 +74,6 @@ $add_purchaseorder_SQL = "INSERT INTO `purchase_orders`(`ID`, `PO_number`, `crea
 if (mysqli_query($con, $add_purchaseorder_SQL)) {
 	
 	$record_id = mysqli_insert_id($con);
-	
-	// echo "INSERT # " . $record_id . " OK";
 	
 		// AWESOME! We added the record
 		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'purchase_orders','" . $record_id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";

@@ -124,6 +124,8 @@ if ($record_id != 0) {
 												<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<select data-plugin-selectTwo class="form-control populate" name="sup_ID" required>
+													<option value=""></option>
+													<option value="0" >OTHER</option>
 													<?php 
 													// get batch list
 													$order_by = " ORDER BY `record_status` DESC";
@@ -165,11 +167,18 @@ if ($record_id != 0) {
 														?>
 													</select>
 												</div>
-												
-												
-												
-												
 									
+												<div class="col-md-1">
+													&nbsp;
+												</div>
+											</div>
+											
+											<!--  Rouge vendor entry -->
+											<div class="form-group" id="supplier_name_group" style="display: none;">
+												<label class="col-md-3 control-label">Supplier Name:<span class="required">*</span></label>
+												<div class="col-md-5">
+													<input class="form-control" rows="3" id="supplier_name_id" name="supplier_name_en" required />
+												</div>
 												<div class="col-md-1">
 													&nbsp;
 												</div>
@@ -267,6 +276,21 @@ if ($record_id != 0) {
 								<!-- now close the panel --><!-- end row! -->
 					 
 					<!-- end: page -->
+					<script type="text/javascript">
+						$(function(){
+							$('select').on('change', function (e) {
+							    var optionSelected = $("option:selected", this);
+							    var valueSelected = this.value;
+							    if( this.value > 0 ){
+							    	$('#supplier_name_group').css("display","none");
+							    	$('#supplier_name_id').val("");
+							    }else{
+							    	$('#supplier_name_group').css("display","block");
+							    }
+							    
+							});
+						});
+					</script>
 				</section>
 				
 <!-- : END MAIN PAGE BODY -->
