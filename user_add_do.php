@@ -34,10 +34,11 @@ $user_email = $_REQUEST['email_text'];
 $user_pwd = md5($_REQUEST['pwd_text']);
 $user_level = $_REQUEST['level_text'];
 $user_pos = $_REQUEST['pos_text'];
+$user_mobile_number = $_REQUEST['mobile_number'];
 
 $update_note = "Adding a new user to the system.";
 
-$add_user_SQL = "INSERT INTO `users`(`ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`) VALUES (NULL,'".$user_fn."','".$user_mn."','".$user_ln."','".$user_cn."','".$user_email."','".$user_pwd."','".$user_level."','".$user_pos."')";
+$add_user_SQL = "INSERT INTO `users`(`ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `mobile_number`) VALUES (NULL,'".$user_fn."','".$user_mn."','".$user_ln."','".$user_cn."','".$user_email."','".$user_pwd."','".$user_level."','".$user_pos."','".$user_mobile_number."')";
 
 
 // echo $add_movement_SQL;

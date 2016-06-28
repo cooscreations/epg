@@ -81,7 +81,7 @@ if ($record_id != 0) {
         <div class="col-md-12">
 
             <!-- START THE FORM! -->
-            <form class="form-horizontal form-bordered" action="user_add_do.php" method="post">
+            <form id="form" class="form-horizontal form-bordered" action="user_add_do.php" method="post">
 
                 <section class="panel">
                     <header class="panel-heading">
@@ -94,9 +94,9 @@ if ($record_id != 0) {
                     </header>
                     <div class="panel-body">
                         <div class="form-group">
-                            <label class="col-md-3 control-label">First Name:</label>
+                            <label class="col-md-3 control-label">First Name:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="fn_text" />
+                                <input type="text" class="form-control"  name="fn_text" required />
                             </div>
 
                             <div class="col-md-1">
@@ -107,7 +107,7 @@ if ($record_id != 0) {
                         <div class="form-group">
                             <label class="col-md-3 control-label">Middle Name:</label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="mn_text" />
+                                <input type="text" class="form-control" name="mn_text" />
                             </div>
 
                             <div class="col-md-1">
@@ -116,9 +116,9 @@ if ($record_id != 0) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Last Name:</label>
+                            <label class="col-md-3 control-label">Last Name:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="ln_text" />
+                                <input type="text" class="form-control" name="ln_text" required />
                             </div>
 
                             <div class="col-md-1">
@@ -129,7 +129,7 @@ if ($record_id != 0) {
                         <div class="form-group">
                             <label class="col-md-3 control-label">名字:</label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="cn_text" />
+                                <input type="text" class="form-control" name="cn_text" />
                             </div>
 
                             <div class="col-md-1">
@@ -138,9 +138,9 @@ if ($record_id != 0) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">E-mail:</label>
+                            <label class="col-md-3 control-label">E-mail:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="email" class="form-control" id="inputDefault" name="email_text" />
+                                <input type="email" class="form-control" name="email_text" required />
                             </div>
 
                             <div class="col-md-1">
@@ -149,23 +149,33 @@ if ($record_id != 0) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Password:</label>
+                            <label class="col-md-3 control-label">Password:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="password" class="form-control" id="inputDefault" name="pwd_text" />
+                                <input type="password" class="form-control" name="pwd_text" required />
                             </div>
 
                             <div class="col-md-1">
                                 &nbsp;
                             </div>
                         </div>
-
+                         
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Level:</label>
+							<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
+							<div class="col-md-5">
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="fa fa-phone"></i>
+									</span>
+									<input id="inputDefault" name="mobile_number" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control" required />
+								</div>
+							</div>
+						</div>
+					 
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Level:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="number" class="form-control" id="inputDefault" name="level_text" min="10" max="100" />
-                            
-                            
-                            <select data-plugin-selectTwo class="form-control populate" name="level_text">
+                              <!--   <input type="number" class="form-control" id="inputDefault" name="level_text" min="10" max="100" required />  -->
+                            <select data-plugin-selectTwo class="form-control populate" name="level_text" required>
 													
 														<option value="10">10</option>
 														<option value="20">20</option>
@@ -186,9 +196,9 @@ if ($record_id != 0) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Position:</label>
+                            <label class="col-md-3 control-label">Position:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="pos_text" />
+                                <input type="text" class="form-control" name="pos_text" required />
                             </div>
 
                             <div class="col-md-1">

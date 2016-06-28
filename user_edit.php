@@ -1,4 +1,4 @@
-<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php 
+<?php 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,14 +12,17 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
+echo "sometthing1";
 require ('page_functions.php'); 
+echo "sometthing2";
 include 'db_conn.php';
+echo "sometthing3";
 
 /* session check */
 if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
-
+echo $_REQUEST['id'];
 $page_id = 99;
 
 // pull the header and template stuff:
@@ -36,7 +39,8 @@ else {
 }
 
 if ($record_id != 0) {
-	$get_user_SQL = "SELECT `ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `last_login_date` FROM `users` WHERE `ID` = " . $record_id;
+	$get_user_SQL = "SELECT `ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `last_login_date` ,`mobile_number` FROM `users` WHERE `ID` = " . $record_id;
+	echo $get_user_SQL;
 	$result_get_user = mysqli_query($con,$get_user_SQL);
 
     // while loop
@@ -51,7 +55,8 @@ if ($record_id != 0) {
         $user_level = $row_get_user['user_level'];
         $user_pos = $row_get_user['position'];
         $user_last_login_date = $row_get_user['last_login_date'];	
-        
+        $user_mobile_number = $row_get_user['mobile_number'];
+        echo $user_mobile_number;
     } // end get part info WHILE loop
 }
 
@@ -223,6 +228,18 @@ function _mixing_passw($b,$passw){
                                     &nbsp;
                                 </div>
                             </div>
+                            
+                            <div class="form-group">
+								<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
+								<div class="col-md-5">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="fa fa-phone"></i>
+										</span>
+										<input id="inputDefault" name="mobile_number" value="<?php echo $user_mobile_number; ?>" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control" required />
+									</div>
+								</div>
+							</div>
 
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Level:</label>

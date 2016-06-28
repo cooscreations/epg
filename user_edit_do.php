@@ -33,10 +33,11 @@ $user_email = $_REQUEST['email_text'];
 $user_pwd = _base64_encrypt($_REQUEST['pwd_text']);
 $user_level = $_REQUEST['level_text'];
 $user_pos = $_REQUEST['pos_text'];
+$user_mobile_number = $_REQUEST['mobile_number'];
 
 $update_note = "Editing a user to the system.";
 
-$edit_user_SQL = "UPDATE `users` SET `first_name` = '".$user_fn."',`middle_name` = '".$user_mn."',`last_name` = '".$user_ln."',`name_CN` = '".$user_cn."',`email` = '".$user_email."',`password` = '".$user_pwd."',`user_level` = '".$user_level."',`position` = '".$user_pos."' WHERE `ID` = '".$id."' ";
+$edit_user_SQL = "UPDATE `users` SET `first_name` = '".$user_fn."',`middle_name` = '".$user_mn."',`last_name` = '".$user_ln."',`name_CN` = '".$user_cn."',`email` = '".$user_email."',`password` = '".$user_pwd."',`user_level` = '".$user_level."',`position` = '".$user_pos."',`mobile_number` = '".$user_mobile_number."' WHERE `ID` = '".$id."' ";
     
 // echo $edit_user_SQL;
 
