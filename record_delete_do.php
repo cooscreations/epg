@@ -37,7 +37,7 @@ if (mysqli_query($con, $delete_SQL)) {
 	
 	
 		// AWESOME! We added the record
-    $record_delete_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'".$table_name."','" . $id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'DELETE')";
+    $record_delete_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'".$table_name."','" . $id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'DELETE')";
     // echo $record_delete_SQL;
 		
 		if (mysqli_query($con, $record_delete_SQL)) {	

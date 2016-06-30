@@ -45,7 +45,7 @@ if (mysqli_query($con, $add_revision_SQL)) {
 	// echo "INSERT # " . $record_id . " OK";
 	
 		// AWESOME! We added the record
-		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_revisions','" . $record_id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
+		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_revisions','" . $record_id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
 		// echo $record_edit_SQL;
 		
 		if (mysqli_query($con, $record_edit_SQL)) {	

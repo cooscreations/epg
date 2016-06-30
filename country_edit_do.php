@@ -38,7 +38,7 @@ $edit_SQL = "UPDATE `countries` SET `name_EN` = '".$name_en."', `name_CN` = '".$
 
 if (mysqli_query($con, $edit_SQL)) {
 	
-    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'countries','" . $id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
+    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'countries','" . $id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
 		// echo $record_edit_SQL;
 		
 		if (mysqli_query($con, $record_edit_SQL)) {	

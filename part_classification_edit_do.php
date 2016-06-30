@@ -37,7 +37,7 @@ $edit_part_classification_SQL = "UPDATE `part_classification` SET `name_EN` = '"
 
 if (mysqli_query($con, $edit_part_classification_SQL)) {
 	
-    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_classification','" . $id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
+    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_classification','" . $id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
 		
 		if (mysqli_query($con, $record_edit_SQL)) {	
 			

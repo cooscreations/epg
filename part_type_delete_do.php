@@ -34,7 +34,7 @@ $delete_part_type_SQL = "DELETE FROM `part_type` WHERE `ID` = '".$id."' ";
 if (mysqli_query($con, $delete_part_type_SQL)) {
 	
 	
-    $record_delete_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_type','" . $id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'DELETE')";
+    $record_delete_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_type','" . $id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'DELETE')";
 		
 		if (mysqli_query($con, $record_delete_SQL)) {	
 				

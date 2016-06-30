@@ -37,7 +37,7 @@ $update_note = "Editing a Material Variant in the system.";
 $edit_material_variant_SQL = "UPDATE `material_variant` SET `name_EN` = '".$name_en."', `name_CN` = '".$name_cn."', `description` = '".$description."', `material_ID` = '".$material_ID."', `variant_type` = '".$material_variant_type_ID."', `code` = '".$color_code."' WHERE `ID` = '".$id."' ";
 if (mysqli_query($con, $edit_material_variant_SQL)) {
 	
-    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'material_variant','" . $id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
+    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'material_variant','" . $id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
 		// echo $record_edit_SQL;
 		
 		if (mysqli_query($con, $record_edit_SQL)) {	

@@ -50,7 +50,7 @@ if ($supplier_name_en != ""){
 	$add_supplier_SQL = "INSERT INTO `suppliers`(`ID`, `name_EN`,`supplier_status`) VALUES (NULL,'".$supplier_name_en."','".$supplier_status."')";
 	if (mysqli_query($con, $add_supplier_SQL)) {
 		$supplier_ID = mysqli_insert_id($con);
-		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'suppliers','" . $supplier_ID . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
+		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'suppliers','" . $supplier_ID . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
 		if (mysqli_query($con, $record_edit_SQL)) {
 		}
 		else {
@@ -76,7 +76,7 @@ if (mysqli_query($con, $add_purchaseorder_SQL)) {
 	$record_id = mysqli_insert_id($con);
 	
 		// AWESOME! We added the record
-		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'purchase_orders','" . $record_id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
+		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'purchase_orders','" . $record_id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
 		// echo $record_edit_SQL;
 		
 		if (mysqli_query($con, $record_edit_SQL)) {	
