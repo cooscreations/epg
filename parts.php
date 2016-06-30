@@ -390,10 +390,24 @@ pagehead($page_id); ?>
 													</li>
 													<li>
 														<strong>#1 SUPPLIER:</strong> 
-														<?php echo $sup_en; 
-														if (($sup_cn!='')&&($sup_cn!='中文名')){
-															?> / <?php echo $sup_cn; 
+														<?php 
+														
+														if ($part_default_supplier_ID == 0) {
+															?>
+															<span class="text-danger">Default Supplier not set</span>
+															<?php
 														}
+														
+														else {
+														
+															echo $sup_en; 
+															if (($sup_cn!='')&&($sup_cn!='中文名')){
+																?> / <?php echo $sup_cn; 
+															}
+														
+														}
+														
+														
 														?>
 													</li>
 													<li>
@@ -413,12 +427,12 @@ pagehead($page_id); ?>
 
 										<div class="row mb-lg">
 											<div class="col-sm-9 col-sm-offset-3">
-												<a href="part_view.php?id=<?php echo $part_ID; ?>">" class="btn btn-primary">
+												<a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-primary">
 													VIEW
 												</a>
 												
 												
-												<a href="part_view.php?id=<?php echo $part_ID; ?>">" class="btn btn-warning">
+												<a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-warning">
 													EDIT
 												</a>
 												

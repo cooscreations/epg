@@ -128,11 +128,8 @@ if (isset($_REQUEST['year'])) {
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
 					 	<tr >
-<<<<<<< HEAD
 							<th colspan="4"></th>
-=======
 							<th colspan="3"></th>
->>>>>>> master
 							<th class="text-center"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
 							</th>
 						</tr>
@@ -147,7 +144,6 @@ if (isset($_REQUEST['year'])) {
 					  <tbody>
 					  
 					  <?php 
-<<<<<<< HEAD
 					  if (isset($_REQUEST['sort'])) {
 					  	$order_by = " ORDER BY `" . $_REQUEST['sort'] . "` " . $_REQUEST['dir'] . "";
 					  }
@@ -172,8 +168,6 @@ if (isset($_REQUEST['year'])) {
 					  }
  					  
 					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE `record_status` =2" . $add_SQL . $order_by;
-=======
->>>>>>> master
 					  // echo $get_mats_SQL;
 					  
 					  $PO_count = 0;
@@ -271,44 +265,41 @@ if (isset($_REQUEST['year'])) {
 					    </td>
 					    <td>
 					    	<a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>">
-					    		<?php 
-					    		// print time with DATE only (remove '00:00:00'
-								$datetime = explode(" ",$PO_created_date); echo $datetime[0];
-					    		?>
+					    		<?php echo date("Y-m-d", strtotime($PO_created_date)); ?>
 					    	</a>
 					    </td>
 					    <td class="text-right">
 					    <!-- COUNT BATCHES -->
 					    <?php 
-					    	// count variants for this material
+					    	// count batches for this PO
                         	$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_ID; 
                         	$count_batches_query = mysqli_query($con, $count_batches_sql);
                         	$count_batches_row = mysqli_fetch_row($count_batches_query);
                         	$total_batches = $count_batches_row[0];
+					    
+					    
+					    
+					    if ($total_batches == 0) { 
+					    	echo '<a href="purchase_order_view.php?id=' . $row_get_POs['ID'] . '" class="text-danger">';
+					    	echo $total_batches;
+					    	echo '</a>';	
+					    }
+					    else { 
+					    	echo '<a href="purchase_order_view.php?id=' . $row_get_POs['ID'] . '">';
+					    	echo $total_batches;
+					    	echo '</a>'; 
+					    }
+					    
 					    ?>
-					    <a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>">
-					    
-					    <?php 
-					    
-					    if ($total_batches == 0) { echo '<span class="text-danger">' . $total_batches . '</span>';}
-					    
-					    else { echo $total_batches; }
-					    
-					    ?>
-					    
-					    </a>
-					    <!-- COUNT BATCHES -->
+					    <!-- END COUNT BATCHES -->
 					    </td>
 						<td class="text-center">
                    			 <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                   			 <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
-<<<<<<< HEAD
                		   	     <a href="purchase_order_edit.php?id=<?php echo $PO_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 							 <a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $PO_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
-=======
                		   	     <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 							 <a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
->>>>>>> master
                			 </td>
 					  </tr>
 					  
