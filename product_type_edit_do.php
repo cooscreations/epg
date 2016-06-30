@@ -28,11 +28,11 @@ $id = $_REQUEST['id'];
 $name_en = $_REQUEST['name_EN'];
 $name_cn = $_REQUEST['name_CN'];
 $product_type_code = $_REQUEST['product_type_code'];
-$status = $_REQUEST['product_type_status'];
+$product_cat_ID = $_REQUEST['product_cat_ID'];
 
 $update_note = "Editing a Product Type in the system.";
 
-$edit_product_type_SQL = "UPDATE `product_type` SET `name_EN` = '".$name_en."', `name_CN` = '".$name_cn."', `product_type_code` = '".$product_type_code."', `status` = '".$status."' WHERE `ID` = '".$id."' ";
+$edit_product_type_SQL = "UPDATE `product_type` SET `name_EN` = '".$name_en."', `name_CN` = '".$name_cn."', `product_type_code` = '".$product_type_code."', `product_cat_ID` = '".$product_cat_ID."' WHERE `ID` = '".$id."' ";
 
 
 // echo $edit_supplier_SQL;
