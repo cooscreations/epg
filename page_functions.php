@@ -876,6 +876,18 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								
 								
 								<?php } ?>
+									<!--  Duplicates -->
+								<?php if ($_REQUEST['error'] == 'duplicate') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-exclamation fa-stack-1x"></i>
+								</span>
+								
+								<h4><?php echo $_REQUEST['field']?> already exists in the system.</h4>
+								
+								
+								<?php } ?>
 							</div>
 						<?php
 						}
@@ -967,18 +979,6 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 					$lenb=count($b);
 					for($i=0;$i<$lenp;$i++){
 						for($j=0;$j<$lenb;$j++){
-							if($passw[$i]==$b[$j]){
-								$c=str_replace($b[$j],'',$c);
-								if(!preg_match('/'.$b[$j].'/',$s)){
-									$s.=$b[$j];
-								}
-							}
-						};
-					};
-					return $c.''.$s;
-				};
-
-?>
 							if($passw[$i]==$b[$j]){
 								$c=str_replace($b[$j],'',$c);
 								if(!preg_match('/'.$b[$j].'/',$s)){

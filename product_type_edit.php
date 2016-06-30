@@ -43,7 +43,7 @@ else {
 		$product_type_name_EN = $row_get_product_type['name_EN'];
 		$product_type_name_CN = $row_get_product_type['name_CN'];
 		$product_type_description = $row_get_product_type['description'];
-		$product_type_status = $row_get_product_type['status'];
+		$product_cat_ID = $row_get_product_type['product_cat_ID'];
 	}
 	
 // pull the header and template stuff:
@@ -127,13 +127,31 @@ pagehead($page_id);
 									</div>
 									
 									<div class="form-group">
-										<label class="col-md-3 control-label">Name:</label>
+										<label class="col-md-3 control-label">Product Category Code:</label>
 										<div class="col-md-5">
-											<input type="text" class="form-control" id="inputDefault" name="product_type_status"  value="<?php echo $product_type_status; ?>"/>
+											<select data-plugin-selectTwo class="form-control populate" name="product_cat_ID">
+											<?php 
+											$get_product_categories_SQL = "SELECT * FROM `product_categories` ORDER BY `cat_code` ASC";
+												
+											$result_get_product_categories = mysqli_query($con,$get_product_categories_SQL);
+											// while loop
+											while($row_get_product_categories = mysqli_fetch_array($result_get_product_categories)) {
+											
+												$list_product_category_id = $row_get_product_categories['ID'];
+												$list_product_category_code = $row_get_product_categories['cat_code'];
+												
+											?>
+											
+											<option value="<?php echo $list_product_category_id; ?>"<?php if ($product_cat_ID == $list_product_category_id) { ?> selected=""<?php } ?>><?php echo $list_product_category_code; ?></option>
+											
+											<?php
+											} // END WHILE LOOP
+											
+											?>
+											</select>
 										</div>
-										
 										<div class="col-md-1">
-											&nbsp;
+											<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
 										</div>
 									</div>
 					 

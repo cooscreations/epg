@@ -79,12 +79,12 @@ pagehead ( $page_id );
 				<th>Code</th>
 				<th>Name</th>
 				<th>名字</th>
-				<th>Status</th>
+				<th>Product Category Code</th>
 				<th class="text-center">Actions</th>
 			</tr>
 						  
 						  <?php
-								$get_product_types_SQL = "SELECT * FROM  `product_type` ORDER BY  `product_type`.`product_type_code` ASC";
+								$get_product_types_SQL = "SELECT * FROM  `product_type` where `record_status` = 2 ORDER BY  `product_type`.`product_type_code` ASC";
 								
 								$product_type_count = 0;
 								
@@ -92,13 +92,19 @@ pagehead ( $page_id );
 								/* Product Type Details */
 								while ( $row_get_product_types = mysqli_fetch_array ( $result_get_product_types ) ) {
 								
-									?>
+									/* Product Category  */
+									$get_product_category_SQL = "SELECT * FROM  `product_categories` WHERE  `product_categories`.`ID` = " . $row_get_product_types['product_cat_ID'];
+									$result_get_product_category = mysqli_query ( $con, $get_product_category_SQL );
+									$row_get_product_category = mysqli_fetch_array ( $result_get_product_category );
+									$product_category_code = $row_get_product_category['cat_code'];
+									
+								?>
 						  
 			<tr>
 				<td><?php echo $row_get_product_types['product_type_code']; ?></td>
 				<td><?php echo $row_get_product_types['name_EN']; ?></td>
 				<td><?php echo $row_get_product_types['name_CN']; ?></td>
-				<td><?php echo $row_get_product_types['status']; ?></td>
+				<td><?php echo $product_category_code; ?></td>
 				<td class="text-center">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
