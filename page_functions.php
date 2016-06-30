@@ -575,10 +575,28 @@
 			  <div class="row">
 				<span class="btn btn-danger">Page not found in the database. Please contact the system administrator.</span>
 			  </div>
-			</section>
-			
-			';
+			</section>';
 		}
+		
+		
+		/* ***************************************************************************** */
+		/* ******************************* FEEDBACK FORM ******************************* */
+		/* ***************************************************************************** */
+		
+		?>
+		<div class="rotate bootstro" style="position: fixed; right: -30px; top: 50%; z-index: 9999; margin-top: -100px;"
+                                    data-bootstro-title="feedback!" 
+                                    data-bootstro-content='You can click this on any page to send us feedback about your experience.<br /><br />We will also log the page you are on'
+                                    data-bootstro-placement='left'
+                                    data-bootstro-width='400px'
+                                     data-bootstro-step='7'
+                                     data-boostro-html='true'><a class="btn btn-warning simple-ajax-modal" href="info_pop.php?id=feedback&referrer=<?php echo $_SERVER['HTTP_REFERER']; ?>&ref_page=<?php echo $page_filename; ?>&page_id=<?php echo $page_id; ?>">Feedback / 反馈</a></div>
+	<?php 
+	
+	
+		/* ***************************************************************************** */
+		/* ***************************** END FEEDBACK FORM ***************************** */
+		/* ***************************************************************************** */
 	
 	
 	}
