@@ -429,7 +429,14 @@ pagehead($page_id);
 					    <td><?php if ($amount_in > 0) { echo $amount_in; } ?></td>
 					    <td><?php if ($amount_out > 0) { echo $amount_out; } ?></td>
 					    <td><?php echo $total_now; ?></td>
-					    <td><span class="button btn-xs btn-<?php echo $mvmnt_status_color; ?>"><i class="fa <?php echo $mvmnt_status_icon; ?>"></i> <?php echo $mvmnt_status_name_EN; ?> / <?php echo $mvmnt_status_name_CN; ?></span></td>
+					    <td>
+					    <?php if ($amount_in > 0) { 
+					    ?>
+					    	<span class="button btn-xs btn-<?php echo $mvmnt_status_color; ?>"><i class="fa <?php echo $mvmnt_status_icon; ?>"></i> <?php echo $mvmnt_status_name_EN; ?> / <?php echo $mvmnt_status_name_CN; ?></span>
+					    <?php } 
+					    else { ?>&nbsp;<?php }
+					    ?>
+					    </td>
 					    <td><a href="user_view.php?id=<?php echo $movement_user_ID; ?>"><?php echo $mvmnt_user_first_name; ?> <?php echo $mvmnt_user_last_name; if (($mvmnt_user_name_CN != '') && ($mvmnt_user_name_CN != '中文名')) { ?> / <?php echo $mvmnt_user_name_CN; } ?></a></td>
 					    <td><?php echo $movement_remarks; ?></td>
 					  </tr>

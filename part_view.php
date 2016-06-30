@@ -172,6 +172,16 @@ pagehead($page_id);
 					
 					
 					<div class="clearfix">&nbsp;</div>
+					<div class="row">
+						<div class="col-md-12">
+						<!-- SHOW PART POSITION WITHIN PRODUCT TREE HERE: -->
+						
+						<!-- END PART POSITION WITHIN TREE -->
+						</div>
+					</div>
+					
+					
+					<div class="clearfix">&nbsp;</div>
 					
 					
 					
@@ -313,6 +323,7 @@ pagehead($page_id);
 									
 									<h6 class="text-muted">About</h6>
 									<ul>
+									  <li><strong>Type:</strong> <?php echo $part_type_EN; if (($part_type_CN!='')&&($part_type_CN!='中文名')) { echo " / " . $part_type_CN; } ?></li>
 									  <li><strong>Release Date:</strong> <?php echo $rev_body_date; ?></li>
 									  <li><strong>Released By:</strong> <a href="user_view.php?id=<?php echo $rev_body_user; ?>"><?php echo $rev_user_first_name . " " . $rev_user_last_name; if (($rev_user_name_CN != '')&&($rev_user_name_CN != '中文名')) { echo " / " . $rev_user_name_CN; } ?></a></li>
 									</ul>
@@ -381,6 +392,116 @@ pagehead($page_id);
 								  </div>
 								</div>
 							</section>
+							
+							<?php 
+							
+							
+		/* ***************  GET SUPPLIER INFO ************************** */
+		
+		// now get the record info:
+		$get_sups_SQL = "SELECT * FROM `suppliers` WHERE `ID` = " . $PO_record_supplier_ID;
+		// echo $get_sups_SQL;
+
+		$result_get_sups = mysqli_query($con,$get_sups_SQL);
+
+		// while loop
+		while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
+			$sup_ID = $row_get_sup['ID'];
+			$sup_en = $row_get_sup['name_EN'];
+			$sup_cn = $row_get_sup['name_CN'];
+			$sup_web = $row_get_sup['website'];
+			$sup_internal_ID = $row_get_sup['epg_supplier_ID'];
+			$sup_status = $row_get_sup['record_status'];
+			$sup_part_classification = $row_get_sup['part_classification']; // look up
+			$sup_item_supplied = $row_get_sup['items_supplied'];
+			$sup_part_type_ID = $row_get_sup['part_type_ID']; // look up
+			$sup_certs = $row_get_sup['certifications'];
+			$sup_cert_exp_date = $row_get_sup['certification_expiry_date'];
+			$sup_evaluation_date = $row_get_sup['evaluation_date'];
+			$sup_address_EN = $row_get_sup['address_EN'];
+			$sup_address_CN = $row_get_sup['address_CN'];
+			$sup_country_ID = $row_get_sup['country_ID']; // look up
+			$sup_contact_person = $row_get_sup['contact_person'];
+			$sup_mobile_phone = $row_get_sup['mobile_phone'];
+			$sup_telephone = $row_get_sup['telephone'];
+			$sup_fax = $row_get_sup['fax'];
+			$sup_email_1 = $row_get_sup['email_1'];
+			$sup_email_2 = $row_get_sup['email_2'];
+	
+					// VENDOR CLASSIFICATION BY STATUS:
+						
+					$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
+					// echo $get_vendor_status_SQL;
+	
+					$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
+					// while loop
+					while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
+						$sup_status_ID = $row_get_sup_status['ID'];
+						$sup_status_name_EN = $row_get_sup_status['name_EN'];
+						$sup_status_name_CN = $row_get_sup_status['name_CN'];
+						$sup_status_level = $row_get_sup_status['status_level'];
+						$sup_status_description = $row_get_sup_status['status_description'];
+						$sup_status_color_code = $row_get_sup_status['color_code'];
+						$sup_status_icon = $row_get_sup_status['icon'];
+					}
+	
+	
+	
+					// GET PART CLASSIFICATION:
+					$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $sup_part_classification . "'";
+					// echo $get_part_class_SQL;
+	
+					$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+					// while loop
+					while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+						$part_class_EN = $row_get_part_class['name_EN'];
+						$part_class_CN = $row_get_part_class['name_CN'];
+						$part_class_description = $row_get_part_class['description'];
+						$part_class_color = $row_get_part_class['color'];
+					}
+					
+					// NOW DISPLAY THE VENDOR DETAILS!
+					
+					?>
+					
+
+
+							<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+
+									<h2 class="panel-title">
+										<span class="va-middle">Supplier</span>
+									</h2>
+								</header>
+								<div class="panel-body">
+									<div class="content">
+										<ul>
+											<li>
+												<strong>Name:</strong> 
+												<a href="supplier_view.php?id=<?php echo $sup_ID; ?>" title="Click to view this vendor profile">
+													<?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')){ echo " / " . $sup_cn; } ?>
+												</a>
+											</li>
+										</ul>
+									</div>
+								  <div class="panel-footer">
+									<div class="text-right">
+											<a class="text-uppercase text-muted" href="#">(View All)</a>
+										</div>
+								  </div>
+								</div>
+							</section>
+					<?php
+	
+		} // end get record WHILE loop
+		
+		/* *************** END GET SUPPLIER INFO *********************** */
+							
+							?>
 							
 							<section class="panel">
 								<header class="panel-heading">
@@ -598,7 +719,11 @@ pagehead($page_id);
 					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
 					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
 					    <td><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
-					    <td><?php echo $PO_created_date; ?></td>
+					    <td><?php 
+					    
+					    echo date("Y-m-d", strtotime($PO_created_date));
+					    
+					    ?></td>
 					  </tr>
 					  <?php 
 					  
