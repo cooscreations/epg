@@ -59,15 +59,7 @@
 	
 	?>
 	<!doctype html>
-	
-	<!--
-	
-	<html class="fixed js flexbox flexboxlegacy no-touch csstransforms csstransforms3d no-overflowscrolling no-mobile-device custom-scroll sidebar-left-collapsed">
-	
-	-->
-	
-	<html class="fixed sidebar-left-collapsed">
-	
+<html class="fixed sidebar-left-collapsed">
 	<head>
 	
 		
@@ -77,21 +69,31 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-		<title>EPG Connect - <?php 
-		// get the page name from our result set now ^_^
-		echo $page_name_EN;
+		<title>EPG Connect <?php 
 		
-		if (($page_name_CN!='')&&($page_name_CN!='中文名')) {
-			echo " / " . $page_name_CN;
-		} ?></title>
-		<meta name="keywords" content="EPG Connect, <?php 
-		// get the page name from our result set now ^_^
-		echo $page_name_EN;
-		
-		if (($page_name_CN!='')&&($page_name_CN!='中文名')) {
-			echo ", " . $page_name_CN;
-		} ?>" />
-		<meta name="description" content="A system to connect EPG data, people and systems. <?php if ($page_og_desc!='') { ?>On this page: <?php echo $page_og_desc; } ?>">
+		if ($page_id == 1) { ?> - Welcome<? }
+		else if ($page_id == 2) { ?> - Logs<? } 
+		else if ($page_id == 3) { ?> - Products<? } 
+		else if ($page_id == 4) { ?> - Product Profile<? } 
+		else if ($page_id == 5) { ?> - Users<? } 
+		else if ($page_id == 6) { ?> - Materials<? }  
+		else if ($page_id == 7) { ?> - Suppliers<? }  
+		else if ($page_id == 8) { ?> - Parts<? }  
+		else if ($page_id == 9) { ?> - Purchase Orders<? } 
+		else if ($page_id == 10) { ?> - Purchase Order Record<? } 
+		else if ($page_id == 11) { ?> - Batch Records<? } 
+		else if ($page_id == 12) { ?> - Record Part Quantity Change<? }
+		else if ($page_id == 13) { ?> - Create New Batch Record<? }
+		else if ($page_id == 14) { ?> - Batch Log<? }
+		else if ($page_id == 15) { ?> - Warehouse Stock Log<? }
+		else if ($page_id == 16) { ?> - Part Revision List<? }
+		else if ($page_id == 17) { ?> - Add Part Revision Record<? }
+		else if ($page_id == 18) { ?> - Part Profile<? }
+		else if ($page_id == 19) { ?> - Log In Page<? }
+		else if ($page_id == 20) { ?> - Material Variants<? }
+		else {?> - (No Page Name Set)<?php } ?></title>
+		<meta name="keywords" content="EPG Connect" />
+		<meta name="description" content="A system to connect EPG data, people and systems">
 		<meta name="author" content="MarkClulow.com">
 
 		<!-- Mobile Metas -->
@@ -163,9 +165,9 @@
 				<!-- start: search & user box -->
 				<div class="header-right">
 			
-					<form action="search.php" class="search nav-form">
+					<form action="pages-search-results.html" class="search nav-form">
 						<div class="input-group input-search">
-							<input type="text" class="form-control" name="query" id="query" placeholder="Search...">
+							<input type="text" class="form-control" name="q" id="q" placeholder="COMING SOON...">
 							<span class="input-group-btn">
 								<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
 							</span>
@@ -566,14 +568,7 @@
 	<?
 	
 		if ($pages_found == 0) {
-			echo '
-			<section role="main" class="content-body">
-			  <div class="row">
-				<span class="btn btn-danger">Page not found in the database. Please contact the system administrator.</span>
-			  </div>
-			</section>
-			
-			';
+			echo '<span class="btn btn-danger">Page not found in the database. Please contact the system administrator.</span>';
 		}
 	
 	
@@ -703,11 +698,6 @@
 			<script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 			<script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
 			<script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
-			
-			<!-- Specific Page Vendor (LIGHTBOX) -->
-			<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
-			<!-- Examples (LIGHTBOX) -->
-			<script src="assets/javascripts/ui-elements/examples.lightbox.js"></script>
 		
 			<!-- Specific Page Vendor - PROFILE -->
 			<script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
@@ -868,6 +858,18 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								
 								
 								<?php } ?>
+								<!--  Duplicates -->
+								<?php if ($_REQUEST['error'] == 'duplicate') { ?>
+								
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-exclamation fa-stack-1x"></i>
+								</span>
+								
+								<h4><?php echo $_REQUEST['field']?> already exists in the system.</h4>
+								
+								
+								<?php } ?>
 							</div>
 						<?php
 						}
@@ -959,18 +961,6 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 					$lenb=count($b);
 					for($i=0;$i<$lenp;$i++){
 						for($j=0;$j<$lenb;$j++){
-							if($passw[$i]==$b[$j]){
-								$c=str_replace($b[$j],'',$c);
-								if(!preg_match('/'.$b[$j].'/',$s)){
-									$s.=$b[$j];
-								}
-							}
-						};
-					};
-					return $c.''.$s;
-				};
-
-?>
 							if($passw[$i]==$b[$j]){
 								$c=str_replace($b[$j],'',$c);
 								if(!preg_match('/'.$b[$j].'/',$s)){
