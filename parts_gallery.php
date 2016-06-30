@@ -30,8 +30,26 @@ pagehead($page_id); ?>
 
 <!-- START MAIN PAGE BODY : -->
 
+				<section role="main" class="content-body">
+					<header class="page-header">
+						<h2>Parts Gallery</h2>
+					
+						<div class="right-wrapper pull-right">
+							<ol class="breadcrumbs">
+								<li>
+									<a href="index.php">
+										<i class="fa fa-home"></i>
+									</a>
+								</li>
+								<li><a href="parts.php">All Parts</a></li>
+								<li><span>Part Gallery</span></li>
+							</ol>
+					
+							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+						</div>
+					</header>
 
-<!-- start: page -->
+					<!-- start: page -->
 					<section class="content-with-menu content-with-menu-has-toolbar media-gallery">
 						<div class="content-with-menu-container">
 							<div class="inner-menu-toggle">
@@ -67,7 +85,7 @@ pagehead($page_id); ?>
 													<!-- START LOOP RESULT OUTPUT OF product_categories HERE! -->
 													<h6 class="title pull-left mt-xs">Insujet</h6>
 													<div class="pull-right">
-														<a href="product_cat.php?id=1" class="btn btn-info btn-sm btn-widget-act"><i class="fa fa-info-circle">Info</a></a>
+														<a href="product_cat.php?id=1" class="btn btn-info btn-sm btn-widget-act"><i class="fa fa-info-circle"></i> Info</a>
 													</div>
 												</div>
 												<div class="widget-content">
@@ -129,6 +147,69 @@ pagehead($page_id); ?>
 											</div>
 							
 											<hr class="separator" />
+											
+											
+											<!-- START FILTER DATA -->
+											
+											<div class="sidebar-widget m-none">
+												<div class="widget-header">
+													<h6 class="title">Gallery Navigation</h6>
+													<span class="widget-toggle">+</span>
+												</div>
+												<div class="widget-content">
+											
+											
+											<ul class="mg-tags-primary">
+												<li>
+													<label>Filter by Type:</label>
+												</li>
+												
+												
+												
+												
+													<li class="active">
+														<a data-option-value="*" href="#all">All</a>
+													</li>
+												
+												
+												
+												<?php 
+												
+												
+												$li = 0;
+												
+												$list_part_types_SQL = "SELECT * FROM  `part_type` WHERE `record_status` = 2";
+												// echo $get_part_type_SQL;
+	
+												$result_list_part_types = mysqli_query($con,$list_part_types_SQL);
+												// while loop
+												while($row_list_part_types = mysqli_fetch_array($result_list_part_types)) {
+													$list_part_type_ID = $row_list_part_types['ID'];
+													$list_part_type_EN = $row_list_part_types['name_EN'];
+													$list_part_type_CN = $row_list_part_types['name_CN'];
+													
+													?>
+													<li>
+														<a data-option-value="type_<?php echo $list_part_type_ID; ?>" href="#type_<?php echo $list_part_type_ID; ?>">
+															<?php echo $list_part_type_EN; if (($list_part_type_CN!='')&&($list_part_type_CN!='中文名')) { ?> / <?php echo $list_part_type_CN; } ?>
+														</a>
+													</li>
+													<?php	
+													
+												} // END WHILE LOOP
+												?>
+											</ul>
+											
+											</div>
+											</div>
+										
+											<!-- END FILTER DATA -->
+										
+											<hr class="separator" />
+											
+											
+											
+											
 							
 											<div class="sidebar-widget m-none">
 												<div class="widget-header">
@@ -164,6 +245,8 @@ pagehead($page_id); ?>
 										<li>
 											<a href="#"><i class="fa fa-trash-o"></i> Delete</a>
 										</li>
+										<li class="right" data-sort-source data-sort-id="media-gallery"><i class="fa fa-smile-o"></i></li>
+										<!-- 
 										<li class="right" data-sort-source data-sort-id="media-gallery">
 											<ul class="nav nav-pills nav-pills-primary">
 												<li>
@@ -206,6 +289,7 @@ pagehead($page_id); ?>
 												?>
 											</ul>
 										</li>
+										-->
 									</ul>
 								</div>
 								<div class="row mg-files" data-sort-destination data-sort-id="media-gallery">
@@ -383,13 +467,17 @@ pagehead($page_id); ?>
 									</div>
 									<!-- FINISH ITEM PRINT -->
 									
-									
+						<?php 
+						} // END GET RECORD WHILE LOOP! 
+						?>			
 									
 									
 								</div>
 							</div>
-						</div>
-					</section>
+					</div>
+							
+					<!-- end: page -->
+				</section>
 				
 <!-- : END MAIN PAGE BODY -->
 

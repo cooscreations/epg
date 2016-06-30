@@ -23,7 +23,7 @@ if (!isset($_SESSION['username'])) {
 $page_id = 31;
 
 if (isset($_REQUEST['id'])) { 
-	echo "id=".$_REQUEST['id'];
+	// echo "id=".$_REQUEST['id'];
 	$record_id = $_REQUEST['id']; 
 }
 else { // no id = nothing to see here!	
@@ -55,7 +55,6 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	$user_twitter = $row_get_user['twitter_profile'];	
 	$user_wechat = $row_get_user['wechat_profile'];	
 	$user_skype = $row_get_user['skype_profile'];	
-	$user_mobile_number = $row_get_user['mobile_number'];
 	
 } // end get user info WHILE loop
 
@@ -114,7 +113,12 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 								$j_user_last_login_date = $row_get_j_users['last_login_date'];	
 										
 							   ?>
-                <option value="user_view.php?id=<?php echo $j_user_ID; ?>"><?php echo $j_user_fn; echo $j_user_mn; echo $j_user_ln;?> <?php if (($j_user_name_cn != '')&&($j_user_name_cn != '???')) { ?> / <?php echo $j_user_name_cn; } ?></option>
+                <option value="user_view.php?id=<?php echo $j_user_ID; ?>">
+                	<?php echo $j_user_fn . " "; 
+                	if ($j_user_mn!='') {
+                		echo $j_user_mn . " "; 
+                	}
+                	echo $j_user_ln . " ";?> <?php if (($j_user_name_cn != '')&&($j_user_name_cn != '中文名')) { echo " / " . $j_user_name_cn; } ?></option>
                 <?php 
 							  } // end get user list 
 							  ?>
@@ -203,11 +207,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                         </tr>
                         <tr>
                             <th>E-mail:</th>
-                            <td>
-                              <a href="mailto:<?php echo $user_email; ?>">
-                            	<?php echo $user_email; ?>
-                        	  </a>
-                            </td>
+                            <td><?php echo $user_email; ?></td>
                         </tr>
                         <tr>
                             <th>Level:</th>
@@ -229,12 +229,19 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                             ?></td>
                         </tr>
                         <tr>
-                            <th>Mobile Number:</th>
-                            <td>
-								<a hred="tel:<?php echo $user_mobile_number; ?>"><?php 
-									echo $user_mobile_number;
-								?></a>
-                            </td>
+                          <th># Updates This Year</th>
+                          <td>
+                          		<?php 
+								// count variants for this purchase order
+								$count_updates_sql = "SELECT COUNT( ID ) FROM  `update_log` WHERE  `user_ID` = " . $record_id;
+								$count_updates_query = mysqli_query($con, $count_updates_sql);
+								$count_updates_row = mysqli_fetch_row($count_updates_query);
+								$total_updates = $count_updates_row[0];
+                          		echo $total_updates;
+                          		?>
+                          		
+                          		 <a href="update_log.php?user_id=1">(View All)</a>
+                          </td>
                         </tr>
                     </table>
                 </div>

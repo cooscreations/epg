@@ -94,8 +94,8 @@ pagehead($page_id); ?>
                             <!-- / PART TYPE JUMPER -->
 						</div>
 					
-						<div class="row">
-					 		<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
+						<div class="col-md-1">
+					 		<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success text-center"><i class="fa fa-plus-square"></i></a>
 					 	</div>
 					</div>
 					
@@ -155,27 +155,27 @@ pagehead($page_id); ?>
 						$part_part_assy_ID = $row_get_parts['part_assy_ID'];
 						$part_record_status = $row_get_parts['record_status'];
 					  	
-					  	$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $part_type_ID . "'";
-					  	// echo $get_part_type_SQL;
+								$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $part_type_ID . "'";
+								// echo $get_part_type_SQL;
 	
-					  	$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
-					  	// while loop
-					  	while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
-					  		$part_type_EN = $row_get_part_type['name_EN'];
-					  		$part_type_CN = $row_get_part_type['name_CN'];
-					  	}
-					  	
-					  	// GET PART CLASSIFICATION:
-					  	
-					  	$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $part_classification_ID . "'";
-					  	// echo $get_part_class_SQL;
+								$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
+								// while loop
+								while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
+									$part_type_EN = $row_get_part_type['name_EN'];
+									$part_type_CN = $row_get_part_type['name_CN'];
+								}
+						
+								// GET PART CLASSIFICATION:
+						
+								$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $part_classification_ID . "'";
+								// echo $get_part_class_SQL;
 	
-					  	$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
-					  	// while loop
-					  	while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
-					  		$part_class_EN = $row_get_part_class['name_EN'];
-					  		$part_class_CN = $row_get_part_class['name_CN'];
-					  	}
+								$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+								// while loop
+								while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+									$part_class_EN = $row_get_part_class['name_EN'];
+									$part_class_CN = $row_get_part_class['name_CN'];
+								}
 					  	
 					  	
 								
@@ -233,13 +233,78 @@ pagehead($page_id); ?>
 									}
 									
 									// echo "<h1>Revs Found: " . $num_rev_photos_found . "</h1>";
+									
+									// now get the supplier info:
+									$get_sups_SQL = "SELECT * FROM `suppliers` WHERE `ID` = " . $part_default_supplier_ID;
+																										 // echo $get_sups_SQL;
+
+									$result_get_sups = mysqli_query($con,$get_sups_SQL);
+
+									// while loop
+									while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
+										$sup_ID = $row_get_sup['ID'];
+										$sup_en = $row_get_sup['name_EN'];
+										$sup_cn = $row_get_sup['name_CN'];
+										$sup_web = $row_get_sup['website'];
+										$sup_internal_ID = $row_get_sup['epg_supplier_ID'];
+										$sup_status = $row_get_sup['record_status'];
+										$sup_part_classification = $row_get_sup['part_classification']; // look up
+										$sup_item_supplied = $row_get_sup['items_supplied'];
+										$sup_part_type_ID = $row_get_sup['part_type_ID']; // look up
+										$sup_certs = $row_get_sup['certifications'];
+										$sup_cert_exp_date = $row_get_sup['certification_expiry_date'];
+										$sup_evaluation_date = $row_get_sup['evaluation_date'];
+										$sup_address_EN = $row_get_sup['address_EN'];
+										$sup_address_CN = $row_get_sup['address_CN'];
+										$sup_country_ID = $row_get_sup['country_ID']; // look up
+										$sup_contact_person = $row_get_sup['contact_person'];
+										$sup_mobile_phone = $row_get_sup['mobile_phone'];
+										$sup_telephone = $row_get_sup['telephone'];
+										$sup_fax = $row_get_sup['fax'];
+										$sup_email_1 = $row_get_sup['email_1'];
+										$sup_email_2 = $row_get_sup['email_2'];
+	
+												// VENDOR CLASSIFICATION BY STATUS:
+						
+												$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
+												// echo $get_vendor_status_SQL;
+	
+												$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
+												// while loop
+												while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
+													$sup_status_ID = $row_get_sup_status['ID'];
+													$sup_status_name_EN = $row_get_sup_status['name_EN'];
+													$sup_status_name_CN = $row_get_sup_status['name_CN'];
+													$sup_status_level = $row_get_sup_status['status_level'];
+													$sup_status_description = $row_get_sup_status['status_description'];
+													$sup_status_color_code = $row_get_sup_status['color_code'];
+													$sup_status_icon = $row_get_sup_status['icon'];
+												}
+	
+	
+	
+												// GET PART CLASSIFICATION:
+												$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $sup_part_classification . "'";
+												// echo $get_part_class_SQL;
+	
+												$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+												// while loop
+												while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+													$part_class_EN = $row_get_part_class['name_EN'];
+													$part_class_CN = $row_get_part_class['name_CN'];
+													$part_class_description = $row_get_part_class['description'];
+													$part_class_color = $row_get_part_class['color'];
+												}
+	
+									} // end get supplier info WHILE loop
+
 					  
 					  ?>
 					  
 					  <tr>
 					    <td class="text-center">
 					    	
-					    	<a class="popup-with-form btn btn-default" href="#product_box_<?php echo $part_ID; ?>">
+					    	<a class="mt-xs mb-xs mr-xs popup-with-zoom-anim" href="#small-dialog_<?php echo $part_ID; ?>">
 					    	
 					    	<img src="<?php 
 					    		echo $rev_photo_location; 
@@ -249,81 +314,83 @@ pagehead($page_id); ?>
 					    		echo $row_get_parts['name_EN']; 
 					    		
 					    		if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { 
-					    			?> / <?php echo $row_get_parts['name_CN']; 
+					    			echo " / " . $row_get_parts['name_CN']; 
 					    		} 
-					    	?>" style="width:100px;">
+					    	?>" style="width:100px;"></a>
 					    	
 					    	
-					    	
-					    	<!-- START MODAL POP-UP FORM -->
-					    	
+					     <!-- START MODAL POP-UP -->
 					    	
 					    	
-					    	<td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
-					    <td><?php echo $rev_number; ?></td>
-					    <td><a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
-					    <?php 
-					    if ($part_classification_ID == 1) { ?>
-					    
-							<td class="danger">
-						
-							<i class="fa fa-exclamation-triangle fa-2x"></i><?php }
-							
-					    else if ($part_classification_ID == 3) { ?>
-					    
-							<td class="" style="background: #666666; color: white;">
-						
-							<i class="fa fa-times-circle fa-2x"></i><?php }
-					    else { ?>
-					    
-							<td class="primary">
-						
-							<i class="fa fa-check-square fa-2x"></i><?php }
-					    
-					    // now write the classification in EN and CN:
-					    echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } 
-					    
-					    ?></td>
-					  </tr>
-					    	
-					    	
-					    	
-					    	
-					    	
-									<form id="product_box_<?php echo $part_ID; ?>" class="white-popup-block mfp-hide form-horizontal">
+									<div id="small-dialog_<?php echo $part_ID; ?>" class="dialog dialog-sm zoom-anim-dialog mfp-hide">
 										<div class="row">
 											<div class="col-sm-12">
-												<h3>Record Overview</h3>
-												<p class="mb-lg">This is a deeper look at this record.</p>
-												<h4><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php 
+												<h3><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php 
 													echo $part_code; 
 												?> - <?php 
 													echo $part_name_EN; 
 												 
 												if (($part_name_CN!='')&&($part_name_CN!='中文名')) { 
-												 	echo $part_name_CN; 
+												 	echo " / " . $part_name_CN; 
 												} 
-												?></a></h4>
+												?></a></h3>
+												<p class="mb-lg">This is a deeper look at this record.</p>
+												<img src="<?php 
+													echo $rev_photo_location; 
+												?>" class="rounded img-responsive btn btn-default text-center" alt="<?php 
+													echo $row_get_parts['part_code']; 
+												?> - <?php 
+													echo $row_get_parts['name_EN']; 
+								
+													if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { 
+														echo " / " . $row_get_parts['name_CN']; 
+													} 
+												?>" style="width:300px;">
+												
+												<hr noshade="noshade" />
+												
+												<h4>
+													<a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a>
+												</h4>
+												
+												<hr noshade="noshade" />
 												
 												<ul>
 												  <li><strong>Classification:</strong> <?php 
-					    if ($part_classification_ID == 1) { ?>
-						
-							<i class="fa fa-exclamation-triangle fa-2x text-danger"></i><?php }
+													if ($part_classification_ID == 1) { ?>
+													<span class="btn btn-danger">
+														<i class="fa fa-exclamation-triangle fa-2x"></i>
+													<?php }
 							
-					    else if ($part_classification_ID == 3) { ?>
+													else if ($part_classification_ID == 3) { ?>
 						
-							<i class="fa fa-times-circle fa-2x text-info"></i><?php }
-					    else { ?>
+													<span class="btn btn-info">
+														<i class="fa fa-times-circle fa-2x"></i>
+													<?php }
+													else { ?>
 						
-							<i class="fa fa-check-square fa-2x text-success"></i><?php }
+													<span class="btn btn-success">
+														<i class="fa fa-check-square fa-2x"></i>
+													<?php }
 					   
-					   // NOW PRINT THE WORDING:
-					   		echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?>
-					    
-					    ?></li>
+												   // NOW PRINT THE WORDING:
+														echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; }
+						
+													?>
+													</span>
+													</li>
+													<li>
+														<strong>#1 SUPPLIER:</strong> 
+														<?php echo $sup_en; 
+														if (($sup_cn!='')&&($sup_cn!='中文名')){
+															?> / <?php echo $sup_cn; 
+														}
+														?>
+													</li>
+													<li>
+														<STRONG>LATEST REVISION:</STRONG> 
+														<?php echo $rev_number; ?>
+													</li>
 												</ul>
 												
 											</div>
@@ -333,30 +400,30 @@ pagehead($page_id); ?>
 
 										<div class="row mb-lg">
 											<div class="col-sm-9 col-sm-offset-3">
-												<a href="part_view.php?id=?????" class="btn btn-primary">
+												<a href="part_view.php?id=<?php echo $part_ID; ?>">" class="btn btn-primary">
 													VIEW
 												</a>
 												
 												
-												<a href="part_view.php?id=?????" class="btn btn-warning">
+												<a href="part_view.php?id=<?php echo $part_ID; ?>">" class="btn btn-warning">
 													EDIT
 												</a>
 												
 												
 												
-												<a href="part_view.php?id=?????" class="btn btn-danger">
+												<a href="#delete_option_here" class="btn btn-danger">
 													DELETE
 												</a>
 												
 											</div>
 										</div>
 
-									</form>
+									</div>
 					    	
-					    	<!-- END MODAL POP-UP FORM -->
-					    
-					    
-					    	</a></td>
+					    	<!-- END MODAL POP-UP -->	
+					    	
+					    	
+					    </td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
@@ -385,6 +452,8 @@ pagehead($page_id); ?>
 					    
 					    <?php echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?></td>
 					  </tr>
+					  
+					 
 					  
 					  <?php 
 					  
