@@ -240,7 +240,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                           		echo $total_updates;
                           		?>
                           		
-                          		 <a href="update_log.php?user_id=1">(View All)</a>
+                          		 <a href="update_log.php?user_id=<?php echo $record_id; ?>">(View All)</a>
                           </td>
                         </tr>
                     </table>

@@ -132,6 +132,10 @@
 		<link rel="stylesheet" href="assets/vendor/summernote/summernote-bs3.css" />
 		<link rel="stylesheet" href="assets/vendor/codemirror/lib/codemirror.css" />
 		<link rel="stylesheet" href="assets/vendor/codemirror/theme/monokai.css" />
+		
+		
+		<!-- Specific Page Vendor CSS -->
+		<link rel="stylesheet" href="assets/vendor/pnotify/pnotify.custom.css" />
 
 		<!-- Theme CSS -->
 		<link rel="stylesheet" href="assets/stylesheets/theme.css" />
@@ -729,7 +733,11 @@
 			
 			?>
 			
-			
+			<!-- Specific Page Vendor -->
+		<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
+
+<!-- Examples -->
+		<script src="assets/javascripts/ui-elements/examples.modals.js"></script>
 		
 		<!-- Specific Page Vendor - ADVANCED FORMS -->
 		<script src="assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>

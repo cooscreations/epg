@@ -196,6 +196,15 @@ pagehead($page_id); ?>
 																							
 								}
 								
+								
+								$total_part_revs = 0;	
+								// now check to see how many revisions there are:
+								$count_part_revs_SQL = "SELECT COUNT( ID ) FROM `part_revisions` WHERE  `part_ID` ='" . $part_ID . "'";
+								$count_part_revs_query = mysqli_query($con, $count_part_revs_SQL);
+								$count_part_revs_row = mysqli_fetch_row($count_part_revs_query);
+								// Here we have the total row count
+								$total_part_revs = $count_part_revs_row[0];
+								
 								// now get the part revision photo!
 									
 									$num_rev_photos_found = 0;
@@ -389,7 +398,11 @@ pagehead($page_id); ?>
 													</li>
 													<li>
 														<STRONG>LATEST REVISION:</STRONG> 
-														<?php echo $rev_number; ?>
+														<?php 
+														if ($total_part_revs != 0) { echo $rev_number; }
+														else { ?>
+															<span class="text-danger">0</span>
+														<?php } ?>
 													</li>
 												</ul>
 												
@@ -427,7 +440,11 @@ pagehead($page_id); ?>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
-					    <td><?php echo $rev_number; ?></td>
+					    <td><?php 
+							if ($total_part_revs != 0) { echo $rev_number; }
+							else { ?>
+								<span class="text-danger">0</span>
+							<?php } ?></td>
 					    <td><a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
 					    <?php 
 					    if ($part_classification_ID == 1) { ?>
