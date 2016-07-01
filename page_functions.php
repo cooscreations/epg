@@ -456,28 +456,11 @@
 											</li>
 										</ul>
 									</li>
-									<li class="nav-parent">
-										<a>
+									<li>
+										<a href="parts.php?show=products">
 											<i class="fa fa-eyedropper" aria-hidden="true"></i>
 											<span>Products</span>
 										</a>
-										<ul class="nav nav-children">
-											<li>
-												<a href="products.php">
-													 View All
-												</a>
-											</li>
-											<li>
-												<a href="devices.php">
-													 Devices
-												</a>
-											</li>
-											<li>
-												<a href="consumables.php">
-													 Consumables
-												</a>
-											</li>
-										</ul>
 									</li>
 									<li>
 										<a href="users.php">

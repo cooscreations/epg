@@ -26,14 +26,29 @@ $page_id = 8;
 // pull the header and template stuff:
 pagehead($page_id); ?>
 
+<?php 
+// hide the classificatgion column for product view and assembly-ONLY view					     
+$show_classification_column = 1; // show column by default
+if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_classification_column = 0; }
 
+?>
 
 <!-- START MAIN PAGE BODY : -->
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Parts</h2>
-					
+						<?php 
+						if ($_REQUEST['show'] == 'products') {
+							?>
+							<h2>Products</h2>
+							<?php
+						}
+						else {
+							?>
+							<h2>Parts</h2>
+							<?php 
+						} 
+						?>
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -41,7 +56,18 @@ pagehead($page_id); ?>
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-								<li><span>Parts</span></li>
+								<?php 
+								if ($_REQUEST['show'] == 'products') {
+									?>
+									<li><span>Products</span></li>
+									<?php
+								}
+								else {
+									?>
+									<li><span>Parts</span></li>
+									<?php 
+								} 
+								?>
 							</ol>
 					
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
@@ -72,6 +98,7 @@ pagehead($page_id); ?>
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
                               <option value="#" selected="selected">SELECT PART TYPE / 选择产品零件类型:</option>
                               <option value="parts.php">View All / 看全部</option>
+                              <option value="parts.php?show=products">View Finished Products</option>
                               <?php 	
 										
 							$get_part_types_SQL = "SELECT * FROM  `part_type`";
@@ -105,6 +132,11 @@ pagehead($page_id); ?>
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					
+					<?php 
+					// use this to dynamically set the COLSPAN based on classification showing or not showing.
+					/* if ($show_classification_column == 1) { ?>7<?php } else { ?>6<?php } */
+					?>
+					
 					  <tr>
 					    <th>Photo</th>
 					    <th><a href="parts.php?sort=part_code">Code</a></th>
@@ -112,13 +144,25 @@ pagehead($page_id); ?>
 					    <th><a href="parts.php?sort=name_CN">名字</a></th>
 					    <th>Rev #</th>
 					    <th><a href="parts.php?sort=type_ID">Type</a></th>
-					    <th><a href="parts.php?sort=classification_ID">Classification</a></th>
+					    <?php
+					    
+					    // don't show this column for products or if the user is ONLY viewing assemblies...
+					    if ($show_classification_column == 1) {
+					    	?>
+					    	<th><a href="parts.php?sort=classification_ID">Classification</a></th>
+					    	<?php 
+					    }
+					    
+					    ?>
 					  </tr>
 					  
 					  <?php 
 					  
 					  if (isset($_REQUEST['type_id'])) {
 					  	$WHERE_SQL = " WHERE `type_ID` = '" . $_REQUEST['type_id'] . "'";
+					  }
+					  else if ($_REQUEST['show'] == 'products') { 
+					    $WHERE_SQL = " WHERE `product_type_ID` != 0";
 					  }
 					  else {
 					  	$WHERE_SQL = "";
@@ -150,10 +194,13 @@ pagehead($page_id); ?>
 						$part_description = $row_get_parts['description'];
 						$part_type_ID = $row_get_parts['type_ID'];
 						$part_classification_ID = $row_get_parts['classification_ID'];
-						$part_parent_ID = $row_get_parts['parent_ID'];
+						// $part_parent_ID = $row_get_parts['parent_ID'];
 						$part_default_supplier_ID = $row_get_parts['default_suppler_ID'];
-						$part_part_assy_ID = $row_get_parts['part_assy_ID'];
+						// $part_part_assy_ID = $row_get_parts['part_assy_ID'];
 						$part_record_status = $row_get_parts['record_status'];
+						$part_product_type_ID = $row_get_parts['product_type_ID'];
+						
+						if ($part_classification_ID == 10) { $show_classification_column = 0; } // possibly setting this for a second time, but it's just to make sure - and also so that we don't display this on ANY view in the pop-up window ^_^
 					  	
 								$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $part_type_ID . "'";
 								// echo $get_part_type_SQL;
@@ -236,8 +283,13 @@ pagehead($page_id); ?>
 										$rev_photo_document_remarks = $row_get_part_rev_photo['document_remarks'];
 										$rev_photo_doc_revision = $row_get_part_rev_photo['doc_revision'];
 										
-										// now apply filename
-										$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
+										if ($rev_photo_filename!='') {
+											// now apply filename
+											$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
+										}
+										else {
+											$rev_photo_location = "assets/images/no_image_found.jpg";
+										}
 										
 									}
 									
@@ -365,6 +417,7 @@ pagehead($page_id); ?>
 												<hr noshade="noshade" />
 												
 												<ul>
+												<?php if ($show_classification_column == 1) { ?>
 												  <li><strong>Classification:</strong> <?php 
 													if ($part_classification_ID == 1) { ?>
 													<span class="btn btn-danger">
@@ -388,6 +441,9 @@ pagehead($page_id); ?>
 													?>
 													</span>
 													</li>
+													<?php 
+													} // end of show_classification_column
+													?>
 													<li>
 														<strong>#1 SUPPLIER:</strong> 
 														<?php 
@@ -461,27 +517,30 @@ pagehead($page_id); ?>
 							<?php } ?></td>
 					    <td><a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
 					    <?php 
-					    if ($part_classification_ID == 1) { ?>
 					    
-							<td class="danger">
+					    if ($show_classification_column == 1) { // don't show this column for product view or assembly-only view:
+					    
+								if ($part_classification_ID == 1) { ?>
 						
-							<i class="fa fa-exclamation-triangle fa-2x"></i><?php }
+									<td class="danger">
+						
+									<i class="fa fa-exclamation-triangle fa-2x"></i><?php }
 							
-					    else if ($part_classification_ID == 3) { ?>
-					    
-							<td class="" style="background: #666666; color: white;">
+								else if ($part_classification_ID == 3) { ?>
 						
-							<i class="fa fa-times-circle fa-2x"></i><?php }
-					    else { ?>
-					    
-							<td class="primary">
+									<td class="" style="background: #666666; color: white;">
 						
-							<i class="fa fa-check-square fa-2x"></i><?php }
-					    
-					    
-					    ?>
-					    
-					    <?php echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?></td>
+									<i class="fa fa-times-circle fa-2x"></i><?php }
+								else { ?>
+						
+									<td class="primary">
+						
+									<i class="fa fa-check-square fa-2x"></i><?php 
+								}
+								?>
+						
+								<?php echo $part_class_EN; if (($part_class_CN != '') && ($part_class_CN != '中文名')) { echo ' / ' . $part_class_CN; } ?></td>
+					    <?php } // end of show classification column ?>
 					  </tr>
 					  
 					 
@@ -494,7 +553,7 @@ pagehead($page_id); ?>
 					  ?>
 					  
 					  <tr>
-					    <th colspan="7">TOTAL: <?php echo $part_count; ?></th>
+					    <th colspan="<?php if ($show_classification_column == 1) { ?>7<?php } else { ?>6<?php } ?>">TOTAL: <?php echo $part_count; ?></th>
 					  </tr>
 					  
 					  

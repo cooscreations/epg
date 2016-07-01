@@ -47,6 +47,7 @@ while($row_get_part = mysqli_fetch_array($result_get_part)) {
 	$classification_ID = $row_get_part['classification_ID'];
 	$part_default_suppler_ID = $row_get_part['default_suppler_ID'];
 	$part_record_status = $row_get_part['record_status'];
+	$part_product_type_ID = $row_get_part['product_type_ID'];
 	
 	
 	// GET PART TYPE:
@@ -335,10 +336,18 @@ pagehead($page_id);
 							</section>
 							
 							<ul class="simple-card-list mb-xlg">
+							<?php if ($part_product_type_ID!= 0) {  ?>
+								<li class="warning">
+									<h3>FINAL ASSEMBLY</h3>
+									<p>InsuJet Basic</p>
+								</li>
+							<?php }
+								  else { ?>
 								<li class="<?php echo $part_class_color; ?>">
 									<h3><?php echo $part_class_EN; ?> / <?php echo $part_class_CN; ?></h3>
 									<p><?php echo $part_class_description; ?></p>
 								</li>
+							<?php } ?>
 								<li class="primary">
 									<h3>$<?php echo $rev_body_price_USD; ?> USD</h3>
 									<p>Purchase Target Price</p>

@@ -22,7 +22,7 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$page_id = 99;
+$page_id = 3;
 
 // pull the header and template stuff:
 pagehead ( $page_id );
@@ -34,17 +34,13 @@ pagehead ( $page_id );
 
 <section role="main" class="content-body">
 	<header class="page-header">
-		<h2>Product Types</h2>
+		<h2>Products</h2>
 
 		<div class="right-wrapper pull-right">
 			<ol class="breadcrumbs">
-				<li>
-					<a href="index.php"> <i class="fa fa-home"></i></a>
-				</li>
-				<li>
-					<a href="products.php"> Products</a>
-				</li>
-				<li><span>Product Types</span></li>
+				<li><a href="index.php"> <i class="fa fa-home"></i>
+				</a></li>
+				<li><span>Products</span></li>
 			</ol>
 
 			<a class="sidebar-right-toggle" data-open="sidebar-right"><i
@@ -77,64 +73,62 @@ pagehead ( $page_id );
 
 		<!-- start: page -->
 	<div class="table-responsive">
-		<table class="table table-bordered table-striped table-condensed mb-none">
-		  
-			 <tr>
-				<th class="text-left" colspan="3">
-					<a href="product_type_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
-				</th>
-			</tr>
-			
+		<table
+			class="table table-bordered table-striped table-condensed mb-none">
 			<tr>
-				<th>Code</th>
-				<th>Name / 名字</th>
+				<th>Name</th>
+				<th>名字</th>
+				<th>Description</th>
+				<th>Product Type</th>
 				<th class="text-center">Actions</th>
 			</tr>
 						  
 						  <?php
-								$get_product_types_SQL = "SELECT * FROM  `product_type` where `record_status` = 2 ORDER BY  `product_type`.`product_type_code` ASC";
+								$get_products_SQL = "SELECT * FROM  `products` ORDER BY  `products`.`name_EN` ASC";
 								
-								$product_type_count = 0;
+								$product_count = 0;
 								
-								$result_get_product_types = mysqli_query ( $con, $get_product_types_SQL );
-								/* Product Type Details */
-								while ( $row_get_product_types = mysqli_fetch_array ( $result_get_product_types ) ) {
+								$result_get_products = mysqli_query ( $con, $get_products_SQL );
+								/* Product Details */
+								while ( $row_get_products = mysqli_fetch_array ( $result_get_products ) ) {
+								
+									/* Product Type Details */
+									$get_product_type_SQL = "SELECT * FROM  `product_type` WHERE  `product_type`.`ID` = " . $row_get_products['product_type_ID'];
+									$result_get_product_type = mysqli_query ( $con, $get_product_type_SQL );
+									$row_get_product_type = mysqli_fetch_array ( $result_get_product_type );
+									$product_type_code = $row_get_product_type['product_type_code'];
 									
-								?>
+									?>
 						  
 			<tr>
-				<td>
-				  <a href="product_type_view.php?id=<?php echo $row_get_product_types['ID']; ?>">
-					<?php echo $row_get_product_types['product_type_code']; ?>
-				  </a>
+				<td><a
+					href="product_view.php?id=<?php echo $row_get_products['ID']; ?>"><?php echo $row_get_products['name_EN']; ?></a>
 				</td>
-				<td>
-				  <a href="product_type_view.php?id=<?php echo $row_get_product_types['ID']; ?>">
-					<?php echo $row_get_product_types['name_EN']; if (($row_get_product_types['name_CN']!='')&&($row_get_product_types['name_CN']!='中文名')) { echo " / " . $row_get_product_types['name_CN']; } ?>
-				  </a>
+				<td><a
+					href="product_view.php?id=<?php echo $row_get_products['ID']; ?>"><?php echo $row_get_products['name_CN']; ?></a>
+				</td>
+				<td><?php echo $row_get_products['description']; ?></td>
+				<td><a
+					href="product_type_view.php?id=<?php echo $row_get_products['product_type_ID']; ?>"><?php echo $product_type_code; ?></a>
 				</td>
 				<td class="text-center">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
-                    <a href="product_type_view.php?id=<?php echo $row_get_product_types['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-info"><i class="fa fa-eye"></i></a>
-                    <a href="product_type_edit.php?id=<?php echo $row_get_product_types['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-					<a href="record_delete_do.php?table_name=product_type&src_page=product_types.php&id=<?php echo $row_get_product_types['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+                    <a href="product_edit.php?id=<?php echo $row_get_products['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
+					<a href="record_delete_do.php?table_name=products&src_page=products.php&id=<?php echo $row_get_products['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
 			</tr>
 						  
 						  <?php
 									
-									$product_type_count = $product_type_count + 1;
+									$product_count = $product_count + 1;
 								} // end while loop
 								?>
 						  
 			 <tr>
-				<th class="text-left" colspan="2">
-					<a href="product_type_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
-				</th>
-				<th class="text-right">
-					TOTAL: <?php echo $product_type_count; ?>
-				</th>
+				<th colspan="4">TOTAL: <?php echo $product_count; ?></th>
+				<th class="text-center"><a href="product_add.php"
+					class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
 			</tr>
 
 
