@@ -128,9 +128,7 @@ if (isset($_REQUEST['year'])) {
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
 					 	<tr >
-							<th colspan="4"></th>
-							<th colspan="3"></th>
-							<th class="text-center"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+							<th class="text-left" colspan="5"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
 							</th>
 						</tr>
 						 <tr>
@@ -312,9 +310,10 @@ if (isset($_REQUEST['year'])) {
 					  </tbody>
 					  <tfoot>
 						<tr>
-							<th colspan="4">TOTAL: <?php echo $PO_count; ?></th>
-							<th class="text-center"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+							<th class="text-left" colspan="4">
+								<a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
 							</th>
+							<th>TOTAL: <?php echo $PO_count; ?></th>
 						</tr>
 					  </tfoot>
 					  

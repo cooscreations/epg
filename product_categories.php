@@ -22,7 +22,7 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$page_id = 57;
+$page_id = 60; // in theory we shouldn't need to hard code this anymore...
 
 // pull the header and template stuff:
 pagehead ( $page_id );
@@ -73,11 +73,16 @@ pagehead ( $page_id );
 
 		<!-- start: page -->
 	<div class="table-responsive">
-		<table
-			class="table table-bordered table-striped table-condensed mb-none">
+		<table class="table table-bordered table-striped table-condensed mb-none">
+		  
+			 <tr>
+				<th class="text-left" colspan="3">
+					<a href="product_category_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+				</th>
+			</tr>
+			
 			<tr>
-				<th>Name</th>
-				<th>名字</th>
+				<th>Name / 名字</th>
 				<th>Category Code</th>
 				<th class="text-center">Actions</th>
 			</tr>
@@ -94,12 +99,20 @@ pagehead ( $page_id );
 									?>
 						  
 			<tr>
-				<td><?php echo $row_get_product_categories['name_EN']; ?></td>
-				<td><?php echo $row_get_product_categories['name_CN']; ?></td>
-				<td><?php echo $row_get_product_categories['cat_code']; ?></td>
+				<td>
+				  <a href="product_category_view.php?id=<?php echo $row_get_product_categories['ID']; ?>">
+					<?php echo $row_get_product_categories['name_EN']; if (($row_get_product_categories['name_CN']!='')&&($row_get_product_categories['name_CN']!='中文名')) { echo " / " . $row_get_product_categories['name_CN']; } ?>
+				  </a>
+				</td>
+				<td>
+				  <a href="product_category_view.php?id=<?php echo $row_get_product_categories['ID']; ?>">
+				  	<?php echo $row_get_product_categories['cat_code']; ?>
+				  </a>
+				</td>
 				<td class="text-center">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
+                    <a href="product_category_view.php?id=<?php echo $row_get_product_categories['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-info"><i class="fa fa-eye"></i></a>
                     <a href="product_category_edit.php?id=<?php echo $row_get_product_categories['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 					<a href="record_delete_do.php?table_name=product_categories&src_page=product_categories.php&id=<?php echo $row_get_product_categories['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
@@ -112,9 +125,12 @@ pagehead ( $page_id );
 								?>
 						  
 			 <tr>
-				<th colspan="3">TOTAL: <?php echo $product_categories_count; ?></th>
-				<th class="text-center"><a href="product_category_add.php"
-					class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
+				<th class="text-left" colspan="2">
+					<a href="product_category_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+				</th>
+				<th>
+					TOTAL: <?php echo $product_categories_count; ?>
+				</th>
 			</tr>
 
 
