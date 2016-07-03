@@ -75,6 +75,10 @@ pagehead ( $page_id );
 	<div class="table-responsive">
 		<table
 			class="table table-bordered table-striped table-condensed mb-none">
+			<tr >
+				<th class="text-right" colspan="9"><a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+				</th>
+			</tr>
 			<tr>
 				<th>Part Name</th>
 				<th>Revision Number</th>
@@ -87,7 +91,6 @@ pagehead ( $page_id );
 				
 				<th class="text-center">Actions</th>
 			</tr>
-						  
 						  <?php
 								$get_part_revisions_SQL = "SELECT `part_revisions`.`ID`, `parts`.`name_EN` as `part_name_EN` " .
 															" , `parts`.`ID` as `part_ID` " .
