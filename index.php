@@ -605,6 +605,33 @@ pagehead($page_id); ?>
 					<!-- ------------------------------------- -->
 							<div class="col-sm-3">
 							<!-- RIGHT COL -->
+							
+							<!-- NEW FEATURES -->
+							<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+						
+									<h2 class="panel-title">NEW FEATURES</h2>
+								</header>
+								<div class="panel-body">
+								
+								<ul>
+								  <li><a href="parts.php?show=products" title="COMING SOON">Product Page</a></li>
+								  <li>Feedback Form (see right)</li>
+								  <li><a href="parts.php?show=products" title="COMING SOON">Product Page</a></li>
+								</ul>
+								
+								
+								</div>
+							</section>
+							<!-- END NEW FEATURES -->
+							
+							
+							
+							<!-- ADMIN OPTIONS -->
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -628,6 +655,8 @@ pagehead($page_id); ?>
 								
 								</div>
 							</section>
+							<!-- END ADMIN OPTIONS -->
+							
 							<!-- END OF RIGHT COL -->
 							</div>
 							

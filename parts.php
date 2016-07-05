@@ -200,7 +200,8 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 						$part_record_status = $row_get_parts['record_status'];
 						$part_product_type_ID = $row_get_parts['product_type_ID'];
 						
-						if ($part_classification_ID == 10) { $show_classification_column = 0; } // possibly setting this for a second time, but it's just to make sure - and also so that we don't display this on ANY view in the pop-up window ^_^
+						$show_pop_up_classification_column = 1;
+						if ($part_type_ID == 10) { $show_pop_up_classification_column = 0; } // possibly setting this for a second time, but it's just to make sure - and also so that we don't display this on ANY view in the pop-up window ^_^
 					  	
 								$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $part_type_ID . "'";
 								// echo $get_part_type_SQL;
@@ -417,7 +418,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 												<hr noshade="noshade" />
 												
 												<ul>
-												<?php if ($show_classification_column == 1) { ?>
+												<?php if ($show_pop_up_classification_column == 1) { ?>
 												  <li><strong>Classification:</strong> <?php 
 													if ($part_classification_ID == 1) { ?>
 													<span class="btn btn-danger">
