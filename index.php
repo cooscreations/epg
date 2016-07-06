@@ -79,16 +79,13 @@ pagehead($page_id); ?>
 											<tr>
 												<th class="text-center">Icon</th>
 												<th class="text-center"><a href="index.php?sort=name_EN">Name / 中文名</a></th>
-												<th class="text-center">USER ACTION</th>
-												<?php if ($_SESSION['user_level'] > 79) { ?>
 												<th class="text-center">Menu?</th>
 												<th class="text-center">Privacy</th>
 												<th class="text-center"><a href="index.php?sort=og_type">Type</a></th>
 												<th class="text-center">Min. <br />User Level</th>
 												<th class="text-center">Lookup Table</th>
 												<th class="text-center">Sub <br />Pages</th>
-												<th class="text-center">ADMIN ACTION</th>
-												<?php } ?>
+												<th class="text-center">ACTION</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -101,9 +98,7 @@ pagehead($page_id); ?>
 											$sort_SQL = "order";		
 										}
 					
-					$add_SQL = " WHERE `og_type` = 'list'";
-					
-					$get_pages_SQL = "SELECT * FROM `pages`". $add_SQL ." ORDER BY `" . $sort_SQL . "` ASC";
+					$get_pages_SQL = "SELECT * FROM `pages` ORDER BY `" . $sort_SQL . "` ASC";
 					// echo $get_pages_SQL;
 					  
 					  $page_count = 0;
@@ -193,53 +188,6 @@ pagehead($page_id); ?>
 														<?php echo $page_name_EN; if (($page_name_CN!='')&&($page_name_CN!='中文名')) { echo ' / ' . $page_name_CN; } ?>
 													</a>
 												</td>
-												<td>
-													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-info"><i class="fa fa-list"></i></a>
-													<?php 
-													
-													// NOW FIND THE ADD PAGE IN THE DATABASE
-													$get_add_page_SQL = "SELECT * FROM  `pages` WHERE  `parent_ID` LIKE  '" . $page_ID . "' AND  `og_type` LIKE  'add'";
-													// echo $get_add_page_SQL;
-
-													$result_get_add_page = mysqli_query($con,$get_add_page_SQL);
-													// while loop
-			  
-			  
-													while($row_get_add_page = mysqli_fetch_array($result_get_add_page)) {
-				
-														$add_page_ID = $row_get_add_page['ID'];
-														$add_page_name_EN = $row_get_add_page['name_EN'];
-														$add_page_name_CN = $row_get_add_page['name_CN'];
-														$add_page_parent_ID = $row_get_add_page['parent_ID'];
-														$add_page_dept_ID = $row_get_add_page['dept_ID'];
-														$add_page_main_menu = $row_get_add_page['main_menu'];
-														$add_page_footer_menu = $row_get_add_page['footer_menu'];
-														$add_page_filename = $row_get_add_page['filename'];
-														$add_page_created_by = $row_get_add_page['created_by'];
-														$add_page_date_created = $row_get_add_page['date_created'];
-														$add_page_status = $row_get_add_page['status'];
-														$add_page_privacy = $row_get_add_page['privacy'];
-														$add_page_min_user_level = $row_get_add_page['min_user_level'];
-														$add_page_order = $row_get_add_page['order'];
-														$add_page_icon = $row_get_add_page['icon'];
-														$add_page_og_locale = $row_get_add_page['og_locale'];
-														$add_page_og_type = $row_get_add_page['og_type'];
-														$add_page_og_desc = $row_get_add_page['og_desc'];
-														$add_page_og_section = $row_get_add_page['og_section'];
-														$add_page_side_bar_config = $row_get_add_page['side_bar_config'];
-														$add_page_lookup_table = $row_get_add_page['lookup_table'];
-													
-														?>
-														<a href="<?php echo $add_page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus-square"></i></a>
-														<?php
-									
-													}
-													
-													?>
-												</td>
-												
-												<?php if ($_SESSION['user_level'] > 79) { ?>
-												
 												<td class="text-center"><?php 
 												if ($page_main_menu == 1) {
 													?>
@@ -583,8 +531,8 @@ pagehead($page_id); ?>
 													
 													<a href="page_edit.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 													<a href="delete_page.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-arrow-right"></i></a>
 												</td>
-												<?php } // END SHOW ADMIN TO 80 LEVEL USERS ?>
 											</tr>
 											
 						
@@ -605,33 +553,6 @@ pagehead($page_id); ?>
 					<!-- ------------------------------------- -->
 							<div class="col-sm-3">
 							<!-- RIGHT COL -->
-							
-							<!-- NEW FEATURES -->
-							<section class="panel">
-								<header class="panel-heading">
-									<div class="panel-actions">
-										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-									</div>
-						
-									<h2 class="panel-title">NEW FEATURES</h2>
-								</header>
-								<div class="panel-body">
-								
-								<ul>
-								  <li><a href="parts.php?show=products" title="COMING SOON">Product Page</a></li>
-								  <li>Feedback Form (see right)</li>
-								  <li><a href="parts.php?show=products" title="COMING SOON">Product Page</a></li>
-								</ul>
-								
-								
-								</div>
-							</section>
-							<!-- END NEW FEATURES -->
-							
-							
-							
-							<!-- ADMIN OPTIONS -->
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -655,8 +576,6 @@ pagehead($page_id); ?>
 								
 								</div>
 							</section>
-							<!-- END ADMIN OPTIONS -->
-							
 							<!-- END OF RIGHT COL -->
 							</div>
 							

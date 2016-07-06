@@ -290,20 +290,9 @@
 					<span class="separator"></span>
 			
 					<div id="userbox" class="userbox">
-					<?php
-						//Granb user name from the session. 
-						$username = $_SESSION['username'];
-						$get_logged_in_user_details_SQL = "SELECT * FROM  `users` where email='$username' ";
-						$result = mysqli_query ( $con, $sql );
-						$count = $result->num_rows;
-						if ($count == 1) {
-							// update session.
-							$_SESSION['username']= $username;
-							header ( "Location: index.php" );
-					?>
 						<a href="#" data-toggle="dropdown">
 							<figure class="profile-picture">
-								<img src="assets/images/users/user_<?php echo $result['ID']; ?>.png" alt="<?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?>" class="img-circle" data-lock-picture="assets/images/!logged-user.jpg" />
+								<img src="assets/images/!logged-user.jpg" alt="Joseph Doe" class="img-circle" data-lock-picture="assets/images/!logged-user.jpg" />
 							</figure>
 							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
 								<span class="name">John Doe Junior</span>
@@ -327,10 +316,6 @@
 								</li>
 							</ul>
 						</div>
-					<?php 
-					  
-					  } // end of the IF.
-					?>	
 					</div>
 				</div>
 				<!-- end: search & user box -->

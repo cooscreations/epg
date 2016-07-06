@@ -80,45 +80,21 @@ pagehead($page_id); ?>
 							$mat_var_name_CN = $row_get_mat_vars['name_CN'];
 							$mat_var_description = $row_get_mat_vars['description'];
 							$mat_var_code = $row_get_mat_vars['code'];
-							
-							// get material
-							$get_material_SQL = "SELECT * FROM  `material` WHERE `ID` =" . $mat_var_material_ID;
-							$result_get_mat = mysqli_query($con,$get_material_SQL);
-							  // while loop
-							  while($row_get_mat = mysqli_fetch_array($result_get_mat)) {
-									$mat_ID = $row_get_mat['ID'];	
-									$mat_name_EN = $row_get_mat['name_EN'];	
-									$mat_name_CN = $row_get_mat['name_CN'];	
-									$mat_description = $row_get_mat['description'];	
-									$mat_record_status = $row_get_mat['record_status'];	
-							  }
-							
-							// get variant type
-							$get_material_type_SQL = "SELECT * FROM `material_variant_types` WHERE  `ID` =" . $mat_var_variant_type;
-							$result_get_mat_type = mysqli_query($con,$get_material_type_SQL);
-							  // while loop
-							  while($row_get_mat_type = mysqli_fetch_array($result_get_mat_type)) {
-									$mat_type_ID = $row_get_mat_type['ID'];
-									$mat_type_name_EN = $row_get_mat_type['name_EN'];
-									$mat_type_name_CN = $row_get_mat_type['name_CN'];
-									$mat_type_description = $row_get_mat_type['description'];
-									$mat_type_record_status = $row_get_mat_type['record_status'];
-							  }
 					  
-							  ?>
+					  ?>
 					  
-							  <tr>
-								<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_name_EN; ?></a></td> 
-								<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_name_CN; ?></a></td> 
-								<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_description; ?></a></td> 
-								<td><a href="material_view.php?id=<?php echo $mat_var_material_ID; ?>"><?php echo $mat_name_EN; if (($mat_name_CN!='')&&($mat_name_CN!='中文名')) { echo $mat_name_CN; } ?></a></td> 
-								<td><a href="material_variant_type_view.php?id=<?php echo $mat_var_variant_type; ?>"><?php echo $mat_type_name_EN; if (($mat_type_name_CN != '')&&($mat_type_name_CN != '中文名')) { echo $mat_type_name_CN; } ?></a></td> 
-								<td style="background:<?php echo $mat_var_code; ?>;"><?php echo $mat_var_code; ?></td> 
-							  </tr>
+					  <tr>
+					  	<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_name_EN; ?></a></td> 
+					  	<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_name_CN; ?></a></td> 
+					  	<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_description; ?></a></td> 
+					  	<td><a href="material_view.php?id=<?php echo $mat_var_material_ID; ?>"><?php echo $mat_var_material_ID; ?></a></td> 
+					  	<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_variant_type; ?></a></td> 
+					  	<td><a href="material_variant_view.php?id=<?php echo $mat_var_ID; ?>"><?php echo $mat_var_code; ?></a></td> 
+					  </tr>
 					  
-							  <?php 
+					  <?php 
 					  
-							  $mat_vars_count = $mat_vars_count + 1;
+					  $mat_vars_count = $mat_vars_count + 1;
 					  
 					  } // end while loop
 					  ?>
