@@ -378,7 +378,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					    		if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) { 
 					    			echo " / " . $row_get_parts['name_CN']; 
 					    		} 
-					    	?>" style="width:100px;"></a>
+					    	?>" style="width:100px;" /></a>
 					    	
 					    	
 					     <!-- START MODAL POP-UP -->

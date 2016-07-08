@@ -80,6 +80,8 @@ pagehead ( $page_id );
 				</th>
 			</tr>
 			<tr>
+				<th>ID</th>
+				<th>Code</th>
 				<th>Part Name</th>
 				<th>Revision Number</th>
 				<th>Remarks</th>
@@ -93,7 +95,9 @@ pagehead ( $page_id );
 			</tr>
 						  <?php
 								$get_part_revisions_SQL = "SELECT `part_revisions`.`ID`, `parts`.`name_EN` as `part_name_EN` " .
+															" , `parts`.`name_CN` as `part_name_CN` " .
 															" , `parts`.`ID` as `part_ID` " .
+															" , `parts`.`part_code` " .
 															" , `part_revisions`.`revision_number` " .
 															" , `part_revisions`.`remarks` ".
 															" , `part_revisions`.`date_approved` ".
@@ -116,7 +120,9 @@ pagehead ( $page_id );
 									?>
 						  
 			<tr>
-				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_name_EN']; ?></a></td>
+				<td><?php echo $row_get_part_revision['ID']; ?></td>
+				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_code']; ?></a></td>
+				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_name_EN']; if (($row_get_part_revision['part_name_CN']!='')&&($row_get_part_revision['part_name_CN']!='中文名')) { echo " / " . $row_get_part_revision['part_name_CN']; }?></a></td>
 				<td><?php echo $row_get_part_revision['revision_number']; ?></td>
 				<td><?php echo $row_get_part_revision['remarks']; ?></td>
 				<td><?php echo $row_get_part_revision['date_approved']; ?></td>
@@ -139,7 +145,7 @@ pagehead ( $page_id );
 								?>
 						  
 			 <tr>
-				<th colspan="8">TOTAL: <?php echo $part_revision_count; ?></th>
+				<th colspan="9">TOTAL: <?php echo $part_revision_count; ?></th>
 				<th class="text-center"><a href="part_revision_add.php"
 					class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
 			</tr>

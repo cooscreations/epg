@@ -166,6 +166,7 @@ else {
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					  <tr>
+					    <th>ID</th>
 					    <th>
 					    	Batch # 
 					    	<span class="col_sort pull-right"><?php 
@@ -299,13 +300,23 @@ else {
 					  
 					  ?>
 					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
+					    <td><?php echo $batch_id; ?></td>
 					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
 					    <td><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
 					    <td><?php echo $PO_created_date; ?></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php 
+					    // now do a quick check to make sure that the batch number (first 5 chars) matches the part code:
+					    if (substr($batch_number,0,5)!= $part_code) {
+					    	echo '<span class="text-danger">' . $part_code . '</span>';	
+					    }
+					    else {
+					    	echo $part_code; 
+					    }
+					    
+					    ?></a></td>
 					    <td><?php echo $rev_number; ?></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_CN; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名') { echo " / " . $part_name_CN; } ?></a></td>
 					  </tr>
 					  <?php 
 					  
@@ -319,6 +330,7 @@ else {
 					  
 					  <tr>
 					    <th>TOTAL ENTRIES: <?php echo $total_batches ;?></th>
+					    <th>&nbsp;</th>
 					    <th>&nbsp;</th>
 					    <th>&nbsp;</th>
 					    <th>&nbsp;</th>
