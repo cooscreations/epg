@@ -138,6 +138,7 @@ if (isset($_REQUEST['batch_id'])) { $record_id = $_REQUEST['batch_id']; }
 												<label class="col-md-3 control-label">Batch #:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<select data-plugin-selectTwo class="form-control populate" name="batch_ID" required>
+                                                        <option value=""></option>
 													<?php 
 													// get batch list
 													$get_batch_list_SQL = "SELECT `part_batch`.`ID`, 
