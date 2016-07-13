@@ -316,7 +316,7 @@ else {
 					    ?></a></td>
 					    <td><?php echo $rev_number; ?></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名') { echo " / " . $part_name_CN; } ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo " / " . $part_name_CN; } ?></a></td>
 					  </tr>
 					  <?php 
 					  
