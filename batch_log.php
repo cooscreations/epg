@@ -329,14 +329,7 @@ else {
 					  <!-- END DATASET -->
 					  
 					  <tr>
-					    <th>TOTAL ENTRIES: <?php echo $total_batches ;?></th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
+					    <th colspan="8">TOTAL ENTRIES: <?php echo $total_batches ;?></th>
 					  </tr>
 					  
 					  

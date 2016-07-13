@@ -76,7 +76,7 @@ pagehead ( $page_id );
 		<table
 			class="table table-bordered table-striped table-condensed mb-none">
 			<tr >
-				<th class="text-right" colspan="9"><a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+				<th class="text-left" colspan="11"><a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
 				</th>
 			</tr>
 			<tr>
@@ -110,7 +110,8 @@ pagehead ( $page_id );
 															" `part_revisions`.`part_ID` = `parts`.`ID` " .
 															" AND `part_revisions`.`status_ID` = `part_status`.`ID` ".
 															" AND `part_revisions`.`user_ID` = `users`.`ID` ".
-															" AND `part_revisions`.`record_status` = 2 "; 
+															" AND `part_revisions`.`record_status` = 2 ".
+															" ORDER BY `part_revisions`.`ID` ASC"; 
 								
 								$part_revision_count = 0;
 								
@@ -125,7 +126,7 @@ pagehead ( $page_id );
 				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_name_EN']; if (($row_get_part_revision['part_name_CN']!='')&&($row_get_part_revision['part_name_CN']!='中文名')) { echo " / " . $row_get_part_revision['part_name_CN']; }?></a></td>
 				<td><?php echo $row_get_part_revision['revision_number']; ?></td>
 				<td><?php echo $row_get_part_revision['remarks']; ?></td>
-				<td><?php echo $row_get_part_revision['date_approved']; ?></td>
+				<td><?php echo date("Y-m-d", strtotime($row_get_part_revision['date_approved'])); ?></td>
 				<td><a href="user_view.php?id=<?php echo $row_get_part_revision['user_ID']; ?>"><?php echo $row_get_part_revision['user_name']; ?></a></td>
 				<td><?php echo $row_get_part_revision['price_USD']; ?></td>
 				<td><?php echo $row_get_part_revision['weight_g']; ?></td>
@@ -145,9 +146,8 @@ pagehead ( $page_id );
 								?>
 						  
 			 <tr>
-				<th colspan="9">TOTAL: <?php echo $part_revision_count; ?></th>
-				<th class="text-center"><a href="part_revision_add.php"
-					class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
+				<th class="text-left" colspan="9"><a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
+				<th colspan="2">TOTAL: <?php echo $part_revision_count; ?></th>
 			</tr>
 
 

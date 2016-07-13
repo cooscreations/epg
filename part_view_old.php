@@ -585,82 +585,59 @@ pagehead($page_id);
 						
 
 						<div class="row">
-						
-						
-						<section class="panel">
-								<header class="panel-heading">
-									<div class="panel-actions">
-										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-									</div>
-
-									<h2 class="panel-title">
-										<span class="label label-primary label-sm text-normal va-middle mr-sm">5</span>
-										<span class="va-middle">Documents</span>
-									</h2>
-								</header>
-								<div class="panel-body">
-									<div class="content">
 							
-										<div class="table-responsive">
-										 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
-											<tr>
-												<th>Type</th>
-												<th>Name</th>
-												<th>Rev.</th>
-											 </tr>
-								 
-								 
-											<tr>
-											  <td><i class="fa fa-file-excel-o"></i></td>
-											  <td><a href="#">ICQ Form</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
-											</tr>
-								 
-								 
-											<tr>
-											  <td><i class="fa fa-file-word-o"></i></td>
-											  <td><a href="#">Technical Specifications</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
-											</tr>
-								 
-								 
-											<tr>
-											  <td><i class="fa fa-file-pdf-o"></i></td>
-											  <td><a href="#">Technical Drawing</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
-											</tr>
-								 
-								 
-											<tr>
-											  <td><i class="fa fa-file-pdf-o"></i></td>
-											  <td><a href="#">Technical Drawing</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>2</a></td>
-											</tr>
-								 
-								 
-											<tr>
-											  <td><i class="fa fa-file-pdf-o"></i></td>
-											  <td><a href="#">Technical Drawing</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>3</a></td>
-											</tr>
-								
-								
-											<tr>
-											  <th colspan="3">TOTAL DOCUMENTS: 5</th>
-											</tr>
-								
-										</table>
-									   </div>
+							<h3>Documents</h3>
 							
-							</div>
-								  <div class="panel-footer">
-									<div class="text-right">
-											<a class="text-uppercase text-muted" href="#">(View All)</a>
-										</div>
-								  </div>
-								</div>
-							</section>
+							<div class="table-responsive">
+							 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					  			<tr>
+					    			<th>Type</th>
+					    			<th>Name</th>
+					    			<th>Rev.</th>
+					 			 </tr>
+					 			 
+					 			 
+					 			<tr>
+					 			  <td><i class="fa fa-file-excel-o"></i></td>
+					 			  <td><a href="#">ICQ Form</a></td>
+					 			  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
+					 			</tr>
+					 			 
+					 			 
+					 			<tr>
+					 			  <td><i class="fa fa-file-word-o"></i></td>
+					 			  <td><a href="#">Technical Specifications</a></td>
+					 			  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
+					 			</tr>
+					 			 
+					 			 
+					 			<tr>
+					 			  <td><i class="fa fa-file-pdf-o"></i></td>
+					 			  <td><a href="#">Technical Drawing</a></td>
+					 			  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
+					 			</tr>
+					 			 
+					 			 
+					 			<tr>
+					 			  <td><i class="fa fa-file-pdf-o"></i></td>
+					 			  <td><a href="#">Technical Drawing</a></td>
+					 			  <td><a href="#"><?php echo $rev_body_number; ?>2</a></td>
+					 			</tr>
+					 			 
+					 			 
+					 			<tr>
+					 			  <td><i class="fa fa-file-pdf-o"></i></td>
+					 			  <td><a href="#">Technical Drawing</a></td>
+					 			  <td><a href="#"><?php echo $rev_body_number; ?>3</a></td>
+					 			</tr>
+					 			
+					 			
+					 			<tr>
+					 			  <th colspan="3">TOTAL DOCUMENTS: 5</th>
+					 			</tr>
+					 			
+					 		</table>
+					 	   </div>
 							
 						</div>
 						
@@ -674,22 +651,8 @@ pagehead($page_id);
 <!-- ******************************************************************************************************** -->
 
 						<div class="row">
-						
-						
-						
-						<section class="panel">
-								<header class="panel-heading">
-									<div class="panel-actions">
-										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-									</div>
-
-									<h2 class="panel-title">
-										<span class="va-middle">Bill of Materials (BOM)</span>
-									</h2>
-								</header>
-								<div class="panel-body">
-									<div class="content">
+							
+							<h3>Bill of Materials</h3>
 							
 							<p class="lead">This part appears in the following Bill(s) Of Materials</p>
 							
@@ -697,8 +660,8 @@ pagehead($page_id);
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					 <thead>
 					  <tr>
-					  	<th>BOM ID</th>
-					    <th>Part Info</th>
+					    <th>ID</th>
+					    <th>Part #</th>
 					    <th>Revision</th>
 					    <th>Date Entered</th>
 					    <th>Type</th>
@@ -708,246 +671,216 @@ pagehead($page_id);
 					  <tbody>
 					  <?php
 					  
-					  // FIRST, let's try to get the BOM it IS or it is on:
+					  $WHERE_SQL = " WHERE `record_status` = 2 AND `part_rev_ID` = " . $rev_body_id;
+					  $order_by = " ORDER BY `date_entered` DESC";
 					  
-					  // count BOMs made for this revision
-						$count_BOMs_sql = "SELECT COUNT( ID ) FROM  `product_BOM` WHERE  `part_rev_ID` =  '".$rev_body_id."'"; 
-						$count_BOMs_query = mysqli_query($con, $count_BOMs_sql);
-						$count_BOMs_row = mysqli_fetch_row($count_BOMs_query);
-						$total_BOMs = $count_BOMs_row[0];
+					  $get_BOM_list_SQL = "SELECT * FROM `product_BOM`" . $WHERE_SQL . $order_by;
+					  // echo $get_BOM_list_SQL;
 					  
-								  $WHERE_SQL = " WHERE `record_status` = 2 AND `part_rev_ID` = " . $rev_body_id;
-								  $order_by = " ORDER BY `date_entered` DESC";
-					  
-								  $get_BOM_list_SQL = "SELECT * FROM `product_BOM`" . $WHERE_SQL . $order_by;
-								  // echo $get_BOM_list_SQL;
-					  
-								  $BOM_count = 0;
+					  $BOM_count = 0;
 	
-								  $result_get_BOM_list = mysqli_query($con,$get_BOM_list_SQL);
-								  // while loop
-								  while($row_get_BOM_list = mysqli_fetch_array($result_get_BOM_list)) {
+					  $result_get_BOM_list = mysqli_query($con,$get_BOM_list_SQL);
+					  // while loop
+					  while($row_get_BOM_list = mysqli_fetch_array($result_get_BOM_list)) {
 					  
-									// GET BOM LIST:
-						
-									$BOM_ID = $row_get_BOM_list['ID'];
-									$BOM_part_rev_ID = $row_get_BOM_list['part_rev_ID']; // use this to look up
-									$BOM_date_entered = $row_get_BOM_list['date_entered'];
-									$BOM_record_status = $row_get_BOM_list['record_status'];
-									$BOM_created_by = $row_get_BOM_list['created_by'];
-									$BOM_type = $row_get_BOM_list['BOM_type'];
-									$BOM_parent_BOM_ID = $row_get_BOM_list['parent_BOM_ID'];
-						
-						
-									/* JOIN PLANNING:
-									PARTS: 
-						
-									`parts`.`ID` AS `part_ID`,
-									`parts`.`part_code`, 
-									`parts`.`name_EN`, 
-									`parts`.`name_CN`,
-									`parts`.`description`, 
-									`parts`.`type_ID`, 
-									`parts`.`classification_ID`, 
-									`parts`.`record_status`, 
-									`parts`.`product_type_ID`
-						
-									PART REVISIONS: 
-						
-									`part_revisions`.`ID` AS `rev_revision_ID`, 
-									`part_revisions`.`part_ID`, 
-									`part_revisions`.`revision_number`, 
-									`part_revisions`.`remarks`, 
-									`part_revisions`.`date_approved`, 
-									`part_revisions`.`user_ID`, 
-									`part_revisions`.`price_USD`, 
-									`part_revisions`.`weight_g`, 
-									`part_revisions`.`status_ID`, 
-									`part_revisions`.`material_ID`, 
-									`part_revisions`.`treatment_ID`, 
-									`part_revisions`.`treatment_notes`, 
-									`part_revisions`.`record_status`
-						
-									SO WE NEED:
-						
-									`parts`.`part_code`, 
-									`parts`.`name_EN`, 
-									`parts`.`name_CN`, 
-									`parts`.`type_ID`, 
-									`part_revisions`.`revision_number`, 
-									`part_revisions`.`part_ID`,
-									`part_revisions`.`part_ID`
-						
-									*/
-						
-									$combine_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $BOM_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
-						
-									$result_get_rev_part_join = mysqli_query($con,$combine_part_and_rev_SQL);
-									// while loop
-									while($row_get_rev_part_join = mysqli_fetch_array($result_get_rev_part_join)) {
+					  	// GET BOM LIST:
+					  	
+					  	$BOM_ID = $row_get_BOM_list['ID'];
+					  	$BOM_part_rev_ID = $row_get_BOM_list['part_rev_ID']; // use this to look up
+					  	$BOM_date_entered = $row_get_BOM_list['date_entered'];
+					  	$BOM_record_status = $row_get_BOM_list['record_status'];
+					  	$BOM_created_by = $row_get_BOM_list['created_by'];
+					  	$BOM_type = $row_get_BOM_list['BOM_type'];
+					  	$BOM_parent_BOM_ID = $row_get_BOM_list['parent_BOM_ID'];
+					  	
+					  	
+					  	/* JOIN PLANNING:
+					  	PARTS: 
+					  	
+					  	`parts`.`ID` AS `part_ID`,
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`,
+					  	`parts`.`description`, 
+					  	`parts`.`type_ID`, 
+					  	`parts`.`classification_ID`, 
+					  	`parts`.`record_status`, 
+					  	`parts`.`product_type_ID`
+					  	
+					  	PART REVISIONS: 
+					  	
+					  	`part_revisions`.`ID` AS `rev_revision_ID`, 
+					  	`part_revisions`.`part_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`remarks`, 
+					  	`part_revisions`.`date_approved`, 
+					  	`part_revisions`.`user_ID`, 
+					  	`part_revisions`.`price_USD`, 
+					  	`part_revisions`.`weight_g`, 
+					  	`part_revisions`.`status_ID`, 
+					  	`part_revisions`.`material_ID`, 
+					  	`part_revisions`.`treatment_ID`, 
+					  	`part_revisions`.`treatment_notes`, 
+					  	`part_revisions`.`record_status`
+					  	
+					  	SO WE NEED:
+					  	
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`, 
+					  	`parts`.`type_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`part_ID`,
+					  	`part_revisions`.`part_ID`
+					  	
+					  	*/
+					  	
+					  	$combine_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $BOM_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+					    
+					    $result_get_rev_part_join = mysqli_query($con,$combine_part_and_rev_SQL);
+					    // while loop
+					    while($row_get_rev_part_join = mysqli_fetch_array($result_get_rev_part_join)) {
 					  
-										// GET BOM LIST:
-						
-										$rev_part_join_part_code = $row_get_rev_part_join['part_code'];
-										$rev_part_join_name_EN = $row_get_rev_part_join['name_EN'];
-										$rev_part_join_name_CN = $row_get_rev_part_join['name_CN'];
-										$rev_part_join_type_ID = $row_get_rev_part_join['type_ID'];
-										$rev_part_join_rev_num = $row_get_rev_part_join['revision_number'];
-										$rev_part_join_part_ID = $row_get_rev_part_join['part_ID'];
+					  		// GET BOM LIST:
+					  	
+					  		$rev_part_join_part_code = $row_get_rev_part_join['part_code'];
+							$rev_part_join_name_EN = $row_get_rev_part_join['name_EN'];
+							$rev_part_join_name_CN = $row_get_rev_part_join['name_CN'];
+							$rev_part_join_type_ID = $row_get_rev_part_join['type_ID'];
+							$rev_part_join_rev_num = $row_get_rev_part_join['revision_number'];
+							$rev_part_join_part_ID = $row_get_rev_part_join['part_ID'];
 							
-										} // end get BOM part / part rev data
-								  ?>
+							} // end get BOM part / part rev data
+					  ?>
 					  
-								  <tr>
-									<td>
-									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>">
-										<?php echo $BOM_ID; ?>
-									  </a> <em class="text-muted muted">(View BOM)</em>
-									</td>
-									<td>
-									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-										<?php echo $rev_part_join_part_code; ?> - <?php echo $rev_part_join_name_EN; if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { echo " / " . $rev_part_join_name_CN; }?>
-									  </a> <em class="text-muted muted">(View Part)</em>
-									</td>
-									<td><?php echo $rev_part_join_rev_num; ?></td>
-									<td><?php echo date("Y-m-d", strtotime($BOM_date_entered)); ?></td>
-									<td><?php echo $BOM_type; ?></td>
-								  </tr>
-								  <?php 
+					  <tr>
+					    <td>
+					      <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>">
+					        <?php echo $BOM_ID; ?>
+					      </a> <em class="text-muted muted">(View BOM)</em>
+					    </td>
+					    <td>
+					      <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
+					        <?php echo $rev_part_join_part_code; ?> - <?php echo $rev_part_join_name_EN; if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { echo " / " . $rev_part_join_name_CN; }?>
+					      </a> <em class="text-muted muted">(View Part)</em>
+					    </td>
+					    <td><?php echo $rev_part_join_rev_num; ?></td>
+					    <td><?php echo date("Y-m-d", strtotime($BOM_date_entered)); ?></td>
+					    <td><?php echo $BOM_type; ?></td>
+					  </tr>
+					  <?php 
 					  
-								  $BOM_count = $BOM_count + 1;
+					  $BOM_count = $BOM_count + 1;
 					  
-								  } // end while loop
-								  
-								  
-								  
-								  
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  /* ********************************************************* */
-								  
-								  
-								  $get_BOM_ID_SQL = "SELECT * FROM `product_BOM_items` WHERE `part_rev_ID` ='" . $rev_body_id . "'";
-								  $result_get_BOM_ID = mysqli_query($con,$get_BOM_ID_SQL);
-								  // while loop
-								  while($row_get_BOM_ID = mysqli_fetch_array($result_get_BOM_ID)) {
+					  } // end while loop
 					  
-										// RESULTS:
-										$get_BOM_item_ID = $row_get_BOM_ID['ID'];
-										$get_BOM_ID = $row_get_BOM_ID['product_BOM_ID'];
-								  	  
-												  $WHERE_SQL = " WHERE `record_status` = 2 AND `ID` = " . $get_BOM_ID;
-												  $order_by = " ORDER BY `date_entered` DESC";
-								  
-												  $get_this_BOM_list_SQL = "SELECT * FROM `product_BOM`" . $WHERE_SQL . $order_by;
-												  // echo $get_this_BOM_list_SQL;
+					  /* ******************************************************* */
 					  
-												  $this_BOM_count = 0;
+					  				  
+					  $WHERE_BOM_i_SQL = " WHERE `record_status` = 2 AND `part_rev_ID` = " . $rev_body_id;
+					  $BOM_i_order_by = " ORDER BY `date_entered` DESC";
+					  
+					  $get_BOM_i_list_SQL = "SELECT * FROM `product_BOM_items`" . $WHERE_BOM_i_SQL . $BOM_i_order_by;
+					  // echo $get_BOM_i_list_SQL;
+					  
+					  $BOM_count = 0;
 	
-												  $result_get_this_BOM_list = mysqli_query($con,$get_this_BOM_list_SQL);
-												  // while loop
-												  while($row_get_this_BOM_list = mysqli_fetch_array($result_get_this_BOM_list)) {
+					  $result_get_BOM_i_list = mysqli_query($con,$get_BOM_i_list_SQL);
+					  // while loop
+					  while($row_get_BOM_i_list = mysqli_fetch_array($result_get_BOM_i_list)) {
 					  
-													// GET BOM LIST:
-						
-													$this_BOM_ID = $row_get_this_BOM_list['ID'];
-													$this_BOM_part_rev_ID = $row_get_this_BOM_list['part_rev_ID']; // use this to look up
-													$this_BOM_date_entered = $row_get_this_BOM_list['date_entered'];
-													$this_BOM_record_status = $row_get_this_BOM_list['record_status'];
-													$this_BOM_created_by = $row_get_this_BOM_list['created_by'];
-													$this_BOM_type = $row_get_this_BOM_list['BOM_type'];
-													$this_BOM_parent_BOM_ID = $row_get_this_BOM_list['parent_BOM_ID'];
-						
-						
-													/* JOIN PLANNING:
-													PARTS: 
-						
-													`parts`.`ID` AS `part_ID`,
-													`parts`.`part_code`, 
-													`parts`.`name_EN`, 
-													`parts`.`name_CN`,
-													`parts`.`description`, 
-													`parts`.`type_ID`, 
-													`parts`.`classification_ID`, 
-													`parts`.`record_status`, 
-													`parts`.`product_type_ID`
-						
-													PART REVISIONS: 
-						
-													`part_revisions`.`ID` AS `rev_revision_ID`, 
-													`part_revisions`.`part_ID`, 
-													`part_revisions`.`revision_number`, 
-													`part_revisions`.`remarks`, 
-													`part_revisions`.`date_approved`, 
-													`part_revisions`.`user_ID`, 
-													`part_revisions`.`price_USD`, 
-													`part_revisions`.`weight_g`, 
-													`part_revisions`.`status_ID`, 
-													`part_revisions`.`material_ID`, 
-													`part_revisions`.`treatment_ID`, 
-													`part_revisions`.`treatment_notes`, 
-													`part_revisions`.`record_status`
-						
-													SO WE NEED:
-						
-													`parts`.`part_code`, 
-													`parts`.`name_EN`, 
-													`parts`.`name_CN`, 
-													`parts`.`type_ID`, 
-													`part_revisions`.`revision_number`, 
-													`part_revisions`.`part_ID`,
-													`part_revisions`.`part_ID`
-						
-													*/
-						
-													$combine_this_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $this_BOM_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
-						
-													$result_get_this_rev_part_join = mysqli_query($con,$combine_this_part_and_rev_SQL);
-													// while loop
-													while($row_get_this_rev_part_join = mysqli_fetch_array($result_get_this_rev_part_join)) {
+					  	// GET BOM LIST:
+					  	
+					  	$BOM_i_ID = $row_get_BOM_i_list['ID'];
+					  	$BOM_i_part_rev_ID = $row_get_BOM_i_list['part_rev_ID']; // use this to look up
+					  	$BOM_i_date_entered = $row_get_BOM_i_list['date_entered'];
+					  	$BOM_i_record_status = $row_get_BOM_i_list['record_status'];
+					  	$BOM_i_created_by = $row_get_BOM_i_list['created_by'];
+					  	$BOM_i_type = $row_get_BOM_i_list['BOM_type'];
+					  	$BOM_i_parent_BOM_ID = $row_get_BOM_i_list['parent_BOM_ID'];
+					  	
+					  	
+					  	/* JOIN PLANNING:
+					  	PARTS: 
+					  	
+					  	`parts`.`ID` AS `part_ID`,
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`,
+					  	`parts`.`description`, 
+					  	`parts`.`type_ID`, 
+					  	`parts`.`classification_ID`, 
+					  	`parts`.`record_status`, 
+					  	`parts`.`product_type_ID`
+					  	
+					  	PART REVISIONS: 
+					  	
+					  	`part_revisions`.`ID` AS `rev_revision_ID`, 
+					  	`part_revisions`.`part_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`remarks`, 
+					  	`part_revisions`.`date_approved`, 
+					  	`part_revisions`.`user_ID`, 
+					  	`part_revisions`.`price_USD`, 
+					  	`part_revisions`.`weight_g`, 
+					  	`part_revisions`.`status_ID`, 
+					  	`part_revisions`.`material_ID`, 
+					  	`part_revisions`.`treatment_ID`, 
+					  	`part_revisions`.`treatment_notes`, 
+					  	`part_revisions`.`record_status`
+					  	
+					  	SO WE NEED:
+					  	
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`, 
+					  	`parts`.`type_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`part_ID`,
+					  	`part_revisions`.`part_ID`
+					  	
+					  	*/
+					  	
+					  	$combine_part_i_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $BOM_i_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+					    
+					    $result_get_rev_part_i_join = mysqli_query($con,$combine_part_i_and_rev_SQL);
+					    // while loop
+					    while($row_get_rev_part_i_join = mysqli_fetch_array($result_get_rev_part_i_join)) {
 					  
-														// GET BOM LIST:
-						
-														$this_rev_part_join_part_code = $row_get_this_rev_part_join['part_code'];
-														$this_rev_part_join_name_EN = $row_get_this_rev_part_join['name_EN'];
-														$this_rev_part_join_name_CN = $row_get_this_rev_part_join['name_CN'];
-														$this_rev_part_join_type_ID = $row_get_this_rev_part_join['type_ID'];
-														$this_rev_part_join_rev_num = $row_get_this_rev_part_join['revision_number'];
-														$this_rev_part_join_part_ID = $row_get_this_rev_part_join['part_ID'];
+					  		// GET BOM LIST:
+					  	
+					  		$i_rev_part_join_part_code = $row_get_rev_part_i_join['part_code'];
+							$i_rev_part_join_name_EN = $row_get_rev_part_i_join['name_EN'];
+							$i_rev_part_join_name_CN = $row_get_rev_part_i_join['name_CN'];
+							$i_rev_part_join_type_ID = $row_get_rev_part_i_join['type_ID'];
+							$i_rev_part_join_rev_num = $row_get_rev_part_i_join['revision_number'];
+							$i_rev_part_join_part_ID = $row_get_rev_part_i_join['part_ID'];
 							
-														} // end get BOM part / part rev data
-												  ?>
+							} // end get BOM part / part rev data
+					  ?>
 					  
-												  <tr>
-													<td>
-													  <a href="BOM_view.php?id=<?php echo $this_BOM_ID; ?>">
-														<?php echo $this_BOM_ID; ?>
-													  </a> <em class="text-muted muted">(View BOM)</em>
-													</td>
-													<td>
-													  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>">
-														<?php echo $this_rev_part_join_part_code; ?> - <?php echo $this_rev_part_join_name_EN; if (($this_rev_part_join_name_CN!='')&&($this_rev_part_join_name_CN!='中文名')) { echo " / " . $this_rev_part_join_name_CN; }?>
-													  </a> <em class="text-muted muted">(View Part)</em>
-													</td>
-													<td><?php echo $this_rev_part_join_rev_num; ?></td>
-													<td><?php echo date("Y-m-d", strtotime($this_BOM_date_entered)); ?></td>
-													<td><?php echo $this_BOM_type; ?></td>
-												  </tr>
-												  <?php 
+					  <tr>
+					    <td>
+					      <a href="BOM_view.php?id=<?php echo $BOM_i_ID; ?>">
+					        <?php echo $BOM_i_ID; ?>
+					      </a> <em class="text-muted muted">(View BOM)</em>
+					    </td>
+					    <td>
+					      <a href="part_view.php?id=<?php echo $i_rev_part_join_part_ID; ?>">
+					        <?php echo $i_rev_part_join_part_code; ?> - <?php echo $i_rev_part_join_name_EN; if (($i_rev_part_join_name_CN!='')&&($i_rev_part_join_name_CN!='中文名')) { echo " / " . $i_rev_part_join_name_CN; }?>
+					      </a> <em class="text-muted muted">(View Part)</em>
+					    </td>
+					    <td><?php echo $i_rev_part_join_rev_num; ?></td>
+					    <td><?php echo date("Y-m-d", strtotime($BOM_i_date_entered)); ?></td>
+					    <td><?php echo $BOM_i_type; ?></td>
+					  </tr>
+					  <?php 
 					  
-												  $BOM_count = $BOM_count + 1;
+					  $BOM_count = $BOM_count + 1;
 					  
-												  } // end while loop
-					  			} // END FOUND BOMS ASSOCIATED BY product_BOM_item
-					  			
-					  			
+					  } // end while loop
+
+					  
 					  if ($BOM_count == 0) {
 					  		?>
 					  		<tr>
@@ -967,322 +900,289 @@ pagehead($page_id);
 					  </tfoot>
 					  
 					 </table>
-					</div>		
-					
-					
-<?php							  
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-/* ********************************************************* */
-		
-		?>
-		<br />
-		<p class="lead">Other parts in this Assembly</p>
-		<div class="table-responsive">
-							 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
-					  		  <thead>
-					  			<tr>
-					    			<th>Photo</th>
-					    			<th>Code</th>
-					    			<th>Name / 名字</th>
-					    			<th><abbr title="Revision">Rev.</abbr></th>
-					    			<th>Type</th>
-					 			 </tr>
-					 		  </thead>
-					 			 
-					 			 
-					 		  <tbody>
-					 			 <?php
-					 			 
-					 			 if ($this_BOM_ID != 0) {
-					 			 	$find_BOM = $this_BOM_ID;
-					 			 } 
-					 			 else {
-					 			 	$find_BOM = $BOM_ID;
-					 			 }
-					 			 
-					 			 // GET THE ASSOCIATED PARTS
-					 			 $grand_total_components = 0;
-								 $total_components = 0;
-								 $total_assemblies = 0;
-					 			 
-					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $find_BOM . " AND  `record_status` =2";
-					 			 
-					 			 // DEBUG:
-					 			 // echo $get_components_SQL;
-					 			 
-					 			 $result_get_components = mysqli_query($con,$get_components_SQL);
-								 // while loop
-								 while($row_get_components = mysqli_fetch_array($result_get_components)) {
-									$components_BOM_item_ID = $row_get_components['ID'];
-									$components_product_BOM_ID = $row_get_components['product_BOM_ID']; // should be same as $record_ID
-									$components_part_rev_ID = $row_get_components['part_rev_ID'];
-									$components_parent_ID = $row_get_components['parent_ID'];
-									$components_created_by = $row_get_components['created_by'];
-									$components_date_entered = $row_get_components['date_entered'];
-									$components_record_status = $row_get_components['record_status']; // should be 2 (published)
-									// echo 'OK';
-									// now get the rev and part info:
-									
-									/* JOIN PLANNING:
-									PARTS: 
-						
-									`parts`.`ID` AS `part_ID`,
-									`parts`.`part_code`, 
-									`parts`.`name_EN`, 
-									`parts`.`name_CN`,
-									`parts`.`description`, 
-									`parts`.`type_ID`, 
-									`parts`.`classification_ID`, 
-									`parts`.`record_status`, 
-									`parts`.`product_type_ID`
-						
-									PART REVISIONS: 
-						
-									`part_revisions`.`ID` AS `rev_revision_ID`, 
-									`part_revisions`.`part_ID`, 
-									`part_revisions`.`revision_number`, 
-									`part_revisions`.`remarks`, 
-									`part_revisions`.`date_approved`, 
-									`part_revisions`.`user_ID`, 
-									`part_revisions`.`price_USD`, 
-									`part_revisions`.`weight_g`, 
-									`part_revisions`.`status_ID`, 
-									`part_revisions`.`material_ID`, 
-									`part_revisions`.`treatment_ID`, 
-									`part_revisions`.`treatment_notes`, 
-									`part_revisions`.`record_status`
-						
-									SO WE NEED:
-						
-									`parts`.`part_code`, 
-									`parts`.`name_EN`, 
-									`parts`.`name_CN`, 
-									`parts`.`type_ID`, 
-									`part_revisions`.`revision_number`, 
-									`part_revisions`.`part_ID`,
-									`part_revisions`.`part_ID`
-						
-									*/
-									
-									$order_by = " ORDER BY `parts`.`type_ID` ASC";
-									
-									$combine_part_and_rev_SQL = "SELECT `parts`.`ID` AS `part_ID`, `parts`.`type_ID`, `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`ID` AS `rev_revision_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $components_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2" . $order_by;
-					    			// DEBUG:
-					    			// echo 'DEBUG: ' . $combine_part_and_rev_SQL . '<br />';
-					    			
-					    			$result_get_rev_part_join = mysqli_query($con,$combine_part_and_rev_SQL);
-									// while loop
-									while($row_get_rev_part_join = mysqli_fetch_array($result_get_rev_part_join)) {
-					  
-										// GET BOM LIST:
-						
-										$rev_part_join_part_ID = $row_get_rev_part_join['part_ID'];
-										$rev_part_join_revision_ID = $row_get_rev_part_join['rev_revision_ID'];
-										$rev_part_join_part_type_ID = $row_get_rev_part_join['type_ID']; // look this up!
-										$rev_part_join_part_code = $row_get_rev_part_join['part_code'];
-										$rev_part_join_name_EN = $row_get_rev_part_join['name_EN'];
-										$rev_part_join_name_CN = $row_get_rev_part_join['name_CN'];
-										$rev_part_join_type_ID = $row_get_rev_part_join['type_ID'];
-										$rev_part_join_rev_num = $row_get_rev_part_join['revision_number'];
-										$rev_part_join_part_ID = $row_get_rev_part_join['part_ID'];
-										
-											// GET COMPONENT PART TYPE:
-											$get_component_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` =" . $rev_part_join_part_type_ID;
-											// echo $get_component_type_SQL;
-											$result_get_component_type = mysqli_query($con,$get_component_type_SQL);
-											// while loop
-											while($row_get_component_type = mysqli_fetch_array($result_get_component_type)) {
-												$component_type_EN = $row_get_component_type['name_EN'];
-												$component_type_CN = $row_get_component_type['name_CN'];
-											}
-										
-										
-										// now get the part revision photo!
-										$num_component_photos_found = 0;
-										$component_photo_location = "assets/images/no_image_found.jpg";
-									
-										$get_part_component_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $rev_part_join_revision_ID;
-										// echo "<h1>".$get_part_component_photo_SQL."</h1>";
-										$result_get_part_component_photo = mysqli_query($con,$get_part_component_photo_SQL);
-										// while loop
-										while($row_get_part_component_photo = mysqli_fetch_array($result_get_part_component_photo)) {
-									
-											$num_component_photos_found = $num_component_photos_found + 1;
-									
-											// now print each record:  
-											$component_photo_id = $row_get_part_component_photo['ID'];
-											$component_photo_name_EN = $row_get_part_component_photo['name_EN'];
-											$component_photo_name_CN = $row_get_part_component_photo['name_CN'];
-											$component_photo_filename = $row_get_part_component_photo['filename'];
-											$component_photo_filetype_ID = $row_get_part_component_photo['filetype_ID'];
-											$component_photo_location = $row_get_part_component_photo['file_location'];
-											$component_photo_lookup_table = $row_get_part_component_photo['lookup_table'];
-											$component_photo_lookup_id = $row_get_part_component_photo['lookup_ID'];
-											$component_photo_document_category = $row_get_part_component_photo['document_category'];
-											$component_photo_record_status = $row_get_part_component_photo['record_status'];
-											$component_photo_created_by = $row_get_part_component_photo['created_by'];
-											$component_photo_date_created = $row_get_part_component_photo['date_created'];
-											$component_photo_filesize_bytes = $row_get_part_component_photo['filesize_bytes'];
-											$component_photo_document_icon = $row_get_part_component_photo['document_icon'];
-											$component_photo_document_remarks = $row_get_part_component_photo['document_remarks'];
-											$component_photo_doc_revision = $row_get_part_component_photo['doc_revision'];
-										
-											if ($component_photo_filename!='') {
-												// now apply filename
-												$component_photo_location = "assets/images/" . $component_photo_location . "/" . $component_photo_filename;
-											}
-											else {
-												$component_photo_location = "assets/images/no_image_found.jpg";
-											}
-										
-										} // end get part rev photo
-							
-											
-									if ($rev_part_join_part_type_ID == 10) {
-										$total_assemblies = $total_assemblies + 1;
-									}
-									else {
-										$total_components = $total_components + 1;
-									}
-									
-									$grand_total_components = $grand_total_components + 1; // in theory we should be able to add these mathmatically rather than needing to count them...
-									
-								} // end get BOM part / part rev data
-								
-					 			 ?>
-					 			
-					 			<tr>
-					 			  <td class="text-center">
-									<img src="<?php 
-										echo $component_photo_location; 
-									?>" class="rounded img-responsive" alt="<?php 
-										echo $rev_part_join_part_code; 
-									?> - <?php 
-										echo $rev_part_join_name_EN; 
-										if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { 
-											echo " / " . $rev_part_join_name_CN; 
-										} 
-									?>" style="width:100px;" />
-								  </td>
-					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					 			  		<?php echo $rev_part_join_part_code; ?>
-					 			  	</a>
-					 			  </td>
-					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					 			  		<?php 
-					 			  			echo $rev_part_join_name_EN; 
-					 			  			if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { 
-					 			  				echo " / " . $rev_part_join_name_CN; 
-					 			  			} 
-					 			  		?>
-					 			  	</a>
-					 			  </td>
-					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					 			  		<?php echo $rev_part_join_rev_num; ?>
-					 			  	</a>
-					 			  </td>
-					 			  <td>
-					 			  	<?php 
-					 			  	
-					 			  		echo $component_type_EN; 
-					 			  		if (($component_type_CN!='')&&($component_type_EN!='中文名')) { 
-					 			  			echo " / " . $component_type_CN; 
-					 			  		}
-					 			  		
-					 			  		// echo 'type ID = ' . $rev_part_join_part_type_ID . '<br />';
-					 			  		
-					 			  		// NOW FIND OUT IF IT'S AN ASSEMBLY, IN WHICH CASE LINK TO THE NEXT BOM!
-					 			  		if ($rev_part_join_part_type_ID == 10) {
-					 			  		
-												// GO GET THE CHILD INFO!
-												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID;
-																					
-												$result_get_child_BOM = mysqli_query($con,$get_child_BOM_SQL);
-
-												// while loop
-												while($row_get_child_BOM = mysqli_fetch_array($result_get_child_BOM)) {
-													$child_BOM_ID = $row_get_child_BOM['ID'];
-													$child_BOM_part_rev_ID = $row_get_child_BOM['part_rev_ID'];
-													$child_BOM_date_entered = $row_get_child_BOM['date_entered'];
-													$child_BOM_record_status = $row_get_child_BOM['record_status'];
-													$child_BOM_created_by = $row_get_child_BOM['created_by'];
-													$child_BOM_type = $row_get_child_BOM['BOM_type'];
-													$child_BOM_parent_BOM_ID = $row_get_child_BOM_list['parent_BOM_ID'];
-													
-														// LINK TO BOM?!
-														echo '<br /><a href="BOM_view.php?id=' . $child_BOM_ID . '">VIEW BOM</a>';
-										 
-												}
-										
-					 			  		 
-					 			  		 }
-					 			  	
-					 			  	?>
-					 			  </td>
-					 			</tr>
-					 			<?php 
-					 			
-					 			} // close the loop...
-					 			
-					 			?>
-					 		  </tbody>
-					 			
-					 		  <tfoot>
-					 			<tr>
-					 			  <th colspan="5">
-					 			  	TOTAL COMPONENTS: <?php echo $total_components; ?><br />
-					 			  	TOTAL SUB-ASSEMBLIES: <?php echo $total_assemblies; ?><br />
-					 			  	TOTAL ITEMS: <?php echo $grand_total_components; ?>
-					 			  </th>
-					 			</tr>
- 				 			  </tfoot>
-					 		</table>
-					 	   </div>
-					 	   
-					 	   
-					
 					</div>
-								  <div class="panel-footer">
-									<div class="text-right">
-											<a class="text-uppercase text-muted" href="BOM.php">(View All)</a>
-										</div>
-								  </div>
-								</div>
-							</section>
 							
 						</div>
 						
 						<div class="clearfix">&nbsp;</div>
-								  
-								  
-				
+						
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+
+						<div class="row">
+							
+							<h3>Child / Parent Parts</h3>
+							
+							<p class="lead">This revision is related to the following parts:</p>
+							
+							<div class="table-responsive">
+					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					 <thead>
+					  <tr>
+					    <th>ID</th>
+					    <th>Part #</th>
+					    <th>Revision</th>
+					    <th>Date Entered</th>
+					    <th>Type</th>
+					    <th><abbr title="Relationship">Rel.</abbr></th>
+					  </tr>
+					  </thead>
+					  
+					  <tbody>
+					  <?php
+					  
+					  $WHERE_SQL = " WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $rev_body_id;
+					  $order_by = " ORDER BY `date_entered` DESC";
+					  
+					  $get_BOM_y_list_SQL = "SELECT * FROM `product_BOM`" . $WHERE_SQL . $order_by;
+					  // echo $get_BOM_list_SQL;
+					  
+					  $BOM_count = 0;
+	
+					  $result_get_BOM_y_list = mysqli_query($con,$get_BOM_y_list_SQL);
+					  // while loop
+					  while($row_get_BOM_y_list = mysqli_fetch_array($result_get_BOM_y_list)) {
+					  
+					  	// GET BOM LIST:
+					  	
+					  	$BOM_y_ID = $row_get_BOM_y_list['ID'];
+					  	$BOM_y_part_rev_ID = $row_get_BOM_y_list['part_rev_ID']; // use this to look up
+					  	$BOM_y_date_entered = $row_get_BOM_y_list['date_entered'];
+					  	$BOM_y_record_status = $row_get_BOM_y_list['record_status'];
+					  	$BOM_y_created_by = $row_get_BOM_y_list['created_by'];
+					  	$BOM_y_type = $row_get_BOM_y_list['BOM_type'];
+					  	$BOM_y_parent_BOM_ID = $row_get_BOM_y_list['parent_BOM_ID'];
+					  	
+					  	
+					  	/* JOIN PLANNING:
+					  	PARTS: 
+					  	
+					  	`parts`.`ID` AS `part_ID`,
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`,
+					  	`parts`.`description`, 
+					  	`parts`.`type_ID`, 
+					  	`parts`.`classification_ID`, 
+					  	`parts`.`record_status`, 
+					  	`parts`.`product_type_ID`
+					  	
+					  	PART REVISIONS: 
+					  	
+					  	`part_revisions`.`ID` AS `rev_revision_ID`, 
+					  	`part_revisions`.`part_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`remarks`, 
+					  	`part_revisions`.`date_approved`, 
+					  	`part_revisions`.`user_ID`, 
+					  	`part_revisions`.`price_USD`, 
+					  	`part_revisions`.`weight_g`, 
+					  	`part_revisions`.`status_ID`, 
+					  	`part_revisions`.`material_ID`, 
+					  	`part_revisions`.`treatment_ID`, 
+					  	`part_revisions`.`treatment_notes`, 
+					  	`part_revisions`.`record_status`
+					  	
+					  	SO WE NEED:
+					  	
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`, 
+					  	`parts`.`type_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`part_ID`,
+					  	`part_revisions`.`part_ID`
+					  	
+					  	*/
+					  	
+					  	$combine_part_y_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $BOM_y_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+					    
+					    $result_get_rev_part_y_join = mysqli_query($con,$combine_part_y_and_rev_SQL);
+					    // while loop
+					    while($row_get_rev_part_y_join = mysqli_fetch_array($result_get_rev_part_y_join)) {
+					  
+					  		// GET BOM LIST:
+					  	
+					  		$y_rev_part_join_part_code = $row_get_rev_part_y_join['part_code'];
+							$y_rev_part_join_name_EN = $row_get_rev_part_y_join['name_EN'];
+							$y_rev_part_join_name_CN = $row_get_rev_part_y_join['name_CN'];
+							$y_rev_part_join_type_ID = $row_get_rev_part_y_join['type_ID'];
+							$y_rev_part_join_rev_num = $row_get_rev_part_y_join['revision_number'];
+							$y_rev_part_join_part_ID = $row_get_rev_part_y_join['part_ID'];
+							
+							} // end get BOM part / part rev data
+					  ?>
+					  
+					  <tr>
+					    <td>
+					      <a href="BOM_view.php?id=<?php echo $BOM_y_ID; ?>">
+					        <?php echo $BOM_y_ID; ?>
+					      </a> <em class="text-muted muted">(View BOM)</em>
+					    </td>
+					    <td>
+					      <a href="part_view.php?id=<?php echo $y_rev_part_join_part_ID; ?>">
+					        <?php echo $y_rev_part_join_part_code; ?> - <?php echo $y_rev_part_join_name_EN; if (($y_rev_part_join_name_CN!='')&&($y_rev_part_join_name_CN!='中文名')) { echo " / " . $y_rev_part_join_name_CN; }?>
+					      </a> <em class="text-muted muted">(View Part)</em>
+					    </td>
+					    <td><?php echo $y_rev_part_join_rev_num; ?></td>
+					    <td><?php echo date("Y-m-d", strtotime($BOM_y_date_entered)); ?></td>
+					    <td><?php echo $BOM_y_type; ?></td>
+					    <td>Parent</td>
+					  </tr>
+					  <?php 
+					  
+					  $BOM_count = $BOM_count + 1;
+					  
+					  } // end while loop
+					  
+					  /* ********************************************************** */
+					  // NOW FIND ANY RELATED BOM_LINE_ITEMS
+					  
+					  $WHERE_item_SQL = " WHERE `record_status` = 2 AND `parent_ID` = " . $rev_body_id;
+					  $item_order_by = " ORDER BY `date_entered` DESC";
+					  
+					  $get_BOM_item_list_SQL = "SELECT * FROM `product_BOM_items`" . $WHERE_item_SQL . $item_order_by;
+					  // echo $get_BOM_list_SQL;
+	
+					  $result_get_BOM_item_list = mysqli_query($con,$get_BOM_item_list_SQL);
+					  // while loop
+					  while($row_get_BOM_item_list = mysqli_fetch_array($result_get_BOM_item_list)) {
+					  
+					  	// GET BOM LIST:
+					  	
+					  	$BOM_item_ID = $row_get_BOM_item_list['ID'];
+					  	$BOM_item_part_rev_ID = $row_get_BOM_item_list['part_rev_ID']; // use this to look up
+					  	$BOM_item_date_entered = $row_get_BOM_item_list['date_entered'];
+					  	$BOM_item_record_status = $row_get_BOM_item_list['record_status'];
+					  	$BOM_item_created_by = $row_get_BOM_item_list['created_by'];
+					  	$BOM_item_type = $row_get_BOM_item_list['BOM_type'];
+					  	$BOM_item_parent_BOM_ID = $row_get_BOM_item_list['parent_BOM_ID'];
+					  	
+					  	
+					  	/* JOIN PLANNING:
+					  	PARTS: 
+					  	
+					  	`parts`.`ID` AS `part_ID`,
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`,
+					  	`parts`.`description`, 
+					  	`parts`.`type_ID`, 
+					  	`parts`.`classification_ID`, 
+					  	`parts`.`record_status`, 
+					  	`parts`.`product_type_ID`
+					  	
+					  	PART REVISIONS: 
+					  	
+					  	`part_revisions`.`ID` AS `rev_revision_ID`, 
+					  	`part_revisions`.`part_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`remarks`, 
+					  	`part_revisions`.`date_approved`, 
+					  	`part_revisions`.`user_ID`, 
+					  	`part_revisions`.`price_USD`, 
+					  	`part_revisions`.`weight_g`, 
+					  	`part_revisions`.`status_ID`, 
+					  	`part_revisions`.`material_ID`, 
+					  	`part_revisions`.`treatment_ID`, 
+					  	`part_revisions`.`treatment_notes`, 
+					  	`part_revisions`.`record_status`
+					  	
+					  	SO WE NEED:
+					  	
+					  	`parts`.`part_code`, 
+					  	`parts`.`name_EN`, 
+					  	`parts`.`name_CN`, 
+					  	`parts`.`type_ID`, 
+					  	`part_revisions`.`revision_number`, 
+					  	`part_revisions`.`part_ID`,
+					  	`part_revisions`.`part_ID`
+					  	
+					  	*/
+					  	
+					  	$combine_part_item_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $BOM_item_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+					    
+					    $result_get_item_rev_part_join = mysqli_query($con,$combine_part_item_and_rev_SQL);
+					    // while loop
+					    while($row_get_item_rev_part_join = mysqli_fetch_array($result_get_item_rev_part_join)) {
+					  
+					  		// GET BOM LIST:
+					  	
+					  		$item_rev_part_join_part_code = $row_get_item_rev_part_join['part_code'];
+							$item_rev_part_join_name_EN = $row_get_item_rev_part_join['name_EN'];
+							$item_rev_part_join_name_CN = $row_get_item_rev_part_join['name_CN'];
+							$item_rev_part_join_type_ID = $row_get_item_rev_part_join['type_ID'];
+							$item_rev_part_join_rev_num = $row_get_item_rev_part_join['revision_number'];
+							$item_rev_part_join_part_ID = $row_get_item_rev_part_join['part_ID'];
+							
+							} // end get BOM part / part rev data
+					  ?>
+					  
+					  <tr>
+					    <td>
+					      <a href="BOM_view.php?id=<?php echo $BOM_item_ID; ?>">
+					        <?php echo $BOM_item_ID; ?>
+					      </a> <em class="text-muted muted">(View BOM)</em>
+					    </td>
+					    <td>
+					      <a href="part_view.php?id=<?php echo $item_rev_part_join_part_ID; ?>">
+					        <?php echo $item_rev_part_join_part_code; ?> - <?php echo $item_rev_part_join_name_EN; if (($item_rev_part_join_name_CN!='')&&($item_rev_part_join_name_CN!='中文名')) { echo " / " . $item_rev_part_join_name_CN; }?>
+					      </a> <em class="text-muted muted">(View Part)</em>
+					    </td>
+					    <td><?php echo $item_rev_part_join_rev_num; ?></td>
+					    <td><?php echo date("Y-m-d", strtotime($BOM_item_date_entered)); ?></td>
+					    <td><?php echo $BOM_item_type; ?></td>
+					    <td>Child</td>
+					  </tr>
+					  <?php 
+					  
+					  $BOM_count = $BOM_count + 1;
+					  
+					  } // end while loop
+					  
+					  /* ********************************************************** */
+					  
+					  
+					  
+					  
+					  if ($BOM_count == 0) {
+					  		?>
+					  		<tr>
+					  		  <td colspan="6" class="text-danger">No related <acronym title="Bill Of Materials">BOM</acronym> records found</td>
+					  		</tr>
+					  		<?php
+					  }
+					  
+					  
+					  ?>
+					  </tbody>
+					  
+					  <tfoot>
+					  <tr>
+					    <th colspan="6">TOTAL: <?php echo $BOM_count; ?></th>
+					  </tr>
+					  </tfoot>
+					  
+					 </table>
+					</div>
+							
+						</div>
+						
+						<div class="clearfix">&nbsp;</div>
+							
+						
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->			
 									
 									<div class="row">
 							
-							<section class="panel">
-								<header class="panel-heading">
-									<div class="panel-actions">
-										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-									</div>
-
-									<h2 class="panel-title">
-										<span class="va-middle">Batch History</span>
-									</h2>
-								</header>
-								<div class="panel-body">
-									<div class="content">
+						<h3>Batch History</h3>
 								
 					<?php 
 					// firstly, let's make sure we have some batches to display...
@@ -1439,17 +1339,6 @@ pagehead($page_id);
 					} // END FOUND BATCHES ELSE STATEMENT
 					
 					?>
-					
-					
-					</div>
-								  <div class="panel-footer">
-									<div class="text-right">
-											<a class="text-uppercase text-muted" href="#">(View All)</a>
-										</div>
-								  </div>
-								</div>
-							</section>
-					
 						</div>
 <!-- ******************************************************************************************************** -->
 <!-- ******************************************************************************************************** -->

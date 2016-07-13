@@ -294,11 +294,24 @@ pagehead($page_id);
 						
 
 						<div class="row">
-							
-							<h3>Components / Sub-Assemblies</h3>
+						
+						<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+
+									<h2 class="panel-title">
+										<span class="va-middle">Components / Sub-Assemblies</span>
+									</h2>
+								</header>
+								<div class="panel-body">
+									<div class="content">
 							
 							<div class="table-responsive">
 							 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					  		  <thead>
 					  			<tr>
 					    			<th>Photo</th>
 					    			<th>Code</th>
@@ -306,7 +319,10 @@ pagehead($page_id);
 					    			<th><abbr title="Revision">Rev.</abbr></th>
 					    			<th>Type</th>
 					 			 </tr>
+					 		  </thead>
 					 			 
+					 			 
+					 		  <tbody>
 					 			 <?php 
 					 			 
 					 			 // GET THE ASSOCIATED PARTS
@@ -496,32 +512,38 @@ pagehead($page_id);
 					 			  <td>
 					 			  	<?php 
 					 			  	
-					 			  		echo $component_type_EN; if (($component_type_CN!='')&&($component_type_EN!='中文名')) { echo " / " . $component_type_CN; }
-					 			  		
+					 			  		echo $component_type_EN; 
+					 			  		if (($component_type_CN!='')&&($component_type_EN!='中文名')) { 
+					 			  			echo " / " . $component_type_CN; 
 					 			  		}
+					 			  		
+					 			  		// echo 'type ID = ' . $rev_part_join_part_type_ID . '<br />';
 					 			  		
 					 			  		// NOW FIND OUT IF IT'S AN ASSEMBLY, IN WHICH CASE LINK TO THE NEXT BOM!
 					 			  		if ($rev_part_join_part_type_ID == 10) {
 					 			  		
-					 			  			// GO GET THE CHILD INFO!
-					 			  			$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id;
-					 			  							 			  			
-											$result_get_child_BOM = mysqli_query($con,$get_child_BOM_SQL);
+												// GO GET THE CHILD INFO!
+												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID;
+																					
+												$result_get_child_BOM = mysqli_query($con,$get_child_BOM_SQL);
 
-											// while loop
-											while($row_get_child_BOM = mysqli_fetch_array($result_get_child_BOM)) {
-												$child_BOM_ID = $row_get_child_BOM['ID'];
-												$child_BOM_part_rev_ID = $row_get_child_BOM['part_rev_ID'];
-												$child_BOM_date_entered = $row_get_child_BOM['date_entered'];
-												$child_BOM_record_status = $row_get_child_BOM['record_status'];
-												$child_BOM_created_by = $row_get_child_BOM['created_by'];
-												$child_BOM_type = $row_get_child_BOM['BOM_type'];
-												$child_BOM_parent_BOM_ID = $row_get_child_BOM_list['parent_BOM_ID'];
-					 			  		
-					 			  		 			// LINK TO BOM?!
-					 			  		 			echo '<br /><a href="BOM_view.php?id=' . $child_BOM_ID . '">VIEW BOM</a>';
+												// while loop
+												while($row_get_child_BOM = mysqli_fetch_array($result_get_child_BOM)) {
+													$child_BOM_ID = $row_get_child_BOM['ID'];
+													$child_BOM_part_rev_ID = $row_get_child_BOM['part_rev_ID'];
+													$child_BOM_date_entered = $row_get_child_BOM['date_entered'];
+													$child_BOM_record_status = $row_get_child_BOM['record_status'];
+													$child_BOM_created_by = $row_get_child_BOM['created_by'];
+													$child_BOM_type = $row_get_child_BOM['BOM_type'];
+													$child_BOM_parent_BOM_ID = $row_get_child_BOM_list['parent_BOM_ID'];
+													
+														// LINK TO BOM?!
+														echo '<br /><a href="BOM_view.php?id=' . $child_BOM_ID . '">VIEW BOM</a>';
+										 
+												}
+										
 					 			  		 
-					 			  		 	}
+					 			  		 }
 					 			  	
 					 			  	?>
 					 			  </td>
@@ -531,16 +553,31 @@ pagehead($page_id);
 					 			} // close the loop...
 					 			
 					 			?>
+					 		  </tbody>
+					 			
+					 		  <tfoot>
 					 			<tr>
 					 			  <th colspan="5">
 					 			  	TOTAL COMPONENTS: <?php echo $total_components; ?><br />
 					 			  	TOTAL SUB-ASSEMBLIES: <?php echo $total_assemblies; ?><br />
-					 			  	TOTAL ITEMS: <?php echo $total_components; ?>
+					 			  	TOTAL ITEMS: <?php echo $grand_total_components; ?>
 					 			  </th>
 					 			</tr>
-					 			
+ 				 			  </tfoot>
 					 		</table>
 					 	   </div>
+					 	   
+					 	   
+							</div>
+								  <div class="panel-footer">
+									<div class="text-right">
+											<a class="text-uppercase text-muted" href="#">(View All)</a>
+										</div>
+								  </div>
+								</div>
+							</section>
+							
+							
 							
 						</div>
 						
