@@ -216,34 +216,67 @@ pagehead($page_id);
 					
 					<div class="row">
 						<div class="col-md-12">
-						<!-- PART JUMPER -->
+						<!-- BOM JUMPER -->
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
                               <option value="#" selected="selected">JUMP TO ANOTHER BOM / 看别的:</option>
                               <option value="BOM.php">View All / 看全部</option>
-                              <?php 	
-								/* 		****** REPLACE THIS WITH THE BOM LOOKUP, BUT SORT BY BOM TYPE - REQUIRES JOIN SQL... 
-							$get_j_parts_SQL = "SELECT * FROM `product_BOM`";
-					  		// echo $get_parts_SQL;
+                              <?php
+					  
+					  $j_WHERE_SQL = " WHERE `record_status` = 2";
+					  
+					  $j_order_by = " ORDER BY `BOM_type` ASC";
+					  
+					  $j_get_BOM_list_SQL = "SELECT * FROM `product_BOM`" . $j_WHERE_SQL . $j_order_by;
+					  // echo $get_BOM_list_SQL;
+					  
+					  $j_BOM_count = 0;
 	
-					  		$result_get_j_parts = mysqli_query($con,$get_j_parts_SQL);
-					  		// while loop
-					  		while($row_get_j_parts = mysqli_fetch_array($result_get_j_parts)) {
-					  		
-								$j_part_ID = $row_get_j_parts['ID'];
-								$j_part_code = $row_get_j_parts['part_code'];
-								$j_part_name_EN = $row_get_j_parts['name_EN'];
-								$j_part_name_CN = $row_get_j_parts['name_CN'];
-								$j_part_description = $row_get_j_parts['description'];
-								$j_part_type_ID = $row_get_j_parts['type_ID'];
-								$j_part_classification_ID = $row_get_j_parts['classification_ID'];
-										
-							   ?>
-                              <option value="part_view.php?id=<?php echo $j_part_ID; ?>"><?php echo $j_part_code; ?> - <?php echo $j_part_name_EN; if (($j_part_name_CN != '')&&($j_part_name_CN != '中文名')) { ?> / <?php echo $j_part_name_CN; } ?></option>
-                              <?php 
-							  } // end get part list 
-							  */ 
-							  ?>
-                              <option value="parts.php">View All / 看全部</option>
+					  $j_result_get_BOM_list = mysqli_query($con,$j_get_BOM_list_SQL);
+					  // while loop
+					  while($j_row_get_BOM_list = mysqli_fetch_array($j_result_get_BOM_list)) {
+					  
+					  	// GET BOM LIST:
+					  	
+					  	$j_BOM_ID = 				$j_row_get_BOM_list['ID'];
+					  	$j_BOM_part_rev_ID = 		$j_row_get_BOM_list['part_rev_ID']; // use this to look up
+					  	$j_BOM_date_entered = 		$j_row_get_BOM_list['date_entered'];
+					  	$j_BOM_record_status = 		$j_row_get_BOM_list['record_status'];
+					  	$j_BOM_created_by = 		$j_row_get_BOM_list['created_by'];
+					  	$j_BOM_type = 				$j_row_get_BOM_list['BOM_type'];
+					  	$j_BOM_parent_BOM_ID = 		$j_row_get_BOM_list['parent_BOM_ID'];
+					  	
+					  	/* ********* */
+					  	
+					  	$j_combine_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $j_BOM_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+					    
+					    $j_result_get_rev_part_join = mysqli_query($con,$j_combine_part_and_rev_SQL);
+					    // while loop
+					    while($j_row_get_rev_part_join = mysqli_fetch_array($j_result_get_rev_part_join)) {
+					  
+					  		// GET BOM LIST:
+					  	
+					  		$j_rev_part_join_part_code = 	$j_row_get_rev_part_join['part_code'];
+							$j_rev_part_join_name_EN = 		$j_row_get_rev_part_join['name_EN'];
+							$j_rev_part_join_name_CN = 		$j_row_get_rev_part_join['name_CN'];
+							$j_rev_part_join_type_ID = 		$j_row_get_rev_part_join['type_ID'];
+							$j_rev_part_join_rev_num = 		$j_row_get_rev_part_join['revision_number'];
+							$j_rev_part_join_part_ID = 		$j_row_get_rev_part_join['part_ID'];
+							
+							} // end get BOM part / part rev data
+					  ?>
+					  <option value="BOM_view.php?id=<?php echo $j_BOM_ID; ?>">
+					    <?php 
+					    	echo $j_rev_part_join_part_code; 
+					    ?> - <?php 
+					    	echo $j_rev_part_join_name_EN; 
+					    	if (($j_rev_part_join_name_CN != '')&&($j_rev_part_join_name_CN != '中文名')) { 
+					    		?> / <?php echo $j_rev_part_join_name_CN; 
+					    	} ?> (<?php echo $j_BOM_type; ?>)
+					  </option>
+					  <?php
+					  } // end while loop
+					  ?>
+                              <option value="BOM.php">View All / 看全部</option>
                              </select>
                             <!-- / PART JUMPER -->
 						</div>
@@ -330,7 +363,7 @@ pagehead($page_id);
 								 $total_components = 0;
 								 $total_assemblies = 0;
 					 			 
-					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $record_id . " AND  `record_status` =2";
+					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $record_id . " AND  `record_status` =2 ORDER BY `entry_order` ASC";
 					 			 
 					 			 // DEBUG:
 					 			 // echo $get_components_SQL;
@@ -410,6 +443,8 @@ pagehead($page_id);
 										$rev_part_join_type_ID = $row_get_rev_part_join['type_ID'];
 										$rev_part_join_rev_num = $row_get_rev_part_join['revision_number'];
 										$rev_part_join_part_ID = $row_get_rev_part_join['part_ID'];
+										
+										// echo 'PTID = ' . $rev_part_join_type_ID;
 										
 											// GET COMPONENT PART TYPE:
 											$get_component_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` =" . $rev_part_join_part_type_ID;
@@ -495,35 +530,23 @@ pagehead($page_id);
 					 			  	</a>
 					 			  </td>
 					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					 			  		<?php 
-					 			  			echo $rev_part_join_name_EN; 
-					 			  			if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { 
-					 			  				echo " / " . $rev_part_join_name_CN; 
-					 			  			} 
-					 			  		?>
-					 			  	</a>
-					 			  </td>
-					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					 			  		<?php echo $rev_part_join_rev_num; ?>
-					 			  	</a>
-					 			  </td>
-					 			  <td>
+										<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
+											<?php 
+												echo $rev_part_join_name_EN; 
+												if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { 
+													echo " / " . $rev_part_join_name_CN; 
+												}
+											 
+											?>
+										</a>
 					 			  	<?php 
-					 			  	
-					 			  		echo $component_type_EN; 
-					 			  		if (($component_type_CN!='')&&($component_type_EN!='中文名')) { 
-					 			  			echo " / " . $component_type_CN; 
-					 			  		}
-					 			  		
-					 			  		// echo 'type ID = ' . $rev_part_join_part_type_ID . '<br />';
-					 			  		
-					 			  		// NOW FIND OUT IF IT'S AN ASSEMBLY, IN WHICH CASE LINK TO THE NEXT BOM!
-					 			  		if ($rev_part_join_part_type_ID == 10) {
-					 			  		
-												// GO GET THE CHILD INFO!
-												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID;
+					 			  			if ($rev_part_join_part_type_ID == 10) {
+					 			  			
+					 			  			
+					 			  			// GO GET THE CHILD INFO!
+												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID . " ORDER BY `entry_order` ASC";
+												// debug
+												echo "SQL: " . $get_child_BOM_SQL;
 																					
 												$result_get_child_BOM = mysqli_query($con,$get_child_BOM_SQL);
 
@@ -536,11 +559,58 @@ pagehead($page_id);
 													$child_BOM_created_by = $row_get_child_BOM['created_by'];
 													$child_BOM_type = $row_get_child_BOM['BOM_type'];
 													$child_BOM_parent_BOM_ID = $row_get_child_BOM_list['parent_BOM_ID'];
-													
-														// LINK TO BOM?!
-														echo '<br /><a href="BOM_view.php?id=' . $child_BOM_ID . '">VIEW BOM</a>';
 										 
 												}
+					 			  			 
+					 			  				?>
+					 			  				<br />
+					 			  				<a href="BOM_view.php?id=" class="btn btn-info">
+					 			  					<i class="fa fa-cogs"></i> BOM # x
+					 			  				</a>
+					 			  				<?php
+					 			  			}
+					 			  	?>
+					 			  </td>
+					 			  <td>
+					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-warning">
+					 			  		<?php echo $rev_part_join_rev_num; ?>
+					 			  	</a>
+					 			  	<br /><span class="muted"><?php echo $components_BOM_item_ID; ?></span>
+					 			  </td>
+					 			  <td>
+					 			  	<?php 
+					 			  	
+					 			  		// if ($rev_part_join_part_type_ID == 10) { echo '10<br />'; }
+					 			  	
+					 			  		echo $component_type_EN; 
+					 			  		if (($component_type_CN!='')&&($component_type_EN!='中文名')) { 
+					 			  			echo " / " . $component_type_CN; 
+					 			  		}
+					 			  		
+					 			  		// echo 'type ID = ' . $rev_part_join_part_type_ID . '<br />';
+					 			  		
+					 			  		// NOW FIND OUT IF IT'S AN ASSEMBLY, IN WHICH CASE LINK TO THE NEXT BOM!
+					 			  		if ($rev_part_join_part_type_ID == 10) {
+					 			  		
+												// GO GET THE CHILD INFO!
+												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID . " ORDER BY `entry_order` ASC";
+																					
+												$result_get_child_BOM = mysqli_query($con,$get_child_BOM_SQL);
+
+												// while loop
+												while($row_get_child_BOM = mysqli_fetch_array($result_get_child_BOM)) {
+													$child_BOM_ID = $row_get_child_BOM['ID'];
+													$child_BOM_part_rev_ID = $row_get_child_BOM['part_rev_ID'];
+													$child_BOM_date_entered = $row_get_child_BOM['date_entered'];
+													$child_BOM_record_status = $row_get_child_BOM['record_status'];
+													$child_BOM_created_by = $row_get_child_BOM['created_by'];
+													$child_BOM_type = $row_get_child_BOM['BOM_type'];
+													$child_BOM_parent_BOM_ID = $row_get_child_BOM_list['parent_BOM_ID'];
+										 
+												}
+													
+												// LINK TO BOM?!
+												echo '<br /><a href="BOM_view.php?id=' . $child_BOM_ID . '">VIEW BOM</a>';
 										
 					 			  		 
 					 			  		 }

@@ -697,7 +697,7 @@ pagehead($page_id);
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					 <thead>
 					  <tr>
-					  	<th>BOM ID</th>
+					  	<th><abbr title="Bill Of Materials">BOM</abbr></th>
 					    <th>Part Info</th>
 					    <th>Revision</th>
 					    <th>Date Entered</th>
@@ -800,18 +800,35 @@ pagehead($page_id);
 					  
 								  <tr>
 									<td>
-									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>">
-										<?php echo $BOM_ID; ?>
-									  </a> <em class="text-muted muted">(View BOM)</em>
+									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a>
 									</td>
 									<td>
+									
+									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-info"><i class="fa fa-info-circle"></i> PART #<?php echo $rev_part_join_part_code; ?></a>
+									  
 									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-										<?php echo $rev_part_join_part_code; ?> - <?php echo $rev_part_join_name_EN; if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { echo " / " . $rev_part_join_name_CN; }?>
-									  </a> <em class="text-muted muted">(View Part)</em>
+										<?php echo $rev_part_join_name_EN; if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { echo " / " . $rev_part_join_name_CN; }?>
+									  </a>
 									</td>
-									<td><?php echo $rev_part_join_rev_num; ?></td>
+									<td>
+									  <a class="btn btn-warning">
+										<?php echo $rev_part_join_rev_num; ?>
+									  </a>
+									</td>
 									<td><?php echo date("Y-m-d", strtotime($BOM_date_entered)); ?></td>
-									<td><?php echo $BOM_type; ?></td>
+									<td>
+									<?php 
+											if ($BOM_type == 'sub') {
+												echo '<abbr title="Sub-assembly">';
+											}
+											else if ($BOM_type == 'final') {
+												echo '<abbr title="Final product">';
+											}
+											else { 
+												echo '<abbr title="error?">';
+											}
+											echo $BOM_type . '</abbr>'; 
+									?></td>
 								  </tr>
 								  <?php 
 					  
@@ -927,18 +944,32 @@ pagehead($page_id);
 					  
 												  <tr>
 													<td>
-													  <a href="BOM_view.php?id=<?php echo $this_BOM_ID; ?>">
-														<?php echo $this_BOM_ID; ?>
-													  </a> <em class="text-muted muted">(View BOM)</em>
+													  <a href="BOM_view.php?id=<?php echo $this_BOM_ID; ?>" class="btn btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $this_BOM_ID; ?></a>
 													</td>
 													<td>
+					     							  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>" class="btn btn-info"><i class="fa fa-info-circle"></i> PART #<?php echo $this_rev_part_join_part_code; ?></a>
 													  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>">
-														<?php echo $this_rev_part_join_part_code; ?> - <?php echo $this_rev_part_join_name_EN; if (($this_rev_part_join_name_CN!='')&&($this_rev_part_join_name_CN!='中文名')) { echo " / " . $this_rev_part_join_name_CN; }?>
-													  </a> <em class="text-muted muted">(View Part)</em>
+														<?php echo $this_rev_part_join_name_EN; if (($this_rev_part_join_name_CN!='')&&($this_rev_part_join_name_CN!='中文名')) { echo " / " . $this_rev_part_join_name_CN; }?>
+													  </a>
 													</td>
-													<td><?php echo $this_rev_part_join_rev_num; ?></td>
+													<td>
+													  <a class="btn btn-warning">
+													    <?php echo $this_rev_part_join_rev_num; ?>
+													  </a>
+													</td>
 													<td><?php echo date("Y-m-d", strtotime($this_BOM_date_entered)); ?></td>
-													<td><?php echo $this_BOM_type; ?></td>
+													<td><?php 
+															if ($this_BOM_type == 'sub') {
+																echo '<abbr title="Sub-assembly">';
+															}
+															else if ($this_BOM_type == 'final') {
+																echo '<abbr title="Final product">';
+															}
+															else { 
+																echo '<abbr title="error?">';
+															}
+															echo $this_BOM_type . '</abbr>'; 
+													?></td>
 												  </tr>
 												  <?php 
 					  
@@ -1013,7 +1044,7 @@ pagehead($page_id);
 								 $total_components = 0;
 								 $total_assemblies = 0;
 					 			 
-					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $find_BOM . " AND  `record_status` =2";
+					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $find_BOM . " AND  `record_status` =2 ORDER BY `entry_order` ASC";
 					 			 
 					 			 // DEBUG:
 					 			 // echo $get_components_SQL;
@@ -1188,7 +1219,7 @@ pagehead($page_id);
 					 			  	</a>
 					 			  </td>
 					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
+					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-warning">
 					 			  		<?php echo $rev_part_join_rev_num; ?>
 					 			  	</a>
 					 			  </td>
@@ -1206,7 +1237,7 @@ pagehead($page_id);
 					 			  		if ($rev_part_join_part_type_ID == 10) {
 					 			  		
 												// GO GET THE CHILD INFO!
-												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID;
+												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID . "  ORDER BY `entry_order` ASC";
 																					
 												$result_get_child_BOM = mysqli_query($con,$get_child_BOM_SQL);
 
@@ -1219,11 +1250,11 @@ pagehead($page_id);
 													$child_BOM_created_by = $row_get_child_BOM['created_by'];
 													$child_BOM_type = $row_get_child_BOM['BOM_type'];
 													$child_BOM_parent_BOM_ID = $row_get_child_BOM_list['parent_BOM_ID'];
-													
-														// LINK TO BOM?!
-														echo '<br /><a href="BOM_view.php?id=' . $child_BOM_ID . '">VIEW BOM</a>';
 										 
 												}
+													
+												// LINK TO BOM?!
+												echo '<br /><a href="BOM_view.php?id=' . $child_BOM_ID . '">VIEW BOM</a>';
 										
 					 			  		 
 					 			  		 }

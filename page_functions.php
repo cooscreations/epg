@@ -31,27 +31,125 @@
 	while($row_get_page = mysqli_fetch_array($result_get_page)) {
 		
 			// set vars:  
-			$page_id = $row_get_page['ID'];
-			$page_name_EN = $row_get_page['name_EN'];
-			$page_name_CN = $row_get_page['name_CN'];
-			$page_parent_ID = $row_get_page['parent_ID'];
-			$page_dept_ID = $row_get_page['dept_ID'];
-			$page_main_menu = $row_get_page['main_menu'];
-			$page_footer_menu = $row_get_page['footer_menu'];
-			$page_filename = $row_get_page['filename'];
-			$page_icon = $row_get_page['icon'];
-			$page_privacy = $row_get_page['privacy'];
-			$page_min_user_level = $row_get_page['min_user_level'];
-			$page_created_by = $row_get_page['created_by'];
-			$page_date_created = $row_get_page['date_created'];
-			$page_status = $row_get_page['status'];
-			$page_order = $row_get_page['order'];
-			$page_og_locale = $row_get_page['og_locale'];
-			$page_og_type = $row_get_page['og_type'];
-			$page_og_desc = $row_get_page['og_desc'];
-			$page_og_section = $row_get_page['og_section'];
-			$page_side_bar_config = $row_get_page['side_bar_config'];
-			$page_lookup_table = $row_get_page['lookup_table'];
+			$page_id 				= $row_get_page['ID'];
+			$page_name_EN 			= $row_get_page['name_EN'];
+			$page_name_CN 			= $row_get_page['name_CN'];
+			$page_parent_ID 		= $row_get_page['parent_ID'];
+			$page_dept_ID 			= $row_get_page['dept_ID'];
+			$page_main_menu 		= $row_get_page['main_menu'];
+			$page_footer_menu 		= $row_get_page['footer_menu'];
+			$page_filename 			= $row_get_page['filename'];
+			$page_icon 				= $row_get_page['icon'];
+			$page_privacy 			= $row_get_page['privacy'];
+			$page_min_user_level 	= $row_get_page['min_user_level'];
+			$page_created_by 		= $row_get_page['created_by'];
+			$page_date_created 		= $row_get_page['date_created'];
+			$page_status 			= $row_get_page['status'];
+			$page_order 			= $row_get_page['order'];
+			$page_og_locale 		= $row_get_page['og_locale'];
+			$page_og_type 			= $row_get_page['og_type'];
+			$page_og_desc 			= $row_get_page['og_desc'];
+			$page_og_section 		= $row_get_page['og_section'];
+			$page_side_bar_config 	= $row_get_page['side_bar_config'];
+			$page_lookup_table 		= $row_get_page['lookup_table']; // look up info for TITLE tag!
+			
+			$add_title_info = ''; // DEFAULT IS NIL
+			if ($page_lookup_table!='') {
+			
+				// ID number SHOULD be $_REQUEST['id'];
+				
+				$record_to_find = $_REQUEST['id'];
+				if ($record_to_find == '') {
+					$record_to_find = $_REQUEST['ID']; // sloppy!
+				}
+				
+				$get_title_extra_SQL = "SELECT * FROM `" . $page_lookup_table . "` WHERE `ID` = '" . $record_to_find . "'";
+				$result_get_title_extra = mysqli_query($con,$get_title_extra_SQL);
+				// while loop
+				while($row_get_title_extra = mysqli_fetch_array($result_get_title_extra)) {
+		
+						// set vars: 
+						
+						
+						// DEFAULT:							
+						$add_title_info = " - " . $row_get_title_extra['name_EN'];
+						if (($row_get_title_extra['name_CN']!='')&&($row_get_title_extra['name_CN']!='中文名')){
+							$add_title_info .= " / " . $row_get_title_extra['name_CN'];
+						} 
+			
+						// we can get more info for the TITLE tag!
+						if ($page_lookup_table == 'users') {
+							$add_title_info = " - " . $row_get_title_extra['first_name'] . " " . $row_get_title_extra['last_name'];
+						if (($row_get_title_extra['name_CN']!='')&&($row_get_title_extra['name_CN']!='中文名')){
+							$add_title_info .= " / " . $row_get_title_extra['name_CN'];
+						} 
+							
+						}
+						else if ($page_lookup_table == 'suppliers') {
+							$add_title_info .= " (" . $row_get_title_extra['epg_supplier_ID'] . ")"; // appended
+						}
+						else if ($page_lookup_table == 'purchase_orders') {
+							$add_title_info = "PO # " . $row_get_title_extra['PO_number']; // this is NOT appended - it overwrites!
+						}
+						else if ($page_lookup_table == 'product_type') {
+							$add_title_info .= " (Code: " . $row_get_title_extra['product_type_code'] . ")"; // appended
+						}
+						else if ($page_lookup_table == 'product_categories') {
+							$add_title_info .= " (Code: " . $row_get_title_extra['cat_code'] . ")"; // appended
+						}
+						else if ($page_lookup_table == 'parts') {
+							$add_title_info .= " (Code: " . $row_get_title_extra['part_code'] . ")"; // appended
+						}
+						else if ($page_lookup_table == 'part_batch') {
+							$add_title_info = "BATCH # " . $row_get_title_extra['batch_number']; // this is NOT appended - it overwrites!
+						}
+						/* THE FOLLOWING ARE TAKEN CARE OF BY THE DEFAULT AT THE START / TOP ^^^
+						else if ($page_lookup_table == 'pages') {
+							name_EN
+							name_CN
+						}
+						else if ($page_lookup_table == 'material') {
+							name_EN
+							name_CN
+						}
+						else if ($page_lookup_table == 'countries') {
+							name_EN
+							name_CN
+						}
+						else if ($page_lookup_table == 'part_type') {
+							name_EN
+							name_CN
+						}
+						else if ($page_lookup_table == 'part_treatment') {
+							name_EN
+							name_CN
+						}
+						*/
+						else if ($page_lookup_table == 'product_BOM') {
+							
+							$combine_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $row_get_title_extra['part_rev_ID'] . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+							
+							$result_get_rev_part_join = mysqli_query($con,$combine_part_and_rev_SQL);
+							// while loop
+							while($row_get_rev_part_join = mysqli_fetch_array($result_get_rev_part_join)) {
+								
+								// NOW WRITE THE DATA:						
+								$add_title_info = " - " . $row_get_rev_part_join['name_EN'];
+								if (($row_get_rev_part_join['name_CN']!='')&&($row_get_rev_part_join['name_CN']!='中文名')){
+									$add_title_info .= " / " . $row_get_rev_part_join['name_CN'];
+								} 
+								$add_title_info .= " (Code: " . $row_get_rev_part_join['part_code'] . ", Rev. " . $row_get_rev_part_join['revision_number'] . ")";
+					
+							} // end get BOM part / part rev data
+						}
+						else if ($page_lookup_table == 'products') {
+							// NOT USED, as this was moved to the parts.php?show=products page :)
+						}
+						else {
+							// what else is there?
+						}
+				} // END LOOK UP EXTRA INFO!
+			}
 			
 			$pages_found = $pages_found + 1;
 	}	
@@ -83,7 +181,11 @@
 		
 		if (($page_name_CN!='')&&($page_name_CN!='中文名')) {
 			echo " / " . $page_name_CN;
-		} ?></title>
+		} 
+		
+		echo $add_title_info;
+		
+		?></title>
 		<meta name="keywords" content="EPG Connect, <?php 
 		// get the page name from our result set now ^_^
 		echo $page_name_EN;
