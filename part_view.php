@@ -407,7 +407,7 @@ pagehead($page_id);
 							
 							
 							
-							
+							<?php if ($type_ID!=10) { // DON'T SHOW SUPPLIER INFO FOR ASSEMBLIES! ?>
 							
 							
 							<!-- SHOW DEFAULT SUPPLIER PANEL: -->
@@ -535,6 +535,11 @@ pagehead($page_id);
 							
 							
 							<!-- END DEFAULT SUPPLIER PANEL -->
+							
+							
+							<?php 
+							} // end of check for if 'type_ID' != 10 
+							?>
 							
 							
 							<section class="panel">
