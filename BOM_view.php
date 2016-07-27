@@ -395,6 +395,7 @@ pagehead($page_id);
 					    			<th>Photo</th>
 					    			<th>Code</th>
 					    			<th>Name / 名字</th>
+					    			<th>Usage</th>
 					    			<th><abbr title="Revision">Rev.</abbr></th>
 					    			<th>Type</th>
 					 			 </tr>
@@ -425,6 +426,7 @@ pagehead($page_id);
 									$components_date_entered = $row_get_components['date_entered'];
 									$components_record_status = $row_get_components['record_status']; // should be 2 (published)
 									$components_entry_order = $row_get_components['entry_order'];
+									$components_usage_qty = $row_get_components['usage_qty'];
 									// echo 'OK';
 									// now get the rev and part info:
 									
@@ -621,6 +623,7 @@ pagehead($page_id);
 					 			  			}
 					 			  	?>
 					 			  </td>
+					 			  <td class="text-center"><?php echo $components_usage_qty; ?></td>
 					 			  <td>
 					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev. #: <?php echo $components_part_rev_ID; ?>">
 					 			  		<?php echo $rev_part_join_rev_num; ?>
@@ -666,14 +669,15 @@ pagehead($page_id);
 														 $a_result_get_components = mysqli_query($con,$a_get_components_SQL);
 														 // while loop
 														 while($a_row_get_components = mysqli_fetch_array($a_result_get_components)) {
-															$a_components_BOM_item_ID = $a_row_get_components['ID'];
-															$a_components_product_BOM_ID = $a_row_get_components['product_BOM_ID']; // should be same as $a_record_ID
-															$a_components_part_rev_ID = $a_row_get_components['part_rev_ID'];
-															$a_components_parent_ID = $a_row_get_components['parent_ID'];
-															$a_components_created_by = $a_row_get_components['created_by'];
-															$a_components_date_entered = $a_row_get_components['date_entered'];
-															$a_components_record_status = $a_row_get_components['record_status']; // should be 2 (published)
-															$a_components_entry_order = $a_row_get_components['entry_order'];
+															$a_components_BOM_item_ID = 	$a_row_get_components['ID'];
+															$a_components_product_BOM_ID = 	$a_row_get_components['product_BOM_ID']; // should be same as $a_record_ID
+															$a_components_part_rev_ID = 	$a_row_get_components['part_rev_ID'];
+															$a_components_parent_ID = 		$a_row_get_components['parent_ID'];
+															$a_components_created_by = 		$a_row_get_components['created_by'];
+															$a_components_date_entered = 	$a_row_get_components['date_entered'];
+															$a_components_record_status = 	$a_row_get_components['record_status']; // should be 2 (published)
+															$a_components_entry_order = 	$a_row_get_components['entry_order'];
+															$a_components_usage_qty = 		$a_row_get_components['usage_qty'];
 															// echo 'OK';
 															// now get the rev and part info:
 									
@@ -830,6 +834,7 @@ pagehead($page_id);
 																	}
 															?>
 														  </td>
+					 			 						  <td class="text-center"><?php echo $a_components_usage_qty; ?></td>	
 														  <td>
 															<a href="part_view.php?id=<?php echo $a_rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev. #: <?php echo $a_components_part_rev_ID; ?>">
 																<?php echo $a_rev_part_join_rev_num; ?>
@@ -875,14 +880,15 @@ pagehead($page_id);
 																				 $b_result_get_components = mysqli_query($con,$b_get_components_SQL);
 																				 // while loop
 																				 while($b_row_get_components = mysqli_fetch_array($b_result_get_components)) {
-																					$b_components_BOM_item_ID = $b_row_get_components['ID'];
-																					$b_components_product_BOM_ID = $b_row_get_components['product_BOM_ID']; // should be same as $b_record_ID
-																					$b_components_part_rev_ID = $b_row_get_components['part_rev_ID'];
-																					$b_components_parent_ID = $b_row_get_components['parent_ID'];
-																					$b_components_created_by = $b_row_get_components['created_by'];
-																					$b_components_date_entered = $b_row_get_components['date_entered'];
-																					$b_components_record_status = $b_row_get_components['record_status']; // should be 2 (published)
-																					$b_components_entry_order = $b_row_get_components['entry_order'];
+																					$b_components_BOM_item_ID = 	$b_row_get_components['ID'];
+																					$b_components_product_BOM_ID = 	$b_row_get_components['product_BOM_ID']; // should be same as $b_record_ID
+																					$b_components_part_rev_ID = 	$b_row_get_components['part_rev_ID'];
+																					$b_components_parent_ID = 		$b_row_get_components['parent_ID'];
+																					$b_components_created_by = 		$b_row_get_components['created_by'];
+																					$b_components_date_entered = 	$b_row_get_components['date_entered'];
+																					$b_components_record_status = 	$b_row_get_components['record_status']; // should be 2 (published)
+																					$b_components_entry_order = 	$b_row_get_components['entry_order'];
+																					$b_components_usage_qty = 		$b_row_get_components['usage_qty'];
 																					// echo 'OK';
 																					// now get the rev and part info:
 									
@@ -1041,6 +1047,7 @@ pagehead($page_id);
 																							}
 																					?>
 																				  </td>
+					 			 						  						  <td class="text-center"><?php echo $b_components_usage_qty; ?></td>
 																				  <td>
 																					<a href="part_view.php?id=<?php echo $b_rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev. #: <?php echo $a_components_part_rev_ID; ?>">
 																						<?php echo $b_rev_part_join_rev_num; ?>
@@ -1084,14 +1091,15 @@ pagehead($page_id);
 																												 $c_result_get_components = mysqli_query($con,$c_get_components_SQL);
 																												 // while loop
 																												 while($c_row_get_components = mysqli_fetch_array($c_result_get_components)) {
-																													$c_components_BOM_item_ID = $c_row_get_components['ID'];
-																													$c_components_product_BOM_ID = $c_row_get_components['product_BOM_ID']; // should be same as $c_record_ID
-																													$c_components_part_rev_ID = $c_row_get_components['part_rev_ID'];
-																													$c_components_parent_ID = $c_row_get_components['parent_ID'];
-																													$c_components_created_by = $c_row_get_components['created_by'];
-																													$c_components_date_entered = $c_row_get_components['date_entered'];
-																													$c_components_record_status = $c_row_get_components['record_status']; // should be 2 (published)
-																													$c_components_entry_order = $c_row_get_components['entry_order'];
+																													$c_components_BOM_item_ID = 	$c_row_get_components['ID'];
+																													$c_components_product_BOM_ID = 	$c_row_get_components['product_BOM_ID']; // should be same as $c_record_ID
+																													$c_components_part_rev_ID = 	$c_row_get_components['part_rev_ID'];
+																													$c_components_parent_ID = 		$c_row_get_components['parent_ID'];
+																													$c_components_created_by = 		$c_row_get_components['created_by'];
+																													$c_components_date_entered = 	$c_row_get_components['date_entered'];
+																													$c_components_record_status = 	$c_row_get_components['record_status']; // should be 2 (published)
+																													$c_components_entry_order = 	$c_row_get_components['entry_order'];
+																													$c_components_usage_qty = 		$c_row_get_components['usage_qty'];
 																													// echo 'OK';
 																													// now get the rev and part info:
 									
@@ -1251,6 +1259,7 @@ pagehead($page_id);
 																															}
 																													?>
 																												  </td>
+					 			 						  						  								  <td class="text-center"><?php echo $c_components_usage_qty; ?></td>
 																												  <td>
 																													<a href="part_view.php?id=<?php echo $c_rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev. #: <?php echo $c_components_part_rev_ID; ?>">
 																														<?php echo $c_rev_part_join_rev_num; ?>
@@ -1296,14 +1305,15 @@ pagehead($page_id);
 																																				 $d_result_get_components = mysqli_query($con,$d_get_components_SQL);
 																																				 // while loop
 																																				 while($d_row_get_components = mysqli_fetch_array($d_result_get_components)) {
-																																					$d_components_BOM_item_ID = $d_row_get_components['ID'];
-																																					$d_components_product_BOM_ID = $d_row_get_components['product_BOM_ID']; // should be same as $d_record_ID
-																																					$d_components_part_rev_ID = $d_row_get_components['part_rev_ID'];
-																																					$d_components_parent_ID = $d_row_get_components['parent_ID'];
-																																					$d_components_created_by = $d_row_get_components['created_by'];
-																																					$d_components_date_entered = $d_row_get_components['date_entered'];
-																																					$d_components_record_status = $d_row_get_components['record_status']; // should be 2 (published)
-																																					$d_components_entry_order = $d_row_get_components['entry_order'];
+																																					$d_components_BOM_item_ID = 	$d_row_get_components['ID'];
+																																					$d_components_product_BOM_ID = 	$d_row_get_components['product_BOM_ID']; // should be same as $d_record_ID
+																																					$d_components_part_rev_ID = 	$d_row_get_components['part_rev_ID'];
+																																					$d_components_parent_ID = 		$d_row_get_components['parent_ID'];
+																																					$d_components_created_by = 		$d_row_get_components['created_by'];
+																																					$d_components_date_entered = 	$d_row_get_components['date_entered'];
+																																					$d_components_record_status = 	$d_row_get_components['record_status']; // should be 2 (published)
+																																					$d_components_entry_order = 	$d_row_get_components['entry_order'];
+																																					$d_components_usage_qty = 		$d_row_get_components['usage_qty'];
 																																					// echo 'OK';
 																																					// now get the rev and part info:
 
@@ -1463,6 +1473,7 @@ pagehead($page_id);
 																																							}
 																																					?>
 																																				  </td>
+																																				  <td class="text-center"><?php echo $d_components_usage_qty; ?></td>
 																																				  <td>
 																																					<a href="part_view.php?id=<?php echo $d_rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev. #: <?php echo $d_components_part_rev_ID; ?>">
 																																						<?php echo $d_rev_part_join_rev_num; ?>
@@ -1487,7 +1498,7 @@ pagehead($page_id);
 																																				
 																																				
 																																				
-																																														/* ********************************************************* */
+/* PLEASE SCROLL RIGHT >>>>>> ^_^ */																																					/* ********************************************************* */
 																																														/* ********************************************************* */
 																																														/* ********************************************************* */
 																																														/* ********************************************************* */
@@ -1509,14 +1520,15 @@ pagehead($page_id);
 																																															 $e_result_get_components = mysqli_query($con,$e_get_components_SQL);
 																																															 // while loop
 																																															 while($e_row_get_components = mysqli_fetch_array($e_result_get_components)) {
-																																																$e_components_BOM_item_ID = $e_row_get_components['ID'];
-																																																$e_components_product_BOM_ID = $e_row_get_components['product_BOM_ID']; // should be same as $e_record_ID
-																																																$e_components_part_rev_ID = $e_row_get_components['part_rev_ID'];
-																																																$e_components_parent_ID = $e_row_get_components['parent_ID'];
-																																																$e_components_created_by = $e_row_get_components['created_by'];
-																																																$e_components_date_entered = $e_row_get_components['date_entered'];
-																																																$e_components_record_status = $e_row_get_components['record_status']; // should be 2 (published)
-																																																$e_components_entry_order = $e_row_get_components['entry_order'];
+																																																$e_components_BOM_item_ID = 	$e_row_get_components['ID'];
+																																																$e_components_product_BOM_ID = 	$e_row_get_components['product_BOM_ID']; // should be same as $e_record_ID
+																																																$e_components_part_rev_ID = 	$e_row_get_components['part_rev_ID'];
+																																																$e_components_parent_ID = 		$e_row_get_components['parent_ID'];
+																																																$e_components_created_by = 		$e_row_get_components['created_by'];
+																																																$e_components_date_entered = 	$e_row_get_components['date_entered'];
+																																																$e_components_record_status = 	$e_row_get_components['record_status']; // should be 2 (published)
+																																																$e_components_entry_order = 	$e_row_get_components['entry_order'];
+																																																$e_components_usage_qty = 		$e_row_get_components['usage_qty'];
 																																																// echo 'OK';
 																																																// now get the rev and part info:
 
@@ -1677,6 +1689,7 @@ pagehead($page_id);
 																																																		}
 																																																?>
 																																															  </td>
+																																															  <td class="text-center"><?php echo $e_components_usage_qty; ?></td>
 																																															  <td>
 																																																<a href="part_view.php?id=<?php echo $e_rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev. #: <?php echo $e_components_part_rev_ID; ?>">
 																																																	<?php echo $e_rev_part_join_rev_num; ?>

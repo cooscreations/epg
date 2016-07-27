@@ -69,6 +69,7 @@ pagehead($page_id);
 					
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					  <thead>
 					  <tr>
 					    <th rowspan="2">Part #</th>
 					    <th rowspan="2">Part Rev.</th>
@@ -79,7 +80,6 @@ pagehead($page_id);
 					    <th class="warning center" colspan="2">QUARANTINE</th>
 					    <th class="danger center" colspan="2">SCRAPPED</th>
 					  </tr>
-					  
 					  <tr>
 					    <th class="dark">IN</th>
 					    <th class="dark">OUT</th>
@@ -91,7 +91,8 @@ pagehead($page_id);
 					    <th class="danger">IN</th>
 					    <th class="danger">OUT</th>
 					  </tr>
-					  
+					  </thead>
+					  <tbody>
 					  <!-- START DATASET -->
 					  <?php 
 					  
@@ -163,12 +164,12 @@ pagehead($page_id);
 								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 									
 									// now print each record:  
-									$rev_id = $row_get_part_rev['ID'];
-									$rev_part_id = $row_get_part_rev['part_ID'];
-									$rev_number = $row_get_part_rev['revision_number'];
-									$rev_remarks = $row_get_part_rev['remarks'];
-									$rev_date = $row_get_part_rev['date_approved'];
-									$rev_user = $row_get_part_rev['user_ID'];
+									$rev_id = 		$row_get_part_rev['ID'];
+									$rev_part_id = 	$row_get_part_rev['part_ID'];
+									$rev_number = 	$row_get_part_rev['revision_number'];
+									$rev_remarks = 	$row_get_part_rev['remarks'];
+									$rev_date = 	$row_get_part_rev['date_approved'];
+									$rev_user = 	$row_get_part_rev['user_ID'];
 																							
 								}
 								
@@ -257,9 +258,13 @@ pagehead($page_id);
 					  ?>
 					    <tr>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
-					    <td><?php echo $rev_number; ?></td>
+					    <td><span class="btn btn-warning" title="Rev. #: <?php echo $rev_id; ?>"><?php echo $rev_number; ?></span></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_CN; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php 
+					    if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
+					    	echo $part_name_CN; 
+					    }
+					    ?></a></td>
 					    <td class="text-right"><?php echo number_format($total_in, 0, ".", ","); ?></td>
 					    <td class="text-right"><?php echo number_format($total_out, 0, ".", ","); ?></td>
 					    <td class="info text-right"><strong><?php echo number_format($total_now, 0, ".", ","); ?></strong></td>
@@ -281,7 +286,8 @@ pagehead($page_id);
 					  
 					  ?>
 					  <!-- END DATASET -->
-					  
+					  </tbody>
+					  <tfoot>
 					  <tr>
 					    <th colspan="4">TOTAL UNIQUE PARTS: <?php echo $total_unique_parts ;?></th>
 					    <th>&nbsp;</th>
@@ -294,7 +300,7 @@ pagehead($page_id);
 					    <th>&nbsp;</th>
 					    <th>&nbsp;</th>
 					  </tr>
-					  
+					  </tfoot>
 					  
 					 </table>
 					</div>

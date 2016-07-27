@@ -88,6 +88,9 @@
 						else if ($page_lookup_table == 'suppliers') {
 							$add_title_info .= " (" . $row_get_title_extra['epg_supplier_ID'] . ")"; // appended
 						}
+						else if ($page_lookup_table == 'bug_report') {
+							$add_title_info .= ' ("' . $row_get_title_extra['title'] . '")'; // appended
+						}
 						else if ($page_lookup_table == 'purchase_orders') {
 							$add_title_info = "PO # " . $row_get_title_extra['PO_number']; // this is NOT appended - it overwrites!
 						}
@@ -542,6 +545,11 @@
 												</a>
 											</li>
 											<li>
+												<a href="BOM.php">
+													 Bill Of Material (BOM)
+												</a>
+											</li>
+											<li>
 												<a href="purchase_orders.php">
 													 Purchase Orders
 												</a>
@@ -569,6 +577,29 @@
 											<i class="fa fa-users" aria-hidden="true"></i>
 											<span>Users</span>
 										</a>
+									</li>
+									<li class="nav-parent<?php if ($page_id == 2) { ?> nav-active<?php } ?>">
+										<a>
+											<i class="fa fa-table" aria-hidden="true"></i>
+											<span>Users</span>
+										</a>
+										<ul class="nav nav-children">
+											<li>
+												<a href="users.php">
+													 View All
+												</a>
+											</li>
+											<li>
+												<a href="update_log.php">
+													 Update Log
+												</a>
+											</li>
+											<li>
+												<a href="feedback.php">
+													 Feedback
+												</a>
+											</li>
+										</ul>
 									</li>
 									<li>
 										<a href="materials.php">
@@ -1092,5 +1123,49 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 					};
 					return $c.''.$s;
 				};
+
+function get_creator($user_id) {
+
+	// start the session:	
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+	if ($user_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i> 
+			NO USER FOUND! 
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php	
+	}
+	else {
+	
+		// get user
+		$get_user_SQL = "SELECT * FROM  `users` WHERE  `ID` =" . $user_id;
+		$result_get_user = mysqli_query($con,$get_user_SQL);
+		// DEBUG:
+		// echo "<h4>SQL: " . $get_user_SQL . "</h4>";
+	
+		// while loop
+		while($row_get_user = mysqli_fetch_array($result_get_user)) {
+				// now print each record:  
+				$user_first_name = $row_get_user['first_name'];
+				$user_last_name = $row_get_user['last_name'];
+				$user_name_CN = $row_get_user['name_CN'];
+		}
+		?>
+		<a href="user_view.php?id=<?php echo $user_id; ?>" title="Click here to view this user profile">
+		  <?php 
+			echo $user_first_name . " " . $user_last_name; 
+			if (($user_name_CN!='')&&($user_name_CN!='中文名')) { 
+			  echo " / " . $user_name_CN; 
+			}  
+		  ?>
+		</a>
+		<?php
+	}
+}
 
 ?>

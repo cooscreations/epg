@@ -512,7 +512,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
 					    <td><?php 
-							if ($total_part_revs != 0) { echo '<span class="btn btn-warning">' . $rev_number . '</span>'; }
+							if ($total_part_revs != 0) { echo '<span class="btn btn-warning" title="Rev #: <?php echo $rev_id; ?>">' . $rev_number . '</span>'; }
 							else { ?>
 								<span class="btn btn-danger">0</span>
 							<?php } ?></td>

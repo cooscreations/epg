@@ -76,13 +76,12 @@ pagehead ( $page_id );
 		<table
 			class="table table-bordered table-striped table-condensed mb-none">
 			<tr>
-				<th>Name</th>
-				<th>名字</th>
-				<th>Description</th>
-				<th>Variants</th>
-				<th>Suppliers</th>
-				<th>Photo</th>
-				<th class="text-center">Actions</th>
+				<th width="30%">Name</th>
+				<th width="20%">Description</th>
+				<th width="10%">Variants</th>
+				<th width="10%">Suppliers</th>
+				<th width="15%">Photo</th>
+				<th class="text-center" width="10%">Actions</th>
 			</tr>
 						  
 						  <?php
@@ -99,9 +98,14 @@ pagehead ( $page_id );
 						  
 			<tr>
 				<td><a
-					href="material_view.php?id=<?php echo $row_get_mats['ID']; ?>"><?php echo $row_get_mats['name_EN']; ?></a></td>
-				<td><a
-					href="material_view.php?id=<?php echo $row_get_mats['ID']; ?>"><?php echo $row_get_mats['name_CN']; ?></a></td>
+					href="material_view.php?id=<?php echo $row_get_mats['ID']; ?>"><?php 
+					
+					echo $row_get_mats['name_EN']; 
+					if (($row_get_mats['name_CN']!='')&&($row_get_mats['name_CN']!='中文名')) {
+						echo ' / ' . $row_get_mats['name_CN'];
+					}
+					
+					?></a></td>
 				<td><?php echo $row_get_mats['description']; ?></td>
 				<td>
 					<!-- START VARIANTS -->

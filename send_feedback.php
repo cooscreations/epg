@@ -48,7 +48,7 @@ mail($to,$email_subject,$email_body,$headers);
 }
 
 // now log the feedback in the bug_report table:
-$log_bug_SQL = "INSERT INTO `bug_report` (`ID`, `title`, `body`, `created_by`, `referrer_URL`, `URL`, `status`, `date_entered`, `date_closed`, `admin_remarks`, `closed_by`) VALUES (NULL, 'User Feedback', '" . addslashes($message) . "', '" . $_SESSION['user_id'] . "', '" . addslashes($referrer) . "', 'info_pop.php', '1', CURRENT_TIMESTAMP, '0000-00-00 00:00:00', 'Server Variables: 
+$log_bug_SQL = "INSERT INTO `bug_report` (`ID`, `title`, `body`, `created_by`, `referrer_URL`, `URL`, `status`, `date_entered`, `date_closed`, `admin_remarks`, `closed_by`) VALUES (NULL, 'User Feedback', '" . addslashes($message) . "', '" . $_SESSION['user_ID'] . "', '" . addslashes($referrer) . "', 'info_pop.php', '1', CURRENT_TIMESTAMP, '0000-00-00 00:00:00', 'Server Variables: 
 
 " . $server_vars . "
 

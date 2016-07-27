@@ -373,24 +373,25 @@ pagehead($page_id);
 								</header>
 								<div class="panel-body">
 									<div class="content">
+									  <p class="text-muted"><small>This section is not yet live</small></p>
 										<ul class="simple-user-list">
 											<li>
 												<figure class="image rounded">
-													<img src="assets/images/!sample-user.jpg" alt="Joseph Doe Junior" class="img-circle">
+													<img src="assets/images/parts/01012.PNG" alt="3.6" class="img-circle">
 												</figure>
 												<span class="title">InsuJet&trade; 3.6</span>
 												<span class="message truncate">123 batches</span>
 											</li>
 											<li>
 												<figure class="image rounded">
-													<img src="assets/images/!sample-user.jpg" alt="Joseph Doe Junior" class="img-circle">
+													<img src="assets/images/parts/01012.PNG" alt="3.5" class="img-circle">
 												</figure>
 												<span class="title">InsuJet&trade; 3.5</span>
 												<span class="message truncate">123 batches</span>
 											</li>
 											<li>
 												<figure class="image rounded">
-													<img src="assets/images/!sample-user.jpg" alt="Joseph Doe Junior" class="img-circle">
+													<img src="assets/images/parts/01012.PNG" alt="3.4" class="img-circle">
 												</figure>
 												<span class="title">InsuJet&trade; 3.4</span>
 												<span class="message truncate">123 batches</span>
@@ -399,7 +400,7 @@ pagehead($page_id);
 									</div>
 								  <div class="panel-footer">
 									<div class="text-right">
-											<a class="text-uppercase text-muted" href="#">(View All)</a>
+											<a class="text-uppercase text-muted" href="parts.php?show=products">(View All)</a>
 										</div>
 								  </div>
 								</div>
@@ -541,7 +542,26 @@ pagehead($page_id);
 							} // end of check for if 'type_ID' != 10 
 							?>
 							
+							<?php 
 							
+							// COUNT FOR '0 RECORDS' EXCEPTION, AS WELL AS FOR ICON MARKER
+										
+							// get the part_to_mat_maps count:
+							$count_part_to_mat_maps_SQL = "SELECT COUNT('ID') FROM `part_to_material_map` WHERE `part_rev_ID` = '" . $rev_body_id . "' AND `record_status` = '2'"; // maps for this part revision
+							// echo "<br />" . $count_part_to_mat_maps_SQL . "<br />";
+							$count_part_to_mat_maps_query = mysqli_query($con, $count_part_to_mat_maps_SQL);
+							$count_part_to_mat_maps_row = mysqli_fetch_row($count_part_to_mat_maps_query);
+							// Here we have the total row count
+							$total_part_to_mat_maps = $count_part_to_mat_maps_row[0];
+							
+							if ($total_part_to_mat_maps == 0) {
+								$mat_count_label = 'label-danger';
+							}
+							else {
+								$mat_count_label = 'label-primary';
+							}
+							
+							?>
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -550,25 +570,86 @@ pagehead($page_id);
 									</div>
 
 									<h2 class="panel-title">
-										<span class="label label-primary label-sm text-normal va-middle mr-sm">1</span>
+										<span class="label <?php echo $mat_count_label; ?> label-sm text-normal va-middle mr-sm"><?php echo $total_part_to_mat_maps; ?></span>
 										<span class="va-middle">Material(s)</span>
 									</h2>
 								</header>
 								<div class="panel-body">
 									<div class="content">
-										<ul class="simple-user-list">
+									  <ul class="simple-user-list">
+										<?php
+										
+										if ($total_part_to_mat_maps > 0) {
+										
+										// get the materials from the part_to_material_map table, as some parts may contain 2 or more materials:
+										$get_part_to_material_map_SQL = "SELECT * FROM `part_to_material_map` WHERE `part_rev_ID` = '" . $rev_body_id . "' AND `record_status` = 2";
+										// echo '<br />' . $get_part_to_material_map_SQL . '<br />';
+	
+											$result_get_part_to_material_map = mysqli_query($con,$get_part_to_material_map_SQL);
+											// while loop
+											while($row_get_part_to_material_map = mysqli_fetch_array($result_get_part_to_material_map)) {
+											
+												$part_to_material_map_ID = $row_get_part_to_material_map['ID'];
+												$part_to_material_map_part_rev_ID = $row_get_part_to_material_map['part_rev_ID']; // should match 'rev_body_id' 
+												$part_to_material_map_material_ID = $row_get_part_to_material_map['material_ID']; // look this up!
+												$part_to_material_map_variant_ID = $row_get_part_to_material_map['variant_ID'];
+												$part_to_material_map_record_status = $row_get_part_to_material_map['record_status']; // should be 2 (active / published) only
+											
+												// look up material:
+												
+												$get_material_SQL = "SELECT * FROM `material` WHERE `ID` = '" . $part_to_material_map_material_ID . "' AND `record_status` = 2";
+												// echo $get_material_SQL; 
+												$result_get_material = mysqli_query($con,$get_material_SQL);
+												// while loop
+												while($row_get_material = mysqli_fetch_array($result_get_material)) {
+													$material_ID = $row_get_material['ID'];
+													$material_name_EN = $row_get_material['name_EN'];
+													$material_name_CN = $row_get_material['name_CN'];
+													$material_description = $row_get_material['description'];
+													$material_record_status = $row_get_material['record_status']; // should be 2 (published / active)
+													
+													$material_name_to_show = $material_name_EN;
+													if (($material_name_CN!='')&&($material_name_CN!='中文名')) {
+														$material_name_to_show .= " / " . $material_name_CN;
+													}
+													
+												} // end get material info loop
+												
+												// NOW OUTPUT!
+												?>
+												<li>
+													<figure class="image rounded"> 
+													  <span class="fa-stack fa-lg"> 
+														<i class="fa fa-circle fa-stack-2x text-info"></i> 
+														<i class="fa fa-question fa-stack-1x fa-inverse"></i> 
+													  </span> 
+													</figure>
+													<span class="title"><?php echo $material_name_to_show; ?></span>
+													<span class="message truncate"><a href="material_view.php?id=<?php echo $material_ID; ?>">View Material Record</a></span>
+												</li>
+											<?php
+										  		} // end get material info loop
+											} // end of RECORDS FOUND
+											else { // NO RECORDS FOUND!
+											?>
 											<li>
-												<figure class="image rounded">
-													<img src="assets/images/!sample-user.jpg" alt="Joseph Doe Junior" class="img-circle">
+												<figure class="image rounded"> 
+												  <span class="fa-stack fa-lg"> 
+													<i class="fa fa-circle fa-stack-2x text-danger"></i> 
+													<i class="fa fa-exclamation-triangle fa-stack-1x fa-inverse"></i> 
+												  </span> 
 												</figure>
-												<span class="title">PC Makrolon® 2858</span>
-												<span class="message truncate">View Material Record</span>
+												<span class="title text-danger">NO MATERIAL SET</span>
+												<span class="message truncate"><a href="part_to_material_patch.php">Add Now</a></span>
 											</li>
+											<?php
+											} // end of no records found 'total_part_to_mat_maps' = 0
+										  ?>
 										</ul>
 									</div>
 								  <div class="panel-footer">
 									<div class="text-right">
-											<a class="text-uppercase text-muted" href="#">(View All)</a>
+											<a class="text-uppercase text-muted" href="materials.php" title="Click here to view all materials">(View All)</a>
 										</div>
 								  </div>
 								</div>
@@ -1224,7 +1305,7 @@ pagehead($page_id);
 					 			  	</a>
 					 			  </td>
 					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-warning">
+					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev #: <?php echo $rev_part_join_revision_ID; ?>">
 					 			  		<?php echo $rev_part_join_rev_num; ?>
 					 			  	</a>
 					 			  </td>
