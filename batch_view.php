@@ -89,6 +89,14 @@ else {
 					$PO_number = $row_get_PO['PO_number'];
 					$PO_created_date = $row_get_PO['created_date'];
 					$PO_description = $row_get_PO['description'];
+					$PO_record_status = $row_get_PO['record_status'];
+					$PO_supplier_ID = $row_get_PO['supplier_ID'];  // LOOK THIS UP!
+					$PO_created_by = $row_get_PO['created_by']; // use get_creator($PO_created_by);
+					$PO_date_needed = $row_get_PO['date_needed'];
+					$PO_date_delivered = $row_get_PO['date_delivered'];
+					$PO_approval_status = $row_get_PO['approval_status']; // look this up?
+					$PO_payment_status = $row_get_PO['payment_status']; // look this up?
+					$PO_completion_status = $row_get_PO['completion_status'];
 		
 				} // end while loop
 		

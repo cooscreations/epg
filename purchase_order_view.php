@@ -44,6 +44,14 @@ while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 		$PO_created_date = $row_get_PO['created_date'];
 		$PO_description = $row_get_PO['description'];
 		$PO_record_status = $row_get_PO['record_status'];
+		$PO_supplier_ID = $row_get_PO['supplier_ID'];  // LOOK THIS UP!
+		$PO_created_by = $row_get_PO['created_by']; // use get_creator($PO_created_by);
+		$PO_date_needed = $row_get_PO['date_needed'];
+		$PO_date_delivered = $row_get_PO['date_delivered'];
+		$PO_approval_status = $row_get_PO['approval_status']; // look this up?
+		$PO_payment_status = $row_get_PO['payment_status']; // look this up?
+		$PO_completion_status = $row_get_PO['completion_status'];
+		
 		
 		// count variants for this purchase order
         $count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $record_id;
@@ -122,8 +130,52 @@ pagehead($page_id);
 					 					    <td><?php echo $PO_number; ?></td>
 					 					  </tr>
 					 					  <tr>
-					 					    <th>Created Date:</th>
-					 					    <td><?php echo $PO_created_date; ?></td>
+					 					    <th>Created By:</th>
+					 					    <td><?php get_creator($PO_created_by); ?></td>
+					 					  </tr>
+					 					  <tr>
+					 					    <th>Completition Status:</th>
+					 					    <td><?php 
+					 					    
+					 					    if ($PO_completion_status > 66) {
+					 					    	$bar_color = "success";
+					 					    }
+					 					    else if ($PO_completion_status > 33) {
+					 					    	$bar_color = "warning";
+					 					    }
+					 					    else {
+					 					    	$bar_color = "danger";
+					 					    }
+					 					    
+					 					    ?>
+					 					    
+					 					    
+					 					    <div class="progress">
+											  <div class="progress-bar progress-bar-striped active progress-bar-<?php echo $bar_color; ?>" 
+											  	role="progressbar" 
+											  	aria-valuenow="<?php echo $PO_completion_status; ?>" 
+											  	aria-valuemin="0" 
+											  	aria-valuemax="100" 
+											  	style="width:<?php echo $PO_completion_status; ?>%">
+												<?php echo $PO_completion_status; ?>%
+											  </div>
+											</div>
+					 					    
+					 					    
+					 					    
+					 					    </td>
+					 					  </tr>
+					 					  <tr>
+					 					    <th>START:</th>
+					 					    <td><?php echo substr($PO_created_date, 0, 10); ?></td>
+					 					  </tr>
+					 					  <tr>
+					 					    <th>TARGET:</th>
+					 					    <td><?php echo substr($PO_date_needed, 0, 10); ?></td>
+					 					  </tr>
+					 					  <tr>
+					 					    <th>CLOSE:</th>
+					 					    <td><?php echo substr($PO_date_delivered, 0, 10); ?> <span class="btn btn-xs btn-info" title="DEV. NOTE: We should add the difference in days between target date and actual date"><i class="fa fa-lightbulb-o"></i></span></td>
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Remarks:</th>
@@ -134,27 +186,30 @@ pagehead($page_id);
 					 					    <td><?php echo $total_batches; ?> (see below)</td>
 					 					  </tr>
 					 					  <tr>
-					 					    <th>DB Record Status:</th>
+					 					    <th>P.O. Approval Status:</th>
 					 					    <?php 
 					 					    
-					 					    if ($PO_record_status == 0) {
+					 					    if ($PO_approval_status == 0) {
 					 					    	?>
 					 					    	<td class="danger">
-					 					    	DELETED
+					 					    	  <i class="fa fa-times"></i> 
+					 					    	  DELETED
 					 					    	</td>
 					 					    	<?php
 					 					    }
-					 					    else if ($PO_record_status == 1) {
+					 					    else if ($PO_approval_status == 1) {
 					 					    	?>
 					 					    	<td class="warning">
-					 					    	PENDING
+					 					    	  <i class="fa fa-exclamation-triangle"></i> 
+					 					    	  PENDING
 					 					    	</td>
 					 					    	<?php
 					 					    }
 					 					    else {
 					 					    	?>
 					 					    	<td class="success">
-					 					    	OK
+					 					    	  <i class="fa fa-check"></i>
+					 					    	  OK
 					 					    	</td>
 					 					    	<?php
 					 					    }
@@ -162,7 +217,72 @@ pagehead($page_id);
 					 					    
 					 					    ?>
 					 					  </tr>
-					 					  
+					 					  <!-- **************************************** -->
+					 					  <tr>
+					 					    <th>P.O. Payment Status:</th>
+					 					    <?php 
+					 					    
+					 					    if ($PO_payment_status == 0) {
+					 					    	?>
+					 					    	<td class="danger">
+					 					    	  <i class="fa fa-times"></i> 
+					 					    	  DELETED
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    else if ($PO_payment_status == 1) {
+					 					    	?>
+					 					    	<td class="warning">
+					 					    	  <i class="fa fa-exclamation-triangle"></i> 
+					 					    	  PENDING
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    else {
+					 					    	?>
+					 					    	<td class="success">
+					 					    	  <i class="fa fa-check"></i>
+					 					    	  OK
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    
+					 					    
+					 					    ?>
+					 					  </tr>
+					 					  <!-- **************************************** -->
+					 					  <tr>
+					 					    <th>DB Record Status:</th>
+					 					    <?php 
+					 					    
+					 					    if ($PO_record_status == 0) {
+					 					    	?>
+					 					    	<td class="danger">
+					 					    	  <i class="fa fa-times"></i> 
+					 					    	  DELETED
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    else if ($PO_record_status == 1) {
+					 					    	?>
+					 					    	<td class="warning">
+					 					    	  <i class="fa fa-exclamation-triangle"></i> 
+					 					    	  PENDING
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    else {
+					 					    	?>
+					 					    	<td class="success">
+					 					    	  <i class="fa fa-check"></i>
+					 					    	  OK
+					 					    	</td>
+					 					    	<?php
+					 					    }
+					 					    
+					 					    
+					 					    ?>
+					 					  </tr>
 					 					</table>
 					 				</div>
 									
@@ -185,7 +305,7 @@ pagehead($page_id);
 								<div class="panel-body">
 									
 									<ul>
-									  <li>Coming soon...</li>
+									  <li><?php get_supplier($PO_supplier_ID); ?></li>
 									</ul>
 									
 								</div>
@@ -241,11 +361,11 @@ pagehead($page_id);
 								<div class="panel-body">
 								
 					 <div class="row">
+						<div class="col-md-1">
+							<a href="part_batch_add.php?PO_ID=<?php echo $_REQUEST['id']; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
+						</div>	
 						<div id="feature_buttons_container_id" class="col-md-11">
 						</div>
-						<div class="col-md-1">
-							<a href="part_batch_add.php?PO_ID=<?php echo $_REQUEST['id']; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
-						</div>	
 					 </div>
 					 
 					<div class="table-responsive">
@@ -313,8 +433,14 @@ pagehead($page_id);
 					  
 					  <tr<?php if ($batch_id == $change_record_id) { ?> class="success"<?php } ?>>
 					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_code; ?></a></td>
-					    <td><?php echo $rev_number; ?></td>
+					    <td>
+					    	<a href="part_view.php?id=<?php echo $batch_part_ID; ?>" class="btn btn-info btn-xs" title="View Part Profile"><?php echo $part_code; ?></a>
+					    </td>
+					    <td>
+					    	<span class="btn btn-warning btn-xs" title="Rev. ID#: <?php echo $rev_id; ?>">
+					    		<?php echo $rev_number; ?>
+					    	</span>
+					    </td>
 					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_name_CN; ?></a></td>
 					    <td>
@@ -367,10 +493,10 @@ pagehead($page_id);
 					
 					
 					 <div class="row">
-						<div class="col-md-11"> </div>
 						<div class="col-md-1">
-							<a href="part_batch_add.php?PO_ID=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+							<a href="part_batch_add.php?PO_ID=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
 						</div>	
+						<div class="col-md-11"> </div>
 					 </div>
 					
 								<!-- now close the panel -->
