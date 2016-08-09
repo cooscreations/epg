@@ -1288,4 +1288,76 @@ function get_supplier($sup_id) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 
+												
+function creator_drop_down($this_user_ID) {
+
+	// start the session:	
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	// now output the result:
+	
+	?>
+	<select class="form-control populate" name="created_by" id="created_by">
+		<?php 
+		// GET PART TYPE:
+		$get_user_list_SQL = "SELECT * FROM  `users` WHERE `record_status` = 2";
+		// echo $get_part_type_SQL;
+		$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
+		// while loop
+		while($row_get_user = mysqli_fetch_array($result_get_user_list)) {
+		
+			$user_ID = $row_get_user['ID'];
+			$user_fn = $row_get_user['first_name'];
+			$user_mn = $row_get_user['middle_name'];
+			$user_ln = $row_get_user['last_name'];
+			$user_name_cn = $row_get_user['name_CN'];
+			$user_email = $row_get_user['email'];
+			$user_level = $row_get_user['user_level'];
+			$user_position = $row_get_user['position'];
+			$user_last_login_date = $row_get_user['last_login_date'];
+			$user_facebook = $row_get_user['facebook_profile'];	
+			$user_linkedin = $row_get_user['linkedin_profile'];	
+			$user_twitter = $row_get_user['twitter_profile'];	
+			$user_wechat = $row_get_user['wechat_profile'];	
+			$user_skype = $row_get_user['skype_profile'];	
+			$user_record_status = 	$row_get_user['record_status']; // should be 2
+			
+		?>
+			<option value="<?php echo $user_ID; ?>"<?php if ($user_ID == $this_user_ID) { ?> selected="selected"<?php } ?>><?php echo $user_fn; ?> <?php echo $user_ln; if (($user_name_cn!='')&&($user_name_cn!='中文名')) { echo " / " . $user_name_cn; } ?></option>
+		<?php
+		} // end get part type loop
+		?>
+	</select>
+	<?php
+	
+
+} // CLOSE FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+function record_status_drop_down($current_status) {
+// now output the result:
+?>
+<select class="form-control populate" name="record_status" id="record_status">
+  <option value="0"<?php if ($current_status == 0) { ?> selected="selected"<?php } ?>>✘ DELETED ✘</option>
+  <option value="1"<?php if ($current_status == 1) { ?> selected="selected"<?php } ?>>? PENDING ?</option>
+  <option value="2"<?php if ($current_status == 2) { ?> selected="selected"<?php } ?>>✔ PUBLISHED ✔</option>
+</select>
+<?php
+} // CLOSE FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
 ?>

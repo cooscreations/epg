@@ -213,7 +213,7 @@ pagehead($page_id);
 									?>
 									
 							<li class="<?php if ($loop_count == 1) { ?>active<?php } ?>">
-								<a href="#rev_<?php echo $rev_id; ?>" data-toggle="tab" aria-expanded="true"><i class="fa fa-star<?php if ($loop_count != 1) { ?>-o<?php } ?>"></i> Rev. <?php echo $rev_number; ?></a>
+								<a href="#rev_<?php echo $rev_id; ?>" data-toggle="tab" aria-expanded="true" title="Rev. #: <?php echo $rev_id; ?>"><i class="fa fa-star<?php if ($loop_count != 1) { ?>-o<?php } ?>"></i> Rev. <?php echo $rev_number; ?></a>
 							</li>
 							
 								<?php													
@@ -331,6 +331,12 @@ pagehead($page_id);
 									  <li><strong>Release Date:</strong> <?php echo date("Y-m-d", strtotime($rev_body_date)); ?></li>
 									  <li><strong>Released By:</strong> <a href="user_view.php?id=<?php echo $rev_body_user; ?>"><?php echo $rev_user_first_name . " " . $rev_user_last_name; if (($rev_user_name_CN != '')&&($rev_user_name_CN != '中文名')) { echo " / " . $rev_user_name_CN; } ?></a></li>
 									</ul>
+									
+									<hr />
+									
+									<a class="btn btn-warning" href="part_edit.php?id=<?php echo $record_id; ?>" title="Click here to edit the global part record (ID#: <?php echo $record_id; ?>)"><i class="fa fa-gear"></i> EDIT PART</a>
+									<a class="btn btn-warning" href="rev_edit.php?id=<?php echo $rev_body_id; ?>" title="Click here to edit the part revision record (ID#: <?php echo $rev_body_id; ?>)"><i class="fa fa-gears"></i> EDIT REV.</a>
+									
 									
 								</div>
 							</section>
