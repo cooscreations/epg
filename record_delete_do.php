@@ -29,7 +29,7 @@ $table_name = $_REQUEST['table_name'];
 $src_page = $_REQUEST['src_page'];
 $update_note = "Marking record as deleted in the system.";
 
-$delete_SQL = "UPDATE ".$table_name." set record_status=0 WHERE `ID` = '".$id."' ";
+$delete_SQL = "UPDATE `".$table_name."` set `record_status`=0 WHERE `ID` = '".$id."' ";
 
 echo $delete_SQL;
 

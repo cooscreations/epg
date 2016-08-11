@@ -26,9 +26,9 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 */
 $sup_id = $_REQUEST['id'];
 
-$update_note = "Deleting a supplier to the system.";
+$update_note = "Deleting a supplier from the system.";
 
-$delete_supplier_SQL = "DELETE FROM `suppliers` WHERE `ID` = '".$sup_id."' ";
+$delete_supplier_SQL = "UPDATE `suppliers` SET `record_status`= 0 WHERE `ID` = '".$sup_id."' ";
 
 
 // echo $delete_supplier_SQL;

@@ -167,6 +167,14 @@ pagehead($page_id);
 					
 					<div class="row">
 						<div class="col-md-4">
+						
+						
+						<?php 
+							// now run the admin bar function:
+							admin_bar('batch');
+							?>
+						
+						
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">

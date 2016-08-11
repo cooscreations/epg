@@ -63,8 +63,8 @@ if ($count == 1) {
 	$_SESSION['username']= $username;
 	$_SESSION['user_level']= $user_level;
 	$_SESSION['user_ID']= $user_ID;
-	$_SESSION["user_real_name"] = $user_fn . " " . $user_ln;
-	$_SESSION["user_name_CN"] = $user_name_cn;
+	$_SESSION['user_real_name'] = $user_fn . " " . $user_ln;
+	$_SESSION['user_name_CN'] = $user_name_cn;
 	$_SESSION['user_email']= $user_email;
 	
 	//Update last login date in users table.

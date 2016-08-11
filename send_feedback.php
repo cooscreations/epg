@@ -161,7 +161,7 @@ Session Variables:
 								
 								// now just record the feedback:
 								
-								$record_feedback_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'bug_report','" . $newest_bug_report_ID . "','" . $_REQUEST['user_id'] . "','User provided feedback','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
+								$record_feedback_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'bug_report','" . $newest_bug_report_ID . "','" . $_SESSION['user_ID'] . "','User provided feedback','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
 								
 								if (mysqli_query($con, $record_feedback_SQL)) { 
 									// feedback recorded OK!

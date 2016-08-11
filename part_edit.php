@@ -105,6 +105,8 @@ pagehead($page_id);
 					
 					<div class="row">
 						<div class="col-md-12">
+						 <!-- START THE FORM! -->
+            			  <form class="" action="part_edit_do.php" method="post"><!-- class="form-horizontal form-bordered" ?? -->
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -186,7 +188,37 @@ pagehead($page_id);
 										<div class="col-sm-6">
 											<div class="form-group">
 												<label class="control-label">Classifcation</label>
-												<input type="text" name="classificiation_ID" class="form-control" value="<?php echo $part_class_EN; ?>">
+												<select class="form-control populate" name="classificiation_ID" id="classificiation_ID">
+												<?php 
+												
+												$get_part_classification_SQL = "SELECT * FROM `part_classification` where `record_status` = 2 ORDER BY `name_EN` ASC";
+								
+												$part_classification_count = 0;
+								
+												$result_get_part_classification = mysqli_query ( $con, $get_part_classification_SQL );
+												/* Part Classification Details */
+												while ( $row_get_part_classification = mysqli_fetch_array ( $result_get_part_classification ) ) {
+														
+														$part_classification_ID = 				$row_get_part_classification['ID'];
+														$part_classification_name_EN = 			$row_get_part_classification['name_EN'];
+														$part_classification_name_CN = 			$row_get_part_classification['name_CN'];
+														$part_classification_desc = 			$row_get_part_classification['description'];
+														$part_classification_color = 			$row_get_part_classification['color'];
+														$part_classification_record_status = 	$row_get_part_classification['record_status']; // should be 2
+														
+															// NOW DISPLAY THE RESULTS!
+
+															?>
+																  <option value="<?php echo $part_classification_ID; ?>"<?php if ($part_classification_ID == $classification_ID) { echo ' selected="selected"'; } ?>><?php echo $part_classification_name_EN; if (($part_classification_name_CN!='')&&($part_classification_name_CN!='中文名')){ echo " / " . $part_classification_name_CN; } ?></option>
+															<?php
+
+												} // end get record WHILE loop
+
+												/* *************** END GET PART CLASSIFICATION INFO *********************** */
+												
+												?>
+												
+												</select>
 											</div>
 										</div>
 										<div class="col-sm-6">
@@ -284,7 +316,7 @@ pagehead($page_id);
 										<div class="col-sm-6">
 											<div class="form-group">
 												<label class="control-label">Product Type</label>
-												<select class="form-control populate" name="sup_ID" id="sup_ID">
+												<select class="form-control populate" name="product_type_ID" id="product_type_ID">
 												<?php 
 												
 												$get_product_types_SQL = "SELECT * FROM `product_type` where `record_status` = 2 ORDER BY `product_type`.`product_type_code` ASC";
@@ -319,10 +351,21 @@ pagehead($page_id);
 									</div>
 								</div>
 								<footer class="panel-footer">
+									<?php 
+										if (isset($_REQUEST['id'])) {
+											?>
+											<input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="id" />
+											<?php
+										}
+									?>
 									<button class="btn btn-danger" href="part_view.php?id=<?php echo $record_id; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</button>
-									<button class="btn btn-success"><i class="fa fa-save"></i> SAVE CHANGES</button>
+                        			<button type="reset" class="btn btn-warning"><i class="fa fa-refresh"></i> RESET</button>
+									<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> SAVE CHANGES</button>
 								</footer>
 							</section>
+							
+							</form>
+							
 						</div>
 						
 						

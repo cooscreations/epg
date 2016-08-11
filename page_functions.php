@@ -4,7 +4,6 @@
 	// enable the DB connection:
 	include 'db_conn.php';
 	
-	
 	// header('Content-Type: text/html; charset=utf-8');
 	
 	function pagehead($page_id, $record_id=NULL) {
@@ -29,7 +28,7 @@
 	$pages_found = 0;
 	// while loop
 	while($row_get_page = mysqli_fetch_array($result_get_page)) {
-		
+	
 			// set vars:  
 			$page_id 				= $row_get_page['ID'];
 			$page_name_EN 			= $row_get_page['name_EN'];
@@ -52,6 +51,10 @@
 			$page_og_section 		= $row_get_page['og_section'];
 			$page_side_bar_config 	= $row_get_page['side_bar_config'];
 			$page_lookup_table 		= $row_get_page['lookup_table']; // look up info for TITLE tag!
+	
+			$GLOBALS['page_id'] 			= $page_id; 					// hoping to use this data in the footer also
+			$GLOBALS['page_lookup_table'] 	= $page_lookup_table; 			// hoping to use this data in the footer also
+			$GLOBALS['page_og_type'] 		= $page_og_type;				// hoping to use this data in the footer also
 			
 			$add_title_info = ''; // DEFAULT IS NIL
 			if ($page_lookup_table!='') {
@@ -60,7 +63,8 @@
 				
 				$record_to_find = $_REQUEST['id'];
 				if ($record_to_find == '') {
-					$record_to_find = $_REQUEST['ID']; // sloppy!
+					$record_to_find 		= $_REQUEST['ID']; // sloppy!
+					$GLOBALS['record_id'] 	= $record_to_find; // hoping to use this data in the footer also
 				}
 				
 				$get_title_extra_SQL = "SELECT * FROM `" . $page_lookup_table . "` WHERE `ID` = '" . $record_to_find . "'";
@@ -714,7 +718,6 @@
 		/* ***************************** END FEEDBACK FORM ***************************** */
 		/* ***************************************************************************** */
 	
-	
 	}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -727,6 +730,229 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	function pagefoot($page_id, $record_id=NULL) {
+	
+	
+	// start the session:	
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+	// let's see if we can see these:
+	// DEBUG
+	/*
+	echo "<h1>GLOBAL VARS:</h1>";
+	echo 'page id:' 		. $GLOBALS['page_id'] 				. '<br />'; 	// hoping to use this data in the footer also
+	echo 'lookup table: ' 	. $GLOBALS['page_lookup_table'] 	. '<br />'; 	// hoping to use this data in the footer also
+	echo 'page OG type:' 	. $GLOBALS['page_og_type'] 			. '<br />'; 	// hoping to use this data in the footer also
+	echo '<h4>END PRINT VARS</h4>';
+	echo '<hr />';
+	*/
+	
+	
+	if ( ($GLOBALS['page_og_type'] == 'list') || ($GLOBALS['page_og_type'] == 'profile') ) {
+		// SHOW THE REVISION HISTORY FOR THIS PAGE / RECORD!
+			
+		$total_updates = 0;
+		
+		if ($GLOBALS['page_og_type'] == 'list') {
+		
+			$add_URL_vars = '';
+			$update_header = '10 Most Recent Updates';
+		
+			// SHOW THE 10 LATEST UPDATES
+			$get_updates_SQL = "SELECT * FROM `update_log` WHERE `table_name` = '" . $GLOBALS['page_lookup_table'] . "' ORDER BY `update_date` DESC LIMIT 0 , 10";
+			
+		}
+		else if ($GLOBALS['page_og_type'] == 'profile') {
+		
+			$add_URL_vars = "&id=".$GLOBALS['record_id']."";
+			$update_header = 'Update History';
+		
+			// SHOW THE 30 LATEST UPDATES
+			$get_updates_SQL = "SELECT * FROM `update_log` WHERE `table_name` = '" . $GLOBALS['page_lookup_table'] . "' AND `update_ID` = '" . $GLOBALS['record_id'] . "' ORDER BY `update_date` DESC LIMIT 0 , 30";
+			
+		}
+		
+		// start the table:
+		
+		?>
+		
+		<section role="main" class="content-body">
+		
+		<div class="row">
+		<div class="col-md-12">
+		
+		<section class="panel panel-collapsed">
+			<header class="panel-heading">
+				<div class="panel-actions">
+					<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+					<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+				</div>
+
+				<h2 class="panel-title">
+					<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+					<span class="va-middle"><?php echo $update_header; ?></span>
+				</h2>
+			</header>
+			<div class="panel-body">
+				<div class="content">
+		
+		
+		<!-- START THE UPDATES TABLE: -->		
+		<table class="table table-striped table-no-more table-bordered  mb-none">
+			<thead>
+				<tr class="dark">
+					<th style="width: 10%"><span class="text-normal text-sm">Type</span></th>
+					<th style="width: 10%"><span class="text-normal text-sm">Action</span></th>
+					<th style="width: 15%"><span class="text-normal text-sm">Date</span></th>
+					<th><span class="text-normal text-sm">Message</span></th>
+				</tr>
+			</thead>
+			<tbody class="log-viewer">
+		
+		<?php
+			// DEBUG
+			// echo $get_updates_SQL;
+			
+			// NOW RUN THE SQL!
+			$result_get_updates = mysqli_query($con,$get_updates_SQL);
+				// while loop
+				while($row_get_updates = mysqli_fetch_array($result_get_updates)) {
+				
+					// NOW WRITE THE DATA:		
+					$update_ID 			= $row_get_updates['ID'];
+					$table_name 		= $row_get_updates['table_name'];
+					$update_ID 			= $row_get_updates['update_ID'];
+					$update_user_ID 	= $row_get_updates['user_ID'];
+					$update_notes 		= $row_get_updates['notes'];
+					$update_date 		= $row_get_updates['update_date'];
+					$update_type 		= $row_get_updates['update_type'];
+					$update_action 		= $row_get_updates['update_action'];
+					
+					// now display the updates!
+					
+					?>
+					<tr>
+					  <td><?php echo $update_type; ?></td>
+					  <td><?php 
+					  
+					  if ($update_action == 'UPDATE') {
+					  	$update_icon 		= 'pencil';
+					  	$update_color_code 	= 'warning';
+					  }
+					  else if ($update_action == 'DELETE') {
+					  	$update_icon 		= 'times';
+					  	$update_color_code 	= 'danger';
+					  }
+					  else if ($update_action == 'INSERT') {
+					  	$update_icon 		= 'plus-square';
+					  	$update_color_code 	= 'success';
+					  }
+					  else { /* NOT FOUND? */
+					  	$update_icon 		= 'question-circle';
+					  	$update_color_code 	= 'primary';
+					  } 
+					  
+					  ?>
+					    <a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-<?php echo $update_color_code; ?>">
+							<i class="fa fa-<?php echo $update_icon; ?>"></i> 
+							<?php echo $update_action; ?>
+					    </a>
+					  </td>
+					  <td><?php echo $update_date; ?></td>
+					  <td data-title="Message" class="pt-md pb-md">
+						<?php 
+						// show the creator name and link:
+						get_creator($update_user_ID);
+					
+						if ($update_action == 'UPDATE') {
+							?> updated table <?php 
+						}
+						else if ($update_action == 'INSERT') {
+							?> added a record to table <?php
+						}
+						else if ($update_action == 'DELETE') {
+							?> deleted a record from table <?php
+						}
+						?>'<?php echo $table_name; ?>', record #<?php echo $update_ID; ?>. 
+						<br />
+						<strong>NOTE:</strong> <em>"<?php echo $update_notes; ?>"</em>
+					  </td>
+					</tr>
+					<?php 
+						$total_updates = $total_updates + 1;
+					
+				} // END RESULTS LOOP
+				
+		
+		if ($total_updates == 0) {
+			?>
+			<tr>
+			  <td colspan="4">
+			  	<strong>
+			  		<span class="text-danger">
+			  			0 UPDATES FOUND FOR THIS RECORD
+			  		</span>
+			  	</strong>
+			  </td>
+			</tr>
+			<?php
+		}
+		
+		// now close the table
+		
+		?>
+		
+		</tbody>
+		<tfoot>
+			<tr>
+			  <td colspan="4"><strong>TOTAL UPDATES: <?php echo $total_updates; ?></strong></td>
+			</tr>
+		</tfoot>
+		</table>
+		
+		<?php if ($GLOBALS['page_lookup_table'] == 'parts') { ?>
+			<p class="text-warning"><strong>PLEASE NOTE: </strong>Showing updates for the 'PART' record only - for 'REVISION' updates, please click the 'VIEW REVISION UPDATES' button in the individual revision tabs above.</p>
+		<?php } ?>
+		
+		</div>
+		</div>
+		
+		<div class="panel-footer">
+			<div class="text-left">
+			
+			<?php  if ($total_updates != 0) { ?>
+			
+				  <a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" href="update_log.php?table=<?php 
+					echo $GLOBALS['page_lookup_table']; 
+					echo $add_URL_vars; 
+				?>">
+					<i class="fa fa-list"></i> 
+					View All Updates
+				</a>
+				
+			<?php } 
+			else {
+			?>
+				<a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" href="update_log.php">
+					<i class="fa fa-list"></i> 
+					View All Updates
+				</a>
+			<?php
+			}
+			?>	
+			
+			</div>
+		</div>
+
+		</section><!-- END THE PANEL -->
+		
+		</div>
+		</div><!-- END ROW -->
+		</section>
+		
+	<?php
+	} // END OF LIST AND PROFILE PAGE UPDATE TABLES IN THE BOTTOM OF THE PAGE
 	?>	
 				
 			</div>
@@ -1351,6 +1577,86 @@ function record_status_drop_down($current_status) {
   <option value="2"<?php if ($current_status == 2) { ?> selected="selected"<?php } ?>>✔ PUBLISHED ✔</option>
 </select>
 <?php
+} // CLOSE FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+function record_status($current_status) {
+	// we will make this a small button and look awesome:
+	
+	if ($current_status == 0) {
+		// DELETED / UNPUBLISHED
+		?>
+		<a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-danger">
+			<i class="fa fa-times"></i> 
+			UNPUBLISHED 
+			<i class="fa fa-times"></i>
+		</a>
+		<?php
+	}
+	else if ($current_status == 1) {
+		// PENDING
+		?>
+		<a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-warning">
+			<i class="fa fa-question-circle"></i> 
+			PENDING 
+			<i class="fa fa-question-circle"></i>
+		</a>
+		<?php
+	}
+	else if ($current_status == 2) {
+		// OK
+		?>
+		<a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-success">
+			<i class="fa fa-check"></i> 
+			PUBLISHED 
+			<i class="fa fa-check"></i>
+		</a>
+		<?php
+	}
+	else {
+	// ?
+	}
+	
+} // CLOSE FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+							
+function admin_bar($add_edit_file_name_append) {
+
+	// start the session:	
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	// establish some variables:
+	$table_name 	= $GLOBALS['page_lookup_table'];
+	$record_id 		= $GLOBALS['record_id'];
+	$public_path 	= pathinfo($_SERVER['SCRIPT_NAME']); // don't need this, except for the next line:
+	$this_file 		= $public_path['basename'];
+
+	?>
+	<!-- ADMIN BAR -->
+	<div class="btn-group btn-group-justified">
+		<a class="btn btn-danger" title="DELETE THIS RECORD" href="record_delete_do.php?table_name=<?php echo $table_name; ?>&src_page=<?php echo $this_file; ?>&id=<?php echo $record_id; ?>"><i class="fa fa-trash"></i></a>
+		<a class="btn btn-warning" title="EDIT THIS RECORD" href="<?php echo $add_edit_file_name_append; ?>_edit.php?id=<?php echo $record_id; ?>"><i class="fa fa-pencil"></i></a>
+		<a class="btn btn-success" title="ADD A NEW RECORD" href="<?php echo $add_edit_file_name_append; ?>_add.php"><i class="fa fa-plus"></i></a>
+		<a class="btn btn-info" title="UPDATE LOG" href="update_log.php?table_name=<?php echo $table_name; ?>&src_page=<?php echo $this_file; ?>&id=<?php echo $record_id; ?>"><i class="fa fa-question-circle"></i></a>
+	</div>
+	<!-- END ADMIN BAR -->
+<?php 
 } // CLOSE FUNCTION
 /* ****************************************************************** */
 /* ****************************************************************** */

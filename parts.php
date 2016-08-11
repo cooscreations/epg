@@ -162,7 +162,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					  	$WHERE_SQL = " WHERE `type_ID` = '" . $_REQUEST['type_id'] . "'";
 					  }
 					  else if ($_REQUEST['show'] == 'products') { 
-					    $WHERE_SQL = " WHERE `product_type_ID` != 0";
+					    $WHERE_SQL = " WHERE `is_finished_product` = 1";
 					  }
 					  else {
 					  	$WHERE_SQL = "";
@@ -185,20 +185,20 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					  // while loop
 					  while($row_get_parts = mysqli_fetch_array($result_get_parts)) {
 					  
-					  	// GET PART TYPE:
-					  	
-					  	$part_ID = $row_get_parts['ID'];
-						$part_code = $row_get_parts['part_code'];
-						$part_name_EN = $row_get_parts['name_EN'];
-						$part_name_CN = $row_get_parts['name_CN'];
-						$part_description = $row_get_parts['description'];
-						$part_type_ID = $row_get_parts['type_ID'];
-						$part_classification_ID = $row_get_parts['classification_ID'];
-						// $part_parent_ID = $row_get_parts['parent_ID'];
-						$part_default_supplier_ID = $row_get_parts['default_suppler_ID'];
-						// $part_part_assy_ID = $row_get_parts['part_assy_ID'];
-						$part_record_status = $row_get_parts['record_status'];
-						$part_product_type_ID = $row_get_parts['product_type_ID'];
+					  	// GET PART DATA:
+						
+						$part_ID 					= $row_get_parts['ID'];
+						$part_code 					= $row_get_parts['part_code'];
+						$part_name_EN 				= $row_get_parts['name_EN'];
+						$part_name_CN 				= $row_get_parts['name_CN'];
+						$part_description 			= $row_get_parts['description'];
+						$part_type_ID 				= $row_get_parts['type_ID'];
+						$part_classification_ID 	= $row_get_parts['classification_ID'];
+						$part_default_suppler_ID 	= $row_get_parts['default_suppler_ID'];
+						$part_record_status 		= $row_get_parts['record_status'];
+						$part_product_type_ID 		= $row_get_parts['product_type_ID'];
+						$part_created_by 			= $row_get_parts['created_by'];
+						$part_is_finished_product 	= $row_get_parts['is_finished_product'];
 						
 						$show_pop_up_classification_column = 1;
 						if ($part_type_ID == 10) { $show_pop_up_classification_column = 0; } // possibly setting this for a second time, but it's just to make sure - and also so that we don't display this on ANY view in the pop-up window ^_^

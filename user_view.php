@@ -143,6 +143,22 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                     <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                 </div>
 			-->
+			
+			<!-- ADMIN BAR -->
+			<div class="panel-actions">
+				<div class="btn-group">
+					<a class="panel-action" title="DELETE THIS RECORD" href="record_delete_do.php?table_name=users&src_page=user_view.php&id=<?php echo $record_id; ?>"><i class="fa fa-trash"></i></a>
+					
+					<a class="panel-action" title="EDIT THIS RECORD" href="user_edit.php?id=<?php echo $record_id; ?>"><i class="fa fa-pencil"></i></a>
+					
+					<a class="panel-action" title="ADD A NEW RECORD" href="user_add.php"><i class="fa fa-plus"></i></a>
+					
+					<a class="panel-action" title="UPDATE LOG" href="update_log.php?table_name=users&src_page=users.php&id=<?php echo $record_id; ?>"><i class="fa fa-question-circle"></i></a>
+				</div>
+			</div>
+			<!-- END ADMIN BAR -->
+			
+			
                 <h2 class="panel-title">User Details:</h2>
             </header>
             <div class="col-md-4 col-lg-3">

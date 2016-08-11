@@ -100,6 +100,9 @@ pagehead($page_id); ?>
                                     if (isset($_REQUEST['user_id'])) {
                                     	$where_SQL= " AND `user_ID` = " . $_REQUEST['user_id'];
                                     }
+                                    else if (isset($_REQUEST['table_name'])) {
+                                    	$where_SQL= " AND `table_name` = " . $_REQUEST['table_name'];
+                                    }
                                     
                                     // get general updates:
 									$get_general_updates_SQL = "SELECT * FROM `update_log` WHERE `update_type` = 'general'" . $where_SQL . " ORDER BY `update_date` DESC";
@@ -164,46 +167,8 @@ pagehead($page_id); ?>
 											</td>
 											<td data-title="Message" class="pt-md pb-md">
 												<?php 
-												if (($general_update_user_ID!='') && ($general_update_user_ID!=0)) {
-													// now get the user info:
-													$get_user_SQL = "SELECT * FROM `users` WHERE `ID` = " . $general_update_user_ID;
-
-													$result_get_user = mysqli_query($con,$get_user_SQL);
-
-													// while loop
-													while($row_get_user = mysqli_fetch_array($result_get_user)) {
-														$user_ID = $row_get_user['ID'];
-														$user_fn = $row_get_user['first_name'];
-														$user_mn = $row_get_user['middle_name'];
-														$user_ln = $row_get_user['last_name'];
-														$user_name_cn = $row_get_user['name_CN'];
-														$user_email = $row_get_user['email'];
-														//$user_pwd = _base64_decrypt($row_get_user['password']); May not need this. Why woud we display the password plain text ?
-														$user_level = $row_get_user['user_level'];
-														$user_position = $row_get_user['position'];
-														$user_last_login_date = $row_get_user['last_login_date'];
-														$user_facebook = $row_get_user['facebook_profile'];	
-														$user_linkedin = $row_get_user['linkedin_profile'];	
-														$user_twitter = $row_get_user['twitter_profile'];	
-														$user_wechat = $row_get_user['wechat_profile'];	
-														$user_skype = $row_get_user['skype_profile'];	
-	
-													} // end get user info WHILE loop
-													
-													?>
-													<a href="user_view.php?id=<?php echo $general_update_user_ID; ?>" title="Click to view this user profile">
-													<?php
-													echo  $user_fn . "  " . $user_ln;
-													
-													if (($user_name_cn!='')&&($user_name_cn!='中文名')) { 
-														echo " / " . $user_name_cn;
-													}
-													?>
-													</a>
-													<?php
-													
-												}
-												else { ?><em>(No User)</em><?php }
+												// show the creator name and link:
+												get_creator($general_update_user_ID);
 												
 												if ($general_update_action == 'UPDATE') {
 													?> updated table <?php 

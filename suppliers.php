@@ -153,7 +153,7 @@ pagehead($page_id); ?>
             	<td><?php echo $sup_internal_ID; ?></td>
                 <td><a href="supplier_view.php?id=<?php echo $sup_ID; ?>"><?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></a></td>
                 <td class="<?php echo $sup_status_color_code; ?>">
-                	<i class="fa <?php echo $sup_status_icon; ?>"></i> <?php echo $sup_status_name_EN; if (($sup_status_name_EN!='')&&($sup_status_name_EN!='中文名')) { ?> <br /><?php echo $sup_status_name_CN; }?>
+                	<i class="fa <?php echo $sup_status_icon; ?>"></i> <?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> <br /><?php echo $sup_status_name_CN; }?>
                 </td>
                 <td><?php 
                   if ($sup_part_classification == 1) { 
