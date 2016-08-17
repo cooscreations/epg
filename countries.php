@@ -19,6 +19,7 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -48,7 +49,7 @@ pagehead ( $page_id );
         </div>
     </header>
     <?php
-							
+
 							// run notifications function:
 							$msg = 0;
 							if (isset ( $_REQUEST ['msg'] )) {
@@ -66,7 +67,7 @@ pagehead ( $page_id );
 							if (isset ( $record_id )) {
 								$page_record_id = $record_id;
 							}
-							
+
 							// now run the function:
 							notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
 							?>
@@ -85,13 +86,13 @@ pagehead ( $page_id );
             <?php
                           $get_con_SQL = "SELECT * FROM  `countries` ORDER BY  `countries`.`name_EN` ASC";
                           // echo $get_con_SQL;
-								
+
 								$con_count = 0;
-								
+
 								$result_get_cons = mysqli_query ( $con, $get_con_SQL );
 								// while loop
 								while ( $row_get_cons = mysqli_fetch_array ( $result_get_cons ) ) {
-									
+
 									?>
 
             <tr>
@@ -109,7 +110,7 @@ pagehead ( $page_id );
             </tr>
 
             <?php
-									
+
 									$con_count = $con_count + 1;
 								} // end while loop
 								?>

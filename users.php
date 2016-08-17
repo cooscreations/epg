@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -46,8 +47,8 @@ pagehead($page_id); ?>
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
         </div>
     </header>
-    <?php 
-    
+    <?php
+
     // run notifications function:
     $msg = 0;
     if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
@@ -57,7 +58,7 @@ pagehead($page_id); ?>
     if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
     $page_record_id = 0;
     if (isset($record_id)) { $page_record_id = $record_id; }
-    
+
     // now run the function:
     notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
     ?>
@@ -65,7 +66,7 @@ pagehead($page_id); ?>
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover table-condensed mb-none">
-            
+
             <tr>
                 <th class="text-left" colspan="8"><a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
             </tr>
@@ -81,33 +82,33 @@ pagehead($page_id); ?>
                 <th class="text-center">Actions</th>
             </tr>
 
-            <?php 
+            <?php
 					  $get_users_SQL = "SELECT * FROM  `users`";
 					  // echo $get_ratings_SQL;
-					  
+
 					  $user_count = 0;
-	
+
 					  $result_get_users = mysqli_query($con,$get_users_SQL);
 					  // while loop
 					  while($row_get_users = mysqli_fetch_array($result_get_users)) {
-					  
+
 					  ?>
 
             <tr>
                 <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>">
                     <img src="assets/images/users/user_<?php echo $row_get_users['ID']; ?>.png" title="<?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?>" style="width:100px;" /></a></td>
                 <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>"><?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?></a></td>
-                <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>"><?php 
+                <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>"><?php
                 if (($row_get_users['name_CN']!='中文名')&&($row_get_users['name_CN']!='')) {
-                	echo $row_get_users['name_CN']; 
+                	echo $row_get_users['name_CN'];
                 }
                 ?></a></td>
                 <td><a href="mailto:<?php echo $row_get_users['email']; ?>" title="Click to send an email"><?php echo $row_get_users['email']; ?></a></td>
                 <td><a href="tel:<?php echo $row_get_users['mobile_number']; ?>"><?php echo $row_get_users['mobile_number']; ?><a/></td>
                 <td><?php echo $row_get_users['position']; ?></td>
-                <td><?php 
+                <td><?php
                 if ($row_get_users['last_login_date']!='0000-00-00 00:00:00') {
-                	echo $row_get_users['last_login_date']; 
+                	echo $row_get_users['last_login_date'];
                 }
                 else {
                 	echo '<span class="text-danger">NEVER</span>';
@@ -122,10 +123,10 @@ pagehead($page_id); ?>
                 </td>
             </tr>
 
-            <?php 
-					  
+            <?php
+
 					  $user_count = $user_count + 1;
-					  
+
 					  } // end while loop
 					  ?>
 
@@ -142,7 +143,7 @@ pagehead($page_id); ?>
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

@@ -19,6 +19,7 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -105,23 +106,23 @@ pagehead ( $page_id );
 									name="product_type_ID">
 											<?php
 											$get_product_type_list_SQL = "SELECT * FROM `product_type` ORDER BY `product_type_code` ASC";
-											
+
 											$result_get_product_type_list = mysqli_query ( $con, $get_product_type_list_SQL );
 											// while loop
 											while ( $row_get_product_type_list = mysqli_fetch_array ( $result_get_product_type_list ) ) {
-												
+
 												$list_product_type_id = $row_get_product_type_list ['ID'];
 												$list_product_type_code = $row_get_product_type_list ['product_type_code'];
 												$list_product_type_name_EN = $row_get_product_type_list ['name_EN'];
 												$list_product_type_name_CN = $row_get_product_type_list ['name_CN'];
-												
+
 												?>
-											
+
 											<option value="<?php echo $list_product_type_id; ?>"><?php echo $list_product_type_code; ?> - <?php echo $list_product_type_name_EN; ?> / <?php echo $list_product_type_name_CN; ?></option>
-											
+
 											<?php
 											} // END WHILE LOOP
-											
+
 											?>
 									</select>
 							</div>

@@ -1,4 +1,4 @@
-<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php 
+<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -11,15 +11,16 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
-/* 
+/*
 
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
@@ -38,32 +39,32 @@ $user_mobile_number = $_REQUEST['mobile_number'];
 $update_note = "Editing a user to the system.";
 
 $edit_user_SQL = "UPDATE `users` SET `first_name` = '".$user_fn."',`middle_name` = '".$user_mn."',`last_name` = '".$user_ln."',`name_CN` = '".$user_cn."',`email` = '".$user_email."',`password` = '".$user_pwd."',`user_level` = '".$user_level."',`position` = '".$user_pos."',`mobile_number` = '".$user_mobile_number."' WHERE `ID` = '".$id."' ";
-    
+
 // echo $edit_user_SQL;
 
 if (mysqli_query($con, $edit_user_SQL)) {
-	
+
 	$record_id = mysqli_insert_id($con);
-	
+
 	// echo "UPDATE # " . $record_id . " OK";
-	
+
 		// AWESOME! We added the record
 		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'users','" . $record_id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
 		// echo $record_edit_SQL;
-		
-		if (mysqli_query($con, $record_edit_SQL)) {	
+
+		if (mysqli_query($con, $record_edit_SQL)) {
 			// AWESOME! We added the change record to the database
-				
-				// regular add - send them to the revisions list for that part	
+
+				// regular add - send them to the revisions list for that part
 				header("Location: users.php?msg=UPDATEOK&action=edit&edit_record_id=".$record_id."");
-			
+
 			exit();
-			
+
 		}
 		else {
 			echo "<h4>Failed to record the change in the edit log with SQL: <br />" . $record_edit_SQL . "</h4>";
 		}
-		
+
 }
 else {
 	echo "<h4>Failed to update existing user with SQL: <br />" . $edit_user_SQL . "</h4>";

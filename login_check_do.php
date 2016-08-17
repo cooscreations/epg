@@ -46,13 +46,13 @@ while($row_get_user = mysqli_fetch_array($result)) {
 	$user_level = $row_get_user['user_level'];
 	$user_position = $row_get_user['position'];
 	$user_last_login_date = $row_get_user['last_login_date'];
-	$user_facebook = $row_get_user['facebook_profile'];	
-	$user_linkedin = $row_get_user['linkedin_profile'];	
-	$user_twitter = $row_get_user['twitter_profile'];	
-	$user_wechat = $row_get_user['wechat_profile'];	
-	$user_skype = $row_get_user['skype_profile'];	
+	$user_facebook = $row_get_user['facebook_profile'];
+	$user_linkedin = $row_get_user['linkedin_profile'];
+	$user_twitter = $row_get_user['twitter_profile'];
+	$user_wechat = $row_get_user['wechat_profile'];
+	$user_skype = $row_get_user['skype_profile'];
 	$user_mobile_number = $row_get_user['mobile_number'];
-	
+
 } // end get user info WHILE loop
 
 
@@ -66,14 +66,21 @@ if ($count == 1) {
 	$_SESSION['user_real_name'] = $user_fn . " " . $user_ln;
 	$_SESSION['user_name_CN'] = $user_name_cn;
 	$_SESSION['user_email']= $user_email;
-	
+
 	//Update last login date in users table.
 	$update_last_login_SQL = "UPDATE `users` SET `last_login_date` = SYSDATE() WHERE email='$username' ";
-	
+
 	if (mysqli_query($con, $update_last_login_SQL)) {
-		header ( "Location: index.php" );
+		//header ( "Location: index.php" );
+		$url = '';
+	if(isset($_SESSION['url']))
+	   $url = $_SESSION['url']; // holds url for last page visited.
+	else
+	   $url = "index.php"; // default page for
+		 
+		 header("Location:".$url);
 	}
-	
+
 } else {
 	//Show error.
 	header("Location: login.php?msg=NG&error=invalid_login");

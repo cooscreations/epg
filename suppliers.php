@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -47,8 +48,8 @@ pagehead($page_id); ?>
         </div>
     </header>
 
-    <?php 
-    
+    <?php
+
     // run notifications function:
     $msg = 0;
     if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
@@ -58,7 +59,7 @@ pagehead($page_id); ?>
     if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
     $page_record_id = 0;
     if (isset($record_id)) { $page_record_id = $record_id; }
-    
+
     // now run the function:
     notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
     ?>
@@ -79,18 +80,18 @@ pagehead($page_id); ?>
                 <th class="text-center">Actions</th>
             </tr>
 
-            <?php 
+            <?php
             		  $order_by = " ORDER BY  `record_status` DESC ,  `part_classification` ASC, `epg_supplier_ID` ASC";
-            
+
 					  $get_sups_SQL = "SELECT * FROM  `suppliers`" . $order_by;
 					  // echo $get_sups_SQL;
-					  
+
 					  $sup_count = 0;
-	
+
 					  $result_get_sups = mysqli_query($con,$get_sups_SQL);
 					  // while loop
 					  while($row_get_sups = mysqli_fetch_array($result_get_sups)) {
-					  
+
 						$sup_ID = $row_get_sups['ID'];
 						$sup_en = $row_get_sups['name_EN'];
 						$sup_cn = $row_get_sups['name_CN'];
@@ -112,14 +113,14 @@ pagehead($page_id); ?>
 						$sup_fax = $row_get_sups['fax'];
 						$sup_email_1 = $row_get_sups['email_1'];
 						$sup_email_2 = $row_get_sups['email_2'];
-						
-						
-	
+
+
+
 								// VENDOR CLASSIFICATION BY STATUS:
-						
+
 								$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
 								// echo $get_vendor_status_SQL;
-	
+
 								$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
 								// while loop
 								while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
@@ -131,13 +132,13 @@ pagehead($page_id); ?>
 									$sup_status_color_code = $row_get_sup_status['color_code'];
 									$sup_status_icon = $row_get_sup_status['icon'];
 								}
-	
-	
-	
+
+
+
 								// GET PART CLASSIFICATION:
 								$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $sup_part_classification . "'";
 								// echo $get_part_class_SQL;
-	
+
 								$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
 								// while loop
 								while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
@@ -146,7 +147,7 @@ pagehead($page_id); ?>
 									$part_class_description = $row_get_part_class['description'];
 									$part_class_color = $row_get_part_class['color'];
 								}
-					  
+
 					  ?>
 
             <tr>
@@ -155,38 +156,38 @@ pagehead($page_id); ?>
                 <td class="<?php echo $sup_status_color_code; ?>">
                 	<i class="fa <?php echo $sup_status_icon; ?>"></i> <?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> <br /><?php echo $sup_status_name_CN; }?>
                 </td>
-                <td><?php 
-                  if ($sup_part_classification == 1) { 
-                	?><span class="text-danger">CRITICAL</span><?php  
-                  } 
-                  else { 
-                	?><span class="text-success">NON-CRITICAL</span><?php 
+                <td><?php
+                  if ($sup_part_classification == 1) {
+                	?><span class="text-danger">CRITICAL</span><?php
+                  }
+                  else {
+                	?><span class="text-success">NON-CRITICAL</span><?php
                   }?></td>
                 <td><?php echo $sup_part_type_ID; ?> / <?php echo $sup_item_supplied; ?></td>
                 <td><?php echo $sup_certs; ?></td>
-                <td><?php 
+                <td><?php
                   if ($sup_cert_exp_date != '0000-00-00') {
-                		
+
                 	?><span class="text-<?php
                 	// now check to see if it's expired!
 					if ($sup_cert_exp_date < date("Y-m-d")) {  echo 'danger'; }
 					else { echo 'success'; }
-					
+
 					?>"><?php
 
-                	echo $sup_cert_exp_date; 
-                	
+                	echo $sup_cert_exp_date;
+
                 	?></span><?php
-                	
-                  
+
+
                   } ?></td>
                 <td>
-                <?php 
-                if ($sup_web != '') { 
+                <?php
+                if ($sup_web != '') {
                 	?>
                 	<a href="<?php echo $sup_web; ?>" target="_blank" title="Launch in a new window"><i class="fa fa-external-link"></i></a>
-                	<?php 
-                } 
+                	<?php
+                }
                 ?></td>
                 <td class="text-center">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
@@ -197,10 +198,10 @@ pagehead($page_id); ?>
                 </td>
             </tr>
 
-            <?php 
-					  
+            <?php
+
 					  $sup_count = $sup_count + 1;
-					  
+
 					  } // end while loop
 					  ?>
 
@@ -217,7 +218,7 @@ pagehead($page_id); ?>
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

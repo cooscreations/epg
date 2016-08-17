@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,27 +12,28 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
 $page_id = 31;
 
-if (isset($_REQUEST['id'])) { 
+if (isset($_REQUEST['id'])) {
 	// echo "id=".$_REQUEST['id'];
-	$record_id = $_REQUEST['id']; 
+	$record_id = $_REQUEST['id'];
 }
-else { // no id = nothing to see here!	
+else { // no id = nothing to see here!
 	header("Location: users.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 // pull the header and template stuff:
-pagehead($page_id); 
+pagehead($page_id);
 // now get the user info:
 $get_user_SQL = "SELECT * FROM `users` WHERE `ID` = " . $record_id;
 
@@ -50,12 +51,12 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	$user_level = $row_get_user['user_level'];
 	$user_position = $row_get_user['position'];
 	$user_last_login_date = $row_get_user['last_login_date'];
-	$user_facebook = $row_get_user['facebook_profile'];	
-	$user_linkedin = $row_get_user['linkedin_profile'];	
-	$user_twitter = $row_get_user['twitter_profile'];	
-	$user_wechat = $row_get_user['wechat_profile'];	
-	$user_skype = $row_get_user['skype_profile'];	
-	
+	$user_facebook = $row_get_user['facebook_profile'];
+	$user_linkedin = $row_get_user['linkedin_profile'];
+	$user_twitter = $row_get_user['twitter_profile'];
+	$user_wechat = $row_get_user['wechat_profile'];
+	$user_skype = $row_get_user['skype_profile'];
+
 } // end get user info WHILE loop
 
 
@@ -92,15 +93,15 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
             <select onchange="document.location = this.value" data-plugin-selecttwo class="form-control populate">
                 <option value="#" selected="selected">JUMP TO ANOTHER USER / 看别的用户:</option>
                 <option value="users.php">View All / 看全部</option>
-                <?php 	
-										
+                <?php
+
 							$get_j_users_SQL = "SELECT * FROM `users`";
 					  		// echo $get_j_users_SQL;
-	
+
 					  		$result_get_j_users = mysqli_query($con,$get_j_users_SQL);
 					  		// while loop
 					  		while($row_get_j_users = mysqli_fetch_array($result_get_j_users)) {
-					  		
+
 								$j_user_ID = $row_get_j_users['ID'];
 								$j_user_fn = $row_get_j_users['first_name'];
 								$j_user_mn = $row_get_j_users['middle_name'];
@@ -110,17 +111,17 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 								$j_user_pwd = $row_get_j_users['password'];
 								$j_user_level = $row_get_j_users['user_level'];
 								$j_user_position = $row_get_j_users['position'];
-								$j_user_last_login_date = $row_get_j_users['last_login_date'];	
-										
+								$j_user_last_login_date = $row_get_j_users['last_login_date'];
+
 							   ?>
                 <option value="user_view.php?id=<?php echo $j_user_ID; ?>">
-                	<?php echo $j_user_fn . " "; 
+                	<?php echo $j_user_fn . " ";
                 	if ($j_user_mn!='') {
-                		echo $j_user_mn . " "; 
+                		echo $j_user_mn . " ";
                 	}
                 	echo $j_user_ln . " ";?> <?php if (($j_user_name_cn != '')&&($j_user_name_cn != '中文名')) { echo " / " . $j_user_name_cn; } ?></option>
-                <?php 
-							  } // end get user list 
+                <?php
+							  } // end get user list
 							  ?>
                 <option value="users.php">View All / 看全部</option>
             </select>
@@ -137,32 +138,32 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 
         <div class="row">
             <header class="panel-heading">
-            <!-- ACTIONS DON'T WORK, SO LET'S COMMENT THEM OUT: 
+            <!-- ACTIONS DON'T WORK, SO LET'S COMMENT THEM OUT:
                 <div class="panel-actions">
                     <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
                     <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                 </div>
 			-->
-			
+
 			<!-- ADMIN BAR -->
 			<div class="panel-actions">
 				<div class="btn-group">
 					<a class="panel-action" title="DELETE THIS RECORD" href="record_delete_do.php?table_name=users&src_page=user_view.php&id=<?php echo $record_id; ?>"><i class="fa fa-trash"></i></a>
-					
+
 					<a class="panel-action" title="EDIT THIS RECORD" href="user_edit.php?id=<?php echo $record_id; ?>"><i class="fa fa-pencil"></i></a>
-					
+
 					<a class="panel-action" title="ADD A NEW RECORD" href="user_add.php"><i class="fa fa-plus"></i></a>
-					
+
 					<a class="panel-action" title="UPDATE LOG" href="update_log.php?table_name=users&src_page=users.php&id=<?php echo $record_id; ?>"><i class="fa fa-question-circle"></i></a>
 				</div>
 			</div>
 			<!-- END ADMIN BAR -->
-			
-			
+
+
                 <h2 class="panel-title">User Details:</h2>
             </header>
             <div class="col-md-4 col-lg-3">
-                
+
                 <section class="panel">
 					<div class="panel-body">
 						<div class="thumb-info mb-md">
@@ -178,20 +179,20 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 						<div class="social-icons-list">
 						<?php if ($user_facebook != '') { ?>
 							<a rel="tooltip" data-placement="bottom" target="_blank" href="<?php echo $user_facebook; ?>" data-original-title="Facebook"><i class="fa fa-facebook"></i><span>Facebook</span></a>
-						<?php } 
-						
+						<?php }
+
 						if ($user_twitter != '') { ?>
 							<a rel="tooltip" data-placement="bottom" href="<?php echo $user_twitter; ?>" data-original-title="Twitter"><i class="fa fa-twitter"></i><span>Twitter</span></a>
-						<?php } 
-						
+						<?php }
+
 						if ($user_linkedin != '') { ?>
 							<a rel="tooltip" data-placement="bottom" href="<?php echo $user_linkedin; ?>" data-original-title="LinkedIn"><i class="fa fa-linkedin"></i><span>Linkedin</span></a>
-						<?php } 
-						
+						<?php }
+
 						if ($user_skype != '') { ?>
 							<a rel="tooltip" data-placement="bottom" href="<?php echo $user_skype; ?>" data-original-title="Skype: <?php echo $user_skype; ?>"><i class="fa fa-skype"></i><span>Skype</span></a>
-						<?php } 
-						
+						<?php }
+
 						if ($user_wechat != '') { ?>
 							<a rel="tooltip" data-placement="bottom" href="<?php echo $user_wechat; ?>" data-original-title="WeChat: <?php echo $user_wechat; ?>"><i class="fa fa-wechat"></i><span>WeChat/ 微信</span></a>
 						<?php } ?>
@@ -235,9 +236,9 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                         </tr>
                         <tr>
                             <th>Last Log In:</th>
-                            <td><?php 
+                            <td><?php
                             if ($user_last_login_date != '0000-00-00 00:00:00') {
-                            	echo $user_last_login_date; 
+                            	echo $user_last_login_date;
                             }
                             else {
                             	echo '<span class="text-danger">NEVER</span>';
@@ -247,7 +248,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                         <tr>
                           <th># Updates This Year</th>
                           <td>
-                          		<?php 
+                          		<?php
 								// count variants for this purchase order
 								$count_updates_sql = "SELECT COUNT( ID ) FROM  `update_log` WHERE  `user_ID` = " . $record_id;
 								$count_updates_query = mysqli_query($con, $count_updates_sql);
@@ -255,7 +256,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 								$total_updates = $count_updates_row[0];
                           		echo $total_updates;
                           		?>
-                          		
+
                           		 <a href="update_log.php?user_id=<?php echo $record_id; ?>">(View All)</a>
                           </td>
                         </tr>
@@ -283,7 +284,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

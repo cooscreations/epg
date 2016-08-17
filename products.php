@@ -19,6 +19,7 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -48,7 +49,7 @@ pagehead ( $page_id );
 		</div>
 	</header>
 					  <?php
-							
+
 							// run notifications function:
 							$msg = 0;
 							if (isset ( $_REQUEST ['msg'] )) {
@@ -66,7 +67,7 @@ pagehead ( $page_id );
 							if (isset ( $record_id )) {
 								$page_record_id = $record_id;
 							}
-							
+
 							// now run the function:
 							notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
 							?>
@@ -82,24 +83,24 @@ pagehead ( $page_id );
 				<th>Product Type</th>
 				<th class="text-center">Actions</th>
 			</tr>
-						  
+
 						  <?php
 								$get_products_SQL = "SELECT * FROM  `products` ORDER BY  `products`.`name_EN` ASC";
-								
+
 								$product_count = 0;
-								
+
 								$result_get_products = mysqli_query ( $con, $get_products_SQL );
 								/* Product Details */
 								while ( $row_get_products = mysqli_fetch_array ( $result_get_products ) ) {
-								
+
 									/* Product Type Details */
 									$get_product_type_SQL = "SELECT * FROM  `product_type` WHERE  `product_type`.`ID` = " . $row_get_products['product_type_ID'];
 									$result_get_product_type = mysqli_query ( $con, $get_product_type_SQL );
 									$row_get_product_type = mysqli_fetch_array ( $result_get_product_type );
 									$product_type_code = $row_get_product_type['product_type_code'];
-									
+
 									?>
-						  
+
 			<tr>
 				<td><a
 					href="product_view.php?id=<?php echo $row_get_products['ID']; ?>"><?php echo $row_get_products['name_EN']; ?></a>
@@ -118,13 +119,13 @@ pagehead ( $page_id );
 					<a href="record_delete_do.php?table_name=products&src_page=products.php&id=<?php echo $row_get_products['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
 			</tr>
-						  
+
 						  <?php
-									
+
 									$product_count = $product_count + 1;
 								} // end while loop
 								?>
-						  
+
 			 <tr>
 				<th colspan="4">TOTAL: <?php echo $product_count; ?></th>
 				<th class="text-center"><a href="product_add.php"

@@ -1,4 +1,4 @@
-<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php 
+<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -27,8 +28,8 @@ pagehead($page_id);
 
 $record_id = 0;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
 
 
@@ -47,8 +48,8 @@ if ($record_id != 0) {
         $user_pwd = $row_get_user['password'];
         $user_level = $row_get_user['user_level'];
         $user_position = $row_get_user['position'];
-        $user_last_login_date = $row_get_user['last_login_date'];	
-        
+        $user_last_login_date = $row_get_user['last_login_date'];
+
     } // end get part info WHILE loop
 }
 
@@ -158,7 +159,7 @@ if ($record_id != 0) {
                                 &nbsp;
                             </div>
                         </div>
-                         
+
                         <div class="form-group">
 							<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
 							<div class="col-md-5">
@@ -170,13 +171,13 @@ if ($record_id != 0) {
 								</div>
 							</div>
 						</div>
-					 
+
                         <div class="form-group">
                             <label class="col-md-3 control-label">Level:<span class="required">*</span></label>
                             <div class="col-md-5">
                               <!--   <input type="number" class="form-control" id="inputDefault" name="level_text" min="10" max="100" required />  -->
                             <select data-plugin-selectTwo class="form-control populate" name="level_text" required>
-													
+
 														<option value="10">10</option>
 														<option value="20">20</option>
 														<option value="30">30</option>
@@ -185,10 +186,10 @@ if ($record_id != 0) {
 														<option value="60">60</option>
 														<option value="70">70</option>
 														<option value="80">80</option>
-													
+
 													</select>
                             </div>
-                            
+
 
                             <div class="col-md-1">
                                 &nbsp;
@@ -207,7 +208,7 @@ if ($record_id != 0) {
                         </div>
                     </div>
                     <footer class="panel-footer">
-                        <?php 
+                        <?php
 										if (isset($_REQUEST['id'])) {
 											?>
                         <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="user_id" />
@@ -232,7 +233,7 @@ if ($record_id != 0) {
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

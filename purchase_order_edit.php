@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -27,12 +28,12 @@ pagehead($page_id);
 
 $record_id = 0;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: purchase_orders.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 if ($record_id != 0) {
@@ -40,15 +41,15 @@ if ($record_id != 0) {
 	$result_get_po = mysqli_query($con,$get_po_SQL);
 	// while loop
 	while($row_get_po = mysqli_fetch_array($result_get_po)) {
-		
-			// now print each record:  
+
+			// now print each record:
 			$po_id = $row_get_po['ID'];
 			$po_number = $row_get_po['PO_number'];
 			$po_created_date = $row_get_po['created_date'];
 			$po_description = $row_get_po['description'];
 			$po_created_by_user = $row_get_po['created_by'];
 			$po_supplier_id = $row_get_po['supplier_ID'];
-			
+
 	} // end while loop
 }
 
@@ -58,7 +59,7 @@ if ($record_id != 0) {
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Edit Purchase Order<?php if ($record_id != 0) { ?> : <? echo $po_number; } ?></h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -71,19 +72,19 @@ if ($record_id != 0) {
 									</li>
 								<li><span>Edit Purchase Order</span></li>
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
 
 					<!-- start: page -->
-					
+
 					<div class="row">
 						<div class="col-md-12">
-						
+
 						<!-- START THE FORM! -->
 						<form class="form-horizontal form-bordered" action="purchase_order_edit_do.php" method="post">
-						
+
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -100,17 +101,17 @@ if ($record_id != 0) {
 											<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" value="<?php echo $po_number; ?>" required/>
 											<input type="hidden" name="po_id" value="<?php echo $po_id; ?>"/>
 										</div>
-										
+
 										<div class="col-md-1">
 											&nbsp;
 										</div>
-									</div>	
-									
+									</div>
+
 									<div class="form-group">
 										<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
 										<div class="col-md-5">
 											<select data-plugin-selectTwo class="form-control populate" name="sup_ID" required>
-											<?php 
+											<?php
 											// get batch list
 											$order_by = " ORDER BY `record_status` DESC";
 											$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = 2 and `record_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
@@ -119,8 +120,8 @@ if ($record_id != 0) {
 											// while loop
 											while($row_get_sup_list = mysqli_fetch_array($result_get_sup_list)) {
 
-													// now print each record:  
-													$sup_id = $row_get_sup_list['ID']; 
+													// now print each record:
+													$sup_id = $row_get_sup_list['ID'];
 													$sup_epg_supplier_ID = $row_get_sup_list['epg_supplier_ID'];
 													$sup_name_EN = $row_get_sup_list['name_EN'];
 													$sup_name_CN = $row_get_sup_list['name_CN'];
@@ -141,7 +142,7 @@ if ($record_id != 0) {
 													$sup_fax = $row_get_sup_list['fax'];
 													$sup_email_1 = $row_get_sup_list['email_1'];
 													$sup_email_2 = $row_get_sup_list['email_2'];
-												
+
 													?>
 													<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $po_supplier_id) { ?> selected="selected"<?php } ?>>
 														<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
@@ -151,60 +152,60 @@ if ($record_id != 0) {
 												?>
 											</select>
 										</div>
-										
-										
-										
-										
-							
+
+
+
+
+
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
-												
+
 									<div class="form-group">
 										<label class="col-md-3 control-label">Description:<span class="required">*</span></label>
 										<div class="col-md-5">
 											<textarea class="form-control" rows="3" id="textareaDefault" name="description" required><?php echo $po_description; ?></textarea>
 										</div>
-										
-							
+
+
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
-									
+
 									<div class="form-group">
 												<label class="col-md-3 control-label">User:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
-													<?php 
+													<?php
 													// get batch list
 													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
 													$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
 													// while loop
 													while($row_get_user_list = mysqli_fetch_array($result_get_user_list)) {
-	
-														// now print each record:  
-														$user_id = $row_get_user_list['ID']; 
+
+														// now print each record:
+														$user_id = $row_get_user_list['ID'];
 														$user_first_name = $row_get_user_list['first_name'];
 														$user_last_name = $row_get_user_list['last_name'];
 														$user_name_CN = $row_get_user_list['name_CN'];
 														$user_email = $row_get_user_list['email'];
 													?>
 														<option value="<?php echo $user_id; ?>"<?php if ($user_id == $po_created_by_user) { ?> selected="selected"<?php } ?>><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo  ' / ' . $user_name_CN; }?></option>
-														
-														<?php 
+
+														<?php
 														}
 														?>
 													</select>
 												</div>
-												
+
 												<div class="col-md-1">
 													<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
 												</div>
-												
+
 									</div>
-									
+
 									<div class="form-group">
 										<label class="col-md-3 control-label">Created Date:<span class="required">*</span></label>
 										<div class="col-md-5">
@@ -220,10 +221,10 @@ if ($record_id != 0) {
 										</div>
 									</div>
 								</div>
-								
-								
+
+
 								<footer class="panel-footer">
-										<?php 
+										<?php
 										if (isset($_REQUEST['po_number'])) {
 											?>
 											<input type="hidden" value="<?php echo $_REQUEST['po_number']; ?>" name="po_number" />
@@ -236,23 +237,23 @@ if ($record_id != 0) {
 							</section>
 										<!-- now close the form -->
 										</form>
-						
-						
+
+
 						</div>
-						
+
 						</div>
-						
-						
-					
-					
+
+
+
+
 								<!-- now close the panel --><!-- end row! -->
-					 
+
 					<!-- end: page -->
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

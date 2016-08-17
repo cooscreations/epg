@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -11,15 +11,16 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
-/* 
+/*
 
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
@@ -41,7 +42,7 @@ else if ($_REQUEST['value_direction'] == 'out') {
 	$result_get_existing_batch = mysqli_query($con,$get_existing_batch_SQL);
 	// while loop
 	while($row_get_existing_batch = mysqli_fetch_array($result_get_existing_batch)) {
-		// now print each record:  
+		// now print each record:
 		$status_ID = $row_get_existing_batch['part_batch_status_ID'];
 	}
 }
@@ -55,26 +56,26 @@ $add_movement_SQL = "INSERT INTO `part_batch_movement`(`ID`, `part_batch_ID`, `a
 // echo $add_movement_SQL;
 
 if (mysqli_query($con, $add_movement_SQL)) {
-	
+
 	$record_id = mysqli_insert_id($con);
-	
+
 	// echo "INSERT # " . $record_id . " OK";
-	
+
 		// AWESOME! We added the record
 		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_batch_movement','" . $record_id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
 		// echo $record_edit_SQL;
-		
-		if (mysqli_query($con, $record_edit_SQL)) {	
+
+		if (mysqli_query($con, $record_edit_SQL)) {
 			// AWESOME! We added the change record to the database
-				
+
 			header("Location: batch_view.php?id=".$_REQUEST['batch_ID']."&msg=OK&action=add&new_record_id=".$record_id."");
 			exit();
-			
+
 		}
 		else {
 			echo "<h4>Failed to record the change in the edit log with SQL: <br />" . $record_edit_SQL . "</h4>";
 		}
-		
+
 }
 else {
 	echo "<h4>Failed to update existing user with SQL: <br />" . $add_movement_SQL . "</h4>";
