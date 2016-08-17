@@ -508,6 +508,360 @@ pagehead($page_id);
 					<!-- end: page -->
 				</section>
 				
+				<br />
+				<hr />
+				<br />
+				<h1>STARTING ORIGINAL P.O. FORM</h1>
+				
+				<!-- START P.O. CONTENT -->
+<div class="row"><!-- P.O. ROW 1: -->
+
+
+<div class="col-md-4">
+
+	<!-- START PANEL - SUPPLIER INFORMATION -->
+	<section class="panel">
+		<header class="panel-heading">
+			<div class="panel-actions">
+				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+			</div>
+
+			<h2 class="panel-title">
+				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+				<span class="va-middle">Supplier Information</span>
+			</h2>
+		</header>
+		<div class="panel-body">
+			<div class="content">
+				<!-- PANEL CONTENT HERE -->
+				<strong>COMPANY NAME:</strong><br />
+				Company Name will go here...
+		  </div>
+		</div>
+	</section>
+	<!-- END PANEL - SUPPLIER INFORMATION -->
+	
+</div>
+
+
+<div class="col-md-8">
+
+	<!-- START PANEL - PURCHASER INFORMATION -->
+	<section class="panel">
+		<header class="panel-heading">
+			<div class="panel-actions">
+				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+			</div>
+
+			<h2 class="panel-title">
+				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+				<span class="va-middle">Purchaser Information</span>
+			</h2>
+		</header>
+		<div class="panel-body">
+			<div class="content">
+				<!-- PANEL CONTENT HERE -->
+				
+				<div class="row">
+				
+					<div class="col-md-6">
+						European Pharma Group BV<br />
+						Gebouw Euro Offices - 3<sup>rd</sup> floor<br />
+						Beechavenue 127<br />
+						1119 RB Schipol- Rijk<br />
+						The Netherlands<br />
+						T: +31 20 31 60 140<br />
+						F: +31 20 31 60 141
+					</div>
+				
+					<div class="col-md-6">
+						EPG Shenzhen Representative Office<br />
+						Room 509, Unit 2, Building 25, Keyuan West<br />
+						Industrial Zone | No. 5 Kezi West Road, Nanshan<br />
+						Shenzhen, P.R. China<br />
+						Zip Code: 518054<br />
+						T: +86 755 2167 3659<br />
+						F: +86 755 8659 5232
+					</div>
+				
+				</div>
+				
+				
+		  </div>
+		</div>
+	</section>
+	<!-- END PANEL - PURCHASER INFORMATION -->
+
+</div>
+
+</div><!-- END P.O. ROW 1 -->
+
+<div class="row"><!-- P.O. ROW 2 -->
+
+	<!-- START PANEL - ORDER INFORMATION -->
+	<section class="panel">
+		<header class="panel-heading">
+			<div class="panel-actions">
+				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+			</div>
+
+			<h2 class="panel-title">
+				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+				<span class="va-middle">Order</span>
+			</h2>
+		</header>
+		<div class="panel-body">
+			<div class="content">
+				<!-- PANEL CONTENT HERE -->
+				
+				<div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+                        <tr>
+                            <th>Purchase Order No.</th>
+                            <td>EPG2016xxxx</td>
+                        </tr>
+                        <tr>
+                            <th>SHIP VIA</th>
+                            <td>?</td>
+                        </tr>
+                        <tr>
+                            <th>ORDERED BY:</th>
+                            <td><a href="user_view.php?id=2">Nicky Canton</a></td>
+                        </tr>
+                        <tr>
+                            <th>Date Ordered:</th>
+                            <td>2016-08-17</td>
+                        </tr>
+                        <tr>
+                            <th>Ship To:</th>
+                            <td>abc abc</td>
+                        </tr>
+                        <tr>
+                            <th>Date Needed:</th>
+                            <td>2016-09-17</td>
+                        </tr>
+                        <tr>
+                            <th>Order Type:</th>
+                            <td><span class="btn btn-success"><i class="fa fa-tick"></i> New</span> | <span stlye="text-decoration: strikethrough">Change</span></td>
+                        </tr>
+                    </table>
+                </div>
+				
+		  </div>
+		</div>
+	</section>
+	<!-- END PANEL - ORDER INFORMATION -->
+
+</div><!-- END P.O. ROW 2 -->
+
+<div class="row"><!-- P.O. ROW 3 -->
+
+	<!-- START PANEL - INSTRUCTIONS -->
+	<section class="panel">
+		<header class="panel-heading">
+			<div class="panel-actions">
+				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+			</div>
+
+			<h2 class="panel-title">
+				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+				<span class="va-middle">Instructions</span>
+			</h2>
+		</header>
+		<div class="panel-body">
+			<div class="content">
+				<!-- PANEL CONTENT HERE -->
+				<ol>
+					<li>Please confirm the receipt of this order indicating the shipping date and address and quantity.</li>
+					<li>All goods will be inspected and quantities verified by the receiving organization.</li>
+					<li>Supplier agrees to notify European Pharma Group of any changes to the product or the process in order to give European Pharma Group the opportunity to determine whether the change may affect the Quality of the finished Medical Device.</li>
+					<li>Fax or e-mail the confirmation to European Pharma Group.</li>
+				</ol>
+		  </div>
+		</div>
+	</section>
+	<!-- END PANEL - INSTRUCTIONS -->
+
+</div><!-- END P.O. ROW 3 -->
+
+<div class="row"><!-- P.O. ROW 4 -->
+
+	<!-- START PANEL - LINE ITEMS -->
+	<section class="panel">
+		<!-- NO HEADER FOR THIS PANEL -->
+		<div class="panel-body">
+			<div class="content">
+				<!-- PANEL CONTENT HERE -->
+				
+				<div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+                        <tr>
+                            <th>ITEM NO.</th>
+                            <th>DESCRIPTION</th>
+                            <th>QTY</th>
+                            <th>UNIT PRICE</th>
+                            <th>TOTAL</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>
+                            	01337 - Nozzle twist cap<br />
+                            	according to 01337-A-2-2016xxxx<br />
+                            	VAT included<br />
+                            	Run mold at least 3H<br />
+                            	Sample at least 300 shots<br />
+                            	Including labour cost for cosmetic and dimension<br />
+                            	Price included drilled hole in the side according spec.
+                            </td>
+                            <td>1</td>
+                            <td>¥3,645.00</td>
+                            <td>¥3,645.00</td>
+                        </tr>
+                    </table>
+                </div>
+				
+		  </div>
+		</div>
+	</section>
+	<!-- END PANEL - LINE ITEMS -->
+
+</div><!-- END P.O. ROW 4 -->
+
+<div class="row"><!-- P.O. ROW 5 -->
+
+	<!-- START PANEL - OTHER INSTRUCTIONS -->
+	<section class="panel">
+		<header class="panel-heading">
+			<div class="panel-actions">
+				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+			</div>
+
+			<h2 class="panel-title">
+				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+				<span class="va-middle">Other Instructions</span>
+			</h2>
+		</header>
+		<div class="panel-body">
+			<div class="content">
+				<!-- PANEL CONTENT HERE -->
+				<ol>
+					<li>
+						<strong>
+							Special requirements of the specifications, process requirements/protocols and requirements for approval of product or process:
+						</strong>
+						<br />
+						Request COC or inspection report of supplier. Need to provide inspection report.
+					</li>
+					<li>
+						<strong>
+							Related standards:
+						</strong>
+						<br />
+						N/A
+					</li>
+					<li>
+						<strong>
+							Special contracts, quality agreements/supply agreements:
+						</strong>
+						<br />
+						Supplier Agreement (SunNgai-EPG2011) and Quality Agreement (SunNgai-EPG2012)
+					</li>
+					<li>
+						<strong>
+							Special requirements for qualification personnel:
+						</strong>
+						<br />
+						N/A
+					</li>
+					<li>
+						<strong>
+							Special requirements for Quality Management System:
+						</strong>
+						<br />
+						N/A
+					</li>
+					<li>
+						<strong>
+							Fax or e-mail the confirmation to European Pharma Group.
+						</strong>	
+					</li>
+				</ol>
+		  </div>
+		</div>
+	</section>
+	<!-- END PANEL - OTHER INSTRUCTIONS -->
+
+</div><!-- END P.O. ROW 5 -->
+
+<div class="row"><!-- P.O. ROW 6 -->
+
+	<div class="col-md-9">
+	
+		<!-- START CHECK AND SIGN -->
+		
+		<div class="row">
+			<strong>Include Certificate of Compliance with Order</strong>
+			<br />
+			<span class="btn btn-success"><i class="fa fa-tick"></i> YES</span> | <span stlye="text-decoration: strikethrough">NO</span>
+			<br />
+			<strong>Approved By:</strong> <a href="user_view.php?id=2">Nicky Canton</a>
+			<strong>Date:</strong> 2016-08-17
+		</div>
+		
+		<div class="row">
+			<strong>Confirmation Received</strong>
+			<br />
+			<span class="btn btn-success"><i class="fa fa-tick"></i> YES</span> | <span stlye="text-decoration: strikethrough">NO</span>
+			<strong>Date:</strong> 2016-08-27
+			<br />
+			<strong>Comments:</strong> No comments at this time...
+		</div>
+		
+		<!-- END CHECK AND SIGN -->
+	
+	</div>
+
+	<div class="col-md-3">
+	
+		<!-- START P.O. SUMMARY TABLE -->
+				
+				<div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+                        <tr>
+                            <th>Subtotal</th>
+                            <td>¥3,645.00</td>
+                        </tr>
+                        <tr>
+                            <th>Shipping</th>
+                            <td>¥0.00</td>
+                        </tr>
+                        <tr>
+                            <th>Handling</th>
+                            <td>¥0.00</td>
+                        </tr>
+                        <tr>
+                            <th>TOTAL DUE</th>
+                            <td>¥3,645.00</td>
+                        </tr>
+                    </table>
+                </div>
+		
+		<!-- END P.O. SUMMARY TABLE -->
+		
+	</div>
+
+</div><!-- END P.O. ROW 6 -->
+
+<p>Page 1 of 1</p>
+<!-- END OF TOTAL P.O. CONTENT -->
+
+				
+				
 <!-- : END MAIN PAGE BODY -->
 
 <?php 

@@ -170,9 +170,9 @@ pagehead($page_id);
 						
 						
 						<?php 
-							// now run the admin bar function:
-							admin_bar('batch');
-							?>
+						// now run the admin bar function:
+						admin_bar('batch');
+						?>
 						
 						
 							<section class="panel">
