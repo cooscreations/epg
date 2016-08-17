@@ -1,4 +1,4 @@
-<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php 
+<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -27,8 +28,8 @@ pagehead($page_id);
 
 $record_id = 0;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
 
 if ($record_id != 0) {
@@ -43,7 +44,7 @@ if ($record_id != 0) {
         $sup_en = $row_get_sup['name_EN'];
         $sup_cn = $row_get_sup['name_CN'];
         $sup_web = $row_get_sup['website'];
-        
+
     } // end get supplier info WHILE loop
 }
 
@@ -127,7 +128,7 @@ if ($record_id != 0) {
 
                     </div>
                     <footer class="panel-footer">
-                        <?php 
+                        <?php
 										if (isset($_REQUEST['id'])) {
 											?>
                         <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="sup_ID" />
@@ -150,7 +151,7 @@ if ($record_id != 0) {
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

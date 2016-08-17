@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -28,11 +29,11 @@ pagehead($page_id);
 
 $record_id = 0;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else if (isset($_REQUEST['po_number'])) { 
-	$record_id = $_REQUEST['po_number']; 
+else if (isset($_REQUEST['po_number'])) {
+	$record_id = $_REQUEST['po_number'];
 }
 
 if ($record_id != 0) {
@@ -54,7 +55,7 @@ if ($record_id != 0) {
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Add A New Purchase Order<?php if ($record_id != 0) { ?> Purchase Order Number: <? echo $po_number; } ?></h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -67,18 +68,18 @@ if ($record_id != 0) {
 									</li>
 								<li><span>Add New Purchase Order</span></li>
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
 
 					<!-- start: page -->
-					
+
 					<div class="row">
 						<div class="col-md-12">
-						
-						<?php 
-					
+
+						<?php
+
 							// run notifications function:
 							$msg = 0;
 							if (isset ( $_REQUEST ['msg'] )) {
@@ -91,10 +92,10 @@ if ($record_id != 0) {
 							// now run the function:
 							notify_me ( $page_id, $msg, $action, null, null );
 					?>
-					
+
 						<!-- START THE FORM! -->
 						<form id="form" class="form-horizontal form-bordered" action="purchase_order_add_do.php" method="post">
-						
+
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -110,23 +111,23 @@ if ($record_id != 0) {
 									<div class="col-md-5">
 										<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" required/>
 									</div>
-									
+
 									<div class="col-md-1">
 										&nbsp;
 									</div>
-								</div>	
-											
-											
-											
-											
-											
+								</div>
+
+
+
+
+
 											<div class="form-group">
 												<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<select data-plugin-selectTwo class="form-control populate" name="sup_ID" required>
 													<option value=""></option>
 													<option value="0" >OTHER</option>
-													<?php 
+													<?php
 													// get batch list
 													$order_by = " ORDER BY `record_status` DESC";
 													$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = 2 and `supplier_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
@@ -134,9 +135,9 @@ if ($record_id != 0) {
 													$result_get_sup_list = mysqli_query($con,$get_sup_list_SQL);
 													// while loop
 													while($row_get_sup_list = mysqli_fetch_array($result_get_sup_list)) {
-	
-															// now print each record:  
-															$sup_id = $row_get_sup_list['ID']; 
+
+															// now print each record:
+															$sup_id = $row_get_sup_list['ID'];
 															$sup_epg_supplier_ID = $row_get_sup_list['epg_supplier_ID'];
 															$sup_name_EN = $row_get_sup_list['name_EN'];
 															$sup_name_CN = $row_get_sup_list['name_CN'];
@@ -157,7 +158,7 @@ if ($record_id != 0) {
 															$sup_fax = $row_get_sup_list['fax'];
 															$sup_email_1 = $row_get_sup_list['email_1'];
 															$sup_email_2 = $row_get_sup_list['email_2'];
-														
+
 															?>
 															<option value="<?php echo $sup_id; ?>">
 																<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
@@ -167,12 +168,12 @@ if ($record_id != 0) {
 														?>
 													</select>
 												</div>
-									
+
 												<div class="col-md-1">
 													&nbsp;
 												</div>
 											</div>
-											
+
 											<!--  Rouge vendor entry -->
 											<div class="form-group" id="supplier_name_group" style="display: none;">
 												<label class="col-md-3 control-label">Supplier Name:<span class="required">*</span></label>
@@ -183,53 +184,53 @@ if ($record_id != 0) {
 													&nbsp;
 												</div>
 											</div>
-											
+
 											<div class="form-group">
 												<label class="col-md-3 control-label">Description:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<textarea class="form-control" rows="3" id="textareaDefault" name="description" required></textarea>
 												</div>
-												
-									
+
+
 												<div class="col-md-1">
 													&nbsp;
 												</div>
 											</div>
-											
-											
-											
+
+
+
 											<div class="form-group">
 												<label class="col-md-3 control-label">User:<span class="required">*</span></label>
 												<div class="col-md-5">
 													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
-													<?php 
+													<?php
 													// get batch list
 													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
 													$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
 													// while loop
 													while($row_get_user_list = mysqli_fetch_array($result_get_user_list)) {
-	
-														// now print each record:  
-														$user_id = $row_get_user_list['ID']; 
+
+														// now print each record:
+														$user_id = $row_get_user_list['ID'];
 														$user_first_name = $row_get_user_list['first_name'];
 														$user_last_name = $row_get_user_list['last_name'];
 														$user_name_CN = $row_get_user_list['name_CN'];
 														$user_email = $row_get_user_list['email'];
 													?>
 														<option value="<?php echo $user_id; ?>"<?php if ($user_email == $session_user_id) { ?> selected="selected"<?php } ?>><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo  ' / ' . $user_name_CN; }?></option>
-														
-														<?php 
+
+														<?php
 														}
 														?>
 													</select>
 												</div>
-												
+
 												<div class="col-md-1">
 													<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
 												</div>
-												
+
 											</div>
-											
+
 											<div class="form-group">
 												<label class="col-md-3 control-label">Created Date:<span class="required">*</span></label>
 												<div class="col-md-5">
@@ -244,14 +245,14 @@ if ($record_id != 0) {
 													&nbsp;
 												</div>
 											</div>
-											
-											
-					 
+
+
+
 								</div>
-								
-								
+
+
 								<footer class="panel-footer">
-										<?php 
+										<?php
 										if (isset($_REQUEST['po_number'])) {
 											?>
 											<input type="hidden" value="<?php echo $_REQUEST['po_number']; ?>" name="po_number" />
@@ -264,17 +265,17 @@ if ($record_id != 0) {
 							</section>
 										<!-- now close the form -->
 										</form>
-						
-						
+
+
 						</div>
-						
+
 						</div>
-						
-						
-					
-					
+
+
+
+
 								<!-- now close the panel --><!-- end row! -->
-					 
+
 					<!-- end: page -->
 					<script type="text/javascript">
 						$(function(){
@@ -287,15 +288,15 @@ if ($record_id != 0) {
 							    }else{
 							    	$('#supplier_name_group').css("display","block");
 							    }
-							    
+
 							});
 						});
 					</script>
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

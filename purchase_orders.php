@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -25,7 +26,7 @@ $page_id = 9;
 // pull the header and template stuff:
 pagehead($page_id); ?>
 
-<?php 
+<?php
 
 $add_URL_vars_sort = '';
 $add_URL_vars_dir = '';
@@ -53,7 +54,7 @@ if (isset($_REQUEST['year'])) {
 	}
 }
 
-// now run it like this: 
+// now run it like this:
 // echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year;
 
 ?>
@@ -63,7 +64,7 @@ if (isset($_REQUEST['year'])) {
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Purchase Orders (<?php echo $display_year; ?>)</h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -73,25 +74,25 @@ if (isset($_REQUEST['year'])) {
 								</li>
 								<li><span>Purchase Orders</span></li>
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
 
 					<!-- start: page -->
-					
+
 					<div class="row">
 						<div class="col-md-12">
 							<!-- YEAR JUMPER -->
-							
+
 							<select onchange="document.location = this.value" data-plugin-selecttwo class="form-control populate">
 								<option value="#" selected="selected">SELECT A YEAR / 选一年:</option>
 								<option value="purchase_orders.php?year=all<?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>">View All / 看全部</option>
-								
-								<?php 
+
+								<?php
 									$start_year = 2011;
 									$loop_year = $start_year;
-									
+
 									while ($loop_year <= date("Y")) {
 										?>
 								<option value="purchase_orders.php?year=<?php echo $loop_year; ?><?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>"<?php if ($loop_year == $_REQUEST['year']) { ?> selected="selected"<?php } ?>>SHOW POs FOR <?php echo $loop_year; ?> 的订单</option>
@@ -104,9 +105,9 @@ if (isset($_REQUEST['year'])) {
 							<!-- / YEAR JUMPER -->
 						</div>
 					</div>
-					
-					<?php 
-					
+
+					<?php
+
 					// run notifications function:
 					$msg = 0;
 					if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
@@ -116,14 +117,14 @@ if (isset($_REQUEST['year'])) {
 					if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
 					$page_record_id = 0;
 					if (isset($record_id)) { $page_record_id = $record_id; }
-					
+
 					// now run the function:
 					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
 					?>
-					
-				
-				<div class="col-md-12">	
-					
+
+
+				<div class="col-md-12">
+
     <div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
@@ -140,19 +141,19 @@ if (isset($_REQUEST['year'])) {
 						</tr>
 					  </thead>
 					  <tbody>
-					  
-					  <?php 
+
+					  <?php
 					  if (isset($_REQUEST['sort'])) {
 					  	$order_by = " ORDER BY `" . $_REQUEST['sort'] . "` " . $_REQUEST['dir'] . "";
 					  }
 					  else {
 					  	$order_by = " ORDER BY  `purchase_orders`.`PO_number` DESC";
 					  }
-					  
+
 					  $add_SQL = "";
-					  
+
 					  if (isset($_REQUEST['year'])) {
-					  	
+
 					  	if ($_REQUEST['year'] == 'all') {
 					  		$add_SQL = ""; // SHOW ALL YEARS!
 					  	}
@@ -164,16 +165,16 @@ if (isset($_REQUEST['year'])) {
 					  		// by default, we will just show this year!
 					  		$add_SQL = " AND `created_date` >  '" . date("Y") . "-01-01 00:00:00' AND `created_date` <  '" . (date("Y") + 1) . "-01-01 00:00:00'";
 					  }
- 					  
+
 					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE `record_status` =2" . $add_SQL . $order_by;
 					  // echo $get_mats_SQL;
-					  
+
 					  $PO_count = 0;
-	
+
 					  $result_get_POs = mysqli_query($con,$get_POs_SQL);
 					  // while loop
 					  while($row_get_POs = mysqli_fetch_array($result_get_POs)) {
-					  
+
 					  		// now assign the results to the vars
 							$PO_ID = $row_get_POs['ID'];
 							$PO_number = $row_get_POs['PO_number'];
@@ -182,9 +183,9 @@ if (isset($_REQUEST['year'])) {
 							$PO_record_status = $row_get_POs['record_status'];
 							$PO_supplier_ID = $row_get_POs['supplier_ID'];
 							$PO_created_by = $row_get_POs['created_by'];
-							
+
 							/* ***************  GET SUPPLIER INFO ************************** */
-		
+
 							// now get the record info:
 							$get_sups_SQL = "SELECT * FROM `suppliers` WHERE `ID` = " . $PO_supplier_ID;
 							// echo $get_sups_SQL;
@@ -214,12 +215,12 @@ if (isset($_REQUEST['year'])) {
 								$sup_fax = $row_get_sup['fax'];
 								$sup_email_1 = $row_get_sup['email_1'];
 								$sup_email_2 = $row_get_sup['email_2'];
-	
+
 										// VENDOR CLASSIFICATION BY STATUS:
-						
+
 										$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
 										// echo $get_vendor_status_SQL;
-	
+
 										$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
 										// while loop
 										while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
@@ -231,13 +232,13 @@ if (isset($_REQUEST['year'])) {
 											$sup_status_color_code = $row_get_sup_status['color_code'];
 											$sup_status_icon = $row_get_sup_status['icon'];
 										}
-	
-	
-	
+
+
+
 										// GET PART CLASSIFICATION:
 										$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $sup_part_classification . "'";
 										// echo $get_part_class_SQL;
-	
+
 										$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
 										// while loop
 										while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
@@ -246,14 +247,14 @@ if (isset($_REQUEST['year'])) {
 											$part_class_description = $row_get_part_class['description'];
 											$part_class_color = $row_get_part_class['color'];
 										}
-	
+
 							} // end get record WHILE loop
-		
+
 							/* *************** END GET SUPPLIER INFO *********************** */
-							
-					  
+
+
 					  ?>
-					  
+
 					  <tr>
 					    <td><a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>"><?php echo $PO_number; ?></a></td>
 					    <td>
@@ -268,26 +269,26 @@ if (isset($_REQUEST['year'])) {
 					    </td>
 					    <td class="text-right">
 					    <!-- COUNT BATCHES -->
-					    <?php 
+					    <?php
 					    	// count batches for this PO
-                        	$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_ID; 
+                        	$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_ID;
                         	$count_batches_query = mysqli_query($con, $count_batches_sql);
                         	$count_batches_row = mysqli_fetch_row($count_batches_query);
                         	$total_batches = $count_batches_row[0];
-					    
-					    
-					    
-					    if ($total_batches == 0) { 
+
+
+
+					    if ($total_batches == 0) {
 					    	echo '<a href="purchase_order_view.php?id=' . $row_get_POs['ID'] . '" class="text-danger">';
 					    	echo $total_batches;
-					    	echo '</a>';	
+					    	echo '</a>';
 					    }
-					    else { 
+					    else {
 					    	echo '<a href="purchase_order_view.php?id=' . $row_get_POs['ID'] . '">';
 					    	echo $total_batches;
-					    	echo '</a>'; 
+					    	echo '</a>';
 					    }
-					    
+
 					    ?>
 					    <!-- END COUNT BATCHES -->
 					    </td>
@@ -300,11 +301,11 @@ if (isset($_REQUEST['year'])) {
 							 <a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                			 </td>
 					  </tr>
-					  
-					  <?php 
-					  
+
+					  <?php
+
 					  $PO_count = $PO_count + 1;
-					  
+
 					  } // end while loop
 					  ?>
 					  </tbody>
@@ -316,15 +317,15 @@ if (isset($_REQUEST['year'])) {
 							<th>TOTAL: <?php echo $PO_count; ?></th>
 						</tr>
 					  </tfoot>
-					  
+
 					 </table>
-					 
+
 					 </div>
-					
-					 
+
+
 					<!-- end: page -->
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 <div id="dialog" class="modal-block mfp-hide">
 			<section class="panel">
@@ -348,7 +349,7 @@ if (isset($_REQUEST['year'])) {
 				</footer>
 			</section>
 		</div>
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

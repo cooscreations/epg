@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -11,15 +11,16 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
-/* 
+/*
 
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
@@ -44,28 +45,28 @@ $add_user_SQL = "INSERT INTO `users`(`ID`, `first_name`, `middle_name`, `last_na
 // echo $add_movement_SQL;
 
 if (mysqli_query($con, $add_user_SQL)) {
-	
+
 	$record_id = mysqli_insert_id($con);
-	
+
 	// echo "INSERT # " . $record_id . " OK";
-	
+
 		// AWESOME! We added the record
 		$record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'users','" . $record_id . "','1','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
 		// echo $record_edit_SQL;
-		
-		if (mysqli_query($con, $record_edit_SQL)) {	
+
+		if (mysqli_query($con, $record_edit_SQL)) {
 			// AWESOME! We added the change record to the database
-				
+
 				// regular add
 				header("Location: users.php?msg=OK&action=add&new_record_id=".$record_id."");
-			
+
 			exit();
-			
+
 		}
 		else {
 			echo "<h4>Failed to record the change in the edit log with SQL: <br />" . $record_edit_SQL . "</h4>";
 		}
-		
+
 }
 else {
 	echo "<h4>Failed to update existing user with SQL: <br />" . $add_user_SQL . "</h4>";

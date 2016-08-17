@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -11,22 +11,23 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
 $page_id = 4;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else { // no id = nothing to see here!	
+else { // no id = nothing to see here!
 	header("Location: products.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 // pull the header and template stuff:
@@ -39,7 +40,7 @@ pagehead($page_id); ?>
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>InsuJet&trade; - Basic Pen</h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -50,15 +51,15 @@ pagehead($page_id); ?>
 								<li><span>Products</span></li>
 								<li><span>InsuJet&trade; - Basic Pen</span></li>
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
-					
+
 					<h1>DEV NOTE: This is a hard-coded page - it needs to be made dynamic! Sorry for the delay.</h1>
 
 					<!-- start: page -->
-					
+
 					<h2>Product Break Down:</h2>
 					<table class="table table-bordered table-striped mb-none">
 					  <tr>
@@ -70,7 +71,7 @@ pagehead($page_id); ?>
 					    <th>Ver.</th>
 					    <th>Photo</th>
 					  </tr>
-					  
+
 					  <tr>
 					    <td><a href="part_view.php?id=1">1</a></td>
 					    <td>Assembly</td>
@@ -80,7 +81,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=1"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>2</td>
 					    <td>Assembly</td>
@@ -90,7 +91,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=2"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>3</td>
 					    <td>Assembly</td>
@@ -100,7 +101,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=9"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>4</td>
 					    <td>Assembly</td>
@@ -110,7 +111,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=16"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>4</td>
 					    <td>Assembly</td>
@@ -120,7 +121,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=17"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>4</td>
 					    <td>Assembly</td>
@@ -130,7 +131,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=18"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>4</td>
 					    <td>Part</td>
@@ -140,7 +141,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=19"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>3</td>
 					    <td>Assembly</td>
@@ -150,7 +151,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=10"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>3</td>
 					    <td>Part</td>
@@ -160,7 +161,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=11"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>3</td>
 					    <td>Part</td>
@@ -170,7 +171,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=12"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>3</td>
 					    <td>Part</td>
@@ -180,7 +181,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=13"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>3</td>
 					    <td>Part</td>
@@ -190,7 +191,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=14"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>3</td>
 					    <td>Part</td>
@@ -200,7 +201,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=15"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>2</td>
 					    <td>Part</td>
@@ -210,7 +211,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=3"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>2</td>
 					    <td>Part</td>
@@ -220,7 +221,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=4"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>2</td>
 					    <td>Part</td>
@@ -230,7 +231,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=5"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>2</td>
 					    <td>Part</td>
@@ -240,7 +241,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=6"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>2</td>
 					    <td>Part</td>
@@ -250,7 +251,7 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=7"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					  <tr>
 					    <td>2</td>
 					    <td>Part</td>
@@ -260,15 +261,15 @@ pagehead($page_id); ?>
 					    <td>1.0</td>
 					    <td><a href="part_view.php?id=8"><img src="assets/images/parts/01312.png" title="Part Photo" style="width:100px;" /></a></td>
 					  </tr>
-					  
+
 					</table>
-					
+
 					<!-- end: page -->
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

@@ -19,6 +19,7 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -48,7 +49,7 @@ pagehead ( $page_id );
 		</div>
 	</header>
 					  <?php
-							
+
 							// run notifications function:
 							$msg = 0;
 							if (isset ( $_REQUEST ['msg'] )) {
@@ -66,7 +67,7 @@ pagehead ( $page_id );
 							if (isset ( $record_id )) {
 								$page_record_id = $record_id;
 							}
-							
+
 							// now run the function:
 							notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
 							?>
@@ -81,18 +82,18 @@ pagehead ( $page_id );
 				<th>Description</th>
 				<th class="text-center">Actions</th>
 			</tr>
-						  
+
 						  <?php
 								$get_part_treatment_SQL = "SELECT * FROM  `part_treatment` ORDER BY  `part_treatment`.`name_EN` ASC";
-								
+
 								$product_type_count = 0;
-								
+
 								$result_get_part_treatment = mysqli_query ( $con, $get_part_treatment_SQL );
 								/* Product Type Details */
 								while ( $row_get_part_treatment = mysqli_fetch_array ( $result_get_part_treatment ) ) {
-								
+
 									?>
-						  
+
 			<tr>
 				<td><?php echo $row_get_part_treatment['name_EN']; ?></td>
 				<td><?php echo $row_get_part_treatment['name_CN']; ?></td>
@@ -104,13 +105,13 @@ pagehead ( $page_id );
 					<a href="record_delete_do.php?table_name=part_treatment&src_page=part_treatment.php&id=<?php echo $row_get_part_treatment['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
 			</tr>
-						  
+
 						  <?php
-									
+
 									$product_type_count = $product_type_count + 1;
 								} // end while loop
 								?>
-						  
+
 			 <tr>
 				<th colspan="3">TOTAL: <?php echo $product_type_count; ?></th>
 				<th class="text-center"><a href="part_treatment_add.php"

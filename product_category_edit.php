@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -24,12 +25,12 @@ $page_id = 58;
 
 // THIS IS A LOOK-UP RECORD PAGE - GET THE RECORD INFO FIRST:
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: product_categories.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 // all OK - continue...
@@ -37,7 +38,7 @@ $get_product_categories_SQL = "SELECT * FROM `product_categories` WHERE `ID` =".
 
 $result_get_product_categories = mysqli_query($con,$get_product_categories_SQL);
 while($row_get_product_categories = mysqli_fetch_array($result_get_product_categories)) {
-		
+
 	$product_category_ID = $row_get_product_categories['ID'];
 	$product_category_name_EN = $row_get_product_categories['name_EN'];
 	$product_category_name_CN = $row_get_product_categories['name_CN'];
@@ -53,7 +54,7 @@ pagehead($page_id);
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Edit Part Type <?php if ($record_id != 0) { ?> <? echo $product_category_name_EN . " / " . $product_category_name_CN; } ?></h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -66,19 +67,19 @@ pagehead($page_id);
 									</li>
 								<li><span>Edit Product Category Record</span></li>
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
 
 					<!-- start: page -->
-					
+
 					<div class="row">
 						<div class="col-md-12">
-						
+
 						<!-- START THE FORM! -->
 						<form id="form" class="form-horizontal form-bordered" action="product_category_edit_do.php" method="post">
-						
+
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -89,44 +90,44 @@ pagehead($page_id);
 									<h2 class="panel-title">Edit Product Category Record Details:</h2>
 								</header>
 								<div class="panel-body">
-								
+
 									<div class="form-group">
 										<label class="col-md-3 control-label">Name:<span class="required">*</span></label>
 										<div class="col-md-5">
 											<input type="text" class="form-control" name="name_EN"  value="<?php echo $product_category_name_EN; ?>" required/>
 										</div>
-										
+
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
-									
-									
+
+
 									<div class="form-group">
 										<label class="col-md-3 control-label">名字:<span class="required">*</span></label>
 										<div class="col-md-5">
 											<input type="text" class="form-control" name="name_CN" value="中文名"  value="<?php echo $product_category_name_CN; ?>" required/>
 										</div>
-										
+
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
-									
-									
+
+
 									<div class="form-group">
 										<label class="col-md-3 control-label">Category Code:<span class="required">*</span></label>
 										<div class="col-md-5">
 											<input type="text" class="form-control" name="cat_code" value="<?php echo $product_category_code; ?>" required/>
 										</div>
-										
+
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
-									
+
 								</div>
-								
+
 								<footer class="panel-footer">
 										<input type="hidden" value="<?php echo $product_category_ID; ?>" name="id" />
 										<button type="submit" class="btn btn-success">Submit </button>
@@ -135,23 +136,23 @@ pagehead($page_id);
 							</section>
 										<!-- now close the form -->
 						</form>
-						
-						
+
+
 					</div>
-						
+
 				</div>
-						
-						
-					
-					
+
+
+
+
 								<!-- now close the panel --><!-- end row! -->
-					 
+
 					<!-- end: page -->
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

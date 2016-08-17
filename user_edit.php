@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -13,13 +13,14 @@
 
 header('Content-Type: text/html; charset=utf-8');
 echo "sometthing1";
-require ('page_functions.php'); 
+require ('page_functions.php');
 echo "sometthing2";
 include 'db_conn.php';
 echo "sometthing3";
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 echo $_REQUEST['id'];
@@ -30,12 +31,12 @@ pagehead($page_id);
 
 $record_id = 0;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: users.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 if ($record_id != 0) {
@@ -54,7 +55,7 @@ if ($record_id != 0) {
         $user_pwd = _base64_decrypt($row_get_user['password']);
         $user_level = $row_get_user['user_level'];
         $user_pos = $row_get_user['position'];
-        $user_last_login_date = $row_get_user['last_login_date'];	
+        $user_last_login_date = $row_get_user['last_login_date'];
         $user_mobile_number = $row_get_user['mobile_number'];
         echo $user_mobile_number;
     } // end get part info WHILE loop
@@ -228,7 +229,7 @@ function _mixing_passw($b,$passw){
                                     &nbsp;
                                 </div>
                             </div>
-                            
+
                             <div class="form-group">
 								<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
 								<div class="col-md-5">
@@ -269,7 +270,7 @@ function _mixing_passw($b,$passw){
 
 
                     <footer class="panel-footer">
-                        <?php 
+                        <?php
 										if (isset($_REQUEST['id'])) {
 											?>
                         <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="user_id" />
@@ -292,7 +293,7 @@ function _mixing_passw($b,$passw){
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

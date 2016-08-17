@@ -1,4 +1,4 @@
-<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php 
+<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,26 +12,27 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
 $page_id = 99;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else { // no id = nothing to see here!	
+else { // no id = nothing to see here!
 	header("Location: suppliers.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 // pull the header and template stuff:
-pagehead($page_id); 
+pagehead($page_id);
 
 // now get the supplier info:
 $get_sups_SQL = "SELECT * FROM `suppliers` WHERE `ID` = " . $record_id;
@@ -63,12 +64,12 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 	$sup_email_1 				= $row_get_sup['email_1'];
 	$sup_email_2 				= $row_get_sup['email_2'];
 	$sup_record_status			= $row_get_sup['record_status'];
-	
+
 			// VENDOR CLASSIFICATION BY STATUS:
-						
+
 			$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
 			// echo $get_vendor_status_SQL;
-	
+
 			$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
 			// while loop
 			while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
@@ -80,13 +81,13 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 				$sup_status_color_code 		= $row_get_sup_status['color_code'];
 				$sup_status_icon 			= $row_get_sup_status['icon'];
 			}
-	
-	
-	
+
+
+
 			// GET PART CLASSIFICATION:
 			$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $sup_part_classification . "'";
 			// echo $get_part_class_SQL;
-	
+
 			$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
 			// while loop
 			while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
@@ -95,7 +96,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 				$part_class_description 	= $row_get_part_class['description'];
 				$part_class_color 			= $row_get_part_class['color'];
 			}
-	
+
 } // end get user info WHILE loop
 
 ?>
@@ -104,9 +105,9 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Supplier Profile - <?php echo $sup_en; 
+        <h2>Supplier Profile - <?php echo $sup_en;
         if (($sup_cn!='')&&($sup_cn!='中文名')){
-         	?> / <?php echo $sup_cn; 
+         	?> / <?php echo $sup_cn;
         }
         ?></h2>
 
@@ -133,47 +134,47 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
             <select onchange="document.location = this.value" data-plugin-selecttwo class="form-control populate">
                 <option value="#" selected="selected">JUMP TO ANOTHER SUPPLIER / 看别的供应商:</option>
                 <option value="suppliers.php">View All / 看全部</option>
-                <?php 	
-										
+                <?php
+
                 $get_j_sups_SQL = "SELECT * FROM `suppliers`";
                 // echo $get_j_sups_SQL;
-	
+
                 $result_get_j_sups = mysqli_query($con,$get_j_sups_SQL);
 					  		// while loop
                 while($row_get_j_sup = mysqli_fetch_array($result_get_j_sups)) {
-					  		
+
                     $j_sup_ID = $row_get_j_sup['ID'];
                     $j_sup_en = $row_get_j_sup['name_EN'];
                     $j_sup_cn = $row_get_j_sup['name_CN'];
-										
+
 							   ?>
                 <option value="supplier_view.php?id=<?php echo $j_sup_ID; ?>"><?php echo $j_sup_en; if (($j_sup_cn != '')&&($j_sup_cn != '中文名')) { ?> / <?php echo $j_sup_cn; } ?></option>
-                <?php 
-							  } // end get supplier list 
+                <?php
+							  } // end get supplier list
 							  ?>
                 <option value="suppliers.php">View All / 看全部</option>
             </select>
             <!-- / Supplier JUMPER -->
         </div>
     </div>
-    
+
     <div class="clearfix">&nbsp;</div>
 
     <!-- START MAIN BODY COLUMN: -->
     <div class="col-md-12">
-        
-        
-        
-        <div class="row">
-								
-				<div class="col-md-4 col-lg-3">
-				
 
-							<?php 
+
+
+        <div class="row">
+
+				<div class="col-md-4 col-lg-3">
+
+
+							<?php
 							// now run the admin bar function:
 							admin_bar('supplier');
 							?>
-				
+
 				<section class="panel">
 						<header class="panel-heading">
 							<div class="panel-actions">
@@ -188,8 +189,8 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 						</header>
 						<div class="panel-body">
 							<div class="content">
-				
-				
+
+
 							<ul class="simple-card-list mb-xlg">
 								<li class="<?php echo $sup_status_color_code; ?>">
 									<h3><?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> / <?php echo $sup_status_name_CN; }?></h3>
@@ -212,9 +213,9 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 							</div>
 						  </div>
 					</section>
-				
-				
-					
+
+
+
 					<section class="panel">
 						<header class="panel-heading">
 							<div class="panel-actions">
@@ -263,7 +264,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 							</div>
 						  </div>
 					</section>
-					
+
 					<section class="panel">
 						<header class="panel-heading">
 							<div class="panel-actions">
@@ -276,7 +277,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 								<span class="va-middle">Certificates</span>
 							</h2>
 						</header>
-						
+
 						<div class="panel-body">
 							<div class="content">
 								<ul class="simple-user-list">
@@ -296,15 +297,15 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 							</div>
 						  </div>
 					</section>
-					
+
 			</div>
-			
-			
-			
+
+
+
         <div class="col-md-8 col-lg-9">
-        
+
         <div class="row">
-        
+
             <header class="panel-heading">
                 <div class="panel-actions">
                     <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
@@ -347,10 +348,10 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
             </div>
 
         </div>
-        
+
         </div>
-			
-			
+
+
 		</div>
 
         <div class="clearfix">&nbsp;</div>
@@ -361,7 +362,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

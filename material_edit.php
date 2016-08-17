@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -24,12 +25,12 @@ $page_id = 99;
 
 $record_id = 0;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: materials.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 if ($record_id != 0) {
@@ -45,7 +46,7 @@ if ($record_id != 0) {
         $name_EN = $row_get_material['name_EN'];
         $name_CN = $row_get_material['name_CN'];
         $description = $row_get_material['description'];
-        
+
     } // end get supplier info WHILE loop
 }
 
@@ -127,7 +128,7 @@ pagehead($page_id);
                     </div>
 
                     <footer class="panel-footer">
-                        <?php 
+                        <?php
 										if (isset($_REQUEST['id'])) {
 											?>
                         <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="id" />
@@ -151,7 +152,7 @@ pagehead($page_id);
 
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

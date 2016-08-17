@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -32,7 +33,7 @@ pagehead($page_id); ?>
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Welcome</h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -40,12 +41,12 @@ pagehead($page_id); ?>
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-								<!-- 
+								<!--
 								<li><span>Layouts</span></li>
 								<li><span>Menu Collapsed</span></li>
 								-->
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
@@ -55,21 +56,21 @@ pagehead($page_id); ?>
 					<div class="alert alert-success">
 						<strong>UPDATE:</strong> This is now being dynamically generate in order to enable page authentication / permission access.
 					</div>
-					
-					
-					
-					
+
+
+
+
 							<div class="col-sm-9">
-							
+
 							<!-- START MAIN COLUMN -->
-					
+
 					<section class="panel">
 							<header class="panel-heading">
 								<div class="panel-actions">
 									<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
 									<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
 								</div>
-						
+
 								<h2 class="panel-title">Page List (WIP)</h2>
 							</header>
 							<div class="panel-body">
@@ -89,26 +90,26 @@ pagehead($page_id); ?>
 											</tr>
 										</thead>
 										<tbody>
-										<?php 
-										
-										if (isset($_REQUEST['sort'])) { 
-											$sort_SQL = $_REQUEST['sort']; 
+										<?php
+
+										if (isset($_REQUEST['sort'])) {
+											$sort_SQL = $_REQUEST['sort'];
 										}
 										else { // set default sort variable
-											$sort_SQL = "order";		
+											$sort_SQL = "order";
 										}
-					
+
 					$get_pages_SQL = "SELECT * FROM `pages` ORDER BY `" . $sort_SQL . "` ASC";
 					// echo $get_pages_SQL;
-					  
+
 					  $page_count = 0;
-	
+
 					  $result_get_pages = mysqli_query($con,$get_pages_SQL);
 					  // while loop
-					  
-					  
+
+
 					  while($row_get_pages = mysqli_fetch_array($result_get_pages)) {
-					  	
+
 							$page_ID = $row_get_pages['ID'];
 							$page_name_EN = $row_get_pages['name_EN'];
 							$page_name_CN = $row_get_pages['name_CN'];
@@ -130,21 +131,21 @@ pagehead($page_id); ?>
 							$page_og_section = $row_get_pages['og_section'];
 							$page_side_bar_config = $row_get_pages['side_bar_config'];
 							$page_lookup_table = $row_get_pages['lookup_table'];
-							
-							
+
+
 							if (($page_parent_ID != '')&&($page_parent_ID != 0)) {
-							
+
 								// get the parent page info:
-					
+
 								$get_parent_page_SQL = "SELECT * FROM `pages` WHERE `id` = '" . $page_parent_ID . "'";
 								// echo $get_parent_page_SQL;
 
 								$result_get_parent_page = mysqli_query($con,$get_parent_page_SQL);
 								// while loop
-			  
-			  
+
+
 								while($row_get_parent_page = mysqli_fetch_array($result_get_parent_page)) {
-				
+
 									$parent_page_ID = $row_get_page['ID'];
 									$parent_page_name_EN = $row_get_page['name_EN'];
 									$parent_page_name_CN = $row_get_page['name_CN'];
@@ -166,20 +167,20 @@ pagehead($page_id); ?>
 									$parent_page_og_section = $row_get_page['og_section'];
 									$parent_page_side_bar_config = $row_get_page['side_bar_config'];
 									$parent_page_lookup_table = $row_get_page['lookup_table'];
-					
+
 								} // END WHILE LOOP
-							
+
 							} // END page_parent_ID = 0 / NULL
-							
-							
+
+
 							// Now we will count the number of sub-categories:
 							$count_sub_pages_sql = "SELECT COUNT(ID) FROM `pages` WHERE `parent_ID` = '" . $page_ID . "'";
 							$count_sub_pages_query = mysqli_query($con, $count_sub_pages_sql);
 							$count_sub_pages_row = mysqli_fetch_row($count_sub_pages_query);
 							// Here we have the total row count
 							$total_sub_pages = $count_sub_pages_row[0];
-							
-							
+
+
 					  ?>
 											<tr>
 												<td align="center"><i class="fa <?php echo $page_icon; ?> fa-2x" title="PAGE ID: <?php echo $page_ID; ?>"></i></td>
@@ -188,7 +189,7 @@ pagehead($page_id); ?>
 														<?php echo $page_name_EN; if (($page_name_CN!='')&&($page_name_CN!='中文名')) { echo ' / ' . $page_name_CN; } ?>
 													</a>
 												</td>
-												<td class="text-center"><?php 
+												<td class="text-center"><?php
 												if ($page_main_menu == 1) {
 													?>
 													<i class="fa fa-check text-success fa-2x" title="THIS PAGE APPEARS IN THE MAIN MENU"></i>
@@ -201,7 +202,7 @@ pagehead($page_id); ?>
 												}
 												?></td>
 												<td class="text-center">
-												<?php 
+												<?php
 												if ($page_privacy == 'PUBLIC') {
 													?>
 													<i class="fa fa-eye text-success fa-2x" title="THIS PAGE IS PUBLIC"></i>
@@ -216,7 +217,7 @@ pagehead($page_id); ?>
 												</td>
 												<td>
 												<!-- PAGE TYPE INFO: -->
-												<?php 
+												<?php
 												if ($page_og_type == 'list') {
 													?>
 													<i class="fa fa-list text-default fa-2x" title="<?php echo $page_og_type; ?>: This page is a list of data, similar to a spreadsheet"></i>
@@ -257,7 +258,7 @@ pagehead($page_id); ?>
 												</td>
 												<td class="text-center"><?php echo $page_min_user_level; ?></td>
 												<td class="text-center">
-												<?php 
+												<?php
 												if ($page_lookup_table != '') {
 													echo $page_lookup_table;
 												}
@@ -272,7 +273,7 @@ pagehead($page_id); ?>
 												<td class="text-center">
 													<a class="mb-xs mt-xs mr-xs btn btn-info" data-toggle="modal" data-target="#menu_item_<?php echo $page_ID; ?>"><i class="fa fa-info"></i></a>
 <!-- START MODAL POP-UP CONTAINING PAGE INFO -->
- 
+
 									<div class="modal fade" id="menu_item_<?php echo $page_ID; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 											<div class="modal-content large">
@@ -281,7 +282,7 @@ pagehead($page_id); ?>
 													<h4 class="modal-title" id="myModalLabel"><?php echo $page_name_EN; if (($page_name_CN!='')&&($page_name_CN!='中文名')) { echo ' / ' . $page_name_CN; } ?> (<?php echo $page_filename; ?>)</h4>
 												</div>
 												<div class="modal-body">
-																
+
 								<div class="table-responsive">
 									<table class="table table-bordered table-striped table-condensed mb-none">
   <tr>
@@ -307,8 +308,8 @@ pagehead($page_id); ?>
   <tr>
     <td>Parent Page</td>
     <td>
-    <?php 
-    
+    <?php
+
     // have parent, let's link to it here:
     if ($page_parent_ID != '0') {
     	?><a href="<?php echo $parent_page_filename; ?>" title="FILE: <?php echo $parent_page_filename; ?>"><?php echo $parent_page_filename; ?></a><?php
@@ -316,7 +317,7 @@ pagehead($page_id); ?>
     else {
     	?><span class="text-warning">Root / No Parent Set</span><?php
     }
-    
+
     ?>
     </td>
   </tr>
@@ -325,7 +326,7 @@ pagehead($page_id); ?>
     <td>
     	<?php if ($page_main_menu == 1) {
     	 	?><span class="text-success">VISIBLE</span><?php
-    	 } 
+    	 }
     	 else {
     	 	?><span class="text-danger">NOT VISIBLE</span><?php
     	 }?>
@@ -337,38 +338,38 @@ pagehead($page_id); ?>
   </tr>
   <tr>
     <td>Created By</td>
-    <td><?php 
-    
+    <td><?php
+
     // GET THE PAGE CREATOR USER INFO:
-    
+
 	  $get_user_SQL = "SELECT * FROM `users` WHERE `id` = '" . $page_created_by . "'";
 	  // echo $get_user_SQL;
 
 	  $result_get_user = mysqli_query($con,$get_user_SQL);
-	  // while loop 
-	 
+	  // while loop
+
 	  while($row_get_user = mysqli_fetch_array($result_get_user)) {
-	  
+
 	  	$creator_info = '<a href="user_view.php?id=' . $page_created_by . '" title="Click here to view user profile.">';
-	  
-		$creator_info .= $row_get_user['first_name'] . ' ' . $row_get_user['last_name']; 
+
+		$creator_info .= $row_get_user['first_name'] . ' ' . $row_get_user['last_name'];
 		// echo 'OK';
-		if (($row_get_user['name_CN'] != '')&&($row_get_user['name_CN'] != '中文名')) { 
+		if (($row_get_user['name_CN'] != '')&&($row_get_user['name_CN'] != '中文名')) {
 			$creator_info .= ' / ' . $row_get_user['name_CN'];
 		}
-		
+
 		$creator_info .= '</a>';
 
 
 	  } // end while loop
-    
-    echo $creator_info; 
-						
-  
-    
-    
-    
-    
+
+    echo $creator_info;
+
+
+
+
+
+
     ?></td>
   </tr>
   <tr>
@@ -377,18 +378,18 @@ pagehead($page_id); ?>
   </tr>
   <tr>
     <td>Status</td>
-    <td><?php 
+    <td><?php
     	if ($page_status == 2) { echo '<span class="text-success">✔ APPROVED ✔</span>'; }
     	else if ($page_status == 1) { echo '<span class="text-primary">? PENDING ?</span>'; }
 		else if ($page_status == 0) { echo '<span class="text-danger">✘ DELETED ✘</span>'; }
-		else { echo '<span class="text-warning">! UNKNOWN !</span>'; } 
+		else { echo '<span class="text-warning">! UNKNOWN !</span>'; }
 		?>
     </td>
   </tr>
   <tr>
     <td>Privacy</td>
-    <td><?php 
-    	if ($page_privacy == 'PUBLIC') { echo '<span class="text-success"><i class="fa fa-eye"></i> PUBLIC</span>'; } 
+    <td><?php
+    	if ($page_privacy == 'PUBLIC') { echo '<span class="text-success"><i class="fa fa-eye"></i> PUBLIC</span>'; }
     	else { echo '<span class="text-danger"><i class="fa fa-eye-slash"></i> PRIVATE</span>'; }
     ?>
 	</td>
@@ -427,9 +428,9 @@ pagehead($page_id); ?>
   </tr>
   <tr>
     <td>Lookup Table</td>
-    <td><?php 
+    <td><?php
     if ($page_lookup_table != '') {
-    	echo $page_lookup_table; 
+    	echo $page_lookup_table;
     }
     else {
     	echo 'none';
@@ -456,20 +457,20 @@ pagehead($page_id); ?>
     <th>NAME</th>
     <th>ACTION</th>
   </tr>
-  
-  <?php 
-					
+
+  <?php
+
 					$get_C_pages_SQL = "SELECT * FROM `pages` WHERE `parent_ID` = '". $page_ID ."'";
 					// echo $get_C_pagesSQL;
-					  
+
 					  $C_page_count = 0;
-	
+
 					  $result_get_C_pages = mysqli_query($con,$get_C_pages_SQL);
 					  // while loop
-					  
-					  
+
+
 					  while($row_get_C_pages = mysqli_fetch_array($result_get_C_pages)) {
-					  	
+
 							$C_page_ID = $row_get_C_pages['ID'];
 							$C_page_name_EN = $row_get_C_pages['name_EN'];
 							$C_page_name_CN = $row_get_C_pages['name_CN'];
@@ -491,9 +492,9 @@ pagehead($page_id); ?>
 							$C_page_og_section = $row_get_C_pages['og_section'];
 							$C_page_side_bar_config = $row_get_C_pages['side_bar_config'];
 							$C_page_lookup_table = $row_get_C_pages['lookup_table'];
-							
+
 					  ?>
-  
+
   <tr>
     <td align="center"><i class="fa <?php echo $C_page_icon; ?> fa-2x" title="PAGE ID: <?php echo $C_page_ID; ?>"></i></td>
 												<td>
@@ -503,8 +504,8 @@ pagehead($page_id); ?>
 												</td>
     <td><a href="<?php echo $C_page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-external-link"></i></a></td>
   </tr>
-  
-  <?php 
+
+  <?php
   $C_page_count = $C_page_count +1;
   } // end WHILE FOUND CHILD PAGES LOOP
   ?>
@@ -515,8 +516,8 @@ pagehead($page_id); ?>
   <?php } ?>
   </table>
   </div>
-  
-  
+
+
 												</div>
 												<div class="modal-footer">
 													<a href="page_edit.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i> Edit Page</a>
@@ -526,20 +527,20 @@ pagehead($page_id); ?>
 											</div>
 										</div>
 									</div>
-									
+
 <!-- END OF MODEL POP-UP CONTAINING PAGE INFO -->
-													
+
 													<a href="page_edit.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 													<a href="delete_page.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
 													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-arrow-right"></i></a>
 												</td>
 											</tr>
-											
-						
-						<?php 
-						
+
+
+						<?php
+
 						} // end of get pages...
-						
+
 						?>
 										</tbody>
 									</table>
@@ -548,8 +549,8 @@ pagehead($page_id); ?>
 						</section>
 					<!-- END OF MAIN COLUMN -->
 					</div>
-					
-					
+
+
 					<!-- ------------------------------------- -->
 							<div class="col-sm-3">
 							<!-- RIGHT COL -->
@@ -559,11 +560,11 @@ pagehead($page_id); ?>
 										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
 										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
 									</div>
-						
+
 									<h2 class="panel-title">ADMIN ACTIONS</h2>
 								</header>
 								<div class="panel-body">
-								
+
 								<ul>
 								  <li><a href="#" title="COMING SOON">View a report</a></li>
 								  <li><a href="#" title="COMING SOON">View a list</a></li>
@@ -572,28 +573,28 @@ pagehead($page_id); ?>
 								  <li><a href="#" title="COMING SOON">Add something</a></li>
 								  <li><a href="#" title="COMING SOON">System / Admin Links</a></li>
 								</ul>
-								
-								
+
+
 								</div>
 							</section>
 							<!-- END OF RIGHT COL -->
 							</div>
-							
-							
+
+
 					<!-- ------------------------------------- -->
-				
+
 					<!-- end: page -->
-					
-					
-					
-					
-					
-					
+
+
+
+
+
+
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

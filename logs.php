@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -11,11 +11,12 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -31,7 +32,7 @@ pagehead($page_id); ?>
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Logs</h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -40,11 +41,11 @@ pagehead($page_id); ?>
 									</a>
 								</li>
 								<li><span>Logs</span></li>
-								<!-- 
+								<!--
 								<li><span>Menu Collapsed</span></li>
 								-->
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
@@ -56,7 +57,7 @@ pagehead($page_id); ?>
 									<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
 									<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
 								</div>
-						
+
 								<h2 class="panel-title">All Logs</h2>
 							</header>
 							<div class="panel-body">
@@ -153,9 +154,9 @@ pagehead($page_id); ?>
 									</tbody>
 								  </table>
 								</div>
-								
+
 								<h2>Other Logs in Progress</h2>
-								
+
 								<ul>
 						<li><a href="products.php">PRODUCTS</a></li>
 						<li><a href="users.php">USERS</a></li>
@@ -173,15 +174,15 @@ pagehead($page_id); ?>
                         <li><a href="part_types.php">PART TYPE</a></li>
                         <li><a href="part_revisions.php">PART REVISIONS</a></li>
 					</ul>
-								
+
 							</div>
 						</section>
 					<!-- end: page -->
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

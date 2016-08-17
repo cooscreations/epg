@@ -19,6 +19,7 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -98,7 +99,7 @@ pagehead ( $page_id );
 							<div class="col-md-1">&nbsp;</div>
 
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3 control-label">Color:</label>
 							<div class="col-md-5">

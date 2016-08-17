@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,12 +12,13 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 include ('qrcode-generator/index_2.php');
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -25,20 +26,20 @@ $page_id = 10;
 
 // THIS IS A LOOK-UP RECORD PAGE - GET THE RECORD INFO FIRST:
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: purchase_orders.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 $get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $record_id;
 $result_get_PO = mysqli_query($con,$get_PO_SQL);
 // while loop
 while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
-	
-		// now print each record:  
+
+		// now print each record:
 		$PO_id = $row_get_PO['ID'];
 		$PO_number = $row_get_PO['PO_number'];
 		$PO_created_date = $row_get_PO['created_date'];
@@ -51,18 +52,18 @@ while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 		$PO_approval_status = $row_get_PO['approval_status']; // look this up?
 		$PO_payment_status = $row_get_PO['payment_status']; // look this up?
 		$PO_completion_status = $row_get_PO['completion_status'];
-		
-		
+
+
 		// count variants for this purchase order
         $count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $record_id;
         $count_batches_query = mysqli_query($con, $count_batches_sql);
         $count_batches_row = mysqli_fetch_row($count_batches_query);
         $total_batches = $count_batches_row[0];
-		
+
 } // end while loop
 
 // pull the header and template stuff:
-pagehead($page_id); 
+pagehead($page_id);
 
 ?>
 
@@ -73,7 +74,7 @@ pagehead($page_id);
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Purchase Order Record - <?php echo $PO_number; ?></h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -86,15 +87,15 @@ pagehead($page_id);
 								</li>
 								<li><span>Purchase Order Record</span></li>
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
 
 					<!-- start: page -->
-					
-					<?php 
-					
+
+					<?php
+
 					// run notifications function:
 					$msg = 0;
 					if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
@@ -104,11 +105,11 @@ pagehead($page_id);
 					if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
 					$page_record_id = 0;
 					if (isset($record_id)) { $page_record_id = $record_id; }
-					
+
 					// now run the function:
 					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
 					?>
-					
+
 					<div class="row">
 						<div class="col-md-4">
 							<section class="panel">
@@ -121,8 +122,8 @@ pagehead($page_id);
 									<h2 class="panel-title">Main Details:</h2>
 								</header>
 								<div class="panel-body">
-									
-									
+
+
 									<div class="table-responsive">
 					 					<table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					 					  <tr>
@@ -135,8 +136,8 @@ pagehead($page_id);
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Completition Status:</th>
-					 					    <td><?php 
-					 					    
+					 					    <td><?php
+
 					 					    if ($PO_completion_status > 66) {
 					 					    	$bar_color = "success";
 					 					    }
@@ -146,23 +147,23 @@ pagehead($page_id);
 					 					    else {
 					 					    	$bar_color = "danger";
 					 					    }
-					 					    
+
 					 					    ?>
-					 					    
-					 					    
+
+
 					 					    <div class="progress">
-											  <div class="progress-bar progress-bar-striped active progress-bar-<?php echo $bar_color; ?>" 
-											  	role="progressbar" 
-											  	aria-valuenow="<?php echo $PO_completion_status; ?>" 
-											  	aria-valuemin="0" 
-											  	aria-valuemax="100" 
+											  <div class="progress-bar progress-bar-striped active progress-bar-<?php echo $bar_color; ?>"
+											  	role="progressbar"
+											  	aria-valuenow="<?php echo $PO_completion_status; ?>"
+											  	aria-valuemin="0"
+											  	aria-valuemax="100"
 											  	style="width:<?php echo $PO_completion_status; ?>%">
 												<?php echo $PO_completion_status; ?>%
 											  </div>
 											</div>
-					 					    
-					 					    
-					 					    
+
+
+
 					 					    </td>
 					 					  </tr>
 					 					  <tr>
@@ -187,12 +188,12 @@ pagehead($page_id);
 					 					  </tr>
 					 					  <tr>
 					 					    <th>P.O. Approval Status:</th>
-					 					    <?php 
-					 					    
+					 					    <?php
+
 					 					    if ($PO_approval_status == 0) {
 					 					    	?>
 					 					    	<td class="danger">
-					 					    	  <i class="fa fa-times"></i> 
+					 					    	  <i class="fa fa-times"></i>
 					 					    	  DELETED
 					 					    	</td>
 					 					    	<?php
@@ -200,7 +201,7 @@ pagehead($page_id);
 					 					    else if ($PO_approval_status == 1) {
 					 					    	?>
 					 					    	<td class="warning">
-					 					    	  <i class="fa fa-exclamation-triangle"></i> 
+					 					    	  <i class="fa fa-exclamation-triangle"></i>
 					 					    	  PENDING
 					 					    	</td>
 					 					    	<?php
@@ -213,19 +214,19 @@ pagehead($page_id);
 					 					    	</td>
 					 					    	<?php
 					 					    }
-					 					    
-					 					    
+
+
 					 					    ?>
 					 					  </tr>
 					 					  <!-- **************************************** -->
 					 					  <tr>
 					 					    <th>P.O. Payment Status:</th>
-					 					    <?php 
-					 					    
+					 					    <?php
+
 					 					    if ($PO_payment_status == 0) {
 					 					    	?>
 					 					    	<td class="danger">
-					 					    	  <i class="fa fa-times"></i> 
+					 					    	  <i class="fa fa-times"></i>
 					 					    	  DELETED
 					 					    	</td>
 					 					    	<?php
@@ -233,7 +234,7 @@ pagehead($page_id);
 					 					    else if ($PO_payment_status == 1) {
 					 					    	?>
 					 					    	<td class="warning">
-					 					    	  <i class="fa fa-exclamation-triangle"></i> 
+					 					    	  <i class="fa fa-exclamation-triangle"></i>
 					 					    	  PENDING
 					 					    	</td>
 					 					    	<?php
@@ -246,19 +247,19 @@ pagehead($page_id);
 					 					    	</td>
 					 					    	<?php
 					 					    }
-					 					    
-					 					    
+
+
 					 					    ?>
 					 					  </tr>
 					 					  <!-- **************************************** -->
 					 					  <tr>
 					 					    <th>DB Record Status:</th>
-					 					    <?php 
-					 					    
+					 					    <?php
+
 					 					    if ($PO_record_status == 0) {
 					 					    	?>
 					 					    	<td class="danger">
-					 					    	  <i class="fa fa-times"></i> 
+					 					    	  <i class="fa fa-times"></i>
 					 					    	  DELETED
 					 					    	</td>
 					 					    	<?php
@@ -266,7 +267,7 @@ pagehead($page_id);
 					 					    else if ($PO_record_status == 1) {
 					 					    	?>
 					 					    	<td class="warning">
-					 					    	  <i class="fa fa-exclamation-triangle"></i> 
+					 					    	  <i class="fa fa-exclamation-triangle"></i>
 					 					    	  PENDING
 					 					    	</td>
 					 					    	<?php
@@ -279,19 +280,19 @@ pagehead($page_id);
 					 					    	</td>
 					 					    	<?php
 					 					    }
-					 					    
-					 					    
+
+
 					 					    ?>
 					 					  </tr>
 					 					</table>
 					 				</div>
-									
+
 								</div>
 							</section>
 						</div>
-						
-						
-						
+
+
+
 						<div class="col-md-4">
 							<section class="panel">
 								<header class="panel-heading">
@@ -303,17 +304,17 @@ pagehead($page_id);
 									<h2 class="panel-title">Vendor Details:</h2>
 								</header>
 								<div class="panel-body">
-									
+
 									<ul>
 									  <li><?php get_supplier($PO_supplier_ID); ?></li>
 									</ul>
-									
+
 								</div>
 							</section>
 						</div>
-						
-						
-						
+
+
+
 						<div class="col-md-4">
 							<section class="panel">
 								<header class="panel-heading">
@@ -325,29 +326,29 @@ pagehead($page_id);
 									<h2 class="panel-title">QR Code to this page:</h2>
 								</header>
 								<div class="panel-body">
-					 				
-					 				
+
+
 					 				<!-- ********************************************************* -->
-					 				
+
 					 				<div class="thumb-info mb-md" style="text-align:center;">
-										<?php 
+										<?php
 											// now show their QR code!
-											show_code('PO_QR', $_REQUEST['id']); 
+											show_code('PO_QR', $_REQUEST['id']);
 										?>
 									</div>
-									
+
 					 				<!-- ********************************************************* -->
-								
+
 								</div>
 							</section>
 						</div>
-						
-						
+
+
 					</div>
-					
-					
+
+
 					<div class="row">
-					
+
 					<div class="col-md-12">
 							<section class="panel">
 								<header class="panel-heading">
@@ -359,15 +360,15 @@ pagehead($page_id);
 									<h2 class="panel-title">Batches In This Purchase Order:</h2>
 								</header>
 								<div class="panel-body">
-								
+
 					 <div class="row">
 						<div class="col-md-1">
 							<a href="part_batch_add.php?PO_ID=<?php echo $_REQUEST['id']; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
-						</div>	
+						</div>
 						<div id="feature_buttons_container_id" class="col-md-11">
 						</div>
 					 </div>
-					 
+
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
@@ -381,56 +382,56 @@ pagehead($page_id);
 						  </tr>
 					  </thead>
 					  <tbody>
-						<?php 
-					  
+						<?php
+
 					  $batch_count = 0;
 					  $movement_in_total = 0;
-					  
-					  // GET BATCHES: 
+
+					  // GET BATCHES:
 						$get_batches_SQL = "SELECT * FROM `part_batch` WHERE `PO_ID` = " . $_REQUEST['id'];
 						$result_get_batches = mysqli_query($con,$get_batches_SQL);
 						// while loop
 						while($row_get_batches = mysqli_fetch_array($result_get_batches)) {
-			
-							// now print each record to a variable:  
+
+							// now print each record to a variable:
 							$batch_id = $row_get_batches['ID'];
 							$batch_part_ID = $row_get_batches['part_ID'];
 							$batch_number = $row_get_batches['batch_number'];
 							$batch_part_rev = $row_get_batches['part_rev'];
-							
-														
+
+
 							// get part revision info:
 							$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $batch_part_rev;
 							$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
 							// while loop
 							while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
-	
-								// now print each record:  
+
+								// now print each record:
 								$rev_id = $row_get_part_rev['ID'];
 								$rev_part_id = $row_get_part_rev['part_ID'];
 								$rev_number = $row_get_part_rev['revision_number'];
 								$rev_remarks = $row_get_part_rev['remarks'];
 								$rev_date = $row_get_part_rev['date_approved'];
 								$rev_user = $row_get_part_rev['user_ID'];
-															
+
 							}
-							
+
 							// now get the part info
 							$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $batch_part_ID;
 							$result_get_part = mysqli_query($con,$get_part_SQL);
 							// while loop
 							while($row_get_part = mysqli_fetch_array($result_get_part)) {
-			
-								// now print each result to a variable:  
+
+								// now print each result to a variable:
 								$part_id = $row_get_part['ID'];
 								$part_code = $row_get_part['part_code'];
 								$part_name_EN = $row_get_part['name_EN'];
 								$part_name_CN = $row_get_part['name_CN'];
-								
+
 							}
-					  
+
 					  ?>
-					  
+
 					  <tr<?php if ($batch_id == $change_record_id) { ?> class="success"<?php } ?>>
 					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
 					    <td>
@@ -445,72 +446,72 @@ pagehead($page_id);
 					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_name_CN; ?></a></td>
 					    <td>
 					    <!-- get first batch count: -->
-					    <?php 
+					    <?php
 					    // now use earliest record in the DB to find the QTY
 							$get_first_batch_qty_SQL = "SELECT * FROM  `part_batch_movement` WHERE `part_batch_ID` = " . $batch_id . " AND `amount_in` > 0 ORDER BY `date` ASC LIMIT 0, 1";
 					  		$result_get_first_batch_qty = mysqli_query($con,$get_first_batch_qty_SQL);
-							
-							
+
+
 							$movement_in = 0; // (RESET VARIABLE)
-							
+
 							// while loop
 							while($row_get_first_batch_qty = mysqli_fetch_array($result_get_first_batch_qty)) {
-								
-								// now print each record to a variable:  
+
+								// now print each record to a variable:
 								$movement_in = $row_get_first_batch_qty['amount_in'];
 							}
-								
+
 							if ($movement_in == '') { $movement_in = 0; }
-					  			
+
 					  		// now append the total part count
 					  		$movement_in_total = $movement_in_total + $movement_in;
 						?>
-								
+
 					    <a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $movement_in; ?></a>
-					    		
+
 					    <!-- end first batch count -->
 					    </td>
 					  </tr>
-					  
-					  <?php 
-					  
+
+					  <?php
+
 					  $batch_count = $batch_count + 1;
-					  
-					  } 
-					  
+
+					  }
+
 					  ?>
-					  </tbody>  
-					  
+					  </tbody>
+
 					  <tfoot>
 						  <tr>
 							<th colspan="5">TOTAL: <?php echo $batch_count; ?></th>
 							<th><?php echo $movement_in_total; ?></th>
 						  </tr>
 					  </tfoot>
-					  
+
 					 </table>
 					 </div>
-					
-					
+
+
 					 <div class="row">
 						<div class="col-md-1">
 							<a href="part_batch_add.php?PO_ID=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
-						</div>	
+						</div>
 						<div class="col-md-11"> </div>
 					 </div>
-					
+
 								<!-- now close the panel -->
 								</div>
 							</section>
 						</div>
 					</div> <!-- end row! -->
-						
+
 					<!-- end: page -->
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

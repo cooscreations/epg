@@ -19,6 +19,7 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -48,7 +49,7 @@ pagehead ( $page_id );
 		</div>
 	</header>
 					  <?php
-							
+
 							// run notifications function:
 							$msg = 0;
 							if (isset ( $_REQUEST ['msg'] )) {
@@ -66,7 +67,7 @@ pagehead ( $page_id );
 							if (isset ( $record_id )) {
 								$page_record_id = $record_id;
 							}
-							
+
 							// now run the function:
 							notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
 							?>
@@ -86,11 +87,11 @@ pagehead ( $page_id );
 				<th>Revision Number</th>
 				<th>Remarks</th>
 				<th>Date Approved</th>
-				<th>User</th>	
-				<th>Price</th>	
-				<th>Weight</th>	
-				<th>Status</th>	
-				
+				<th>User</th>
+				<th>Price</th>
+				<th>Weight</th>
+				<th>Status</th>
+
 				<th class="text-center">Actions</th>
 			</tr>
 						  <?php
@@ -111,15 +112,15 @@ pagehead ( $page_id );
 															" AND `part_revisions`.`status_ID` = `part_status`.`ID` ".
 															" AND `part_revisions`.`user_ID` = `users`.`ID` ".
 															" AND `part_revisions`.`record_status` = 2 ".
-															" ORDER BY `part_revisions`.`ID` ASC"; 
-								
+															" ORDER BY `part_revisions`.`ID` ASC";
+
 								$part_revision_count = 0;
-								
+
 								$result_get_part_revision = mysqli_query ( $con, $get_part_revisions_SQL );
 								while ( $row_get_part_revision = mysqli_fetch_array ( $result_get_part_revision ) ) {
-								
+
 									?>
-						  
+
 			<tr>
 				<td><?php echo $row_get_part_revision['ID']; ?></td>
 				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_code']; ?></a></td>
@@ -138,13 +139,13 @@ pagehead ( $page_id );
 					<a href="record_delete_do.php?table_name=part_revisions&src_page=part_revisions.php&id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
 			</tr>
-						  
+
 						  <?php
-									
+
 									$part_revision_count = $part_revision_count + 1;
 								} // end while loop
 								?>
-						  
+
 			 <tr>
 				<th class="text-left" colspan="9"><a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
 				<th colspan="2">TOTAL: <?php echo $part_revision_count; ?></th>
