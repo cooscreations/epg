@@ -504,9 +504,6 @@ pagehead($page_id);
 							</section>
 						</div>
 					</div> <!-- end row! -->
-						
-					<!-- end: page -->
-				</section>
 				
 				<br />
 				<hr />
@@ -861,6 +858,9 @@ pagehead($page_id);
 <!-- END OF TOTAL P.O. CONTENT -->
 
 				
+						
+					<!-- end: page -->
+				</section>
 				
 <!-- : END MAIN PAGE BODY -->
 
