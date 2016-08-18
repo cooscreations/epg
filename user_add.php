@@ -160,17 +160,75 @@ if ($record_id != 0) {
                             </div>
                         </div>
 
+												<!--
                         <div class="form-group">
-							<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
-							<div class="col-md-5">
-								<div class="input-group">
-									<span class="input-group-addon">
-										<i class="fa fa-phone"></i>
-									</span>
-									<input id="inputDefault" name="mobile_number" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control" required />
-								</div>
-							</div>
-						</div>
+													<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
+													<div class="col-md-5">
+														<div class="input-group">
+															<span class="input-group-addon">
+																<i class="fa fa-phone"></i>
+															</span>
+															<input id="inputDefault" name="mobile_number" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control" required />
+														</div>
+													</div>
+												</div>
+											-->
+
+											<div class="form-group">
+												<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
+												<div class="col-md-5">
+													<div class="input-group">
+														<input id="phone_number" type="tel"  class="form-control" required />
+														<input id="mobile_number" type="hidden" name="mobile_number"/>
+													</div>
+
+													<label id="error-msg" class="hide">Invalid number</label>
+												</div>
+
+											</div>
+											<script src="assets/vendor/intl-tel-input/js/intlTelInput.min.js"></script>
+											<script type="text/javascript">
+													var telInput = $("#phone_number"),
+													errorMsg = $("#error-msg"),
+													validMsg = $("#valid-msg");
+
+													// initialise plugin
+													telInput.intlTelInput({
+													nationalMode: true,
+													utilsScript: "assets/vendor/intl-tel-input/js/utils.js"
+													});
+
+													var reset = function() {
+													telInput.closest('.form-group').removeClass("has-error");
+													errorMsg.addClass("hide");
+													validMsg.addClass("hide");
+													};
+
+													var output = $("#mobile_number");
+
+													// listen to "keyup", but also "change" to update when the user selects a country
+													telInput.on("keyup change", function() {
+													  var intlNumber = telInput.intlTelInput("getNumber");
+													    output.val(intlNumber);
+													});
+
+													// on blur: validate
+													telInput.blur(function() {
+													reset();
+													if ($.trim(telInput.val())) {
+													 if (telInput.intlTelInput("isValidNumber")) {
+														 validMsg.removeClass("hide");
+													 } else {
+														 telInput.closest('.form-group').addClass("has-error");
+														 errorMsg.removeClass("hide");
+														 errorMsg.addClass("error");
+													 }
+													}
+													});
+
+													// on keyup / change flag: reset
+													telInput.on("keyup change", reset);
+											</script>
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Level:<span class="required">*</span></label>
@@ -232,6 +290,8 @@ if ($record_id != 0) {
 </section>
 
 <!-- : END MAIN PAGE BODY -->
+
+
 
 <?php
 // now close the page out:

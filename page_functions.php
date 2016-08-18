@@ -216,6 +216,7 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="assets/vendor/magnific-popup/magnific-popup.css" />
 		<link rel="stylesheet" href="assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+		<link rel="stylesheet" href="assets/vendor/intl-tel-input/css/intlTelInput.css" />
 
 		<!-- Specific Page Vendor CSS -->
 		<?php
@@ -1124,6 +1125,7 @@
 		<script src="assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
 		<script src="assets/vendor/ios7-switch/ios7-switch.js"></script>
 		<script src="assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js"></script>
+		<script src="assets/vendor/intl-tel-input/js/intlTelInput.min.js"></script>
 
 			<!-- Theme Base, Components and Settings -->
 			<script src="assets/javascripts/theme.js"></script>
