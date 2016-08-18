@@ -31,11 +31,19 @@ $user_fn = $_REQUEST['fn_text'];
 $user_mn = $_REQUEST['mn_text'];
 $user_ln = $_REQUEST['ln_text'];
 $user_cn = $_REQUEST['cn_text'];
+if($_REQUEST['cn_text'] == ''){
+	$user_cn = '中文名';
+}else{
+	$user_cn = $_REQUEST['cn_text'];
+}
+
 $user_email = $_REQUEST['email_text'];
 $user_pwd = md5($_REQUEST['pwd_text']);
 $user_level = $_REQUEST['level_text'];
 $user_pos = $_REQUEST['pos_text'];
 $user_mobile_number = $_REQUEST['mobile_number'];
+
+
 
 $update_note = "Adding a new user to the system.";
 

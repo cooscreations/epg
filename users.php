@@ -99,7 +99,12 @@ pagehead($page_id); ?>
                     <img src="assets/images/users/user_<?php echo $row_get_users['ID']; ?>.png" title="<?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?>" style="width:100px;" /></a></td>
                 <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>"><?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['middle_name']; echo ' ' . $row_get_users['last_name']; ?></a></td>
                 <td><a href="user_view.php?id=<?php echo $row_get_users['ID']; ?>"><?php
+								/*
                 if (($row_get_users['name_CN']!='中文名')&&($row_get_users['name_CN']!='')) {
+                	echo $row_get_users['name_CN'];
+                }
+								*/
+								if ($row_get_users['name_CN']!='') {
                 	echo $row_get_users['name_CN'];
                 }
                 ?></a></td>
