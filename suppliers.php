@@ -97,7 +97,7 @@ pagehead($page_id); ?>
 						$sup_cn = $row_get_sups['name_CN'];
 						$sup_web = $row_get_sups['website'];
 						$sup_internal_ID = $row_get_sups['epg_supplier_ID'];
-						$sup_status = $row_get_sups['record_status'];
+						$sup_status = $row_get_sups['supplier_status'];
 						$sup_part_classification = $row_get_sups['part_classification']; // look up
 						$sup_item_supplied = $row_get_sups['items_supplied'];
 						$sup_part_type_ID = $row_get_sups['part_type_ID']; // look up
@@ -113,6 +113,7 @@ pagehead($page_id); ?>
 						$sup_fax = $row_get_sups['fax'];
 						$sup_email_1 = $row_get_sups['email_1'];
 						$sup_email_2 = $row_get_sups['email_2'];
+						$sup_record_status = $row_get_sups['record_status'];
 
 
 
@@ -153,8 +154,12 @@ pagehead($page_id); ?>
             <tr>
             	<td><?php echo $sup_internal_ID; ?></td>
                 <td><a href="supplier_view.php?id=<?php echo $sup_ID; ?>"><?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></a></td>
-                <td class="<?php echo $sup_status_color_code; ?>">
-                	<i class="fa <?php echo $sup_status_icon; ?>"></i> <?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> <br /><?php echo $sup_status_name_CN; }?>
+                <!-- <td class="<?php echo $sup_status_color_code; ?>"> -->
+                <td>
+                <button type="button" class="btn btn-<?php echo $sup_status_color_code; ?> m-xs" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> 
+                / <?php echo $sup_status_name_CN; }?>"><i class="fa <?php echo $sup_status_icon; ?>"></i> </button>
+                
+                
                 </td>
                 <td><?php
                   if ($sup_part_classification == 1) {
@@ -189,7 +194,7 @@ pagehead($page_id); ?>
                 	<?php
                 }
                 ?></td>
-                <td class="text-center">
+                <td class="text-center" width="20%">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
                     <a href="supplier_view.php?id=<?php echo $sup_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-eye"></i></a>
