@@ -27,7 +27,12 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 */
 
 $sup_en = $_REQUEST['name_en'];
-$sup_cn = $_REQUEST['name_cn'];
+if($_REQUEST['name_cn'] == ''){
+	$sup_cn = '中文名';
+}else{
+	$sup_cn = $_REQUEST['name_cn'];
+}
+
 $sup_web = $_REQUEST['sup_website'];
 
 $update_note = "Adding a new supplier to the system.";
