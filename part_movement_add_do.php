@@ -67,9 +67,18 @@ if (mysqli_query($con, $add_movement_SQL)) {
 
 		if (mysqli_query($con, $record_edit_SQL)) {
 			// AWESOME! We added the change record to the database
-
-			header("Location: batch_view.php?id=".$_REQUEST['batch_ID']."&msg=OK&action=add&new_record_id=".$record_id."");
-			exit();
+			
+			// NOW WORK OUT WHERE TO SEND THEM:
+			
+			if ($_REQUEST['next_step'] == 'view') {
+				header("Location: batch_view.php?id=".$_REQUEST['batch_ID']."&msg=OK&action=add&new_record_id=".$record_id."&next_step=view");
+				exit();
+			}
+			else {
+				// ADD AGAIN!
+				header("Location: part_movement_add.php?batch_id=".$_REQUEST['batch_ID']."&msg=OK&action=add&new_record_id=".$record_id."&next_step=add");
+				exit();
+			}
 
 		}
 		else {

@@ -1180,7 +1180,7 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								</span>
 
 
-								<strong>Well done!</strong> You successfully added a record to the database. You can see it below.
+								<strong>Well done!</strong> You successfully added a record to the database.
 
 								<?php } ?>
 
@@ -1193,7 +1193,7 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								</span>
 
 
-								<strong>Well done!</strong> You successfully updated the record in the database. You can see it below.
+								<strong>Well done!</strong> You successfully updated the record in the database.
 								<?php } ?>
 
 								<!--  DELETE -->

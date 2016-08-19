@@ -40,11 +40,11 @@ else {
 		while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
 
 				// now print each record:
-				$batch_id = $row_get_batch['ID'];
-				$PO_ID = $row_get_batch['PO_ID'];
-				$part_ID = $row_get_batch['part_ID'];
-				$batch_number = $row_get_batch['batch_number'];
-				$part_rev = $row_get_batch['part_rev'];
+				$batch_id 		= $row_get_batch['ID'];
+				$PO_ID 			= $row_get_batch['PO_ID'];
+				$part_ID 		= $row_get_batch['part_ID'];
+				$batch_number 	= $row_get_batch['batch_number'];
+				$part_rev 		= $row_get_batch['part_rev'];
 
 				// GET PART DETAILS:
 				$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
@@ -53,10 +53,10 @@ else {
 				while($row_get_part = mysqli_fetch_array($result_get_part)) {
 
 					// now print each result to a variable:
-					$part_id = $row_get_part['ID'];
-					$part_code = $row_get_part['part_code'];
-					$part_name_EN = $row_get_part['name_EN'];
-					$part_name_CN = $row_get_part['name_CN'];
+					$part_id 		= $row_get_part['ID'];
+					$part_code 		= $row_get_part['part_code'];
+					$part_name_EN 	= $row_get_part['name_EN'];
+					$part_name_CN 	= $row_get_part['name_CN'];
 
 				}
 
@@ -69,12 +69,12 @@ else {
 								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 
 									// now print each record:
-									$rev_id = $row_get_part_rev['ID'];
-									$rev_part_id = $row_get_part_rev['part_ID'];
-									$rev_number = $row_get_part_rev['revision_number'];
-									$rev_remarks = $row_get_part_rev['remarks'];
-									$rev_date = $row_get_part_rev['date_approved'];
-									$rev_user = $row_get_part_rev['user_ID'];
+									$rev_id 		= $row_get_part_rev['ID'];
+									$rev_part_id 	= $row_get_part_rev['part_ID'];
+									$rev_number 	= $row_get_part_rev['revision_number'];
+									$rev_remarks 	= $row_get_part_rev['remarks'];
+									$rev_date 		= $row_get_part_rev['date_approved'];
+									$rev_user 		= $row_get_part_rev['user_ID'];
 
 								}
 
@@ -86,26 +86,26 @@ else {
 				while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 
 					// now print each record:
-					$PO_id = $row_get_PO['ID'];
-					$PO_number = $row_get_PO['PO_number'];
-					$PO_created_date = $row_get_PO['created_date'];
-					$PO_description = $row_get_PO['description'];
-					$PO_record_status = $row_get_PO['record_status'];
-					$PO_supplier_ID = $row_get_PO['supplier_ID'];  // LOOK THIS UP!
-					$PO_created_by = $row_get_PO['created_by']; // use get_creator($PO_created_by);
-					$PO_date_needed = $row_get_PO['date_needed'];
-					$PO_date_delivered = $row_get_PO['date_delivered'];
-					$PO_approval_status = $row_get_PO['approval_status']; // look this up?
-					$PO_payment_status = $row_get_PO['payment_status']; // look this up?
-					$PO_completion_status = $row_get_PO['completion_status'];
+					$PO_id 					= $row_get_PO['ID'];
+					$PO_number 				= $row_get_PO['PO_number'];
+					$PO_created_date 		= $row_get_PO['created_date'];
+					$PO_description 		= $row_get_PO['description'];
+					$PO_record_status 		= $row_get_PO['record_status'];
+					$PO_supplier_ID 		= $row_get_PO['supplier_ID'];  // LOOK THIS UP!
+					$PO_created_by 			= $row_get_PO['created_by']; // use get_creator($PO_created_by);
+					$PO_date_needed 		= $row_get_PO['date_needed'];
+					$PO_date_delivered 		= $row_get_PO['date_delivered'];
+					$PO_approval_status 	= $row_get_PO['approval_status']; // look this up?
+					$PO_payment_status 		= $row_get_PO['payment_status']; // look this up?
+					$PO_completion_status 	= $row_get_PO['completion_status'];
 
 				} // end while loop
 
 		// count variants for this purchase order
-        $count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_id;
-        $count_batches_query = mysqli_query($con, $count_batches_sql);
-        $count_batches_row = mysqli_fetch_row($count_batches_query);
-        $total_batches = $count_batches_row[0];
+        $count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_id;
+        $count_batches_query 	= mysqli_query($con, $count_batches_sql);
+        $count_batches_row 		= mysqli_fetch_row($count_batches_query);
+        $total_batches 			= $count_batches_row[0];
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,9 @@ pagehead($page_id);
 					 					  </tr>
 					 					  <tr>
 					 					    <th>P.O. Created Date:</th>
-					 					    <td><?php echo $PO_created_date; ?></td>
+					 					    <td>
+					 					     <?php echo date("Y-m-d", strtotime($PO_created_date)); ?>
+					 					    </td>
 					 					  </tr>
 					 					  <tr>
 					 					    <th>P.O. Remarks:</th>
@@ -204,7 +206,15 @@ pagehead($page_id);
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Total Batches in this P.O.:</th>
-					 					    <td><?php echo $total_batches; ?> (<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>">VIEW ALL</a>)</td>
+					 					    <td>
+					 					    	<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>" title="Click to view all batches associated to this purchase order">
+					 					    		<?php echo $total_batches; ?>
+					 					    	</a> 
+					 					    	&nbsp;
+					 					    	<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>" class="btn btn-default btn-xs" title="Click to view all batches associated to this purchase order">
+					 					    		<i class="fa fa-search"></i>
+					 					    	</a>
+					 					    </td>
 					 					  </tr>
 					 					</table>
 					 				</div>
@@ -232,7 +242,11 @@ pagehead($page_id);
 					 					<table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					 					  <tr>
 					 					    <th>Part Code:</th>
-					 					    <td><a href="part_view.php?id=<?php echo $part_id; ?>"><?php echo $part_code; ?></a></td>
+					 					    <td>
+					 					      <a href="part_view.php?id=<?php echo $part_id; ?>" class="btn btn-info btn-xs" title="View <?php echo $part_name_EN; if (($part_name_CN!='中文名')&&($part_name_CN!='')) { echo ' / '. $part_name_CN; } ?> Part Profile">
+					 					    	<?php echo $part_code; ?>
+					 					      </a>
+					 					   </td>
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Part Name:</th>
@@ -240,22 +254,31 @@ pagehead($page_id);
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Part Revision:</th>
-					 					    <td><?php echo $rev_number; ?></td>
+					 					    <td>
+					 					      <span class="btn btn-warning" title="Rev. #: <?php echo $rev_id; ?>">
+					 					    	<?php echo $rev_number; ?>
+					 					      </span>
+					 					    </td>
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Total Batches for this part:</th>
 					 					    <td><?php
+					 					    
+												// count variants for this purchase part
+												$count_j_batches_sql 	= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $part_id;
+												$count_j_batches_query 	= mysqli_query($con, $count_j_batches_sql);
+												$count_j_batches_row 	= mysqli_fetch_row($count_j_batches_query);
+												$total_j_batches 		= $count_j_batches_row[0];
 
-
-											// count variants for this purchase part
-        									$count_j_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $part_id;
-        									$count_j_batches_query = mysqli_query($con, $count_j_batches_sql);
-        									$count_j_batches_row = mysqli_fetch_row($count_j_batches_query);
-        									$total_j_batches = $count_j_batches_row[0];
-
-					 					    echo $total_j_batches;
-
-					 					     ?> (<a href="batch_log.php?part_id=<?php echo $part_id; ?>">VIEW ALL</a>)</td>
+					 					     	?>
+					 					    	<a href="batch_log.php?part_id=<?php echo $part_id; ?>" title="Click to view all batches associated to this part">
+					 					    		<?php echo $total_j_batches; ?>
+					 					    	</a> 
+					 					    	&nbsp;
+					 					    	<a href="batch_log.php?part_id=<?php echo $part_id; ?>" class="btn btn-default btn-xs" title="Click to view all batches associated to this part">
+					 					    		<i class="fa fa-search"></i>
+					 					    	</a>
+					 					     </td>
 					 					  </tr>
 					 					</table>
 					 				</div>
@@ -313,15 +336,13 @@ pagehead($page_id);
 										$(function(){
 											$('#printOut').click(function(e){
 												e.preventDefault();
-												var w = window.open();
-												var printOne = $('.contentToPrint').html();
-												var printTwo = $('.nameToPrint').html();
-												var printThree = $('.IDnumToPrint').html();
-												var printFour = $('.batchToPrint').html();
-												var printFive = $('.statusToPrint').html();
+												var w 			= window.open();
+												var printOne 	= $('.contentToPrint').html();
+												var printTwo 	= $('.nameToPrint').html();
+												var printThree 	= $('.IDnumToPrint').html();
+												var printFour 	= $('.batchToPrint').html();
+												var printFive 	= $('.statusToPrint').html();
 												w.document.write('<html><head><title>存卡 - Batch Code</title><style type="text/css"> html { font-family: sans-serif; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 25px; } body { margin: 0; } table { border: none; } td { border: 1px solid black; padding: 5px; } </style></head><body><hr /><table><tr><th rowspan="4">' + printOne + '</th><th>NAME</th><th>' + printTwo + '</th></tr><tr><td>ID #</td><td>' + printThree + '</td></tr><tr><td>BATCH #</td><td>' + printFour + '</td></tr><tr><td>STATUS</td><td>' + printFive + '</td></tr></table><hr />' ) + '</body></html>';
-
-
 
 												w.window.print();
 												w.document.close();
@@ -357,7 +378,7 @@ pagehead($page_id);
 
 
 					<div class="row">
-					 	<a href="part_movement_add.php?batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+					 	<a href="part_movement_add.php?batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success text-left"><i class="fa fa-plus-square"></i></a>
 					 </div>
 
 
@@ -391,20 +412,20 @@ pagehead($page_id);
 						while($row_get_batch_movement = mysqli_fetch_array($result_get_batch_movement)) {
 
 								// now print each record:
-								$batch_movement_id = $row_get_batch_movement['ID'];
-								$amount_in = $row_get_batch_movement['amount_in'];
-								$amount_out = $row_get_batch_movement['amount_out'];
-								$part_batch_status_ID = $row_get_batch_movement['part_batch_status_ID'];
-								$movement_remarks = $row_get_batch_movement['remarks'];
-								$movement_user_ID = $row_get_batch_movement['user_ID'];
-								$movement_date = $row_get_batch_movement['date'];
+								$batch_movement_id 		= $row_get_batch_movement['ID'];
+								$amount_in 				= $row_get_batch_movement['amount_in'];
+								$amount_out 			= $row_get_batch_movement['amount_out'];
+								$part_batch_status_ID 	= $row_get_batch_movement['part_batch_status_ID'];
+								$movement_remarks 		= $row_get_batch_movement['remarks'];
+								$movement_user_ID 		= $row_get_batch_movement['user_ID'];
+								$movement_date 			= $row_get_batch_movement['date'];
 
 								// now let's do the running total math:
 
-								$total_in = $total_in + $amount_in;
-								$total_out = $total_out + $amount_out;
+								$total_in 	= $total_in + $amount_in;
+								$total_out 	= $total_out + $amount_out;
 
-								$total_now = $total_in - $total_out;
+								$total_now 	= $total_in - $total_out;
 
 
 
@@ -417,11 +438,11 @@ pagehead($page_id);
 						while($row_get_mvmnt_status = mysqli_fetch_array($result_get_mvmnt_status)) {
 
 								// now print each record:
-								$mvmnt_status_name_EN = $row_get_mvmnt_status['name_EN'];
-								$mvmnt_status_name_CN = $row_get_mvmnt_status['name_CN'];
-								$mvmnt_status_desc = $row_get_mvmnt_status['desc'];
-								$mvmnt_status_icon = $row_get_mvmnt_status['icon'];
-								$mvmnt_status_color = $row_get_mvmnt_status['color'];
+								$mvmnt_status_name_EN 	= $row_get_mvmnt_status['name_EN'];
+								$mvmnt_status_name_CN 	= $row_get_mvmnt_status['name_CN'];
+								$mvmnt_status_desc 		= $row_get_mvmnt_status['desc'];
+								$mvmnt_status_icon 		= $row_get_mvmnt_status['icon'];
+								$mvmnt_status_color 	= $row_get_mvmnt_status['color'];
 						}
 
 					  // get user
@@ -430,9 +451,9 @@ pagehead($page_id);
 						// while loop
 						while($row_get_mvmnt_user = mysqli_fetch_array($result_get_mvmnt_user)) {
 								// now print each record:
-								$mvmnt_user_first_name = $row_get_mvmnt_user['first_name'];
-								$mvmnt_user_last_name = $row_get_mvmnt_user['last_name'];
-								$mvmnt_user_name_CN = $row_get_mvmnt_user['name_CN'];
+								$mvmnt_user_first_name 	= $row_get_mvmnt_user['first_name'];
+								$mvmnt_user_last_name 	= $row_get_mvmnt_user['last_name'];
+								$mvmnt_user_name_CN 	= $row_get_mvmnt_user['name_CN'];
 						}
 
 					// NOW LET'S DO THIS!
@@ -479,7 +500,7 @@ pagehead($page_id);
 					</div>
 
 					<div class="row">
-					 	<a href="part_movement_add.php?batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+					 	<a href="part_movement_add.php?batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success text-left"><i class="fa fa-plus-square"></i></a>
 					 </div>
 
 								<!-- now close the panel -->

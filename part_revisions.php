@@ -76,8 +76,9 @@ pagehead ( $page_id );
 	<div class="table-responsive">
 		<table
 			class="table table-bordered table-striped table-condensed mb-none">
-			<tr >
-				<th class="text-left" colspan="11"><a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+			<tr>
+				<th class="text-left" colspan="11">
+					<a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
 				</th>
 			</tr>
 			<tr>
@@ -125,7 +126,7 @@ pagehead ( $page_id );
 				<td><?php echo $row_get_part_revision['ID']; ?></td>
 				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_code']; ?></a></td>
 				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_name_EN']; if (($row_get_part_revision['part_name_CN']!='')&&($row_get_part_revision['part_name_CN']!='中文名')) { echo " / " . $row_get_part_revision['part_name_CN']; }?></a></td>
-				<td><?php echo $row_get_part_revision['revision_number']; ?></td>
+				<td><span class="btn btn-warning" title="Rev #: <?php echo $row_get_part_revision['ID']; ?>"><?php echo $row_get_part_revision['revision_number']; ?></span></td>
 				<td><?php echo $row_get_part_revision['remarks']; ?></td>
 				<td><?php echo date("Y-m-d", strtotime($row_get_part_revision['date_approved'])); ?></td>
 				<td><a href="user_view.php?id=<?php echo $row_get_part_revision['user_ID']; ?>"><?php echo $row_get_part_revision['user_name']; ?></a></td>
@@ -133,8 +134,6 @@ pagehead ( $page_id );
 				<td><?php echo $row_get_part_revision['weight_g']; ?></td>
 				<td><?php echo $row_get_part_revision['status_name_EN']; ?></td>
 				<td class="text-center">
-                    <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
-                    <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
                     <a href="part_revision_edit.php?id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 					<a href="record_delete_do.php?table_name=part_revisions&src_page=part_revisions.php&id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>

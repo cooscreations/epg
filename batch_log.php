@@ -116,6 +116,9 @@ else {
 
 
 					<div class="row">
+						<div class="col-md-1">
+					 	<a href="part_batch_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
+						 </div>
 						<div class="col-md-11">
 						<!-- PART JUMPER -->
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
@@ -155,9 +158,6 @@ else {
                              </select>
                             <!-- / PART JUMPER -->
 						</div>
-						<div class="col-md-1">
-					 	<a href="part_batch_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
-						 </div>
 					</div>
 
 
@@ -167,7 +167,6 @@ else {
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					  <tr>
-					    <th>ID</th>
 					    <th>
 					    	Batch #
 					    	<span class="col_sort pull-right"><?php
@@ -300,11 +299,15 @@ else {
 
 					  ?>
 					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
-					    <td><?php echo $batch_id; ?></td>
-					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
+					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>" title="Database Record ID = <?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
 					    <td><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
 					    <td><?php echo substr($PO_created_date, 0, 10); ?></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-info btn-xs" title="View <?php
+					    	echo $part_name_EN;
+					    	if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
+					    		echo " / " . $part_name_CN;
+					    	}
+					    ?> Part Profile"><?php
 					    // now do a quick check to make sure that the batch number (first 5 chars) matches the part code:
 					    if (substr($batch_number,0,5)!= $part_code) {
 					    	echo '<span class="text-danger" title="Batch Number Does Not Match Part Code!">' . $part_code . '</span>';
@@ -333,7 +336,7 @@ else {
 					  <!-- END DATASET -->
 
 					  <tr>
-					    <th colspan="7">TOTAL ENTRIES: <?php echo $total_batches ;?></th>
+					    <th colspan="6">TOTAL ENTRIES: <?php echo $total_batches ;?></th>
 					  </tr>
 
 
@@ -341,7 +344,9 @@ else {
 					</div>
 
 					<div class="row">
-					 	<a href="part_batch_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+					  <div class="col-md-12">
+					 	<a href="part_batch_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
+					</div>
 					 </div>
 
 								<!-- now close the panel -->

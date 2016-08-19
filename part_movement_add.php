@@ -21,7 +21,10 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$session_user_id = $_SESSION['username'];
+$session_user_id = $_SESSION['user_ID'];
+// quick hack for Mark to load data faster:
+if ($session_user_id == 1) { $session_user_id = 6; } // set Mark to ROBIN as default for Mark whilst entering data...
+
 $page_id = 12;
 
 // pull the header and template stuff:
@@ -117,6 +120,25 @@ if (isset($_REQUEST['batch_id'])) { $record_id = $_REQUEST['batch_id']; }
 					</header>
 
 					<!-- start: page -->
+					
+					
+					<?php
+
+					// run notifications function:
+					$msg = 0;
+					if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
+					$action = 0;
+					if (isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
+					$change_record_id = 0;
+					if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
+					$page_record_id = 0;
+					if (isset($record_id)) { $page_record_id = $record_id; }
+
+					// now run the function:
+					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
+					?>
+					
+					
 
 					<div class="row">
 						<div class="col-md-12">
@@ -302,27 +324,7 @@ $(document).ready(function(){
 											<div class="form-group">
 												<label class="col-md-3 control-label">User:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
-													<?php
-													// get batch list
-													$get_user_list_SQL = "SELECT * FROM `users`";
-													$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
-													// while loop
-													while($row_get_user_list = mysqli_fetch_array($result_get_user_list)) {
-
-														// now print each record:
-														$user_id = $row_get_user_list['ID'];
-														$user_first_name = $row_get_user_list['first_name'];
-														$user_last_name = $row_get_user_list['last_name'];
-														$user_name_CN = $row_get_user_list['name_CN'];
-														$user_email = $row_get_user_list['email'];
-													?>
-														<option value="<?php echo $user_id; ?>"<?php if ($user_email == $session_user_id) { ?> selected=""<?php } ?>><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo $user_name_CN; }?></option>
-
-														<?php
-														}
-														?>
-													</select>
+													<?php creator_drop_down($session_user_id); ?>
 												</div>
 
 												<div class="col-md-1">
@@ -354,10 +356,47 @@ $(document).ready(function(){
 											</div>
 
 								<footer class="panel-footer">
+								
+									<div class="row">
+									    <div class="col-md-5">
+										  <input type="hidden" name="PO_ID" value="<?php echo $PO_id; ?>" />
+										  <a class="btn btn-danger" href="batch_view.php?id=<?php echo $record_id; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
+										  <button type="reset" class="btn btn-warning"><i class="fa fa-refresh"></i> RESET</button>
+										  <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> SAVE CHANGES</button>
+										  
+										  
+									    </div>
+									    
+									    
+									    <!-- NEXT STEP SELECTION -->
+									    
+									    <?php 
+									    if ($_REQUEST['next_step'] == 'add') {
+									    	$next_step_selected = 'add';
+									    }
+									    else {
+									    	$next_step_selected = 'view';
+									    }
+									    ?>
+									    
+										<label class="col-md-1 control-label text-right">...and then...</label>
+										
+										<div class="col-md-6 text-left">
+											<div class="radio-custom radio-success">
+												<input type="radio" id="next_step" name="next_step" value="view"<?php if ($next_step_selected == 'view') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample9">View Results</label>
+											</div>
 
-										<input type="hidden" name="PO_ID" value="<?php echo $PO_id; ?>" />
-										<button type="submit" class="btn btn-success">Submit </button>
-										<button type="reset" class="btn btn-default">Reset</button>
+											<div class="radio-custom radio-warning">
+												<input type="radio" id="next_step" name="next_step" value="add"<?php if ($next_step_selected == 'add') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample10">Add Another Entry</label>
+											</div>
+										</div>
+										
+										<!-- END OF NEXT STEP SELECTION -->
+										
+									  </div><!-- close row -->
+										
 									</footer>
 
 

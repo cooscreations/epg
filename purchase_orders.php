@@ -129,7 +129,8 @@ if (isset($_REQUEST['year'])) {
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
 					 	<tr >
-							<th class="text-left" colspan="5"><a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
+							<th class="text-left" colspan="5">
+								<a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
 							</th>
 						</tr>
 						 <tr>
@@ -293,12 +294,72 @@ if (isset($_REQUEST['year'])) {
 					    <!-- END COUNT BATCHES -->
 					    </td>
 						<td class="text-center">
-                   			 <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
-                  			 <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
-               		   	     <a href="purchase_order_edit.php?id=<?php echo $PO_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-							 <a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $PO_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
-               		   	     <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-							 <a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+						
+						<!-- ********************************************************* -->
+						<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+						<!-- ********************************************************* -->
+						 
+						    <a class="modal-with-form btn btn-default" href="#modalForm_<?php echo $row_get_POs['ID']; ?>"><i class="fa fa-gear"></i></a>
+
+							<!-- Modal Form -->
+							<div id="modalForm_<?php echo $row_get_POs['ID']; ?>" class="modal-block modal-block-primary mfp-hide">
+								<section class="panel">
+									<header class="panel-heading">
+										<h2 class="panel-title">Admin Options</h2>
+									</header>
+									<div class="panel-body">
+									
+										<div class="table-responsive">
+										 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+										 <thead>
+											<tr>
+												<th class="text-left" colspan="2">Action</th>
+												<th>Decsription</th>
+											</tr>
+										  </thead>
+										  <tbody>
+											<tr>
+											  <td>EDIT</td>
+											  <td>
+											  <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
+											  <td>Edit this record</td>
+											</tr>
+											<tr>
+											  <td>DELETE</td>
+											  <td><a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a></td>
+											  <td>Delete this record</td>
+											</tr>
+											<tr>
+											  <td>ADD BATCH</td>
+											  <td><a href="part_batch_add.php?PO_ID=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus"></i></a></td>
+											  <td>Add a batch to P.O. # <?php echo $PO_number; ?></td>
+											</tr>
+										  </tbody>
+										  <tfoot>
+										  	<tr>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	</tr>
+										  </tfoot>
+										  </table>
+										</div><!-- end of responsive table -->	
+									
+									</div><!-- end panel body -->
+									<footer class="panel-footer">
+										<div class="row">
+											<div class="col-md-12 text-right">
+												<button class="btn btn-danger modal-dismiss"><i class="fa fa-times"></i> Cancel</button>
+											</div>
+										</div>
+									</footer>
+								</section>
+							</div>
+							
+						<!-- ********************************************************* -->
+						<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+						<!-- ********************************************************* -->
+								
                			 </td>
 					  </tr>
 

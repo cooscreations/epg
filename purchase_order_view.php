@@ -505,7 +505,6 @@ pagehead($page_id);
 							</section>
 						</div>
 					</div> <!-- end row! -->
-<<<<<<< HEAD
 				
 				<br />
 				<hr />
@@ -859,11 +858,6 @@ pagehead($page_id);
 <p>Page 1 of 1</p>
 <!-- END OF TOTAL P.O. CONTENT -->
 
-				
-						
-=======
-
->>>>>>> origin/2016-05-24-MC
 					<!-- end: page -->
 				</section>
 
@@ -874,3 +868,4 @@ pagehead($page_id);
 pagefoot($page_id);
 
 ?>
+	

@@ -21,7 +21,10 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$session_user_id = $_SESSION['username'];
+$session_user_id = $_SESSION['user_ID'];
+// quick hack for Mark to load data faster:
+if ($session_user_id == 1) { $session_user_id = 6; } // set Mark to ROBIN as default for Mark whilst entering data...
+
 $page_id = 13;
 
 // pull the header and template stuff:
@@ -260,27 +263,7 @@ if ($record_id != 0) {
 								<div class="form-group">
 												<label class="col-md-3 control-label">User:<span class="required">*</label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
-													<?php
-													// get batch list
-													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
-													$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
-													// while loop
-													while($row_get_user_list = mysqli_fetch_array($result_get_user_list)) {
-
-														// now print each record:
-														$user_id = $row_get_user_list['ID'];
-														$user_first_name = $row_get_user_list['first_name'];
-														$user_last_name = $row_get_user_list['last_name'];
-														$user_name_CN = $row_get_user_list['name_CN'];
-														$user_email = $row_get_user_list['email'];
-													?>
-														<option value="<?php echo $user_id; ?>"<?php if ($user_email == $session_user_id) { ?> selected=""<?php } ?>><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo $user_name_CN; }?></option>
-
-														<?php
-														}
-														?>
-													</select>
+													<?php creator_drop_down($session_user_id); ?>
 												</div>
 
 												<div class="col-md-1">
