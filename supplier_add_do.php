@@ -25,19 +25,35 @@ if (!isset($_SESSION['username'])) {
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
 */
-
+$sup_epg_supplier_ID = $_REQUEST['epg_supplier_ID'];
 $sup_en = $_REQUEST['name_en'];
 if($_REQUEST['name_cn'] == ''){
 	$sup_cn = '中文名';
 }else{
 	$sup_cn = $_REQUEST['name_cn'];
 }
-
 $sup_web = $_REQUEST['sup_website'];
+$sup_supplier_status = $_REQUEST['supplier_status'];
+$sup_part_classification = $_REQUEST['part_classification'];
+$sup_items_supplied = $_REQUEST['items_supplied'];
+$sup_part_type_ID = $_REQUEST['part_type_ID'];
+$sup_certifications = $_REQUEST['certifications'];
+$sup_certification_expiry_date = $_REQUEST['certification_expiry_date'];
+$sup_evaluation_date = $_REQUEST['evaluation_date'];
+$sup_address_EN = $_REQUEST['address_EN'];
+$sup_address_CN = $_REQUEST['address_CN'];
+$sup_country_ID = $_REQUEST['country_ID'];
+$sup_contact_person = $_REQUEST['contact_person'];
+$sup_mobile_phone = $_REQUEST['mobile_phone'];
+$sup_telephone = $_REQUEST['telephone'];
+$sup_fax = $_REQUEST['fax'];
+$sup_email_1 = $_REQUEST['email_1'];
+$sup_email_2 = $_REQUEST['email_2'];
+
 
 $update_note = "Adding a new supplier to the system.";
 
-$add_supplier_SQL = "INSERT INTO `suppliers`(`ID`, `name_EN`, `name_CN`, `website`) VALUES (NULL,'".$sup_en."','".$sup_cn."','".$sup_web."')";
+$add_supplier_SQL = "INSERT INTO `suppliers`(`ID`, `epg_supplier_ID`, `name_EN`, `name_CN`, `website`, `supplier_status`, `part_classification`, `items_supplied`, `part_type_ID`, `certifications`, `certification_expiry_date`, `evaluation_date`, `address_EN`, `address_CN`, `country_ID`, `contact_person`, `mobile_phone`, `telephone`, `fax`, `email_1`, `email_2`) VALUES (NULL,'".$sup_epg_supplier_ID."', '".$sup_en."','".$sup_cn."','".$sup_web."', '".$sup_supplier_status."', '".$sup_part_classification."', '".$sup_items_supplied."', '".$sup_part_type_ID."', '".$sup_certifications."', '".$sup_certification_expiry_date."', '".$sup_evaluation_date."', '".$sup_address_EN."', '".$sup_address_CN."', '".$sup_country_ID."', '".$sup_contact_person."', '".$sup_mobile_phone."', '".$sup_telephone."', '".$sup_fax."', '".$sup_email_1."', '".$sup_email_2."')";
 
 
 // echo $add_supplier_SQL;

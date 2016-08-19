@@ -89,10 +89,22 @@ if ($record_id != 0) {
                         <h2 class="panel-title">Add Supplier Details:</h2>
                     </header>
                     <div class="panel-body">
+
+											<div class="form-group">
+													<label class="col-md-3 control-label">EPG Supplier ID:<span class="required">*</span></label>
+													<div class="col-md-5">
+															<input type="text" class="form-control" id="inputDefault" name="epg_supplier_ID" required />
+													</div>
+
+													<div class="col-md-1">
+															&nbsp;
+													</div>
+											</div>
+
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Name:</label>
+                            <label class="col-md-3 control-label">Name:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="name_en" />
+                                <input type="text" class="form-control" id="inputDefault" name="name_en" required />
                             </div>
 
                             <div class="col-md-1">
@@ -113,16 +125,292 @@ if ($record_id != 0) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Website:</label>
+                            <label class="col-md-3 control-label">Website:<span class="required">*</span></label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="sup_website" />
+                                <input type="text" class="form-control" id="inputDefault" name="sup_website" required />
                             </div>
-
 
                             <div class="col-md-1">
                                 &nbsp;
                             </div>
                         </div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Supplier Status:<span class="required">*</span></label>
+													<div class="col-md-5">
+														<select data-plugin-selectTwo class="form-control populate" name="supplier_status" required>
+
+																<?php
+																		$get_sup_status_SQL = "SELECT * FROM `supplier_status` ";
+																		// echo $get_vendor_status_SQL;
+
+																		$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
+																		// while loop
+																		while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
+																			$sup_status_ID = 			$row_get_sup_status['ID'];
+																			$sup_status_name_EN = 		$row_get_sup_status['name_EN'];
+																			$sup_status_name_CN = 		$row_get_sup_status['name_CN'];
+																			$sup_status_level = 		$row_get_sup_status['status_level'];
+																			$sup_status_description = 	$row_get_sup_status['status_description'];
+																			$sup_status_color_code = 	$row_get_sup_status['color_code'];
+																			$sup_status_icon = 			$row_get_sup_status['icon'];
+																		?>
+																	<option value="<?php echo $sup_status_ID; ?>" <?php if ($sup_status_ID == 4) { ?> selected="selected"<?php } ?>>
+																		<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { echo " / " . $sup_status_name_CN; } ?>
+																	</option>
+																<?php
+															}
+															?>
+														</select>
+													</div>
+
+													<div class="col-md-1">
+														&nbsp;
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Part Classification:<span class="required">*</span></label>
+													<div class="col-md-5">
+														<select data-plugin-selectTwo class="form-control populate" name="part_classification" required>
+															<option value=""></option>
+															<?php
+
+																	// GET PART CLASSIFICATION:
+																	$get_part_class_SQL = "SELECT * FROM  `part_classification` ";
+																	// echo $get_part_class_SQL;
+
+																	$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+																	// while loop
+																	while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+																		$part_class_ID = $row_get_part_class['ID'];
+																		$part_class_EN = $row_get_part_class['name_EN'];
+																		$part_class_CN = $row_get_part_class['name_CN'];
+																		$part_class_description = $row_get_part_class['description'];
+																		$part_class_color = $row_get_part_class['color'];
+																	?>
+																	<option value="<?php echo $part_class_ID; ?>" >
+																		<?php echo $part_class_EN; if (($part_class_CN!='')&&($part_class_CN!='中文名')) { echo " / " . $part_class_CN; } ?>
+																	</option>
+																<?php
+															}
+															?>
+														</select>
+													</div>
+
+													<div class="col-md-1">
+														&nbsp;
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Part Type:<span class="required">*</span></label>
+													<div class="col-md-5">
+														<select data-plugin-selectTwo class="form-control populate" name="part_type_ID" required>
+															<option value=""></option>
+															<?php
+
+																	// GET PART TYPE:
+																	$list_part_types_SQL = "SELECT * FROM  `part_type` WHERE `record_status` = 2";
+																	// echo $get_part_type_SQL;
+
+																	$result_list_part_types = mysqli_query($con,$list_part_types_SQL);
+																	// while loop
+																	while($row_list_part_types = mysqli_fetch_array($result_list_part_types)) {
+																		$list_part_type_ID = $row_list_part_types['ID'];
+																		$list_part_type_EN = $row_list_part_types['name_EN'];
+																		$list_part_type_CN = $row_list_part_types['name_CN'];
+
+																	?>
+																	<option value="<?php echo $list_part_type_ID; ?>" >
+																		<?php echo $list_part_type_EN; if (($list_part_type_CN!='')&&($list_part_type_CN!='中文名')) { echo " / " . $list_part_type_CN; } ?>
+																	</option>
+																<?php
+															}
+															?>
+														</select>
+													</div>
+
+													<div class="col-md-1">
+														&nbsp;
+													</div>
+												</div>
+
+												<div class="form-group">
+                            <label class="col-md-3 control-label">Items Supplied:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="inputDefault" name="items_supplied" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+
+												<div class="form-group">
+                            <label class="col-md-3 control-label">Certifications:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="inputDefault" name="certifications" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Certification Expiry date:</label>
+													<div class="col-md-5">
+														<div class="input-group">
+															<span class="input-group-addon">
+																<i class="fa fa-calendar"></i>
+															</span>
+															<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="certification_expiry_date" value="<?php echo date("Y-m-d")?>"  />
+														</div>
+													</div>
+													<div class="col-md-1">
+														&nbsp;
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Evaluation date:</label>
+													<div class="col-md-5">
+														<div class="input-group">
+															<span class="input-group-addon">
+																<i class="fa fa-calendar"></i>
+															</span>
+															<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="evaluation_date" value="<?php echo date("Y-m-d")?>"  />
+														</div>
+													</div>
+													<div class="col-md-1">
+														&nbsp;
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Address:<span class="required">*</span></label>
+													<div class="col-md-5">
+														<textarea class="form-control" rows="3" id="textareaDefault" name="address_EN" required></textarea>
+													</div>
+													<div class="col-md-1">&nbsp;</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Address CN:</label>
+													<div class="col-md-5">
+														<textarea class="form-control" rows="3" id="textareaDefault" name="address_CN" ></textarea>
+													</div>
+													<div class="col-md-1">&nbsp;</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Country:<span class="required">*</span></label>
+													<div class="col-md-5">
+														<select data-plugin-selectTwo class="form-control populate" name="country_ID" required>
+															<option value=""></option>
+															<?php
+
+																	// GET Countries:
+																	$get_con_SQL = "SELECT * FROM  `countries` ORDER BY  `countries`.`name_EN` ASC";
+				                          // echo $get_con_SQL;
+																	$con_count = 0;
+
+																	$result_get_cons = mysqli_query ( $con, $get_con_SQL );
+																	// while loop
+																	while ( $row_get_cons = mysqli_fetch_array ( $result_get_cons ) ) {
+																		$country_ID = $row_get_cons['ID'];
+																		$country_name_EN = $row_get_cons['name_EN'];
+																		$country_name_CN = $row_get_cons['name_CN'];
+																		$country_code = $row_get_cons['code'];
+																		$country_alpha_2 = $row_get_cons['alpha_2'];
+																		$country_alpha_3 = $row_get_cons['alpha_3'];
+																		$country_iso_code = $row_get_cons['ISO_code'];
+
+																	?>
+																	<option value="<?php echo $country_ID; ?>" >
+																		<?php echo $country_name_EN; if (($country_name_CN!='')&&($country_name_CN!='中文名')) { echo " / " . $country_name_CN; } ?>
+																	</option>
+																<?php
+															}
+															?>
+														</select>
+													</div>
+
+													<div class="col-md-1">
+														&nbsp;
+													</div>
+												</div>
+
+												<div class="form-group">
+                            <label class="col-md-3 control-label">Contact Person:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="inputDefault" name="contact_person" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Mobile Number:</label>
+													<div class="col-md-5">
+														<div class="input-group">
+															<span class="input-group-addon">
+																<i class="fa fa-phone"></i>
+															</span>
+															<input id="inputDefault" name="mobile_phone" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control"  />
+														</div>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Telephone Number:</label>
+													<div class="col-md-5">
+														<div class="input-group">
+															<span class="input-group-addon">
+																<i class="fa fa-phone"></i>
+															</span>
+															<input id="inputDefault" name="telephone" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control"  />
+														</div>
+													</div>
+												</div>
+
+												<div class="form-group">
+													<label class="col-md-3 control-label">Fax:</label>
+													<div class="col-md-5">
+														<div class="input-group">
+															<span class="input-group-addon">
+																<i class="fa fa-phone"></i>
+															</span>
+															<input id="inputDefault" name="fax" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control"  />
+														</div>
+													</div>
+												</div>
+
+
+												<div class="form-group">
+                            <label class="col-md-3 control-label">E-mail:</label>
+                            <div class="col-md-5">
+                                <input type="email" class="form-control" name="email_1"  />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+
+												<div class="form-group">
+														<label class="col-md-3 control-label">Alternate E-mail:</label>
+														<div class="col-md-5">
+																<input type="email" class="form-control" name="email_2"  />
+														</div>
+
+														<div class="col-md-1">
+																&nbsp;
+														</div>
+												</div>
 
 
 
