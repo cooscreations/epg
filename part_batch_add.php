@@ -104,7 +104,10 @@ if ($record_id != 0) {
 					$action = 0;
 					if (isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
 					$change_record_id = 0;
-					if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
+					if (isset($_REQUEST['new_record_id'])) {
+						$change_record_id = $_REQUEST['new_record_id'];
+						$part_rev_ID = $_REQUEST['new_record_id']; // comes from part_view.php. Fix for bug#
+					}
 					$page_record_id = 0;
 					if (isset($record_id)) { $page_record_id = $record_id; }
 
@@ -226,7 +229,7 @@ if ($record_id != 0) {
 														$rev_user = $row_get_part_rev['user_ID'];
 
 													?>
-													<option value="<?php echo $rev_id; ?>"><?php echo $row_get_parts['part_code']; ?> - <?php echo $rev_number; ?></option>
+													<option value="<?php echo $rev_id; ?>" <?php if ($rev_id == $part_rev_ID) { ?> selected="selected"<?php } ?>><?php echo $row_get_parts['part_code']; ?> - <?php echo $rev_number; ?></option>
 													<?php
 
 													} // end revision look-up loop
