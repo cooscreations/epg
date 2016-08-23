@@ -233,7 +233,7 @@ pagehead($page_id);
 										<div class="col-sm-6">
 											<div class="form-group">
 												<label class="control-label">Default Supplier</label>
-												<select class="form-control populate" name="sup_ID" id="sup_ID">
+												<select data-plugin-selectTwo class="form-control populate" name="sup_ID" id="sup_ID">
 												<?php
 
 												/* ***************  GET SUPPLIER INFO ************************** */
