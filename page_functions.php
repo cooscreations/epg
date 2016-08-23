@@ -1209,6 +1209,18 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								<strong>Well done!</strong> You successfully deleted the record in the database.
 								<?php } ?>
 
+								<!--  Feedback Sent -->
+								<?php if ($_REQUEST['action'] == 'feedback_sent') { ?>
+
+								<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+
+
+								<strong>Thank you!</strong> Your feedback is sent.
+								<?php } ?>
+
 							</div>
 						<?php
 						} // END OF SUCCESS MESSAGES
