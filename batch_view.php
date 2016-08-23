@@ -168,10 +168,11 @@ pagehead($page_id);
 
 					<div class="row">
 						<div class="col-md-4">
-						
-						<?php 
+
+						<?php
 						// now run the admin bar function:
-						admin_bar('batch');
+						// Fix for bug#39 - main table os part_batch
+						admin_bar('part_batch');
 						?>
 							<section class="panel">
 								<header class="panel-heading">
@@ -209,7 +210,7 @@ pagehead($page_id);
 					 					    <td>
 					 					    	<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>" title="Click to view all batches associated to this purchase order">
 					 					    		<?php echo $total_batches; ?>
-					 					    	</a> 
+					 					    	</a>
 					 					    	&nbsp;
 					 					    	<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>" class="btn btn-default btn-xs" title="Click to view all batches associated to this purchase order">
 					 					    		<i class="fa fa-search"></i>
@@ -263,7 +264,7 @@ pagehead($page_id);
 					 					  <tr>
 					 					    <th>Total Batches for this part:</th>
 					 					    <td><?php
-					 					    
+
 												// count variants for this purchase part
 												$count_j_batches_sql 	= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $part_id;
 												$count_j_batches_query 	= mysqli_query($con, $count_j_batches_sql);
@@ -273,7 +274,7 @@ pagehead($page_id);
 					 					     	?>
 					 					    	<a href="batch_log.php?part_id=<?php echo $part_id; ?>" title="Click to view all batches associated to this part">
 					 					    		<?php echo $total_j_batches; ?>
-					 					    	</a> 
+					 					    	</a>
 					 					    	&nbsp;
 					 					    	<a href="batch_log.php?part_id=<?php echo $part_id; ?>" class="btn btn-default btn-xs" title="Click to view all batches associated to this part">
 					 					    		<i class="fa fa-search"></i>
