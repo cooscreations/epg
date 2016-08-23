@@ -171,7 +171,7 @@ pagehead($page_id);
 
 						<?php
 						// now run the admin bar function:
-						// Fix for bug#39 - main table os part_batch
+						// Fix for bug#39 and 37- main table os part_batch
 						admin_bar('part_batch');
 						?>
 							<section class="panel">
