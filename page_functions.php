@@ -5,6 +5,7 @@
 	include 'db_conn.php';
 
 	// header('Content-Type: text/html; charset=utf-8');
+	include 'form_data_helper.php';
 
 	function pagehead($page_id, $record_id=NULL) {
 
