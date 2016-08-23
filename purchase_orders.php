@@ -90,7 +90,7 @@ if (isset($_REQUEST['year'])) {
 								<option value="purchase_orders.php?year=all<?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>">View All / 看全部</option>
 
 								<?php
-									$start_year = 2011;
+									$start_year = 2010;
 									$loop_year = $start_year;
 
 									while ($loop_year <= date("Y")) {
