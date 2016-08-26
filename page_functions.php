@@ -1681,4 +1681,72 @@ function admin_bar($add_edit_file_name_append) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
+
+function get_part_name($part_id, $profile_link) {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	if ($part_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO PART FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+
+		// now get the part info:
+		$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_id;
+		// echo $get_parts_SQL;
+
+		$result_get_part = mysqli_query($con,$get_part_SQL);
+
+		// while loop
+		while($row_get_part = mysqli_fetch_array($result_get_part)) {
+			$part_ID 					= $row_get_part['ID'];
+			$part_code 					= $row_get_part['part_code'];
+			$name_EN 					= $row_get_part['name_EN'];
+			$name_CN 					= $row_get_part['name_CN'];
+			$description 				= $row_get_part['description'];
+			$type_ID 					= $row_get_part['type_ID'];
+			$classification_ID 			= $row_get_part['classification_ID'];
+			$part_default_suppler_ID 	= $row_get_part['default_suppler_ID'];
+			$part_record_status 		= $row_get_part['record_status'];
+			$part_product_type_ID 		= $row_get_part['product_type_ID'];
+			$part_created_by 			= $row_get_part['created_by'];
+			$part_is_finished_product 	= $row_get_part['is_finished_product'];
+			
+			// now print the result (no link here)
+			
+			$close_link = '';
+			
+			if ($profile_link == 1) {
+				?>
+				<a href="part_view.php?id=<?php echo $part_id; ?>" title="Click here to view this part profile">
+				<?php
+				$close_link = "</a>";
+			}
+			
+			echo $part_code . ' - '; 
+			echo $name_EN; 
+			if (($name_CN!='')&&($name_CN!='中文名')) { echo ' / ' . $name_CN; } 
+			echo $close_link; // maybe blank - see above
+			
+
+		} // end get part info WHILE loop
+	}
+}
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
 ?>

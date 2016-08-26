@@ -595,7 +595,7 @@ pagehead($page_id);
 									</div>
 								  <div class="panel-footer">
 									<div class="text-right">
-											<a class="text-uppercase text-muted" href="materials.php" title="Click here to view all materials">(View All)</a>
+											<a class="text-uppercase text-muted" href="part_material_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" title="Click here to view all materials">(View All)</a>
 										</div>
 								  </div>
 								</div>
