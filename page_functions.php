@@ -779,7 +779,7 @@
 
 		?>
 
-		<section role="main" class="content-body">
+		<section role="main" class="content-body content-footer-body">
 
 		<div>
 		<div class="col-md-12">
@@ -1720,23 +1720,23 @@ function get_part_name($part_id, $profile_link) {
 			$part_product_type_ID 		= $row_get_part['product_type_ID'];
 			$part_created_by 			= $row_get_part['created_by'];
 			$part_is_finished_product 	= $row_get_part['is_finished_product'];
-			
+
 			// now print the result (no link here)
-			
+
 			$close_link = '';
-			
+
 			if ($profile_link == 1) {
 				?>
 				<a href="part_view.php?id=<?php echo $part_id; ?>" title="Click here to view this part profile">
 				<?php
 				$close_link = "</a>";
 			}
-			
-			echo $part_code . ' - '; 
-			echo $name_EN; 
-			if (($name_CN!='')&&($name_CN!='中文名')) { echo ' / ' . $name_CN; } 
+
+			echo $part_code . ' - ';
+			echo $name_EN;
+			if (($name_CN!='')&&($name_CN!='中文名')) { echo ' / ' . $name_CN; }
 			echo $close_link; // maybe blank - see above
-			
+
 
 		} // end get part info WHILE loop
 	}
