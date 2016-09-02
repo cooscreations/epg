@@ -352,16 +352,8 @@ pagehead($page_id);
 									</div>
 								</div>
 								<footer class="panel-footer">
-									<?php
-										if (isset($_REQUEST['id'])) {
-											?>
-											<input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="id" />
-											<?php
-										}
-									?>
-									<button class="btn btn-danger" href="part_view.php?id=<?php echo $record_id; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</button>
-                        			<button type="reset" class="btn btn-warning"><i class="fa fa-refresh"></i> RESET</button>
-									<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> SAVE CHANGES</button>
+									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+									<?php form_buttons('part_view', $record_id); ?>
 								</footer>
 							</section>
 

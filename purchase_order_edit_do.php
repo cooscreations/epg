@@ -27,7 +27,7 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 */
 $po_id = $_REQUEST['po_id'];
 $po_number = $_REQUEST['po_number'];
-$user_ID = $_REQUEST['user_ID'];
+$user_ID = $_REQUEST['created_by'];
 $date_added = $_REQUEST['date_added'] . " 00:00:00";
 $description = $_REQUEST['description'];
 $supplier_ID = $_REQUEST['sup_ID'];
@@ -36,6 +36,40 @@ $update_note = "Editing a purchase order to the system.";
 
 $edit_purchaseorder_SQL = "UPDATE `purchase_orders` SET `PO_number` = '".$po_number."', `created_date` = '".$date_added."', `description` = '".$description."', `supplier_ID` = '".$supplier_ID."', `created_by` = '".$user_ID."' WHERE `ID` = '".$po_id."' ";
 
+
+
+
+$edit_purchaseorder_SQL = "UPDATE `purchase_orders` SET 
+`PO_number`='".$po_number."',
+`created_date`='".$date_added."',
+`description`='".$description."',
+`record_status`='" .  . "',
+`supplier_ID`='".$supplier_ID."',
+`created_by`='".$user_ID."',
+`date_needed`='" .  . "',
+`date_delivered`='" .  . "',
+`approval_status`='" .  . "',
+`payment_status`='" .  . "',
+`completion_status`='" .  . "',
+`remark`='" .  . "',
+`approved_by`='" .  . "',
+`approval_date`='" .  . "',
+`include_CoC`='" .  . "',
+`date_confirmed`='" .  . "',
+`is_new_order`='" .  . "',
+`ship_via`='" .  . "',
+`special_reqs`='" .  . "',
+`related_standards`='" .  . "',
+`special_contracts`='" .  . "',
+`qualification_personnel`='" .  . "',
+`QMS_reqs`='" .  . "',
+`local_location_ID`='" .  . "',
+`HQ_location_ID`='" .  . "',
+`ship_to_location_ID`='" .  . "'
+WHERE `ID` = '".$po_id."' ";
+
+
+*/
 
 // echo $edit_purchaseorder_SQL;
 

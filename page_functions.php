@@ -97,7 +97,7 @@
 							$add_title_info .= ' ("' . $row_get_title_extra['title'] . '")'; // appended
 						}
 						else if ($page_lookup_table == 'purchase_orders') {
-							$add_title_info = "PO # " . $row_get_title_extra['PO_number']; // this is NOT appended - it overwrites!
+							$add_title_info = " PO # " . $row_get_title_extra['PO_number']; // this is NOT appended - it overwrites!
 						}
 						else if ($page_lookup_table == 'product_type') {
 							$add_title_info .= " (Code: " . $row_get_title_extra['product_type_code'] . ")"; // appended
@@ -109,7 +109,7 @@
 							$add_title_info .= " (Code: " . $row_get_title_extra['part_code'] . ")"; // appended
 						}
 						else if ($page_lookup_table == 'part_batch') {
-							$add_title_info = "BATCH # " . $row_get_title_extra['batch_number']; // this is NOT appended - it overwrites!
+							$add_title_info = " BATCH # " . $row_get_title_extra['batch_number']; // this is NOT appended - it overwrites!
 						}
 						/* THE FOLLOWING ARE TAKEN CARE OF BY THE DEFAULT AT THE START / TOP ^^^
 						else if ($page_lookup_table == 'pages') {
@@ -1403,16 +1403,12 @@ function get_creator($user_id) {
 				$user_last_name = $row_get_user['last_name'];
 				$user_name_CN = $row_get_user['name_CN'];
 		}
-		?>
-		<a href="user_view.php?id=<?php echo $user_id; ?>" title="Click here to view this user profile">
-		  <?php
+		?><a href="user_view.php?id=<?php echo $user_id; ?>" title="Click here to view this user profile"><?php
 			echo $user_first_name . " " . $user_last_name;
 			if (($user_name_CN!='')&&($user_name_CN!='中文名')) {
 			  echo " / " . $user_name_CN;
 			}
-		  ?>
-		</a>
-		<?php
+		  ?></a><?php
 	}
 }
 /* ****************************************************************** */
@@ -1424,7 +1420,19 @@ function get_creator($user_id) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 
-function get_supplier($sup_id) {
+function get_supplier($sup_id, $display_type = 0, $profile_link = 1) {
+
+	// debug:
+	// echo "display type = " . $display_type;
+
+	/* 
+	
+	DISPLAY TYPES:
+	
+	0 / null / default	=	display the company name and a link to the profile page
+	1 					=	show the name and address for the purchase order
+	
+	*/
 
 	// start the session:
 	session_start();
@@ -1452,27 +1460,45 @@ function get_supplier($sup_id) {
 
 		// while loop
 		while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
-			$sup_ID = $row_get_sup['ID'];
-			$sup_en = $row_get_sup['name_EN'];
-			$sup_cn = $row_get_sup['name_CN'];
-			$sup_web = $row_get_sup['website'];
-			$sup_internal_ID = $row_get_sup['epg_supplier_ID'];
-			$sup_status = $row_get_sup['record_status'];
-			$sup_part_classification = $row_get_sup['part_classification']; // look up
-			$sup_item_supplied = $row_get_sup['items_supplied'];
-			$sup_part_type_ID = $row_get_sup['part_type_ID']; // look up
-			$sup_certs = $row_get_sup['certifications'];
-			$sup_cert_exp_date = $row_get_sup['certification_expiry_date'];
-			$sup_evaluation_date = $row_get_sup['evaluation_date'];
-			$sup_address_EN = $row_get_sup['address_EN'];
-			$sup_address_CN = $row_get_sup['address_CN'];
-			$sup_country_ID = $row_get_sup['country_ID']; // look up
-			$sup_contact_person = $row_get_sup['contact_person'];
-			$sup_mobile_phone = $row_get_sup['mobile_phone'];
-			$sup_telephone = $row_get_sup['telephone'];
-			$sup_fax = $row_get_sup['fax'];
-			$sup_email_1 = $row_get_sup['email_1'];
-			$sup_email_2 = $row_get_sup['email_2'];
+			$sup_ID 					= $row_get_sup['ID'];
+			$sup_en 					= $row_get_sup['name_EN'];
+			$sup_cn 					= $row_get_sup['name_CN'];
+			$sup_internal_ID 			= $row_get_sup['epg_supplier_ID'];
+			$sup_status 				= $row_get_sup['record_status'];
+			$sup_part_classification 	= $row_get_sup['part_classification']; // look up
+			$sup_item_supplied 			= $row_get_sup['items_supplied'];
+			$sup_part_type_ID 			= $row_get_sup['part_type_ID']; // look up
+			$sup_certs 					= $row_get_sup['certifications'];
+			$sup_cert_exp_date 			= $row_get_sup['certification_expiry_date'];
+			$sup_evaluation_date 		= $row_get_sup['evaluation_date'];
+			$sup_address_EN 			= $row_get_sup['address_EN'];
+			$sup_address_CN 			= $row_get_sup['address_CN'];
+			$sup_country_ID 			= $row_get_sup['country_ID']; // look up below
+			$sup_contact_person 		= $row_get_sup['contact_person'];
+			$sup_mobile_phone 			= $row_get_sup['mobile_phone'];
+			$sup_telephone 				= $row_get_sup['telephone'];
+			$sup_fax 					= $row_get_sup['fax'];
+			$sup_email_1 				= $row_get_sup['email_1'];
+			$sup_email_2 				= $row_get_sup['email_2'];
+			$sup_web 					= $row_get_sup['website'];
+			
+					// get country
+					$get_sup_country_SQL = "SELECT * FROM `countries` WHERE `ID` ='" . $sup_country_ID . "'";
+					// echo $get_sup_country_SQL;
+
+					$result_get_sup_country = mysqli_query($con,$get_sup_country_SQL);
+					// while loop
+					while($row_get_sup_country = mysqli_fetch_array($result_get_sup_country)) {
+						$sup_country_ID 			= $row_get_sup_country['ID'];
+						$sup_country_name_EN 		= $row_get_sup_country['name_EN'];
+						$sup_country_name_CN 		= $row_get_sup_country['name_CN'];
+						$sup_country_code 			= $row_get_sup_country['code'];
+						$sup_country_record_status 	= $row_get_sup_country['record_status'];
+						$sup_country_alpha_2 		= $row_get_sup_country['alpha_2'];
+						$sup_country_alpha_3 		= $row_get_sup_country['alpha_3'];
+						$sup_country_ISO_code 		= $row_get_sup_country['ISO_code'];
+					}
+					
 
 					// VENDOR CLASSIFICATION BY STATUS:
 
@@ -1508,11 +1534,69 @@ function get_supplier($sup_id) {
 
 					// NOW DISPLAY THE VENDOR DETAILS!
 
-					?>
-						  <a href="supplier_view.php?id=<?php echo $sup_ID; ?>" title="Click to view this supplier profile">
-							<?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')){ echo " / " . $sup_cn; } ?>
-						  </a>
-					<?php
+					if ($profile_link == 1) { 
+						$start_url = '<a href="supplier_view.php?id=' . $sup_ID . '" title="Click to view this supplier profile">';
+						$end_url = '</a>';
+					}
+					else {
+						$start_url = '';
+						$end_url = '';
+					}
+					
+						if ($display_type == 1) {
+							// let's make a list!
+							
+							$start_icon_list = '<ul class="fa-ul">';
+							$start_icon_name_item = '<li><i class="fa-li fa fa-info-circle"></i>';
+							$end_icon_name_item = '</li>';
+							$end_icon_list = '</ul>';
+						}
+						else {
+							$start_icon_list = '';
+							$start_icon_name_item = '';
+							$end_icon_name_item = '';
+							$end_icon_list = '';
+						}
+					
+						echo $start_icon_list;
+							
+							echo $start_icon_name_item;
+	
+								// may or may not be a link to the profile!
+								echo $start_url;
+	
+									// now write the vendor name:
+						
+									echo $sup_en; 
+						
+									if (($sup_cn!='')&&($sup_cn!='中文名')){ 
+										echo " / " . $sup_cn; 
+									}
+						
+								// may or may not be empty! :)
+								echo $end_url;
+						
+							echo $end_icon_name_item;
+						
+							if ($display_type == 1) {
+								// now show the address!
+							
+								if ($sup_address_EN			!= '') { 	echo '<li title="Address / 地址"><i class="fa-li fa fa-map-marker"></i>' . $sup_address_EN . '</li>'; }
+								if (($sup_address_CN != '')&&($sup_address_CN != '没有中文地址')) { 	echo '<br />' . $sup_address_CN . '</li>'; }
+								if ($sup_country_name_EN 	!= '') {	echo '<li title="Country / 国家"><i class="fa-li fa fa-globe"></i>' . $sup_country_name_EN; if (($sup_country_name_CN != '')&&($sup_country_name_CN != '中文名')) { echo ' / ' . $sup_country_name_CN; } echo '</li>'; }
+								if ($sup_contact_person 	!= '') { 	echo '<li title="Contact Person / 负责人"><i class="fa-li fa fa-user"></i>' . $sup_contact_person . '</li>'; }
+								if ($sup_mobile_phone 		!= '') { 	echo '<li title="Cellphone / 手机"><i class="fa-li fa fa-mobile"></i>' . $sup_mobile_phone . '</li>'; }
+								if ($sup_telephone 			!= '') {	echo '<li title="Telephone / 电话"><i class="fa-li fa fa-phone"></i>' . $sup_telephone . '</li>'; }
+								if ($sup_fax 				!= '') { 	echo '<li title="Fax"><i class="fa-li fa fa-fax"></i>' . $sup_fax . '</li>'; }
+								if ($sup_email_1 			!= '') { 	echo '<li title="E-mail"><i class="fa-li fa fa-envelope"></i><a href="mailto:' . $sup_email_1 . '" title="Click here to send an email">' . $sup_email_1 . '</a></li>'; }
+								if ($sup_email_2 			!= '') { 	echo '<li title="E-mail"><i class="fa-li fa fa-envelope"></i><a href="mailto:' . $sup_email_2 . '" title="Click here to send an email">' . $sup_email_2 . '</a></li>'; }
+								if ($sup_web 				!= '') { 	echo '<li title="Website / 网站"><i class="fa-li fa fa-external-link"></i><a href="' . $sup_web . '" target="_blank" title="Launch website in a new window">' . $sup_web . '</a></li>'; }
+						
+							
+							} // end of Purchase Order display full address / contact detils
+						
+						
+						echo $end_icon_list; // now close the UL is it exists...
 
 		} // end get record WHILE loop
 
@@ -1530,7 +1614,7 @@ function get_supplier($sup_id) {
 /* ****************************************************************** */
 
 
-function creator_drop_down($this_user_ID) {
+function creator_drop_down($this_user_ID, $form_element_name = 'created_by') {
 
 	// start the session:
 	session_start();
@@ -1540,7 +1624,8 @@ function creator_drop_down($this_user_ID) {
 	// now output the result:
 
 	?>
-	<select class="form-control populate" name="created_by" id="created_by">
+	<!-- originally parsed USER ID = <?php echo $this_user_ID; ?> -->
+	<select class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>">
 		<?php
 		// GET PART TYPE:
 		$get_user_list_SQL = "SELECT * FROM  `users` WHERE `record_status` = 2";
@@ -1571,6 +1656,72 @@ function creator_drop_down($this_user_ID) {
 		} // end get part type loop
 		?>
 	</select>
+	<?php
+
+
+} // CLOSE FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+
+function supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID') {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	// now output the result:
+
+	?>
+	<!-- originally parsed SUP ID = <?php echo $this_sup_ID; ?> -->
+	<select data-plugin-selectTwo class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>" required>
+		<?php
+		// get batch list
+		$order_by = " ORDER BY `record_status` DESC";
+		$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = 2 and `supplier_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
+		echo "<!-- DEBUG: " . $get_sup_list_SQL . " -->";
+		$result_get_sup_list = mysqli_query($con,$get_sup_list_SQL);
+		// while loop
+		while($row_get_sup_list = mysqli_fetch_array($result_get_sup_list)) {
+
+				// now print each record:
+				$sup_id = $row_get_sup_list['ID'];
+				$sup_epg_supplier_ID = $row_get_sup_list['epg_supplier_ID'];
+				$sup_name_EN = $row_get_sup_list['name_EN'];
+				$sup_name_CN = $row_get_sup_list['name_CN'];
+				$sup_website = $row_get_sup_list['website'];
+				$sup_record_status = $row_get_sup_list['record_status'];
+				$sup_part_classification = $row_get_sup_list['part_classification'];
+				$sup_items_supplied = $row_get_sup_list['items_supplied'];
+				$sup_part_type_ID = $row_get_sup_list['part_type_ID'];
+				$sup_certifications = $row_get_sup_list['certifications'];
+				$sup_certification_expiry_date = $row_get_sup_list['certification_expiry_date'];
+				$sup_evaluation_date = $row_get_sup_list['evaluation_date'];
+				$sup_address_EN = $row_get_sup_list['address_EN'];
+				$sup_address_CN = $row_get_sup_list['address_CN'];
+				$sup_country_ID = $row_get_sup_list['country_ID'];
+				$sup_contact_person = $row_get_sup_list['contact_person'];
+				$sup_mobile_phone = $row_get_sup_list['mobile_phone'];
+				$sup_telephone = $row_get_sup_list['telephone'];
+				$sup_fax = $row_get_sup_list['fax'];
+				$sup_email_1 = $row_get_sup_list['email_1'];
+				$sup_email_2 = $row_get_sup_list['email_2'];
+
+				?>
+				<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $PO_supplier_ID) { ?> selected="selected"<?php } ?>>
+					<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
+				</option>
+				<?php
+			}
+			?>
+		</select>
 	<?php
 
 
@@ -1749,4 +1900,289 @@ function get_part_name($part_id, $profile_link) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
+
+function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS IS VERY SIMILAR TO GET SUPPLIER FUNCTION...
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	if ($loc_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO LOCATION FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+
+		// now get the location info:
+		$get_loc_SQL = "SELECT * FROM `locations` WHERE `ID` = " . $loc_id;
+		// echo $get_loc_SQL;
+
+		$result_get_loc = mysqli_query($con,$get_loc_SQL);
+
+		// while loop
+		while($row_get_loc = mysqli_fetch_array($result_get_loc)) {
+			$loc_ID 				= $row_get_loc['ID'];
+			$loc_name_EN 			= $row_get_loc['name_EN'];
+			$loc_name_CN 			= $row_get_loc['name_CN'];
+			$loc_company_name_EN 	= $row_get_loc['company_name_EN'];
+			$loc_company_name_CN 	= $row_get_loc['company_name_CN'];
+			$loc_address_CN 		= $row_get_loc['address_CN'];
+			$loc_address_line_1 	= $row_get_loc['address_line_1'];
+			$loc_address_line_2 	= $row_get_loc['address_line_2'];
+			$loc_address_line_3 	= $row_get_loc['address_line_3'];
+			$loc_city 				= $row_get_loc['city'];
+			$loc_state 				= $row_get_loc['state'];
+			$loc_zipcode 			= $row_get_loc['zipcode'];
+			$loc_country_ID 		= $row_get_loc['country_ID']; // look this up!
+			$loc_telephone 			= $row_get_loc['telephone'];
+			$loc_fax				= $row_get_loc['fax'];
+			$loc_email 				= $row_get_loc['email'];
+			$loc_web 				= $row_get_loc['web'];
+			$loc_contact_user_ID 	= $row_get_loc['contact_user_ID']; // run function...
+			$loc_record_status 		= $row_get_loc['record_status'];
+			
+					// get country
+					$get_loc_country_SQL = "SELECT * FROM `countries` WHERE `ID` ='" . $loc_country_ID . "'";
+					// echo $get_loc_country_SQL;
+
+					$result_get_loc_country = mysqli_query($con,$get_loc_country_SQL);
+					// while loop
+					while($row_get_loc_country = mysqli_fetch_array($result_get_loc_country)) {
+						$loc_country_ID 			= $row_get_loc_country['ID'];
+						$loc_country_name_EN 		= $row_get_loc_country['name_EN'];
+						$loc_country_name_CN 		= $row_get_loc_country['name_CN'];
+						$loc_country_code 			= $row_get_loc_country['code'];
+						$loc_country_record_status 	= $row_get_loc_country['record_status'];
+						$loc_country_alpha_2 		= $row_get_loc_country['alpha_2'];
+						$loc_country_alpha_3 		= $row_get_loc_country['alpha_3'];
+						$loc_country_ISO_code 		= $row_get_loc_country['ISO_code'];
+					}
+			
+			// now print the result (no link here)
+			
+			
+			// NOTE: default display_type (0) is a list, using FONTAWESOME icons to decorate it.
+			
+			if ($profile_link == 0) { // By default, we will link the name to the profile page
+				$start_url = '<a href="location_view.php?id=' . $loc_id . '" title="Click here to view this location profile">';
+				$end_url = "</a>";
+			}
+			else {
+				$start_url = '';
+				$end_url = '';
+			}
+			
+			if ($display_type == 1) {
+							// let's make a list!
+							
+							$start_icon_list = '<ul class="fa-ul">';
+							$start_icon_name_item = '<li><i class="fa-li fa fa-info-circle"></i>';
+							$end_icon_name_item = '</li>';
+							$end_icon_list = '</ul>';
+						}
+						else {
+							$start_icon_list = '';
+							$start_icon_name_item = '';
+							$end_icon_name_item = '';
+							$end_icon_list = '';
+						}
+					
+						echo $start_icon_list;
+							
+							echo $start_icon_name_item;
+	
+								// may or may not be a link to the profile!
+								echo $start_url;
+	
+									// now write the vendor name:
+						
+									echo $loc_company_name_EN;
+									if (($loc_company_name_CN!='')&&($loc_company_name_CN!='中文名')) { echo ' / ' . $loc_company_name_CN; }
+						
+								// may or may not be empty! :)
+								echo $end_url;
+						
+							echo $end_icon_name_item;
+						
+							if ($display_type == 1) {
+								// now show the address!
+								
+								echo '<li title="Address"><i class="fa-li fa fa-map-marker"></i>';
+								
+								if ($loc_address_line_1!='') {
+									// for now, we will only specify that if the ADDRESS LINE 1 is blank, it will return an error...
+									echo $loc_address_line_1;
+									
+									if ($loc_address_line_2 != '') {
+										echo ', ' . $loc_address_line_2;
+									}
+									
+									if ($loc_address_line_3 != '') {
+										echo ', ' . $loc_address_line_3;
+									}
+									
+									if ($loc_city != '') {
+										echo '<br />' . $loc_city;
+									}
+									
+									if ($loc_state != '') {
+										echo ', ' . $loc_state;
+									}
+									
+									if ($loc_zipcode != '') {
+										echo ', ' . $loc_zipcode;
+									}
+									
+								}
+								else { 
+									?>
+									<span class="btn btn-danger">
+										<i class="fa fa-exclamation-triangle"></i>
+										NO ADDRESS PROVIDED!
+										<i class="fa fa-exclamation-triangle"></i>
+									</span>
+									<?php
+								}
+								
+								echo '</li>';
+								
+								
+								if (($loc_address_CN != '')&&($loc_address_CN != '没有中文地址')) { 	echo '<li title="地址"><i class="fa-li fa fa-map-marker"></i>' . $loc_address_CN . '</li>'; }
+								if ($loc_country_name_EN 	!= '') {	echo '<li title="Country / 国家"><i class="fa-li fa fa-globe"></i>' . $loc_country_name_EN; if (($loc_country_name_CN != '')&&($loc_country_name_CN != '中文名')) { echo ' / ' . $loc_country_name_CN; } echo '</li>'; }
+								if ($loc_contact_user_ID 	!= '') { 	echo '<li title="Contact Person / 负责人"><i class="fa-li fa fa-user"></i>'; get_creator($loc_contact_user_ID); echo '</li>'; }
+								if ($loc_telephone 			!= '') {	echo '<li title="Telephone / 电话"><i class="fa-li fa fa-phone"></i>' . $loc_telephone . '</li>'; }
+								if ($loc_fax 				!= '') { 	echo '<li title="Fax"><i class="fa-li fa fa-fax"></i>' . $loc_fax . '</li>'; }
+								if ($loc_email	 			!= '') { 	echo '<li title="E-mail"><i class="fa-li fa fa-envelope"></i><a href="mailto:' . $loc_email . '" title="Click here to send an email">' . $loc_email . '</a></li>'; }
+								if ($loc_web 				!= '') { 	echo '<li title="Website / 网站"><i class="fa-li fa fa-external-link"></i><a href="' . $loc_web . '" target="_blank" title="Launch website in a new window">' . $loc_web . '</a></li>'; }
+						
+							
+							} // end of Purchase Order display full address / contact detils for an EPG location
+						
+						
+						echo $end_icon_list; // now close the UL is it exists...
+						
+						
+						
+						
+						
+			
+			
+			
+
+		} // end get location info WHILE loop
+	}
+}
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+
+function location_drop_down($this_loc_ID, $form_element_name = 'loc_ID') {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	// now output the result:
+
+	?>
+	<!-- originally parsed SUP ID = <?php echo $this_sup_ID; ?> -->
+	<select data-plugin-selectTwo class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>" required>
+		<?php
+		// now get the location info:
+		$get_loc_SQL = "SELECT * FROM `locations` WHERE `record_status` = 2";
+		// echo $get_loc_SQL;
+
+		$result_get_loc = mysqli_query($con,$get_loc_SQL);
+
+		// while loop
+		while($row_get_loc = mysqli_fetch_array($result_get_loc)) {
+			$loc_ID 				= $row_get_loc['ID'];
+			$loc_name_EN 			= $row_get_loc['name_EN'];
+			$loc_name_CN 			= $row_get_loc['name_CN'];
+			$loc_company_name_EN 	= $row_get_loc['company_name_EN'];
+			$loc_company_name_CN 	= $row_get_loc['company_name_CN'];
+			$loc_address_CN 		= $row_get_loc['address_CN'];
+			$loc_address_line_1 	= $row_get_loc['address_line_1'];
+			$loc_address_line_2 	= $row_get_loc['address_line_2'];
+			$loc_address_line_3 	= $row_get_loc['address_line_3'];
+			$loc_city 				= $row_get_loc['city'];
+			$loc_state 				= $row_get_loc['state'];
+			$loc_zipcode 			= $row_get_loc['zipcode'];
+			$loc_country_ID 		= $row_get_loc['country_ID']; // look this up!
+			$loc_telephone 			= $row_get_loc['telephone'];
+			$loc_fax				= $row_get_loc['fax'];
+			$loc_email 				= $row_get_loc['email'];
+			$loc_web 				= $row_get_loc['web'];
+			$loc_contact_user_ID 	= $row_get_loc['contact_user_ID']; // run function...
+			$loc_record_status 		= $row_get_loc['record_status'];
+			
+					// get country
+					$get_loc_country_SQL = "SELECT * FROM `countries` WHERE `ID` ='" . $loc_country_ID . "'";
+					// echo $get_loc_country_SQL;
+
+					$result_get_loc_country = mysqli_query($con,$get_loc_country_SQL);
+					// while loop
+					while($row_get_loc_country = mysqli_fetch_array($result_get_loc_country)) {
+						$loc_country_ID 			= $row_get_loc_country['ID'];
+						$loc_country_name_EN 		= $row_get_loc_country['name_EN'];
+						$loc_country_name_CN 		= $row_get_loc_country['name_CN'];
+						$loc_country_code 			= $row_get_loc_country['code'];
+						$loc_country_record_status 	= $row_get_loc_country['record_status'];
+						$loc_country_alpha_2 		= $row_get_loc_country['alpha_2'];
+						$loc_country_alpha_3 		= $row_get_loc_country['alpha_3'];
+						$loc_country_ISO_code 		= $row_get_loc_country['ISO_code'];
+					}
+			
+			// now print the result
+
+				?>
+				<option value="<?php echo $sup_id; ?>" <?php if ($loc_ID == $this_loc_ID) { ?> selected="selected"<?php } ?>>
+					<?php echo $loc_name_EN; if (($loc_name_CN!='')&&($loc_name_CN!='中文名')) { echo " / " . $loc_name_CN; } ?>
+					(<?php echo $loc_country_name_EN; if (($loc_country_name_CN!='')&&($loc_country_name_CN!='中文名')) { echo ' / ' . $loc_country_name_CN; } ?>)
+				</option>
+				<?php
+			}
+			?>
+		</select>
+	<?php
+
+
+} // CLOSE FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+function form_buttons($cancel_url, $record_id) { ?>
+	<input type="hidden" value="<?php echo $record_id; ?>" name="id" />
+	<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php?id=<?php echo $record_id; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
+	<button type="reset" class="btn btn-warning"><i class="fa fa-refresh"></i> RESET</button>
+	<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> SAVE CHANGES</button>
+<?php }
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
 ?>

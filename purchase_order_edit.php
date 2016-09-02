@@ -37,18 +37,42 @@ else {
 }
 
 if ($record_id != 0) {
-	$get_po_SQL = "SELECT `ID`,`PO_number`, date(`created_date`) as 'created_date', `description`,`created_by`, `supplier_ID`  FROM  `purchase_orders` WHERE `ID` = " . $record_id;
-	$result_get_po = mysqli_query($con,$get_po_SQL);
+	$get_PO_SQL = "SELECT *  FROM  `purchase_orders` WHERE `ID` = " . $record_id;
+	$result_get_PO = mysqli_query($con,$get_PO_SQL);
 	// while loop
-	while($row_get_po = mysqli_fetch_array($result_get_po)) {
+	while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 
 			// now print each record:
-			$po_id = $row_get_po['ID'];
-			$po_number = $row_get_po['PO_number'];
-			$po_created_date = $row_get_po['created_date'];
-			$po_description = $row_get_po['description'];
-			$po_created_by_user = $row_get_po['created_by'];
-			$po_supplier_id = $row_get_po['supplier_ID'];
+			$PO_id 						= $row_get_PO['ID'];
+			$PO_number 					= $row_get_PO['PO_number'];
+			$PO_created_date 			= $row_get_PO['created_date'];
+			$PO_description 			= $row_get_PO['description'];
+			$PO_record_status 			= $row_get_PO['record_status'];
+			$PO_supplier_ID 			= $row_get_PO['supplier_ID'];  				// LOOK THIS UP!
+			$PO_created_by 				= $row_get_PO['created_by']; 				// use get_creator($PO_created_by);
+			$PO_date_needed 			= $row_get_PO['date_needed'];
+			$PO_date_delivered 			= $row_get_PO['date_delivered'];
+			$PO_approval_status 		= $row_get_PO['approval_status']; 			// look this up?
+			$PO_payment_status 			= $row_get_PO['payment_status']; 			// look this up?
+			$PO_completion_status 		= $row_get_PO['completion_status'];
+			
+			// ADDING NEW VARIABLES AS WE EXPAND THIS PART OF THE SYSTEM:
+			$PO_remark 					= $row_get_PO['remark'];
+			$PO_approved_by 			= $row_get_PO['approved_by']; 				// use get_creator($PO_approved_by);
+			$PO_approval_date 			= $row_get_PO['approval_date']; 
+			$PO_include_CoC 			= $row_get_PO['include_CoC'];
+			$PO_date_confirmed 			= $row_get_PO['date_confirmed'];
+			$PO_ship_via 				= $row_get_PO['ship_via'];
+			$PO_special_reqs 			= $row_get_PO['special_reqs'];
+			$PO_related_standards 		= $row_get_PO['related_standards'];
+			$PO_special_contracts 		= $row_get_PO['special_contracts'];
+			$PO_qualification_personnel = $row_get_PO['qualification_personnel'];
+			$PO_QMS_reqs 				= $row_get_PO['QMS_reqs'];
+			$PO_local_location_ID 		= $row_get_PO['local_location_ID'];			// use function: get_location($PO_local_location_ID,1);
+			$PO_HQ_location_ID 			= $row_get_PO['HQ_location_ID'];			// use function! get_location($PO_HQ_location_ID,1);
+			$PO_ship_to_location_ID		= $row_get_PO['ship_to_location_ID'];		// use function! get_location($PO_ship_to_location_ID,0); (show title ONLY)
+
+
 
 	} // end while loop
 }
@@ -58,7 +82,7 @@ if ($record_id != 0) {
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Edit Purchase Order<?php if ($record_id != 0) { ?> : <? echo $po_number; } ?></h2>
+						<h2>Edit Purchase Order<?php if ($record_id != 0) { ?> : <? echo $PO_number; } ?></h2>
 
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -92,70 +116,66 @@ if ($record_id != 0) {
 										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
 									</div>
 
-									<h2 class="panel-title">Edit Purchase Order Details:</h2>
+									<h2 class="panel-title">Supplier / Purchaser Details</h2>
 								</header>
 								<div class="panel-body">
-									<div class="form-group">
-										<label class="col-md-3 control-label">P.O. Number:<span class="required">*</span></label>
-										<div class="col-md-5">
-											<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" value="<?php echo $po_number; ?>" required/>
-											<input type="hidden" name="po_id" value="<?php echo $po_id; ?>"/>
-										</div>
 
+									<div class="form-group">
+										<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<!-- PARSING SUP ID: <?php echo $PO_supplier_ID; ?> -->
+											<?php supplier_drop_down($PO_supplier_ID); ?>
+										</div>
+										
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
+										<label class="col-md-3 control-label">Local Office:<span class="required">*</span></label>
 										<div class="col-md-5">
-											<select data-plugin-selectTwo class="form-control populate" name="sup_ID" required>
-											<?php
-											// get batch list
-											$order_by = " ORDER BY `record_status` DESC";
-											$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = 2 and `record_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
-											echo "<!-- DEBUG: " . $get_sup_list_SQL . " -->";
-											$result_get_sup_list = mysqli_query($con,$get_sup_list_SQL);
-											// while loop
-											while($row_get_sup_list = mysqli_fetch_array($result_get_sup_list)) {
-
-													// now print each record:
-													$sup_id = $row_get_sup_list['ID'];
-													$sup_epg_supplier_ID = $row_get_sup_list['epg_supplier_ID'];
-													$sup_name_EN = $row_get_sup_list['name_EN'];
-													$sup_name_CN = $row_get_sup_list['name_CN'];
-													$sup_website = $row_get_sup_list['website'];
-													$sup_record_status = $row_get_sup_list['record_status'];
-													$sup_part_classification = $row_get_sup_list['part_classification'];
-													$sup_items_supplied = $row_get_sup_list['items_supplied'];
-													$sup_part_type_ID = $row_get_sup_list['part_type_ID'];
-													$sup_certifications = $row_get_sup_list['certifications'];
-													$sup_certification_expiry_date = $row_get_sup_list['certification_expiry_date'];
-													$sup_evaluation_date = $row_get_sup_list['evaluation_date'];
-													$sup_address_EN = $row_get_sup_list['address_EN'];
-													$sup_address_CN = $row_get_sup_list['address_CN'];
-													$sup_country_ID = $row_get_sup_list['country_ID'];
-													$sup_contact_person = $row_get_sup_list['contact_person'];
-													$sup_mobile_phone = $row_get_sup_list['mobile_phone'];
-													$sup_telephone = $row_get_sup_list['telephone'];
-													$sup_fax = $row_get_sup_list['fax'];
-													$sup_email_1 = $row_get_sup_list['email_1'];
-													$sup_email_2 = $row_get_sup_list['email_2'];
-
-													?>
-													<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $po_supplier_id) { ?> selected="selected"<?php } ?>>
-														<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
-													</option>
-													<?php
-												}
-												?>
-											</select>
+											<!-- PARSING SUP ID: <?php echo $PO_supplier_ID; ?> -->
+											<?php location_drop_down($PO_local_location_ID, 'local_location_ID'); ?>
 										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
 
+									<div class="form-group">
+										<label class="col-md-3 control-label">Head Office:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<!-- PARSING SUP ID: <?php echo $PO_supplier_ID; ?> -->
+											<?php location_drop_down($PO_HQ_location_ID, 'HQ_location_ID'); ?>
+										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+								  </div>	
+								</section>
+								
+								<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
 
-
-
+									<h2 class="panel-title">Order Details</h2>
+								</header>
+								<div class="panel-body">
+									
+									<div class="form-group">
+										<label class="col-md-3 control-label">P.O. Number:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" value="<?php echo $PO_number; ?>" required/>
+											<input type="hidden" name="po_id" value="<?php echo $PO_id; ?>"/>
+										</div>
 
 										<div class="col-md-1">
 											&nbsp;
@@ -165,75 +185,345 @@ if ($record_id != 0) {
 									<div class="form-group">
 										<label class="col-md-3 control-label">Description:<span class="required">*</span></label>
 										<div class="col-md-5">
-											<textarea class="form-control" rows="3" id="textareaDefault" name="description" required><?php echo $po_description; ?></textarea>
+											<textarea class="form-control" rows="3" id="textareaDefault" name="description" required><?php echo $PO_description; ?></textarea>
 										</div>
-
-
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
 
 									<div class="form-group">
-												<label class="col-md-3 control-label">User:<span class="required">*</span></label>
-												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="user_ID" required>
-													<?php
-													// get batch list
-													$get_user_list_SQL = "SELECT * FROM `users` WHERE `record_status` = 2";
-													$result_get_user_list = mysqli_query($con,$get_user_list_SQL);
-													// while loop
-													while($row_get_user_list = mysqli_fetch_array($result_get_user_list)) {
-
-														// now print each record:
-														$user_id = $row_get_user_list['ID'];
-														$user_first_name = $row_get_user_list['first_name'];
-														$user_last_name = $row_get_user_list['last_name'];
-														$user_name_CN = $row_get_user_list['name_CN'];
-														$user_email = $row_get_user_list['email'];
-													?>
-														<option value="<?php echo $user_id; ?>"<?php if ($user_id == $po_created_by_user) { ?> selected="selected"<?php } ?>><?php echo $user_first_name . " " . $user_last_name; if (($user_name_CN != '') && ($user_name_CN != '中文名')) { echo  ' / ' . $user_name_CN; }?></option>
-
-														<?php
-														}
-														?>
-													</select>
-												</div>
-
-												<div class="col-md-1">
-													<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
-												</div>
-
+										<label class="col-md-3 control-label">Ship via:</label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="ship_via"><?php echo $PO_ship_via; ?></textarea>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-md-3 control-label">Created Date:<span class="required">*</span></label>
+										<label class="col-md-3 control-label">Ordered by:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<?php creator_drop_down($PO_created_by); ?>
+										</div>
+
+										<div class="col-md-1">
+											<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Date Ordered:</label>
 										<div class="col-md-5">
 											<div class="input-group">
 												<span class="input-group-addon">
 													<i class="fa fa-calendar"></i>
 												</span>
-												<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" value="<?php echo $po_created_date; ?>" required>
+												<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" value="<?php echo $PO_created_date; ?>">
 											</div>
 										</div>
 										<div class="col-md-1">
 											&nbsp;
 										</div>
 									</div>
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Date Needed:</label>
+										<div class="col-md-5">
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+												<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_needed" value="<?php echo $PO_date_needed; ?>">
+											</div>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Date Delivered:</label>
+										<div class="col-md-5">
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+												<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_delivered" value="<?php echo $PO_date_delivered; ?>">
+											</div>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Ship To:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<!-- PARSING SUP ID: <?php echo $PO_supplier_ID; ?> -->
+											<?php location_drop_down($PO_ship_to_location_ID, 'ship_to_location_ID'); ?>
+										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Completion Status:</label>
+										<div class="col-md-5">
+											<div class="m-md slider-primary" data-plugin-slider data-plugin-options='{ "value": <?php echo $PO_completion_status; ?>, "range": "min", "max": 100 }' data-plugin-slider-output="#listenSlider">
+												<input id="listenSlider" type="hidden" value="<?php echo $PO_completion_status; ?>" />
+											</div>
+										</div>
+										
+										<div class="col-md-1">
+											<p class="output"><b><?php echo $PO_completion_status; ?>%</b></p>
+										</div>
+									</div>
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Payment Status:</label>
+										<div class="col-md-5">
+											<select class="form-control populate" name="payment_status" id="payment_status">
+											  <option value="0"<?php if ($PO_payment_status == 0) { ?> selected="selected"<?php } ?>>✘ NOT PAID ✘</option>
+											  <option value="1"<?php if ($PO_payment_status == 1) { ?> selected="selected"<?php } ?>>? PENDING ?</option>
+											  <option value="2"<?php if ($PO_payment_status == 2) { ?> selected="selected"<?php } ?>>✔ PAID ✔</option>
+											</select>
+										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+								  </div>	
+								</section>
+								
+								<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+
+									<h2 class="panel-title">Order Instructions</h2>
+								</header>
+								<div class="panel-body">
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Special requirements of the specifications, process requirements/protocols and requirements for approval of product or process:</label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="special_reqs"><?php echo $PO_special_reqs; ?></textarea>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Related standards:</label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="related_standards"><?php echo $PO_related_standards; ?></textarea>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Special contracts, quality agreements/supply agreements:</label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="special_contracts"><?php echo $PO_special_contracts; ?></textarea>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Special requirements for qualification personnel:</label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="qualification_personnel"><?php echo $PO_qualification_personnel; ?></textarea>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Special requirements for Quality Management System:</label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="QMS_reqs"><?php echo $PO_QMS_reqs; ?></textarea>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+								  </div>	
+								</section>
+								
+								<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+
+									<h2 class="panel-title">Authorisation</h2>
+								</header>
+								<div class="panel-body">
+									
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Include Certificate of Compliance with Order:</label>
+										<div class="col-md-5">
+											<div class="switch switch-lg switch-success">
+												<input type="checkbox" name="include_CoC" id="include_CoC" data-plugin-ios-switch<?php echo $PO_include_CoC == '1' ? ' checked="checked"' : '' ?> value="1" />
+											</div>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Approval Status:</label>
+										<div class="col-md-5">
+											<select class="form-control populate" name="approval_status" id="approval_status">
+											  <option value="0"<?php if ($PO_approval_status == 0) { ?> selected="selected"<?php } ?>>✘ NOT APPROVED ✘</option>
+											  <option value="1"<?php if ($PO_approval_status == 1) { ?> selected="selected"<?php } ?>>? PENDING ?</option>
+											  <option value="2"<?php if ($PO_approval_status == 2) { ?> selected="selected"<?php } ?>>✔ APPROVED ✔</option>
+											</select>
+										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Authorised by:</label>
+										<div class="col-md-5">
+											<?php creator_drop_down($PO_approved_by,'approved_by'); ?>
+										</div>
+
+										<div class="col-md-1">
+											<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Date Authorised:</label>
+										<div class="col-md-5">
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+												<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_approved" value="<?php echo $PO_approval_date; ?>">
+											</div>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									<!-- ************************************************************** -->
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Date Confirmed:</label>
+										<div class="col-md-5">
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-calendar"></i>
+												</span>
+												<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_confirmed" value="<?php echo $PO_date_confirmed; ?>">
+											</div>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Comments:</label>
+										<div class="col-md-5">
+											<textarea class="form-control" rows="3" id="textareaDefault" name="remarks"><?php echo $PO_remark; ?></textarea>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
+									
+								  </div>	
+								</section>
+								
+								<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+
+									<h2 class="panel-title">Database Record Data</h2>
+								</header>
+								<div class="panel-body">
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Record Status:</label>
+										<div class="col-md-5">
+											<?php echo record_status_drop_down($PO_record_status); ?>
+										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+									
+									
 								</div>
 
 
 								<footer class="panel-footer">
-										<?php
-										if (isset($_REQUEST['po_number'])) {
-											?>
-											<input type="hidden" value="<?php echo $_REQUEST['po_number']; ?>" name="po_number" />
-											<?php
-										}
-										?>
-										<button type="submit" class="btn btn-success">Submit </button>
-										<button type="reset" class="btn btn-default">Reset</button>
-									</footer>
+									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+									<?php form_buttons('purchase_order_view', $record_id); ?>
+								</footer>
 							</section>
 										<!-- now close the form -->
 										</form>
