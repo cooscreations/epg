@@ -71,7 +71,11 @@ if ($record_id != 0) {
 			$PO_local_location_ID 		= $row_get_PO['local_location_ID'];			// use function: get_location($PO_local_location_ID,1);
 			$PO_HQ_location_ID 			= $row_get_PO['HQ_location_ID'];			// use function! get_location($PO_HQ_location_ID,1);
 			$PO_ship_to_location_ID		= $row_get_PO['ship_to_location_ID'];		// use function! get_location($PO_ship_to_location_ID,0); (show title ONLY)
-
+		
+			// ADDING NEW VARIABLES - DEFAULT CURRENCY!
+		
+			$PO_default_currency		= $row_get_PO['default_currency']; // look this up!
+			$PO_default_currency_rate	= $row_get_PO['default_currency_rate'];
 
 
 	} // end while loop
@@ -133,7 +137,7 @@ if ($record_id != 0) {
 									</div>
 
 									<div class="form-group">
-										<label class="col-md-3 control-label">Local Office:<span class="required">*</span></label>
+										<label class="col-md-3 control-label">Local Office:</label>
 										<div class="col-md-5">
 											<!-- PARSING SUP ID: <?php echo $PO_supplier_ID; ?> -->
 											<?php location_drop_down($PO_local_location_ID, 'local_location_ID'); ?>
@@ -145,7 +149,7 @@ if ($record_id != 0) {
 									</div>
 
 									<div class="form-group">
-										<label class="col-md-3 control-label">Head Office:<span class="required">*</span></label>
+										<label class="col-md-3 control-label">Head Office:</label>
 										<div class="col-md-5">
 											<!-- PARSING SUP ID: <?php echo $PO_supplier_ID; ?> -->
 											<?php location_drop_down($PO_HQ_location_ID, 'HQ_location_ID'); ?>
@@ -174,7 +178,6 @@ if ($record_id != 0) {
 										<label class="col-md-3 control-label">P.O. Number:<span class="required">*</span></label>
 										<div class="col-md-5">
 											<input type="text" class="form-control" id="inputDefault" placeholder="PO#" name="po_number" value="<?php echo $PO_number; ?>" required/>
-											<input type="hidden" name="po_id" value="<?php echo $PO_id; ?>"/>
 										</div>
 
 										<div class="col-md-1">
@@ -276,7 +279,7 @@ if ($record_id != 0) {
 										<label class="col-md-3 control-label">Completion Status:</label>
 										<div class="col-md-5">
 											<div class="m-md slider-primary" data-plugin-slider data-plugin-options='{ "value": <?php echo $PO_completion_status; ?>, "range": "min", "max": 100 }' data-plugin-slider-output="#listenSlider">
-												<input id="listenSlider" type="hidden" value="<?php echo $PO_completion_status; ?>" />
+												<input id="listenSlider" type="hidden" value="<?php echo $PO_completion_status; ?>" name="completion_status" />
 											</div>
 										</div>
 										
@@ -300,6 +303,64 @@ if ($record_id != 0) {
 										<div class="col-md-1">
 											&nbsp;
 										</div>
+									</div>
+									
+									
+
+									<div class="form-group">
+										<label class="col-md-3 control-label">Currency & Rate:</label>
+										<div class="col-md-3">
+											<select class="form-control populate" name="currency_id" id="currency_id">
+												<?php 
+												// now get the currency info
+												$get_currency_SQL = "SELECT * FROM `currencies` WHERE `record_status` ='2'";
+												// debug:
+												// echo '<h3>'.$get_PO_default_currency_SQL.'<h3>';
+												$result_get_currency = mysqli_query($con,$get_currency_SQL);
+												// while loop
+												while($row_get_currency = mysqli_fetch_array($result_get_currency)) {
+
+													// now print each result to a variable:
+													$currency_ID 			= $row_get_currency['ID'];
+													$currency_name_EN		= $row_get_currency['name_EN'];
+													$currency_name_CN		= $row_get_currency['name_CN'];
+													$currency_one_USD_value	= $row_get_currency['one_USD_value'];
+													$currency_symbol		= $row_get_currency['symbol'];
+													$currency_abbreviation	= $row_get_currency['abbreviation'];
+													$currency_record_status	= $row_get_currency['record_status'];
+
+													
+
+													// now output the results:
+													?>
+													<option value="<?php echo $currency_ID; ?>"<?php if ($PO_default_currency == $currency_ID) { ?> selected="selected"<?php } ?>><?php 
+														echo $currency_symbol;
+														echo $currency_abbreviation;
+													?> (<?php 
+														echo $currency_name_EN; 
+														if (($currency_name_CN!='')&&($currency_name_CN!='中文名')) {
+															echo $currency_name_CN;
+														}
+													?>) @ <?php
+														echo $currency_one_USD_value . ' / $USD';
+													?></option>
+													<?php
+
+												}
+												?>
+											</select>
+										</div>
+										
+										<div class="col-md-2">
+											<input type="text" class="form-control" id="inputDefault" name="po_default_currency_rate" value="<?php echo $PO_default_currency_rate; ?>" />
+										</div>
+										
+										
+
+										<div class="col-md-1">
+											<button type="button" class="mb-xs mt-xs mr-xs btn btn-info pull-right" data-toggle="popover" data-container="body" data-placement="top" title="Current Exchange Rates" data-content="For current exchange rates, please refer to the drop down list on the left." data-original-title="Currency Exchange Rates" aria-describedby="popover352503"><i class="fa fa-info"></i></button>
+										</div>
+										
 									</div>
 									
 									
@@ -522,7 +583,39 @@ if ($record_id != 0) {
 
 								<footer class="panel-footer">
 									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+								  <div class="col-md-5 text-left">	
 									<?php form_buttons('purchase_order_view', $record_id); ?>
+								  </div>
+								  
+								  
+								   <!-- NEXT STEP SELECTION -->
+									    
+									    <?php 
+									    if ($_REQUEST['next_step'] == 'add') {
+									    	$next_step_selected = 'add';
+									    }
+									    else {
+									    	$next_step_selected = 'view';
+									    }
+									    ?>
+									    
+										<label class="col-md-1 control-label text-right">...and then...</label>
+										
+										<div class="col-md-6 text-left">
+											<div class="radio-custom radio-success">
+												<input type="radio" id="next_step" name="next_step" value="view_record"<?php if ($next_step_selected == 'view') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample9">View P.O.</label>
+											</div>
+
+											<div class="radio-custom radio-warning">
+												<input type="radio" id="next_step" name="next_step" value="view_list"<?php if ($next_step_selected == 'add') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample10">View ALL P.O.s</label>
+											</div>
+										</div>
+										
+										<!-- END OF NEXT STEP SELECTION -->
+								  
+								  
 								</footer>
 							</section>
 										<!-- now close the form -->

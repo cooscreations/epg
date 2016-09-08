@@ -98,32 +98,7 @@ if ($record_id != 0) {
 									<div class="form-group">
 										<label class="col-md-3 control-label">PO #:<span class="required">*</label>
 										<div class="col-md-5">
-											<select data-plugin-selectTwo class="form-control populate" name="PO_ID" required>
-														<?php
-														$get_PO_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` = 2";
-														$result_get_PO = mysqli_query($con,$get_PO_SQL);
-														// while loop
-														while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
-
-																// now print each record:
-																$PO_id = $row_get_PO['ID'];
-																$PO_number = $row_get_PO['PO_number'];
-																$PO_created_date = $row_get_PO['created_date'];
-																$PO_description = $row_get_PO['description'];
-
-																// count variants for this purchase order
-														        $count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE `PO_ID` = " . $_REQUEST['id'] . " AND `record_status` = 2";
-														        $count_batches_query = mysqli_query($con, $count_batches_sql);
-														        $count_batches_row = mysqli_fetch_row($count_batches_query);
-														        $total_batches = $count_batches_row[0];
-
-														?>
-												<option value="<?php echo $PO_id; ?>"<?php if ($PO_id == $part_batch_po_id) { ?> selected=""<?php } ?>><?php echo $PO_number; ?></option>
-
-														<?php
-														} // END WHILE LOOP
-														?>
-											</select>
+											<?php purchase_orders_drop_down($part_batch_po_id); ?>
 										</div>
 										<div class="col-md-1">
 											<a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
@@ -131,88 +106,14 @@ if ($record_id != 0) {
 									</div>
 
 									<div class="form-group">
-													<label class="col-md-3 control-label">Part / Revision #:<span class="required">*</span></label>
-													<div class="col-md-5">
-														<select data-plugin-selectTwo class="form-control populate" name="part_rev_ID" required>
-														<option value=""></option>
-														<?php
-														// get parts list
-														$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = 2 ORDER BY `part_code` ASC";
-														// echo $get_parts_SQL;
-
-														$part_count = 0;
-
-														$result_get_parts = mysqli_query($con,$get_parts_SQL);
-														// while loop
-														while($row_get_parts = mysqli_fetch_array($result_get_parts)) {
-
-															// GET PART TYPE:
-
-															$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $row_get_parts['type_ID'] . "'";
-															// echo $get_part_type_SQL;
-
-															$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
-															// while loop
-															while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
-																$part_type_EN = $row_get_part_type['name_EN'];
-																$part_type_CN = $row_get_part_type['name_CN'];
-															}
-
-															// GET PART CLASSIFICATION:
-
-															$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $row_get_parts['classification_ID'] . "'";
-															// echo $get_part_class_SQL;
-
-															$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
-															// while loop
-															while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
-																$part_class_EN = $row_get_part_class['name_EN'];
-																$part_class_CN = $row_get_part_class['name_CN'];
-															}
-														?>
-
-														<optgroup label="<?php echo $row_get_parts['part_code']; ?> - <?php echo $row_get_parts['name_EN']; ?> / <?php echo $row_get_parts['name_CN']; ?>">
-
-														<?php
-
-														// now list the revisions for this part:
-
-														$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `part_ID` =" . $row_get_parts['ID'] . " AND `record_status`=2";
-														$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
-
-														// while loop
-														while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
-
-															// now print each record:
-															$rev_id = $row_get_part_rev['ID'];
-															$rev_part_id = $row_get_part_rev['part_ID'];
-															$rev_number = $row_get_part_rev['revision_number'];
-															$rev_remarks = $row_get_part_rev['remarks'];
-															$rev_date = $row_get_part_rev['date_approved'];
-															$rev_user = $row_get_part_rev['user_ID'];
-
-														?>
-														<option value="<?php echo $rev_id; ?>" <?php if ($rev_id == $part_batch_part_rev_id) { ?> selected="selected"<?php } ?>><?php echo $row_get_parts['part_code']; ?> - <?php echo $rev_number; ?></option>
-														<?php
-
-														} // end revision look-up loop
-
-
-
-														?>
-
-														</optgroup>
-
-														<?php
-														} // END WHILE LOOP
-
-														?>
-														</select>
-													</div>
-													<div class="col-md-1">
-														<a href="part_revision_add.php<?php if ($record_id != 0) { ?>?PO_ID=<?php echo $record_id; } ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
-													</div>
-												</div>
+										<label class="col-md-3 control-label">Part / Revision #:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<?php part_rev_drop_down($part_batch_part_rev_id); ?>
+										</div>
+										<div class="col-md-1">
+											<a href="part_revision_add.php<?php if ($record_id != 0) { ?>?PO_ID=<?php echo $record_id; } ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+										</div>
+									</div>
 
 
 									<div class="form-group">

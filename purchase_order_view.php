@@ -69,6 +69,29 @@ while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 		$PO_HQ_location_ID 			= $row_get_PO['HQ_location_ID'];			// use function! get_location($PO_HQ_location_ID,1);
 		$PO_ship_to_location_ID		= $row_get_PO['ship_to_location_ID'];		// use function! get_location($PO_ship_to_location_ID,0); (show title ONLY)
 
+		// ADDING NEW VARIABLES - DEFAULT CURRENCY!
+		
+		$PO_default_currency		= $row_get_PO['default_currency']; // look this up!
+		$PO_default_currency_rate	= $row_get_PO['default_currency_rate'];
+		
+				// now get the currency info
+				$get_PO_default_currency_SQL = "SELECT * FROM `currencies` WHERE `ID` ='" . $PO_default_currency . "'";
+				// debug:
+				// echo '<h3>'.$get_PO_default_currency_SQL.'<h3>';
+				$result_get_PO_default_currency = mysqli_query($con,$get_PO_default_currency_SQL);
+				// while loop
+				while($row_get_PO_default_currency = mysqli_fetch_array($result_get_PO_default_currency)) {
+
+					// now print each result to a variable:
+					$PO_default_currency_ID 			= $row_get_PO_default_currency['ID'];
+					$PO_default_currency_name_EN		= $row_get_PO_default_currency['name_EN'];
+					$PO_default_currency_name_CN		= $row_get_PO_default_currency['name_CN'];
+					$PO_default_currency_one_USD_value	= $row_get_PO_default_currency['one_USD_value'];
+					$PO_default_currency_symbol			= $row_get_PO_default_currency['symbol'];
+					$PO_default_currency_abbreviation	= $row_get_PO_default_currency['abbreviation'];
+					$PO_default_currency_record_status	= $row_get_PO_default_currency['record_status'];
+
+				}
 
 		// count variants for this purchase order
         $count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $record_id;
@@ -339,6 +362,30 @@ pagehead($page_id);
 							?>
 						  </tr>
 						  <!-- **************************************** -->
+						  
+						  <tr>
+							<th style="text-align: right">P.O. Currency:</th>
+							<td>
+							  <span class="btn btn-default" title="<?php 
+							  	echo $PO_default_currency_name_EN;
+							  	if (($PO_default_currency_name_CN!='')&&($PO_default_currency_name_CN!='中文名')) {
+							  		echo ' / ' . $PO_default_currency_name_CN;
+							  	}
+							  	
+							  	if ($PO_default_currency_symbol != 1) { // SHOW USD CONVERSION RATE!
+									echo ' @ ' . $PO_default_currency_symbol . $PO_default_currency_rate . ' / $1 USD';
+								}
+							  ?>">
+								<?php
+								
+								echo $PO_default_currency_symbol;
+								echo $PO_default_currency_abbreviation; 
+								
+								?>
+							  </span>
+							</td>
+						  </tr>
+						  <!-- **************************************** -->
                     </table>
                 </div>
 				
@@ -435,32 +482,284 @@ pagehead($page_id);
 			<div class="content">
 				<!-- PANEL CONTENT HERE -->
 				
+				<?php add_button($record_id, 'purchase_order_item_add', 'PO_ID', 'Click here to add another item to this Purchase Order'); ?>
+				
 				<div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover table-condensed mb-none">
                         <tr>
+                            <th><i class="fa fa-cog"></i></th>
                             <th>ITEM NO.</th>
                             <th>DESCRIPTION</th>
                             <th>QTY</th>
                             <th>UNIT PRICE</th>
                             <th>TOTAL</th>
                         </tr>
+                        <?php 
+                        
+                        $po_line_number = 1;
+                        $line_total = 0;	
+						$subtotal = 0;
+						$total_qty = 0;
+                        
+                        // GET PURCHASE ORDER ITEMS FROM THE DATABASE:
+                        
+                        $po_items_count = 0;
+                        
+                        $get_purchase_order_items = "SELECT * FROM `purchase_order_items` WHERE `purchase_order_ID` ='" . $record_id . "' AND `record_status` = '2'";
+                        // echo '<h1>' . $get_purchase_order_items . '</h1>'; 
+                        $result_get_po_items = mysqli_query($con,$get_purchase_order_items);
+                        // while loop
+						while($row_get_po_items = mysqli_fetch_array($result_get_po_items)) {
+							$po_item_ID						= $row_get_po_items['ID'];
+							$po_item_purchase_order_ID		= $row_get_po_items['purchase_order_ID'];		// should = RECORD_ID for this PO
+							$po_item_part_revision_ID		= $row_get_po_items['part_revision_ID'];		// look this up!
+							$po_item_part_qty				= $row_get_po_items['part_qty'];
+							$po_item_record_status			= $row_get_po_items['record_status']; 			// should be 2
+							$po_item_item_notes				= $row_get_po_items['item_notes'];
+							$po_item_unit_price_USD			= $row_get_po_items['unit_price_USD'];
+							$po_item_unit_price_currency	= $row_get_po_items['unit_price_currency']; 	
+							$po_item_original_currency		= $row_get_po_items['original_currency'];		// look this up!
+							$po_item_original_rate			= $row_get_po_items['original_rate'];
+							
+							$total_qty = $total_qty + $po_item_part_qty;
+								
+							if ($PO_default_currency_ID != $po_item_original_currency) {
+								// CURRENCY NEEDS ADJUSTING!
+								echo '<h1>WARNING - CURRENCY (ID# ' . $po_item_original_currency . ') DOES NOT MATCH DEFAULT PO CURRENCY (ID# ' . $PO_default_currency_ID . ')!</h1>';
+								
+								/* 
+								
+								curencies don't match - let's fix it!
+								CONVERT ALL TO DOLLARS (PO AND PO LINE ITEM)
+								
+								*/
+								
+								// now get the currency info
+								$get_po_item_currency_SQL = "SELECT * FROM `currencies` WHERE `ID` ='" . $po_item_original_currency . "'";
+								// debug:
+								// echo '<h3>'.$get_po_item_currency_SQL.'<h3>';
+								$result_get_po_item_currency = mysqli_query($con,$get_po_item_currency_SQL);
+									// while loop
+									while($row_get_po_item_currency = mysqli_fetch_array($result_get_po_item_currency)) {
+
+										// now print each result to a variable:
+										$po_item_currency_ID 			= $row_get_po_item_currency['ID'];
+										$po_item_currency_name_EN		= $row_get_po_item_currency['name_EN'];
+										$po_item_currency_name_CN		= $row_get_po_item_currency['name_CN'];
+										$po_item_currency_one_USD_value	= $row_get_po_item_currency['one_USD_value'];
+										$po_item_currency_symbol		= $row_get_po_item_currency['symbol'];
+										$po_item_currency_abbreviation	= $row_get_po_item_currency['abbreviation'];
+										$po_item_currency_record_status	= $row_get_po_item_currency['record_status'];
+										
+										// OK, now convert to dollars
+										$po_item_currency_USD_value = ($po_item_unit_price_currency / $po_item_currency_one_USD_value);
+										
+										// NOW CONVERT IT BACK TO PO DEFAULT RATE
+										$po_item_unit_price_currency = ($po_item_unit_price_currency * $PO_default_currency_one_USD_value);
+										
+										// IDEAL WORLD - now update the database - update line item to match default PO currency
+										// // //
+									}
+								
+							}
+							
+								// NOW DO THE TOTALS CALCULATIONS
+								$line_total = ($po_item_unit_price_currency * $po_item_part_qty);	
+								$subtotal = $subtotal + $line_total;
+							
+								// get part revision info:
+								$get_po_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` ='" . $po_item_part_revision_ID . "'";
+								// debug:
+								// echo '<h2>'.$get_po_part_rev_SQL . '</h2>'; 
+								$result_get_po_part_rev = mysqli_query($con,$get_po_part_rev_SQL);
+								// while loop
+								while($row_get_po_part_rev = mysqli_fetch_array($result_get_po_part_rev)) {
+
+									// now print each record:
+									$po_rev_id 			= $row_get_po_part_rev['ID'];
+									$po_rev_part_id 	= $row_get_po_part_rev['part_ID'];
+									$po_rev_number 		= $row_get_po_part_rev['revision_number'];
+									$po_rev_remarks 	= $row_get_po_part_rev['remarks'];
+									$po_rev_date 		= $row_get_po_part_rev['date_approved'];
+									$po_rev_user 		= $row_get_po_part_rev['user_ID'];
+
+								}
+								
+								// now get the part info
+								$get_po_part_SQL = "SELECT * FROM `parts` WHERE `ID` = '" . $po_rev_part_id . "'";
+								// debug:
+								// echo '<h3>' . $get_po_part_SQL . '</h3>'; 
+								$result_get_po_part = mysqli_query($con,$get_po_part_SQL);
+								// while loop
+								while($row_get_po_part = mysqli_fetch_array($result_get_po_part)) {
+
+									// now print each result to a variable:
+									$po_part_id 		= $row_get_po_part['ID'];
+									$po_part_code 		= $row_get_po_part['part_code'];
+									$po_part_name_EN 	= $row_get_po_part['name_EN'];
+									$po_part_name_CN 	= $row_get_po_part['name_CN'];
+
+								}
+                        ?>
+					  
+					  
                         <tr>
-                            <td>1</td>
+                        	<td> 
+								<!-- ********************************************************* -->
+								<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+								<!-- ********************************************************* -->
+								
+								<?php 
+								
+								// VARS YOU NEED TO WATCH / CHANGE:
+								$add_to_form_name 	= 'line_item_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+								$form_ID 			= $po_item_ID;					// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+								$edit_URL 			= 'purchase_order_item_edit'; 	// REQUIRED - specify edit page URL
+								$add_URL 			= 'purchase_order_item_add'; 	// REQURED - specify add page URL
+								$table_name 		= 'purchase_order_items';		// REQUIRED - which table are we updating?
+								$src_page 			= $this_file;					// REQUIRED - this SHOULD be coming from page_functions.php
+								$add_VAR 			= 'PO_ID='.$record_id.''; 		// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+								
+								?>
+						 
+									<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+									
+										echo $add_to_form_name; 
+										echo $form_ID; 
+									
+									?>"><i class="fa fa-gear"></i></a>
+
+									<!-- Modal Form -->
+									<div id="modalForm_<?php 
+									
+										echo $add_to_form_name; 
+										echo $form_ID; 
+										
+									?>" class="modal-block modal-block-primary mfp-hide">
+										<section class="panel">
+											<header class="panel-heading">
+												<h2 class="panel-title">Admin Options</h2>
+											</header>
+											<div class="panel-body">
+									
+												<div class="table-responsive">
+												 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+												 <thead>
+													<tr>
+														<th class="text-left" colspan="2">Action</th>
+														<th>Decsription</th>
+													</tr>
+												  </thead>
+												  <tbody>
+													<tr>
+													  <td>EDIT</td>
+													  <td>
+													  	<a href="<?php 
+													  		echo $edit_URL; 
+													  	?>.php?id=<?php 
+													  		echo $form_ID; 
+													  	?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+													  		<i class="fa fa-pencil" stlye="color: #999"></i>
+													  	</a>
+													  </td>
+													  <td>Edit this record</td>
+													</tr>
+													<tr>
+													  <td>DELETE</td>
+													  <td>
+													  	<a href="record_delete_do.php?table_name=<?php 
+													  		echo $table_name; 
+													  	?>&src_page=<?php 
+													  		echo $src_page; 
+													  	?>&id=<?php 
+													  		echo $form_ID;
+													  		echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+													  	?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+													  		<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+													  	</a>
+													  </td>
+													  <td>Delete this record</td>
+													</tr>
+													<tr>
+													  <td>ADD</td>
+													  <td>
+													  	<a href="<?php 
+													  		echo $add_URL; 
+													  		echo '?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+													  	?>" class="mb-xs mt-xs mr-xs btn btn-success">
+													  		<i class="fa fa-plus" stlye="color: #999"></i>
+													  	</a>
+													  </td>
+													  <td>Add a similar item to this table</td>
+													</tr>
+												  </tbody>
+												  <tfoot>
+													<tr>
+													  <td>&nbsp;</td>
+													  <td>&nbsp;</td>
+													  <td>&nbsp;</td>
+													</tr>
+												  </tfoot>
+												  </table>
+												</div><!-- end of responsive table -->	
+									
+											</div><!-- end panel body -->
+											<footer class="panel-footer">
+												<div class="row">
+													<div class="col-md-12 text-left">
+														<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+													</div>
+												</div>
+											</footer>
+										</section>
+									</div>
+							
+								<!-- ********************************************************* -->
+								<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+								<!-- ********************************************************* -->
+						
+                        	</td>
+                            <td><?php echo $po_line_number; ?></td>
                             <td>
-                            	01337 - Nozzle twist cap<br />
-                            	according to 01337-A-2-2016xxxx<br />
-                            	VAT included<br />
-                            	Run mold at least 3H<br />
-                            	Sample at least 300 shots<br />
-                            	Including labour cost for cosmetic and dimension<br />
-                            	Price included drilled hole in the side according spec.
+                            	<a href="part_view.php?id=<?php echo $po_part_id; ?>" class="btn btn-info btn-xs" title="View Part Profile">
+                            		<?php echo 
+                            			$po_part_code; 
+                            		?></a> - <?php 
+                            			echo $po_part_name_EN; 
+                            			if (($po_part_name_CN != '')&&($po_part_name_CN != '中文名')) { 
+                            				echo ' / ' . $po_part_name_CN; 
+                            			} 
+                            		?>
+                            	</a>
+                            	
+                            	<a class="btn btn-warning" title="Rev ID#: <?php echo $po_rev_id; ?>">Rev. #: <?php echo $po_rev_number; ?></a>
+                            	
+								<br />
+                            	<?php echo nl2br($po_item_item_notes); ?>
                             </td>
-                            <td>1</td>
-                            <td>¥3,645.00</td>
-                            <td>¥3,645.00</td>
+                            <td><?php echo number_format($po_item_part_qty); ?></td>
+                            <td><?php 
+                            	echo $PO_default_currency_symbol;	// NOTE: We are using the default PO currency symbol
+                            	echo number_format($po_item_unit_price_currency, 2); ?></td>
+                            <td><?php
+                            	echo $PO_default_currency_symbol;
+                            	
+                            	// LINE TOTALS!
+                            	echo number_format($line_total);
+                            		
+                            ?></td>
                         </tr>
+                        <?php 
+                        
+                        	$po_line_number = $po_line_number + 1;
+                        
+                        // END GET PURCHASE ORDER LINE ITEMS FROM DB (while loop)
+                        }
+                        ?>
                     </table>
                 </div>
+                
+                <?php add_button($record_id, 'purchase_order_item_add', 'PO_ID', 'Click here to add another item to this Purchase Order'); ?>
 				
 		  </div>
 		</div>
@@ -641,24 +940,58 @@ pagehead($page_id);
 	
 	
 		<!-- START P.O. SUMMARY TABLE -->
+		
+		<?php 
+		
+		$handling_total = '0';
+		$shipping_total = '0';
+		
+		// $subtotal calculated above
+		$grand_total = ($handling_total + $shipping_total + $subtotal);
+		
+		?>
 				
 				<div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover table-condensed mb-none">
                         <tr>
+                            <th>Total Qty</th>
+                            <td class="text-right"><?php echo number_format($total_qty); ?> pcs 个</td>
+                        </tr>
+                        <tr>
                             <th>Subtotal</th>
-                            <td>¥3,645.00</td>
+                            <td class="text-right">
+                              <?php 
+                                echo $PO_default_currency_symbol;
+                              	echo number_format($subtotal, 2);
+                              ?>
+                            </td>
                         </tr>
                         <tr>
                             <th>Shipping</th>
-                            <td>¥0.00</td>
+                            <td class="text-right">
+                              <?php 
+                                echo $PO_default_currency_symbol;
+                                echo number_format($handling_total, 2); 
+                              ?>
+                            </td>
                         </tr>
                         <tr>
                             <th>Handling</th>
-                            <td>¥0.00</td>
+                            <td class="text-right">
+                              <?php 
+                                echo $PO_default_currency_symbol; 
+                                echo number_format($shipping_total, 2);
+                              ?>
+                            </td>
                         </tr>
                         <tr>
                             <th>TOTAL DUE</th>
-                            <td>¥3,645.00</td>
+                            <td class="text-right">
+                              <?php 
+                            	echo $PO_default_currency_symbol; 
+                            	echo number_format($grand_total, 2);; 
+                              ?>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -699,14 +1032,8 @@ pagehead($page_id);
 									<h2 class="panel-title">Batches In This Purchase Order:</h2>
 								</header>
 								<div class="panel-body">
-
-					 <div class="row">
-						<div class="col-md-1">
-							<a href="part_batch_add.php?PO_ID=<?php echo $_REQUEST['id']; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
-						</div>
-						<div id="feature_buttons_container_id" class="col-md-11">
-						</div>
-					 </div>
+					 
+					<?php add_button($record_id, 'part_batch_add', 'PO_ID', 'Click here to add a new batch to this purchase order'); ?>
 
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
@@ -832,12 +1159,7 @@ pagehead($page_id);
 					 </div>
 
 
-					 <div class="row">
-						<div class="col-md-1">
-							<a href="part_batch_add.php?PO_ID=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
-						</div>
-						<div class="col-md-11"> </div>
-					 </div>
+					 <?php add_button($record_id, 'part_batch_add', 'PO_ID', 'Click here to add a new batch to this purchase order'); ?>
 
 								<!-- now close the panel -->
 								</div>

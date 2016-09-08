@@ -6,6 +6,188 @@
 
 	// header('Content-Type: text/html; charset=utf-8');
 	include 'form_data_helper.php';
+	
+	
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+	
+	function checkaddslashes($str){        
+		if(strpos(str_replace("\'",""," $str"),"'")!=false)
+			return addslashes($str);
+		else
+			return $str;
+	}
+	
+	
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+	
+	// CHECK DATES!!!!
+	function check_date_time($date_to_check) {
+
+		if (substr($date_to_check, -3, 1) == ':') { 
+			$date_to_return = $date_to_check; // THIS HAS MINUTES AND HOURS ALREADY!
+		}
+		else { 
+			$date_to_return = $date_to_check . ' 00:00:00'; // NO TIME ALREADY, LET'S ADD IT NOW!
+		}
+		return $date_to_return;
+
+	}
+	
+	
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+	
+	// CODE BLOCK TO ESTABLISH SORT VARS FROM URL?
+	$add_URL_vars_sort = '';
+	$add_URL_vars_dir = '';
+	$add_URL_vars_year = "&year=" . date("Y");
+	$display_year = date("Y");
+
+	if (isset($_REQUEST['sort'])) {
+
+		$add_URL_vars_sort = '&sort=' . $_REQUEST['sort'];
+	}
+
+	if (isset($_REQUEST['dir'])) {
+
+		$add_URL_vars_dir = '&dir=' . $_REQUEST['dir'];
+	}
+
+	if (isset($_REQUEST['year'])) {
+		if ($_REQUEST['year']!='all') {
+			$add_URL_vars_year = '&year=' . $_REQUEST['year'];
+			$display_year = 'all';
+		}
+		else {
+			$add_URL_vars_year = '';
+			$display_year = $_REQUEST['year'];
+		}
+	}
+	
+	$GLOBALS['display_year'] 		= $display_year;
+	$GLOBALS['add_URL_vars_year'] 	= $add_URL_vars_year;
+	$GLOBALS['add_URL_vars_dir'] 	= $add_URL_vars_dir;
+	$GLOBALS['add_URL_vars_sort'] 	= $add_URL_vars_sort;
+	
+	// END OF SORTING VARS CODE BLOCK 
+	
+	
+	// START FUNCTION TO SHOW 'JUMP TO ANOTHER YEAR' info
+
+	
+	function year_jumper($jump_to_URL, $show_year = '0', $start_year = 2010) {
+			
+		if ($show_year == 0) {
+			// $default show year:
+			$show_year = date("Y");
+		}
+		
+		// start the session:
+		session_start();
+		// enable the DB connection:
+		include 'db_conn.php';
+	
+		$loop_year = $start_year;
+		
+		
+		// $GLOBALS['display_year'];
+		// $GLOBALS['add_URL_vars_year'];
+		// $GLOBALS['add_URL_vars_dir'];
+		// $GLOBALS['add_URL_vars_sort'];
+		
+	 
+		?>
+	
+		<div class="row">
+			<div class="col-md-12">
+				<!-- YEAR JUMPER -->
+
+				<select onchange="document.location = this.value" data-plugin-selecttwo class="form-control populate">
+					<option value="#" selected="selected">SELECT A YEAR / 选一年:</option>
+					<option value="<?php 
+						echo $jump_to_URL; 
+					?>.php?year=all<?php 
+						echo $GLOBALS['add_URL_vars_sort'] . $GLOBALS['add_URL_vars_dir'];; 
+					?>">
+						View All / 看全部
+					</option>
+
+					<?php
+
+						while ($loop_year <= date("Y")) {
+							?>
+					<option value="<?php 
+						echo $jump_to_URL; 
+					?>.php?year=<?php 
+						echo $loop_year; 
+					?><?php 
+						echo $GLOBALS['add_URL_vars_sort'] . $GLOBALS['add_URL_vars_dir'];; 
+					?>"<?php 
+					if ($loop_year == $show_year) { ?> selected="selected"<?php } ?>>SHOW POs FOR <?php 
+						echo $loop_year; 
+					?> 的订单</option>
+							<?
+							$loop_year = $loop_year + 1;
+						}
+					?>
+					<option value="<?php 
+						echo $jump_to_URL; 
+					?>.php?year=all<?php 
+						echo $GLOBALS['add_URL_vars_sort'] . $GLOBALS['add_URL_vars_dir'];; 
+					?>">
+						View All / 看全部
+					</option>
+				</select>
+				<!-- / YEAR JUMPER -->
+			</div>
+		</div>
+		<br />
+
+		<?php
+		// RESET THE LEAP YEAR VAR in case we need it later
+		$loop_year = $start_year;
+	
+	}
+	// END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 
 	function pagehead($page_id, $record_id=NULL) {
 
@@ -18,8 +200,9 @@
 
 	header('Content-Type: text/html; charset=utf-8');
 
-	$public_path = pathinfo($_SERVER['SCRIPT_NAME']);
-	$this_file = $public_path['basename'];
+	$public_path 			= pathinfo($_SERVER['SCRIPT_NAME']);
+	$this_file 				= $public_path['basename'];
+	$GLOBALS['this_file'] 	= $this_file; 
 
 
 	$get_page_SQL = "SELECT * FROM `pages` WHERE `filename` = '" . $this_file . "'";
@@ -1438,6 +1621,8 @@ function get_supplier($sup_id, $display_type = 0, $profile_link = 1) {
 	session_start();
 	// enable the DB connection:
 	include 'db_conn.php';
+	
+	// echo 'get_supplier function called OK';
 
 	if ($sup_id == 0) {
 		?>
@@ -1907,6 +2092,8 @@ function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS I
 	session_start();
 	// enable the DB connection:
 	include 'db_conn.php';
+	
+	// echo 'get_location function called OK';
 
 	if ($loc_id == 0) {
 		?>
@@ -2099,7 +2286,7 @@ function location_drop_down($this_loc_ID, $form_element_name = 'loc_ID') {
 
 	?>
 	<!-- originally parsed SUP ID = <?php echo $this_sup_ID; ?> -->
-	<select data-plugin-selectTwo class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>" required>
+	<select data-plugin-selectTwo class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>">
 		<?php
 		// now get the location info:
 		$get_loc_SQL = "SELECT * FROM `locations` WHERE `record_status` = 2";
@@ -2149,7 +2336,7 @@ function location_drop_down($this_loc_ID, $form_element_name = 'loc_ID') {
 			// now print the result
 
 				?>
-				<option value="<?php echo $sup_id; ?>" <?php if ($loc_ID == $this_loc_ID) { ?> selected="selected"<?php } ?>>
+				<option value="<?php echo $loc_ID; ?>" <?php if ($loc_ID == $this_loc_ID) { ?> selected="selected"<?php } ?>>
 					<?php echo $loc_name_EN; if (($loc_name_CN!='')&&($loc_name_CN!='中文名')) { echo " / " . $loc_name_CN; } ?>
 					(<?php echo $loc_country_name_EN; if (($loc_country_name_CN!='')&&($loc_country_name_CN!='中文名')) { echo ' / ' . $loc_country_name_CN; } ?>)
 				</option>
@@ -2176,6 +2363,219 @@ function form_buttons($cancel_url, $record_id) { ?>
 	<button type="reset" class="btn btn-warning"><i class="fa fa-refresh"></i> RESET</button>
 	<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> SAVE CHANGES</button>
 <?php }
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+function add_button($record_id, $add_page_url, $record_var = 'id', $add_title='Click here to add a new record to this table', $add_url = '') {
+?>
+
+<div class="row"><!-- start add button row (function) -->
+	<!-- start add button div -->
+	<div class="col-md-1">
+		<a href="<?php 
+		
+			echo $add_page_url; 
+			
+		?>.php?<?php 
+		
+			echo $record_var; 
+			
+		?>=<?php 
+		
+			echo $record_id; 
+			echo $add_url; 
+			
+		?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left" title="<?php 
+		
+			echo $add_title; 
+			
+		?>">
+		  <i class="fa fa-plus-square"></i>
+		</a>
+	</div>
+	<!-- end add button div -->
+	<!-- empty container for remaining space -->
+	<div id="feature_buttons_container_id" class="col-md-11">
+	</div>
+	<!-- end empty div -->
+	
+ </div><!-- end add button row (function) -->
+ 
+ <?php 
+ } // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+function part_rev_drop_down($current_ID=0) {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+?>
+<!-- starting part_rev_drop_down function: -->
+<select data-plugin-selectTwo class="form-control populate" name="part_rev_ID" required>
+	<option value=""></option>
+	<?php
+	// get parts list
+	$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = 2 ORDER BY `part_code` ASC";
+	// echo $get_parts_SQL;
+
+	$part_count = 0;
+
+	$result_get_parts = mysqli_query($con,$get_parts_SQL);
+	// while loop
+	while($row_get_parts = mysqli_fetch_array($result_get_parts)) {
+
+		// GET PART TYPE:
+
+		$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $row_get_parts['type_ID'] . "'";
+		// echo $get_part_type_SQL;
+
+		$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
+		// while loop
+		while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
+			$part_type_EN = $row_get_part_type['name_EN'];
+			$part_type_CN = $row_get_part_type['name_CN'];
+		}
+
+		// GET PART CLASSIFICATION:
+
+		$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $row_get_parts['classification_ID'] . "'";
+		// echo $get_part_class_SQL;
+
+		$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+		// while loop
+		while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+			$part_class_EN = $row_get_part_class['name_EN'];
+			$part_class_CN = $row_get_part_class['name_CN'];
+		}
+		?>
+
+		<optgroup label="<?php echo $row_get_parts['part_code']; ?> - <?php 
+			echo $row_get_parts['name_EN'];
+			if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) {
+		 		echo  " / " . $row_get_parts['name_CN']; 
+		 	} 
+		 	?>">
+
+		<?php
+
+		// now list the revisions for this part:
+
+		$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `part_ID` =" . $row_get_parts['ID'] . " AND `record_status`=2";
+		$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+
+		// while loop
+		while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+
+			// now print each record:
+			$rev_id = $row_get_part_rev['ID'];
+			$rev_part_id = $row_get_part_rev['part_ID'];
+			$rev_number = $row_get_part_rev['revision_number'];
+			$rev_remarks = $row_get_part_rev['remarks'];
+			$rev_date = $row_get_part_rev['date_approved'];
+			$rev_user = $row_get_part_rev['user_ID'];
+
+			?>
+				<option value="<?php echo $rev_id; ?>" <?php if ($rev_id == $current_ID) { ?> selected="selected"<?php } ?>><?php echo $row_get_parts['part_code']; ?> - <?php echo $rev_number; ?></option>
+			<?php
+
+		} // end revision look-up loop
+		?>
+
+		</optgroup>
+
+	<?php
+	} // END WHILE LOOP
+
+	?>
+</select>
+	
+<!-- end part_rev_drop_down function: -->
+<?php
+}
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+function purchase_orders_drop_down($part_batch_po_id=0) {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+?>
+
+<select data-plugin-selectTwo class="form-control populate" name="PO_ID" required>
+			<?php
+			$get_PO_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` = 2";
+			$result_get_PO = mysqli_query($con,$get_PO_SQL);
+			// while loop
+			while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
+
+					// now print each record:
+					$PO_id = $row_get_PO['ID'];
+					$PO_number = $row_get_PO['PO_number'];
+					$PO_created_date = $row_get_PO['created_date'];
+					$PO_description = $row_get_PO['description'];
+
+					// count batches for this purchase order
+					$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE `PO_ID` = " . $PO_id . " AND `record_status` = 2";
+					$count_batches_query = mysqli_query($con, $count_batches_sql);
+					$count_batches_row = mysqli_fetch_row($count_batches_query);
+					$total_batches = $count_batches_row[0];
+
+					// count line items for this purchase order
+					$count_po_line_items_sql = "SELECT COUNT( ID ) FROM  `purchase_order_items` WHERE `purchase_order_ID` = " . $PO_id . " AND `record_status` = 2";
+					$count_po_line_items_query = mysqli_query($con, $count_po_line_items_sql);
+					$count_po_line_items_row = mysqli_fetch_row($count_po_line_items_query);
+					$total_po_line_items = $count_po_line_items_row[0];
+
+			?>
+	<option value="<?php echo $PO_id; ?>"<?php if ($PO_id == $part_batch_po_id) { ?> selected=""<?php } ?>><?php echo $PO_number; 
+	if ($total_batches!=0) { // batches found!
+	
+		if ($total_batches>1) { $add_plural = 'es'; }
+		else { $add_plural = ''; }
+		
+		?>  - [<?php echo $total_batches; ?> Batch<?php echo $add_plural; ?>]<?php 
+		
+	}
+	if ($total_po_line_items!=0) {
+	
+		if ($total_po_line_items>1) { $add_plural = 's'; }
+		else { $add_plural = ''; }
+		
+		?>  - [<?php echo $total_po_line_items; ?> P.O. Item<?php echo $add_plural; ?>]<?php 
+		
+	} 
+	?></option>
+
+			<?php
+			} // END WHILE LOOP
+			?>
+</select>
+<?php 
+
+} // END OF FUNCTIONS
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
