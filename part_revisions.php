@@ -73,27 +73,26 @@ pagehead ( $page_id );
 							?>
 
 		<!-- start: page -->
+		<?php
+		add_button(0, 'part_revision_add');
+		?>
+		
 	<div class="table-responsive">
 		<table
 			class="table table-bordered table-striped table-condensed mb-none">
 			<tr>
-				<th class="text-left" colspan="11">
-					<a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
-				</th>
-			</tr>
-			<tr>
-				<th>ID</th>
-				<th>Code</th>
+				<th class="text-center">ID</th>
+				<th class="text-center">Code</th>
 				<th>Part Name</th>
-				<th>Revision Number</th>
+				<th class="text-center">Rev. #</th>
 				<th>Remarks</th>
-				<th>Date Approved</th>
-				<th>User</th>
-				<th>Price</th>
-				<th>Weight</th>
-				<th>Status</th>
+				<th class="text-center">Date Approved</th>
+				<th class="text-center">User</th>
+				<th class="text-center">Price</th>
+				<th class="text-center">Weight</th>
+				<th class="text-center">Status</th>
 
-				<th class="text-center">Actions</th>
+				<th class="text-center"><span class="btn btn-xs btn-default" title="Action"><i class="fa fa-gear"></i></span></th>
 			</tr>
 						  <?php
 								$get_part_revisions_SQL = "SELECT `part_revisions`.`ID`, `parts`.`name_EN` as `part_name_EN` " .
@@ -123,16 +122,16 @@ pagehead ( $page_id );
 									?>
 
 			<tr>
-				<td><?php echo $row_get_part_revision['ID']; ?></td>
-				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_code']; ?></a></td>
+				<td class="text-center"><?php echo $row_get_part_revision['ID']; ?></td>
+				<td class="text-center"><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>" class="btn btn-xs btn-info"><?php echo $row_get_part_revision['part_code']; ?></a></td>
 				<td><a href="part_view.php?id=<?php echo $row_get_part_revision['part_ID']; ?>"><?php echo $row_get_part_revision['part_name_EN']; if (($row_get_part_revision['part_name_CN']!='')&&($row_get_part_revision['part_name_CN']!='中文名')) { echo " / " . $row_get_part_revision['part_name_CN']; }?></a></td>
-				<td><span class="btn btn-warning" title="Rev #: <?php echo $row_get_part_revision['ID']; ?>"><?php echo $row_get_part_revision['revision_number']; ?></span></td>
+				<td class="text-center"><span class="btn btn-xs btn-warning" title="Rev #: <?php echo $row_get_part_revision['ID']; ?>"><?php echo $row_get_part_revision['revision_number']; ?></span></td>
 				<td><?php echo $row_get_part_revision['remarks']; ?></td>
-				<td><?php echo date("Y-m-d", strtotime($row_get_part_revision['date_approved'])); ?></td>
-				<td><a href="user_view.php?id=<?php echo $row_get_part_revision['user_ID']; ?>"><?php echo $row_get_part_revision['user_name']; ?></a></td>
-				<td><?php echo $row_get_part_revision['price_USD']; ?></td>
-				<td><?php echo $row_get_part_revision['weight_g']; ?></td>
-				<td><?php echo $row_get_part_revision['status_name_EN']; ?></td>
+				<td class="text-center"><?php echo date("Y-m-d", strtotime($row_get_part_revision['date_approved'])); ?></td>
+				<td class="text-center"><a href="user_view.php?id=<?php echo $row_get_part_revision['user_ID']; ?>"><?php echo $row_get_part_revision['user_name']; ?></a></td>
+				<td class="text-center"><?php echo $row_get_part_revision['price_USD']; ?></td>
+				<td class="text-center"><?php echo $row_get_part_revision['weight_g']; ?></td>
+				<td class="text-center"><?php echo $row_get_part_revision['status_name_EN']; ?></td>
 				<td class="text-center">
                     <a href="part_revision_edit.php?id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
 					<a href="record_delete_do.php?table_name=part_revisions&src_page=part_revisions.php&id=<?php echo $row_get_part_revision['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
@@ -146,13 +145,17 @@ pagehead ( $page_id );
 								?>
 
 			 <tr>
-				<th class="text-left" colspan="9"><a href="part_revision_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
-				<th colspan="2">TOTAL: <?php echo $part_revision_count; ?></th>
+				<th colspan="11" class="text-left">TOTAL: <?php echo $part_revision_count; ?></th>
 			</tr>
 
 
 		</table>
 	</div>
+	
+	<?php
+		add_button(0, 'part_revision_add');
+		?>
+	
 	<!-- end: page -->
 </section>
 

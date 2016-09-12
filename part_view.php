@@ -832,18 +832,18 @@ pagehead($page_id);
 
 								  <tr>
 									<td>
-									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a>
+									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-xs btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a>
 									</td>
 									<td>
 
-									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-info"><i class="fa fa-info-circle"></i> PART #<?php echo $rev_part_join_part_code; ?></a>
+									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-xs btn-info"><?php echo $rev_part_join_part_code; ?></a>
 
 									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
 										<?php echo $rev_part_join_name_EN; if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { echo " / " . $rev_part_join_name_CN; }?>
 									  </a>
 									</td>
 									<td>
-									  <a class="btn btn-warning">
+									  <a class="btn btn-xs btn-warning">
 										<?php echo $rev_part_join_rev_num; ?>
 									  </a>
 									</td>
@@ -976,16 +976,16 @@ pagehead($page_id);
 
 												  <tr>
 													<td>
-													  <a href="BOM_view.php?id=<?php echo $this_BOM_ID; ?>" class="btn btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $this_BOM_ID; ?></a>
+													  <a href="BOM_view.php?id=<?php echo $this_BOM_ID; ?>" class="btn btn-xs btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $this_BOM_ID; ?></a>
 													</td>
 													<td>
-					     							  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>" class="btn btn-info"><i class="fa fa-info-circle"></i> PART #<?php echo $this_rev_part_join_part_code; ?></a>
+					     							  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>" class="btn btn-xs btn-info"><?php echo $this_rev_part_join_part_code; ?></a>
 													  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>">
 														<?php echo $this_rev_part_join_name_EN; if (($this_rev_part_join_name_CN!='')&&($this_rev_part_join_name_CN!='中文名')) { echo " / " . $this_rev_part_join_name_CN; }?>
 													  </a>
 													</td>
 													<td>
-													  <a class="btn btn-warning">
+													  <a class="btn btn-xs btn-warning">
 													    <?php echo $this_rev_part_join_rev_num; ?>
 													  </a>
 													</td>
@@ -1251,7 +1251,7 @@ pagehead($page_id);
 					 			  	</a>
 					 			  </td>
 					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-warning" title="Rev #: <?php echo $rev_part_join_revision_ID; ?>">
+					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-xs btn-warning" title="Rev #: <?php echo $rev_part_join_revision_ID; ?>">
 					 			  		<?php echo $rev_part_join_rev_num; ?>
 					 			  	</a>
 					 			  </td>

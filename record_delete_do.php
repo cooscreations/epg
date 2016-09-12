@@ -29,6 +29,10 @@ $id = $_REQUEST['id'];
 $table_name = $_REQUEST['table_name'];
 $src_page = $_REQUEST['src_page'];
 $update_note = "Marking record as deleted in the system.";
+$add_URL_vars = '';
+if ($src_page == 'purchase_order_view.php') {
+	$add_URL_vars = "&id=" . $_REQUEST['PO_ID'];
+}
 
 $delete_SQL = "UPDATE `".$table_name."` set `record_status`=0 WHERE `ID` = '".$id."' ";
 
@@ -45,7 +49,7 @@ if (mysqli_query($con, $delete_SQL)) {
 			// AWESOME! We added the change record to the database
 
 				// regular add - send them to the revisions list for that part
-            header("Location: ".$src_page."?msg=OK&action=delete");
+            header("Location: ".$src_page."?msg=OK&action=delete" . $add_URL_vars);
 
 			exit();
 

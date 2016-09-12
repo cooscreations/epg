@@ -123,21 +123,22 @@ if (isset($_REQUEST['year'])) {
 					?>
 
 
+					 <?php
+					 add_button('0', 'purchase_order_add.php');
+					 ?>
+
 				<div class="col-md-12">
 
     <div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
-					 	<tr >
-							<th class="text-left" colspan="5">
-								<a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
-							</th>
-						</tr>
 						 <tr>
-							<th><a href="purchase_orders.php?sort=PO_number&dir=ASC<?php echo $add_URL_vars_year; ?>">P.O. number</a></th>
-							<th><a href="purchase_orders.php?sort=supplier_ID&dir=ASC<?php echo $add_URL_vars_year; ?>">Supplier</a></th>
-							<th><a href="purchase_orders.php?sort=created_date&dir=DESC<?php echo $add_URL_vars_year; ?>">Created Date</a></th>
-							<th># Batches</th>
+							<th class="text-center"><a href="purchase_orders.php?sort=PO_number&dir=ASC<?php echo $add_URL_vars_year; ?>">P.O. number</a></th>
+							<th class="text-center"><a href="purchase_orders.php?sort=supplier_ID&dir=ASC<?php echo $add_URL_vars_year; ?>">Supplier</a></th>
+							<th class="text-center"><a href="purchase_orders.php?sort=created_date&dir=DESC<?php echo $add_URL_vars_year; ?>">Created Date</a></th>
+							<th class="text-center"># Items</th>
+							<th class="text-center">Total QTY</th>
+							<th class="text-center"># Batches</th>
 							<th class="text-center">Actions</th>
 						</tr>
 					  </thead>
@@ -263,12 +264,71 @@ if (isset($_REQUEST['year'])) {
 					    		<?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?>
 					    	</a>
 					    </td>
-					    <td>
+					    <td class="text-center">
 					    	<a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>">
 					    		<?php echo date("Y-m-d", strtotime($PO_created_date)); ?>
 					    	</a>
 					    </td>
-					    <td class="text-right">
+					    <td class="text-center"><?php 
+					    
+					    // 1. get list of P.O. items for this P.O. 
+					    
+					    $po_items_count 	= 0;
+					    $total_qty 			= 0;
+                        
+                        $get_purchase_order_items = "SELECT * FROM `purchase_order_items` WHERE `purchase_order_ID` ='" . $PO_ID . "' AND `record_status` = '2'";
+                        // echo '<h1>' . $get_purchase_order_items . '</h1>'; 
+                        $result_get_po_items = mysqli_query($con,$get_purchase_order_items);
+                        // while loop
+						while($row_get_po_items = mysqli_fetch_array($result_get_po_items)) {
+							$po_item_ID						= $row_get_po_items['ID'];
+							$po_item_purchase_order_ID		= $row_get_po_items['purchase_order_ID'];		// should = RECORD_ID for this PO
+							$po_item_part_revision_ID		= $row_get_po_items['part_revision_ID'];		// look this up!
+							$po_item_part_qty				= $row_get_po_items['part_qty'];
+							$po_item_record_status			= $row_get_po_items['record_status']; 			// should be 2
+							$po_item_item_notes				= $row_get_po_items['item_notes'];
+							$po_item_unit_price_USD			= $row_get_po_items['unit_price_USD'];
+							$po_item_unit_price_currency	= $row_get_po_items['unit_price_currency']; 	
+							$po_item_original_currency		= $row_get_po_items['original_currency'];		// look this up!
+							$po_item_original_rate			= $row_get_po_items['original_rate'];
+							
+							$total_qty = $total_qty + $po_item_part_qty;
+					    
+					    // 2. for each list item found, append the total QTY count
+					    
+					    	$po_items_count = $po_items_count + 1;
+					    
+					    }
+					    
+					    if ($po_items_count == 0) {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '" class="text-danger">';
+					    	echo number_format($po_items_count); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    else {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '">';
+					    	echo number_format($po_items_count); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    
+					    
+					    ?></td>
+					    <td class="text-center"><?php 
+					    
+					    if ($total_qty == 0) {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '" class="text-danger">';
+					    	echo number_format($total_qty); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    else {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '">';
+					    	echo number_format($total_qty); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    
+					    
+					    ?></td>
+					    <td class="text-center">
 					    <!-- COUNT BATCHES -->
 					    <?php
 					    	// count batches for this PO
@@ -280,13 +340,13 @@ if (isset($_REQUEST['year'])) {
 
 
 					    if ($total_batches == 0) {
-					    	echo '<a href="purchase_order_view.php?id=' . $row_get_POs['ID'] . '" class="text-danger">';
-					    	echo $total_batches;
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '" class="text-danger">';
+					    	echo number_format($total_batches);
 					    	echo '</a>';
 					    }
 					    else {
-					    	echo '<a href="purchase_order_view.php?id=' . $row_get_POs['ID'] . '">';
-					    	echo $total_batches;
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '">';
+					    	echo number_format($total_batches);
 					    	echo '</a>';
 					    }
 
@@ -372,17 +432,17 @@ if (isset($_REQUEST['year'])) {
 					  </tbody>
 					  <tfoot>
 						<tr>
-							<th class="text-left" colspan="4">
-								<a href="purchase_order_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a>
-							</th>
-							<th>TOTAL: <?php echo $PO_count; ?></th>
+							<th class="text-left">TOTAL: <?php echo $PO_count; ?></th>
+							<th colspan="6">&nbsp;</th>
 						</tr>
 					  </tfoot>
 
 					 </table>
 
 					 </div>
-
+					 <?php
+					 add_button('0', 'purchase_order_add.php');
+					 ?>
 
 					<!-- end: page -->
 				</section>

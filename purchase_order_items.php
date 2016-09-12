@@ -448,13 +448,18 @@ if (isset($_REQUEST['year'])) {
 								<!-- ********************************************************* -->
 						
                         	</td>
-                            <td><?php echo $PO_created_date; ?></td>
+                            <td><?php echo date("Y-m-d", strtotime($PO_created_date)); ?></td>
                             <td><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
                             <td>
                             	<a href="part_view.php?id=<?php echo $po_part_id; ?>" class="btn btn-info btn-xs" title="View Part Profile">
                             		<?php echo 
                             			$po_part_code; 
-                            		?></a> - <?php 
+                            		?></a>
+                            		
+                            		 - 
+                            		 
+                            	<a href="part_view.php?id=<?php echo $po_part_id; ?>" class="btn btn-default btn-xs" title="View Part Profile">
+                            		 <?php 
                             			echo $po_part_name_EN; 
                             			if (($po_part_name_CN != '')&&($po_part_name_CN != '中文名')) { 
                             				echo ' / ' . $po_part_name_CN; 
@@ -462,7 +467,10 @@ if (isset($_REQUEST['year'])) {
                             		?>
                             	</a>
                             	
-                            	<a class="btn btn-warning" title="Rev ID#: <?php echo $po_rev_id; ?>">Rev. #: <?php echo $po_rev_number; ?></a>
+                            	<span class="btn btn-xs btn-warning" title="Rev. ID#: <?php echo $po_rev_id; ?>">
+									<?php echo $po_rev_number; ?>
+								</span>
+                            	
                             	
 								<br />
                             	<?php echo nl2br($po_item_item_notes); ?>

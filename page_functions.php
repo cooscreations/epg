@@ -24,6 +24,13 @@
 			return $str;
 	}
 	
+	// WHAT IS THIS?:
+	function realStrip($input)
+	{
+		global $con;
+		return mysqli_real_escape_string($con, stripslashes(trim($input)));
+	}
+	
 	
 /* ****************************************************************** */
 /* ****************************************************************** */
@@ -1366,6 +1373,18 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 
 								<strong>Well done!</strong> You successfully added a record to the database.
 
+								<?php }
+								
+								if ($_REQUEST['action'] == 'add_line_item') { ?>
+
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-check fa-stack-1x"></i>
+								</span>
+
+
+								<strong>Well done!</strong> You successfully added a new line item to this Purchase Order.
+
 								<?php } ?>
 
 								<!--  UPDATE -->
@@ -1421,7 +1440,21 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								<strong>Oh No!</strong> You must select a record from the list below in order to view a single record page.
 
 
-								<?php } ?>
+								<?php } 
+								
+								if ($_REQUEST['error'] == 'no_po_id') { ?>
+
+								<span class="fa-stack fa-3x">
+  									<i class="fa fa-circle-o fa-stack-2x"></i>
+  									<i class="fa fa-exclamation fa-stack-1x"></i>
+								</span>
+
+								<strong>Oh No!</strong> You must select an existing Purchase Order to do that.
+
+
+								<?php }
+								
+								?>
 								<!--  Login error -->
 								<?php if ($_REQUEST['error'] == 'invalid_login') { ?>
 
@@ -1445,7 +1478,8 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								<h4><?php echo $_REQUEST['field']?> already exists in the system.</h4>
 
 
-								<?php } ?>
+								<?php } 
+								?>
 							</div>
 						<?php
 						}

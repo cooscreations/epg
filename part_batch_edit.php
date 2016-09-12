@@ -43,12 +43,13 @@ if ($record_id != 0) {
 	while($row_get_part_batch = mysqli_fetch_array($result_get_part_batch)) {
 
 			// now print each record:
-			$part_batch_id = $row_get_part_batch['ID'];
-			$part_batch_po_id = $row_get_part_batch['PO_ID'];
-			$part_batch_part_id = $row_get_part_batch['part_ID'];
-			$part_batch_batch_number = $row_get_part_batch['batch_number'];
-			$part_batch_part_rev_id = $row_get_part_batch['part_rev'];
-			$part_batch_supplier_id = $row_get_part_batch['supplier_ID'];
+			$part_batch_id 				= $row_get_part_batch['ID'];
+			$part_batch_po_id 			= $row_get_part_batch['PO_ID'];
+			$part_batch_part_id 		= $row_get_part_batch['part_ID'];
+			$part_batch_batch_number 	= $row_get_part_batch['batch_number'];
+			$part_batch_part_rev_id 	= $row_get_part_batch['part_rev'];
+			$part_batch_supplier_id 	= $row_get_part_batch['supplier_ID'];
+			$part_batch_record_status 	= $row_get_batch['record_status'];
 
 	} // end while loop
 }
@@ -159,47 +160,13 @@ if ($record_id != 0) {
 												<div class="form-group">
 													<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
 													<div class="col-md-5">
-														<select data-plugin-selectTwo class="form-control populate" name="sup_ID" required>
-														<?php
-														// get batch list
-														$order_by = " ORDER BY `record_status` DESC";
-														$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = 2 " . $order_by; // SHOWING APPROVED VENDORS ONLY!
-														echo "<!-- DEBUG: " . $get_sup_list_SQL . " -->";
-														$result_get_sup_list = mysqli_query($con,$get_sup_list_SQL);
-														// while loop
-														while($row_get_sup_list = mysqli_fetch_array($result_get_sup_list)) {
+														<?php supplier_drop_down($part_batch_supplier_id); ?>
+													</div>
 
-																// now print each record:
-																$sup_id = $row_get_sup_list['ID'];
-																$sup_epg_supplier_ID = $row_get_sup_list['epg_supplier_ID'];
-																$sup_name_EN = $row_get_sup_list['name_EN'];
-																$sup_name_CN = $row_get_sup_list['name_CN'];
-																$sup_website = $row_get_sup_list['website'];
-																$sup_record_status = $row_get_sup_list['record_status'];
-																$sup_part_classification = $row_get_sup_list['part_classification'];
-																$sup_items_supplied = $row_get_sup_list['items_supplied'];
-																$sup_part_type_ID = $row_get_sup_list['part_type_ID'];
-																$sup_certifications = $row_get_sup_list['certifications'];
-																$sup_certification_expiry_date = $row_get_sup_list['certification_expiry_date'];
-																$sup_evaluation_date = $row_get_sup_list['evaluation_date'];
-																$sup_address_EN = $row_get_sup_list['address_EN'];
-																$sup_address_CN = $row_get_sup_list['address_CN'];
-																$sup_country_ID = $row_get_sup_list['country_ID'];
-																$sup_contact_person = $row_get_sup_list['contact_person'];
-																$sup_mobile_phone = $row_get_sup_list['mobile_phone'];
-																$sup_telephone = $row_get_sup_list['telephone'];
-																$sup_fax = $row_get_sup_list['fax'];
-																$sup_email_1 = $row_get_sup_list['email_1'];
-																$sup_email_2 = $row_get_sup_list['email_2'];
-
-																?>
-																<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $part_batch_supplier_id) { ?> selected="selected"<?php } ?>>
-																	<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
-																</option>
-																<?php
-															}
-															?>
-														</select>
+												<div class="form-group">
+													<label class="col-md-3 control-label">Record Status:</label>
+													<div class="col-md-5">
+														<?php record_status_drop_down($part_batch_record_status); ?>
 													</div>
 
 

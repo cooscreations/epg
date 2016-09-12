@@ -72,10 +72,10 @@ pagehead($page_id);
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					  <thead>
 					  <tr>
-					    <th rowspan="2">Part #</th>
-					    <th rowspan="2">Part Rev.</th>
-					    <th rowspan="2">Part Name EN</th>
-					    <th rowspan="2">中文名</th>
+					    <th rowspan="2" class="text-center">Part #</th>
+					    <th rowspan="2" class="text-center">Part Rev.</th>
+					    <th rowspan="2" class="text-center">Part Name EN</th>
+					    <th rowspan="2" class="text-center">中文名</th>
 					    <th class="dark center" colspan="3">TOTAL</th>
 					    <th class="success center" colspan="2">USEFUL</th>
 					    <th class="warning center" colspan="2">QUARANTINE</th>
@@ -258,10 +258,10 @@ pagehead($page_id);
 					if ($show_this_row == 1) { // OK to display:
 					  ?>
 					    <tr>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
-					    <td><span class="btn btn-warning" title="Rev. #: <?php echo $rev_id; ?>"><?php echo $rev_number; ?></span></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
+					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
+					    <td class="text-center"><span class="btn btn-xs btn-warning" title="Rev. #: <?php echo $rev_id; ?>"><?php echo $rev_number; ?></span></td>
+					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
+					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
 					    if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
 					    	echo $part_name_CN;
 					    }

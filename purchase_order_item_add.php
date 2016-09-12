@@ -23,49 +23,33 @@ if (!isset($_SESSION['username'])) {
 
 $page_id = 99;
 
-// pull the header and template stuff:
-pagehead($page_id);
+$PO_id = 0;
 
-$record_id = 0;
-
-if (isset($_REQUEST['id'])) {
-	$record_id = $_REQUEST['id'];
+if (isset($_REQUEST['PO_ID'])) {
+	$PO_id 		= $_REQUEST['PO_ID'];
+	$record_id 	= $PO_id;
+	// echo "it's set!";
 }
 else {
-	header("Location: purchase_order_items.php?msg=NG&action=view&error=no_id");
+	header("Location: purchase_orders.php?msg=NG&action=view&error=no_po_id");
 	exit();
 }
 
+// pull the header and template stuff:
+pagehead($page_id);
 
-if ($record_id != 0) {
 
-	$get_purchase_order_items = "SELECT * FROM `purchase_order_items` WHERE `ID` = '" . $record_id . "'";
-	// echo '<h1>' . $get_purchase_order_items . '</h1>'; 
-	$result_get_po_items = mysqli_query($con,$get_purchase_order_items);
-	// while loop
-	while($row_get_po_items = mysqli_fetch_array($result_get_po_items)) {
-		$po_item_ID						= $row_get_po_items['ID'];
-		$po_item_purchase_order_ID		= $row_get_po_items['purchase_order_ID'];		// look this up!
-		$po_item_part_revision_ID		= $row_get_po_items['part_revision_ID'];		// look this up!
-		$po_item_part_qty				= $row_get_po_items['part_qty'];
-		$po_item_record_status			= $row_get_po_items['record_status']; 			// should be 2
-		$po_item_item_notes				= $row_get_po_items['item_notes'];
-		$po_item_unit_price_USD			= $row_get_po_items['unit_price_USD'];
-		$po_item_unit_price_currency	= $row_get_po_items['unit_price_currency']; 	
-		$po_item_original_currency		= $row_get_po_items['original_currency'];		// look this up!
-		$po_item_original_rate			= $row_get_po_items['original_rate'];
+if ($PO_id != 0) {
 	
-		$total_qty = $total_qty + $po_item_part_qty;	
-	
-		// GET THE ASSOCIATED PO:
-	
-		$get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $po_item_purchase_order_ID;
+		$get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $PO_id;
+		// debug
+		// echo "<h1>SQL: ".$get_PO_SQL."</h1>";
 		$result_get_PO = mysqli_query($con,$get_PO_SQL);
 		// while loop
 		while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 
 				// now print each record:
-				$PO_id 						= $row_get_PO['ID'];
+				$PO_id 						= $row_get_PO['ID']; 						// should already have this from REQUEST[]
 				$PO_number 					= $row_get_PO['PO_number'];
 				$PO_created_date 			= $row_get_PO['created_date'];
 				$PO_description 			= $row_get_PO['description'];
@@ -127,82 +111,7 @@ if ($record_id != 0) {
 		} // end while loop
 	
 	
-		
-		if ($PO_default_currency_ID != $po_item_original_currency) {
-			// CURRENCY NEEDS ADJUSTING!
-			echo '<h1>WARNING - CURRENCY (ID# ' . $po_item_original_currency . ') DOES NOT MATCH DEFAULT PO CURRENCY (ID# ' . $PO_default_currency_ID . ')!</h1>';
-		
-			// curencies don't match - let's fix it!
-			// CONVERT ALL TO DOLLARS (PO AND PO LINE ITEM)
-		
-			// now get the currency info
-			$get_po_item_currency_SQL = "SELECT * FROM `currencies` WHERE `ID` ='" . $po_item_original_currency . "'";
-			// debug:
-			// echo '<h3>'.$get_po_item_currency_SQL.'<h3>';
-			$result_get_po_item_currency = mysqli_query($con,$get_po_item_currency_SQL);
-				// while loop
-				while($row_get_po_item_currency = mysqli_fetch_array($result_get_po_item_currency)) {
 
-					// now print each result to a variable:
-					$po_item_currency_ID 			= $row_get_po_item_currency['ID'];
-					$po_item_currency_name_EN		= $row_get_po_item_currency['name_EN'];
-					$po_item_currency_name_CN		= $row_get_po_item_currency['name_CN'];
-					$po_item_currency_one_USD_value	= $row_get_po_item_currency['one_USD_value'];
-					$po_item_currency_symbol		= $row_get_po_item_currency['symbol'];
-					$po_item_currency_abbreviation	= $row_get_po_item_currency['abbreviation'];
-					$po_item_currency_record_status	= $row_get_po_item_currency['record_status'];
-				
-					// OK, now convert to dollars
-					// $po_item_currency_USD_value = ($po_item_unit_price_currency / $po_item_currency_one_USD_value);
-				
-					// NOW CONVERT IT BACK TO PO DEFAULT RATE
-					// $po_item_unit_price_currency = ($po_item_unit_price_currency * $PO_default_currency_one_USD_value);
-				
-					// IDEAL WORLD - now update the database - update line item to match default PO currency
-					// // //
-				}
-		
-			}
-	
-			// NOW DO THE TOTALS CALCULATIONS
-			$line_total = ($po_item_unit_price_currency * $po_item_part_qty);	
-			$subtotal = $subtotal + $line_total;
-	
-			// get part revision info:
-			$get_po_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` ='" . $po_item_part_revision_ID . "'";
-			// debug:
-			// echo '<h2>'.$get_po_part_rev_SQL . '</h2>'; 
-			$result_get_po_part_rev = mysqli_query($con,$get_po_part_rev_SQL);
-			// while loop
-			while($row_get_po_part_rev = mysqli_fetch_array($result_get_po_part_rev)) {
-
-				// now print each record:
-				$po_rev_id 			= $row_get_po_part_rev['ID'];
-				$po_rev_part_id 	= $row_get_po_part_rev['part_ID'];
-				$po_rev_number 		= $row_get_po_part_rev['revision_number'];
-				$po_rev_remarks 	= $row_get_po_part_rev['remarks'];
-				$po_rev_date 		= $row_get_po_part_rev['date_approved'];
-				$po_rev_user 		= $row_get_po_part_rev['user_ID'];
-
-			}
-		
-			// now get the part info
-			$get_po_part_SQL = "SELECT * FROM `parts` WHERE `ID` = '" . $po_rev_part_id . "'";
-			// debug:
-			// echo '<h3>' . $get_po_part_SQL . '</h3>'; 
-			$result_get_po_part = mysqli_query($con,$get_po_part_SQL);
-			// while loop
-			while($row_get_po_part = mysqli_fetch_array($result_get_po_part)) {
-
-				// now print each result to a variable:
-				$po_part_id 		= $row_get_po_part['ID'];
-				$po_part_code 		= $row_get_po_part['part_code'];
-				$po_part_name_EN 	= $row_get_po_part['name_EN'];
-				$po_part_name_CN 	= $row_get_po_part['name_CN'];
-
-			}
-
-	}
 }
 
 ?>
@@ -223,9 +132,9 @@ if ($record_id != 0) {
 										<a href="purchase_orders.php">All P.O.s</a>
 									</li>
 									<li>
-										<a href="purchase_order_view.php?id=<?php echo $po_item_purchase_order_ID; ?>" title="Visit P.O. number <?php echo $PO_number; ?>">Original Purchase Order</a>
+										<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>" title="Visit P.O. number <?php echo $PO_number; ?>">Original Purchase Order</a>
 									</li>
-								<li><span>Edit Purchase Order Item</span></li>
+								<li><span>Add Purchase Order Item</span></li>
 							</ol>
 
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
@@ -238,7 +147,7 @@ if ($record_id != 0) {
 						<div class="col-md-12">
 
 						<!-- START THE FORM! -->
-						<form class="form-horizontal form-bordered" action="purchase_order_item_edit_do.php" method="post">
+						<form class="form-horizontal form-bordered" action="purchase_order_item_add_do.php" method="post">
 
 							<section class="panel">
 								<header class="panel-heading">
@@ -254,7 +163,7 @@ if ($record_id != 0) {
 									<div class="form-group">
 										<label class="col-md-3 control-label">P.O. ID:</label>
 										<div class="col-md-5">
-											<?php purchase_orders_drop_down($po_item_purchase_order_ID); ?>
+											<?php purchase_orders_drop_down($PO_id); ?>
 										</div>
 										
 										<div class="col-md-1">
@@ -266,7 +175,7 @@ if ($record_id != 0) {
 									<div class="form-group">
 										<label class="col-md-3 control-label">Part Revision #:</label>
 										<div class="col-md-5">
-											<?php part_rev_drop_down($po_item_part_revision_ID); ?>
+											<?php part_rev_drop_down(0); ?>
 										</div>
 										
 										<div class="col-md-1">

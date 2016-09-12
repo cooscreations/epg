@@ -65,6 +65,10 @@ pagehead($page_id); ?>
     ?>
 
     <!-- start: page -->
+    
+    <?php
+	add_button(0, 'supplier_add');
+	?>
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-condensed mb-none">
@@ -152,11 +156,19 @@ pagehead($page_id); ?>
 					  ?>
 
             <tr>
-            	<td><?php echo $sup_internal_ID; ?></td>
+            	<td><?php 
+            	
+            		echo '<span';
+            		if ($sup_internal_ID == 0) { echo ' class="text-danger" title="Internal ID number not entered. Please update this record!"'; }
+            		echo '>';
+            		echo $sup_internal_ID; 
+            		echo '</span>';
+            		
+            	?></td>
                 <td><a href="supplier_view.php?id=<?php echo $sup_ID; ?>"><?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></a></td>
                 <!-- <td class="<?php echo $sup_status_color_code; ?>"> -->
                 <td>
-                <button type="button" class="btn btn-<?php echo $sup_status_color_code; ?> m-xs" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> 
+                <button type="button" class="btn btn-xs btn-<?php echo $sup_status_color_code; ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> 
                 / <?php echo $sup_status_name_CN; }?>"><i class="fa <?php echo $sup_status_icon; ?>"></i> </button>
                 
                 
@@ -197,9 +209,9 @@ pagehead($page_id); ?>
                 <td class="text-center" width="20%">
                     <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
                     <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
-                    <a href="supplier_view.php?id=<?php echo $sup_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-eye"></i></a>
-                    <a href="supplier_edit.php?id=<?php echo $sup_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-					<a href="record_delete_do.php?table_name=suppliers&src_page=suppliers.php&id=<?php echo $sup_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+                    <a href="supplier_view.php?id=<?php echo $sup_ID; ?>" type="button" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i></a>
+                    <a href="supplier_edit.php?id=<?php echo $sup_ID; ?>" type="button" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></a>
+					<a href="record_delete_do.php?table_name=suppliers&src_page=suppliers.php&id=<?php echo $sup_ID; ?>" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
             </tr>
 
@@ -211,13 +223,15 @@ pagehead($page_id); ?>
 					  ?>
 
             <tr>
-                <th colspan="8">TOTAL: <?php echo $sup_count; ?></th>
-                <th class="text-center"><a href="supplier_add.php" class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
+                <th colspan="9" class="text-left">TOTAL: <?php echo $sup_count; ?></th>
             </tr>
-
-
         </table>
     </div>
+    
+    <?php
+	add_button(0, 'supplier_add');
+	?>
+    
     <!-- end: page -->
 </section>
 

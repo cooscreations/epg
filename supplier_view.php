@@ -305,7 +305,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
         <div class="col-md-8 col-lg-9">
 
         <div class="row">
-
+          <section class="panel">
             <header class="panel-heading">
                 <div class="panel-actions">
                     <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
@@ -343,13 +343,522 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
                             <td><?php record_status($sup_record_status); ?></td>
                         </tr>
                     </table>
+                </div><!-- resonsive table div -->
+
+            </div><!-- panel body -->
+            
+            
+            			  <div class="panel-footer">
+							<div class="text-right">
+								:)
+							</div>
+						  </div>
+            
+            
+		  </section>
+        </div><!-- row -->
+
+        <div class="clearfix">&nbsp;</div>
+
+		<!-- 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		              START SUPPLIER P.O. LIST SECTION 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		-->
+		
+		<div class="row">
+		  <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                 </div>
 
-            </div>
+                <h2 class="panel-title">Purchase Orders From <?php echo $sup_en; if (($sup_cn!='') && ($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></h2>
+            </header>
+            
+            
+						<div class="panel-body">
+		
+ 					<?php
+					 add_button($record_id, 'purchase_order_add.php', 'supplier_ID', 'Click here to add a new purchase order to this vendor record');
+					 ?>
 
-        </div>
+				<div class="col-md-12">
 
-        </div>
+    <div class="table-responsive">
+					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+					 <thead>
+						 <tr>
+							<th class="text-center"><a href="supplier_view.php?id=<?php echo $record_id; ?>&sort=PO_number&dir=ASC<?php echo $add_URL_vars_year; ?>">P.O. number</a></th>
+							<th class="text-center"><a href="supplier_view.php?id=<?php echo $record_id; ?>&sort=created_date&dir=DESC<?php echo $add_URL_vars_year; ?>">Created Date</a></th>
+							<th class="text-center"># Items</th>
+							<th class="text-center">Total QTY</th>
+							<th class="text-center"># Batches</th>
+							<th class="text-center">Actions</th>
+						</tr>
+					  </thead>
+					  <tbody>
+
+					  <?php
+					  if (isset($_REQUEST['sort'])) {
+					  	$order_by = " ORDER BY `" . $_REQUEST['sort'] . "` " . $_REQUEST['dir'] . "";
+					  }
+					  else {
+					  	$order_by = " ORDER BY  `purchase_orders`.`PO_number` DESC";
+					  }
+
+					  $add_SQL = "";
+
+					  if (isset($_REQUEST['year'])) {
+
+					  	if ($_REQUEST['year'] == 'all') {
+					  		$add_SQL = ""; // SHOW ALL YEARS!
+					  	}
+					  	else {
+					  		$add_SQL = " AND `created_date` >  '" . $_REQUEST['year'] . "-01-01 00:00:00' AND `created_date` <  '" . ($_REQUEST['year'] + 1) . "-01-01 00:00:00'";
+					  	}
+					  }
+					  else {
+					  		// by default, we will just show this year!
+					  		$add_SQL = " AND `created_date` >  '" . date("Y") . "-01-01 00:00:00' AND `created_date` <  '" . (date("Y") + 1) . "-01-01 00:00:00'";
+					  }
+
+					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE `supplier_ID` = '" . $record_id . "' AND `record_status` =2" . $add_SQL . $order_by;
+					  // echo $get_mats_SQL;
+
+					  $PO_count 		= 0;
+					  $total_batches 	= 0;
+					    
+					  $po_items_count 	= 0;
+					  $total_qty 		= 0;
+
+					  $result_get_POs = mysqli_query($con,$get_POs_SQL);
+					  // while loop
+					  while($row_get_POs = mysqli_fetch_array($result_get_POs)) {
+
+					  		// now assign the results to the vars
+							$PO_ID = $row_get_POs['ID'];
+							$PO_number = $row_get_POs['PO_number'];
+							$PO_created_date = $row_get_POs['created_date'];
+							$PO_description = $row_get_POs['description'];
+							$PO_record_status = $row_get_POs['record_status'];
+							$PO_supplier_ID = $row_get_POs['supplier_ID'];
+							$PO_created_by = $row_get_POs['created_by'];
+
+							// NO NEED TO GET SUPPLIER INFO AS THIS IS THE SUPPLIER PAGE!
+
+					  ?>
+
+					  <tr>
+					    <td><a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>"><?php echo $PO_number; ?></a></td>
+					    <td class="text-center">
+					    	<a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>">
+					    		<?php echo date("Y-m-d", strtotime($PO_created_date)); ?>
+					    	</a>
+					    </td>
+					    <td class="text-center"><?php 
+					    
+					    // 1. get list of P.O. items for this P.O. 
+					    
+					    $po_items_count 	= 0;
+					    $total_qty 			= 0;
+                        
+                        $get_purchase_order_items = "SELECT * FROM `purchase_order_items` WHERE `purchase_order_ID` ='" . $PO_ID . "' AND `record_status` = '2'";
+                        // echo '<h1>' . $get_purchase_order_items . '</h1>'; 
+                        $result_get_po_items = mysqli_query($con,$get_purchase_order_items);
+                        // while loop
+						while($row_get_po_items = mysqli_fetch_array($result_get_po_items)) {
+							$po_item_ID						= $row_get_po_items['ID'];
+							$po_item_purchase_order_ID		= $row_get_po_items['purchase_order_ID'];		// should = RECORD_ID for this PO
+							$po_item_part_revision_ID		= $row_get_po_items['part_revision_ID'];		// look this up!
+							$po_item_part_qty				= $row_get_po_items['part_qty'];
+							$po_item_record_status			= $row_get_po_items['record_status']; 			// should be 2
+							$po_item_item_notes				= $row_get_po_items['item_notes'];
+							$po_item_unit_price_USD			= $row_get_po_items['unit_price_USD'];
+							$po_item_unit_price_currency	= $row_get_po_items['unit_price_currency']; 	
+							$po_item_original_currency		= $row_get_po_items['original_currency'];		// look this up!
+							$po_item_original_rate			= $row_get_po_items['original_rate'];
+							
+							$total_qty = $total_qty + $po_item_part_qty;
+					    
+					    // 2. for each list item found, append the total QTY count
+					    
+					    	$po_items_count = $po_items_count + 1;
+					    
+					    }
+					    
+					    if ($po_items_count == 0) {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '" class="text-danger">';
+					    	echo number_format($po_items_count); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    else {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '">';
+					    	echo number_format($po_items_count); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    
+					    
+					    ?></td>
+					    <td class="text-center"><?php 
+					    
+					    if ($total_qty == 0) {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '" class="text-danger">';
+					    	echo number_format($total_qty); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    else {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '">';
+					    	echo number_format($total_qty); // THIS IS THE TOTAL NUMBER OF LINES IN THE P.O.
+					    	echo '</a>';
+					    }
+					    
+					    
+					    ?></td>
+					    <td class="text-center">
+					    <!-- COUNT BATCHES -->
+					    <?php
+					    	// count batches for this PO
+                        	$count_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_ID;
+                        	$count_batches_query = mysqli_query($con, $count_batches_sql);
+                        	$count_batches_row = mysqli_fetch_row($count_batches_query);
+                        	$total_batches = $count_batches_row[0];
+
+
+
+					    if ($total_batches == 0) {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '" class="text-danger">';
+					    	echo number_format($total_batches);
+					    	echo '</a>';
+					    }
+					    else {
+					    	echo '<a href="purchase_order_view.php?id=' . $PO_ID . '">';
+					    	echo number_format($total_batches);
+					    	echo '</a>';
+					    }
+
+					    ?>
+					    <!-- END COUNT BATCHES -->
+					    </td>
+						<td class="text-center">
+						
+						<!-- ********************************************************* -->
+						<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+						<!-- ********************************************************* -->
+						 
+						    <a class="modal-with-form btn btn-default" href="#modalForm_<?php echo $row_get_POs['ID']; ?>"><i class="fa fa-gear"></i></a>
+
+							<!-- Modal Form -->
+							<div id="modalForm_<?php echo $row_get_POs['ID']; ?>" class="modal-block modal-block-primary mfp-hide">
+								<section class="panel">
+									<header class="panel-heading">
+										<h2 class="panel-title">Admin Options</h2>
+									</header>
+									<div class="panel-body">
+									
+										<div class="table-responsive">
+										 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+										 <thead>
+											<tr>
+												<th class="text-left" colspan="2">Action</th>
+												<th>Decsription</th>
+											</tr>
+										  </thead>
+										  <tbody>
+											<tr>
+											  <td>EDIT</td>
+											  <td>
+											  <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
+											  <td>Edit this record</td>
+											</tr>
+											<tr>
+											  <td>DELETE</td>
+											  <td><a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a></td>
+											  <td>Delete this record</td>
+											</tr>
+											<tr>
+											  <td>ADD BATCH</td>
+											  <td><a href="part_batch_add.php?PO_ID=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus"></i></a></td>
+											  <td>Add a batch to P.O. # <?php echo $PO_number; ?></td>
+											</tr>
+										  </tbody>
+										  <tfoot>
+										  	<tr>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	</tr>
+										  </tfoot>
+										  </table>
+										</div><!-- end of responsive table -->	
+									
+									</div><!-- end panel body -->
+									<footer class="panel-footer">
+										<div class="row">
+											<div class="col-md-12 text-right">
+												<button class="btn btn-danger modal-dismiss"><i class="fa fa-times"></i> Cancel</button>
+											</div>
+										</div>
+									</footer>
+								</section>
+							</div>
+							
+						<!-- ********************************************************* -->
+						<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+						<!-- ********************************************************* -->
+								
+               			 </td>
+					  </tr>
+
+					  <?php
+
+					  $PO_count = $PO_count + 1;
+
+					  } // end while loop
+					  ?>
+					  </tbody>
+					  <tfoot>
+						<tr>
+							<th class="text-center">TOTAL ROWS: <?php echo $PO_count; ?></th>
+							<th class="text-center">&nbsp;</th>
+							<th class="text-center"><?php echo number_format($po_items_count); ?></th>
+							<th class="text-center"><?php echo number_format($total_qty); ?></th>
+							<th class="text-center"><?php echo number_format($total_batches); ?></th>
+							<th class="text-center">&nbsp;</th>
+						</tr>
+					  </tfoot>
+
+					 </table>
+					 </div>
+					 </div>
+					 <?php
+					 add_button($record_id, 'purchase_order_add.php', 'supplier_ID', 'Click here to add a new purchase order to this vendor record');
+					 ?>
+					 
+
+            </div><!-- panel body -->
+            
+            			  <div class="panel-footer">
+							<div class="text-left">
+								<a class="text-uppercase text-muted" href="purchase_orders.php">(View All Purchase Orders)</a>
+							</div>
+						  </div>
+            
+            
+		  </section>
+        </div><!-- row -->
+
+        <div class="clearfix">&nbsp;</div>
+		<!-- 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		              END SUPPLIER P.O. LIST SECTION 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		-->
+
+		<!-- 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		              START SUPPLIER BATCH LIST SECTION 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		-->
+
+		<div class="row">
+		  <section class="panel">
+            <header class="panel-heading">
+                <div class="panel-actions">
+                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+                </div>
+
+                <h2 class="panel-title">Batches From <?php echo $sup_en; if (($sup_cn!='') && ($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></h2>
+            </header>
+            
+            
+						<div class="panel-body">
+			 
+			<?php add_button($record_id, 'part_batch_add', 'supplier_ID', 'Click here to add a new batch to this vendor record'); ?>
+
+			<div class="table-responsive">
+			 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+			 <thead>
+				  <tr>
+					<th>Batch Number</th>
+					<th>Part Code</th>
+					<th>Rev.</th>
+					<th>Name</th>
+					<th>名字</th>
+					<th>QTY Rec.</th>
+				  </tr>
+			  </thead>
+			  <tbody>
+				<?php
+
+			  $batch_count = 0;
+			  $movement_in_total = 0;
+
+			  // GET BATCHES:
+				$get_batches_SQL = "SELECT * FROM `part_batch` WHERE `supplier_ID` =" . $record_id . "";
+				// debug
+				// echo $get_batches_SQL; 
+				$result_get_batches = mysqli_query($con,$get_batches_SQL);
+				// while loop
+				while($row_get_batches = mysqli_fetch_array($result_get_batches)) {
+
+					// now print each record to a variable:
+					$batch_id = $row_get_batches['ID'];
+					$batch_part_ID = $row_get_batches['part_ID'];
+					$batch_number = $row_get_batches['batch_number'];
+					$batch_part_rev = $row_get_batches['part_rev'];
+
+
+					// get part revision info:
+					$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $batch_part_rev;
+					$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+					// while loop
+					while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+
+						// now print each record:
+						$rev_id = $row_get_part_rev['ID'];
+						$rev_part_id = $row_get_part_rev['part_ID'];
+						$rev_number = $row_get_part_rev['revision_number'];
+						$rev_remarks = $row_get_part_rev['remarks'];
+						$rev_date = $row_get_part_rev['date_approved'];
+						$rev_user = $row_get_part_rev['user_ID'];
+
+					}
+
+					// now get the part info
+					$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $batch_part_ID;
+					$result_get_part = mysqli_query($con,$get_part_SQL);
+					// while loop
+					while($row_get_part = mysqli_fetch_array($result_get_part)) {
+
+						// now print each result to a variable:
+						$part_id = $row_get_part['ID'];
+						$part_code = $row_get_part['part_code'];
+						$part_name_EN = $row_get_part['name_EN'];
+						$part_name_CN = $row_get_part['name_CN'];
+
+					}
+
+			  ?>
+
+			  <tr<?php if ($batch_id == $change_record_id) { ?> class="success"<?php } ?>>
+				<td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
+				<td>
+					<a href="part_view.php?id=<?php echo $batch_part_ID; ?>" class="btn btn-info btn-xs" title="View Part Profile"><?php echo $part_code; ?></a>
+				</td>
+				<td>
+					<span class="btn btn-warning btn-xs" title="Rev. ID#: <?php echo $rev_id; ?>">
+						<?php echo $rev_number; ?>
+					</span>
+				</td>
+				<td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
+				<td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php 
+				if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
+					echo $part_name_CN; 
+				}
+				
+				?></a></td>
+				<td>
+				<!-- get first batch count: -->
+				<?php
+				// now use earliest record in the DB to find the QTY
+					$get_first_batch_qty_SQL = "SELECT * FROM  `part_batch_movement` WHERE `part_batch_ID` = " . $batch_id . " AND `amount_in` > 0 ORDER BY `date` ASC LIMIT 0, 1";
+					$result_get_first_batch_qty = mysqli_query($con,$get_first_batch_qty_SQL);
+
+
+					$movement_in = 0; // (RESET VARIABLE)
+
+					// while loop
+					while($row_get_first_batch_qty = mysqli_fetch_array($result_get_first_batch_qty)) {
+
+						// now print each record to a variable:
+						$movement_in = $row_get_first_batch_qty['amount_in'];
+					}
+
+					if ($movement_in == '') { $movement_in = 0; }
+
+					// now append the total part count
+					$movement_in_total = $movement_in_total + $movement_in;
+				?>
+
+				<a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo number_format($movement_in); ?></a>
+
+				<!-- end first batch count -->
+				</td>
+			  </tr>
+
+			  <?php
+
+			  $batch_count = $batch_count + 1;
+
+			  }
+
+			  ?>
+			  </tbody>
+
+			  <tfoot>
+				  <tr>
+					<th colspan="5">TOTAL ROWS: <?php echo $batch_count; ?></th>
+					<th><?php echo number_format($movement_in_total); ?></th>
+				  </tr>
+			  </tfoot>
+
+			 </table>
+			 </div>
+			
+			 <?php add_button($record_id, 'part_batch_add', 'supplier_ID', 'Click here to add a new batch to this vendor record'); ?>
+
+						<!-- now close the panel -->
+						</div>
+						
+						
+						<div class="panel-footer">
+							<div class="text-left">
+								<a class="text-uppercase text-muted" href="batch_log.php">(View All Batches)</a>
+							</div>
+						  </div>
+						
+						
+					</section>
+				</div>
+			</div> <!-- end row! -->
+
+
+
+		<!-- 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		              END SUPPLIER BATCH LIST SECTION 
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		-->
+
+
+        </div><!-- end of sizing div? md-8 / lg-9 -->
 
 
 		</div>

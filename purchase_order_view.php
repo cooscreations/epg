@@ -724,7 +724,12 @@ pagehead($page_id);
                             	<a href="part_view.php?id=<?php echo $po_part_id; ?>" class="btn btn-info btn-xs" title="View Part Profile">
                             		<?php echo 
                             			$po_part_code; 
-                            		?></a> - <?php 
+                            		?></a> 
+                            		
+                            		- 
+                            		
+                            	<a href="part_view.php?id=<?php echo $po_part_id; ?>" class="btn btn-default btn-xs" title="View Part Profile">
+                            		<?php 
                             			echo $po_part_name_EN; 
                             			if (($po_part_name_CN != '')&&($po_part_name_CN != '中文名')) { 
                             				echo ' / ' . $po_part_name_CN; 
@@ -732,7 +737,9 @@ pagehead($page_id);
                             		?>
                             	</a>
                             	
-                            	<a class="btn btn-warning" title="Rev ID#: <?php echo $po_rev_id; ?>">Rev. #: <?php echo $po_rev_number; ?></a>
+                            	<span class="btn btn-xs btn-warning" title="Rev. ID#: <?php echo $rev_id; ?>">
+									<?php echo $po_rev_number; ?>
+								</span>
                             	
 								<br />
                             	<?php echo nl2br($po_item_item_notes); ?>
@@ -745,7 +752,7 @@ pagehead($page_id);
                             	echo $PO_default_currency_symbol;
                             	
                             	// LINE TOTALS!
-                            	echo number_format($line_total);
+                            	echo number_format($line_total, 2);
                             		
                             ?></td>
                         </tr>
@@ -1109,7 +1116,12 @@ pagehead($page_id);
 					    	</span>
 					    </td>
 					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_name_CN; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php 
+					    if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
+					    	echo $part_name_CN; 
+					    }
+					    
+					    ?></a></td>
 					    <td>
 					    <!-- get first batch count: -->
 					    <?php
@@ -1133,7 +1145,7 @@ pagehead($page_id);
 					  		$movement_in_total = $movement_in_total + $movement_in;
 						?>
 
-					    <a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $movement_in; ?></a>
+					    <a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo number_format($movement_in); ?></a>
 
 					    <!-- end first batch count -->
 					    </td>
@@ -1151,7 +1163,7 @@ pagehead($page_id);
 					  <tfoot>
 						  <tr>
 							<th colspan="5">TOTAL: <?php echo $batch_count; ?></th>
-							<th><?php echo $movement_in_total; ?></th>
+							<th><?php echo number_format($movement_in_total); ?></th>
 						  </tr>
 					  </tfoot>
 

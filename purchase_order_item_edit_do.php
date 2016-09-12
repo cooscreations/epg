@@ -40,15 +40,17 @@ $update_note = "Editing a purchase order item in the system.";
  
 // $po_remarks = nl2br(htmlentities($_REQUEST['remarks'], ENT_QUOTES, 'UTF-8'));
  
-$record_id 						= checkaddslashes($_REQUEST['id']);								//
-$po_id 							= checkaddslashes($_REQUEST['PO_ID']);							//
-$part_rev_ID 					= checkaddslashes($_REQUEST['part_rev_ID']);					//
-$item_qty 						= checkaddslashes($_REQUEST['amount']);							//
-$po_remarks 					= checkaddslashes($po_remarks);						//
-$po_record_status 				= checkaddslashes($_REQUEST['record_status']);					//
-$po_default_currency_rate 		= checkaddslashes($_REQUEST['po_item_currency_rate']);			//				
-$po_currency_id					= checkaddslashes($_REQUEST['currency_id']);					//
-$po_item_unit_price_currency 	= checkaddslashes($_REQUEST['po_item_unit_price_currency']);	//				
+$record_id 						= checkaddslashes($_REQUEST['id']);									//
+$po_id 							= checkaddslashes($_REQUEST['PO_ID']);								//
+$part_rev_ID 					= checkaddslashes($_REQUEST['part_rev_ID']);						//
+$item_qty 						= checkaddslashes($_REQUEST['amount']);								//
+// $po_remarks 					= checkaddslashes(nl2br(htmlentities($_REQUEST['remarks'], ENT_QUOTES, 'UTF-8')));	//
+$po_remarks 					= checkaddslashes(str_replace("<br />", "", nl2br($_REQUEST['remarks'])));		//
+// $po_remarks 					= str_replace("\n", "<br />", $_REQUEST['remarks']);				//
+$po_record_status 				= checkaddslashes($_REQUEST['record_status']);						//
+$po_default_currency_rate 		= checkaddslashes($_REQUEST['po_item_currency_rate']);				//				
+$po_currency_id					= checkaddslashes($_REQUEST['currency_id']);						//
+$po_item_unit_price_currency 	= checkaddslashes($_REQUEST['po_item_unit_price_currency']);		//				
 
 // now calculate the USD amount:
 if ($po_currency_id == 1) { // USD SELECTED
@@ -70,8 +72,8 @@ $edit_purchase_order_item_SQL = "UPDATE `purchase_order_items` SET
 `original_rate`='" . $po_default_currency_rate . "' 
 WHERE `ID` = '" . $record_id . "'";
 
-echo '<h1>SQL QUERY: ' . $edit_purchase_order_item_SQL . '</h1>';
-/*
+// echo '<h1>SQL QUERY: ' . $edit_purchase_order_item_SQL . '</h1>';
+
 if (mysqli_query($con, $edit_purchase_order_item_SQL)) {
 
 	// echo "UPDATE # " . $record_id . " OK";
@@ -106,5 +108,5 @@ if (mysqli_query($con, $edit_purchase_order_item_SQL)) {
 else {
 	echo "<h4>Failed to update existing purchase order with SQL: <br />" . $edit_purchase_order_item_SQL . "</h4>";
 }
-*/
+
 ?>

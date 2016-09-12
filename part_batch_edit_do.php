@@ -32,10 +32,11 @@ $batch_number = $_REQUEST['batch_number'];
 $user_ID = $_REQUEST['user_ID'];
 $date_added = $_REQUEST['date_added'] . " 00:00:00";
 $sup_ID = $_REQUEST['sup_ID'];
+$record_status = $_REQUEST['record_status'];
 
 $update_note = "Updating a part batch in the system.";
 
-$edit_part_batch_SQL = "UPDATE `part_batch` SET `PO_ID` = '".$PO_ID."', `part_rev` = '".$part_rev_ID."', `batch_number` = '".$batch_number."', `supplier_ID` = '".$sup_ID."' WHERE `ID` = '".$part_batch_id."' ";
+$edit_part_batch_SQL = "UPDATE `part_batch` SET `PO_ID` = '".$PO_ID."', `part_rev` = '".$part_rev_ID."', `batch_number` = '".$batch_number."', `supplier_ID` = '".$sup_ID."', `record_status` = '" . $record_status . "' WHERE `ID` = '".$part_batch_id."' ";
 
 if (mysqli_query($con, $edit_part_batch_SQL)) {
 

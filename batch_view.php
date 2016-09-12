@@ -40,11 +40,13 @@ else {
 		while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
 
 				// now print each record:
-				$batch_id 		= $row_get_batch['ID'];
-				$PO_ID 			= $row_get_batch['PO_ID'];
-				$part_ID 		= $row_get_batch['part_ID'];
-				$batch_number 	= $row_get_batch['batch_number'];
-				$part_rev 		= $row_get_batch['part_rev'];
+				$batch_id 				= $row_get_batch['ID'];
+				$PO_ID 					= $row_get_batch['PO_ID'];
+				$part_ID 				= $row_get_batch['part_ID'];
+				$batch_number 			= $row_get_batch['batch_number'];
+				$part_rev 				= $row_get_batch['part_rev'];
+				$batch_supplier_ID 		= $row_get_batch['supplier_ID'];
+				$batch_record_status 	= $row_get_batch['record_status'];
 
 				// GET PART DETAILS:
 				$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
@@ -112,6 +114,21 @@ else {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		// IF THE BATCH SUPPLIER IS NOT SET, BUT P.O. VENDOR IS SET, WE WILL NOW UPDATE THE BATCH RECORD AUTOMATICALLY:
+		// THIS IS POTENTIALLY DOUBLING-UP ON DATA!?!?!?
+		
+		if ($PO_supplier_ID != $batch_supplier_ID) {
+			$quick_update_batch_SQL = "UPDATE  `part_batch` SET  `supplier_ID` =  '" . $PO_supplier_ID . "' WHERE  `part_batch`.`ID` ='" . $batch_id . "';";
+			if (mysqli_query($con, $quick_update_batch_SQL)) {
+				$batch_supplier_ID = $PO_supplier_ID;
+			}
+			else {
+				echo "<h4>Failed to update existing part_batch record with SQL: <br />" . $quick_update_batch_SQL . "</h4>";
+			}
+		}
+		
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,6 +234,10 @@ pagehead($page_id);
 					 					    	</a>
 					 					    </td>
 					 					  </tr>
+					 					  <tr>
+					 					    <th>Supplier:</th>
+					 					    <td><?php get_supplier($batch_supplier_ID); ?></td>
+					 					  </tr>
 					 					</table>
 					 				</div>
 
@@ -256,7 +277,7 @@ pagehead($page_id);
 					 					  <tr>
 					 					    <th>Part Revision:</th>
 					 					    <td>
-					 					      <span class="btn btn-warning" title="Rev. #: <?php echo $rev_id; ?>">
+					 					      <span class="btn btn-xs btn-warning" title="Rev. #: <?php echo $rev_id; ?>">
 					 					    	<?php echo $rev_number; ?>
 					 					      </span>
 					 					    </td>
@@ -378,9 +399,7 @@ pagehead($page_id);
 								<div class="panel-body">
 
 
-					<div class="row">
-					 	<a href="part_movement_add.php?batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success text-left"><i class="fa fa-plus-square"></i></a>
-					 </div>
+					<?php add_button($record_id, 'part_movement_add', 'batch_id'); ?>
 
 
 
@@ -388,13 +407,13 @@ pagehead($page_id);
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					  <tr>
-					    <th>Date</th>
-					    <th>QTY In</th>
-					    <th>QTY Out</th>
-					    <th>Batch Balance</th>
-					    <th>Status</th>
-					    <th>Staff</th>
-					    <th>Remarks</th>
+					    <th class="text-center">Date</th>
+					    <th class="text-center">QTY In</th>
+					    <th class="text-center">QTY Out</th>
+					    <th class="text-center">Batch Balance</th>
+					    <th class="text-center">Status</th>
+					    <th class="text-center">Staff</th>
+					    <th class="text-center">Remarks</th>
 					  </tr>
 
 					  <!-- START DATASET -->
@@ -446,26 +465,15 @@ pagehead($page_id);
 								$mvmnt_status_color 	= $row_get_mvmnt_status['color'];
 						}
 
-					  // get user
-					  	$get_mvmnt_user_SQL = "SELECT * FROM  `users` WHERE  `ID` =" . $movement_user_ID;
-						$result_get_mvmnt_user = mysqli_query($con,$get_mvmnt_user_SQL);
-						// while loop
-						while($row_get_mvmnt_user = mysqli_fetch_array($result_get_mvmnt_user)) {
-								// now print each record:
-								$mvmnt_user_first_name 	= $row_get_mvmnt_user['first_name'];
-								$mvmnt_user_last_name 	= $row_get_mvmnt_user['last_name'];
-								$mvmnt_user_name_CN 	= $row_get_mvmnt_user['name_CN'];
-						}
-
 					// NOW LET'S DO THIS!
 
 					  ?>
 					  <tr<?php if ($batch_movement_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
-					    <td><?php echo $movement_date; ?></td>
-					    <td><?php if ($amount_in > 0) { echo $amount_in; } ?></td>
-					    <td><?php if ($amount_out > 0) { echo $amount_out; } ?></td>
-					    <td><?php echo $total_now; ?></td>
-					    <td>
+					    <td class="text-center"><?php echo date("Y-m-d", strtotime($movement_date)); ?></td>
+					    <td class="text-center"><?php if ($amount_in > 0) { echo number_format($amount_in); } ?></td>
+					    <td class="text-center"><?php if ($amount_out > 0) { echo number_format($amount_out); } ?></td>
+					    <td class="text-center"><?php echo number_format($total_now); ?></td>
+					    <td class="text-center">
 					    <?php if ($amount_in > 0) {
 					    ?>
 					    	<span class="button btn-xs btn-<?php echo $mvmnt_status_color; ?>"><i class="fa <?php echo $mvmnt_status_icon; ?>"></i> <?php echo $mvmnt_status_name_EN; ?> / <?php echo $mvmnt_status_name_CN; ?></span>
@@ -473,8 +481,8 @@ pagehead($page_id);
 					    else { ?>&nbsp;<?php }
 					    ?>
 					    </td>
-					    <td><a href="user_view.php?id=<?php echo $movement_user_ID; ?>"><?php echo $mvmnt_user_first_name; ?> <?php echo $mvmnt_user_last_name; if (($mvmnt_user_name_CN != '') && ($mvmnt_user_name_CN != '中文名')) { ?> / <?php echo $mvmnt_user_name_CN; } ?></a></td>
-					    <td><?php echo $movement_remarks; ?></td>
+					    <td class="text-center"><?php get_creator($movement_user_ID); ?></td>
+					    <td class="text-center"><?php echo $movement_remarks; ?></td>
 					  </tr>
 					  <?php
 
@@ -488,21 +496,19 @@ pagehead($page_id);
 
 					  <tr>
 					    <th>TOTAL ENTRIES: <?php echo $total_movements ;?></th>
-					    <th><?php echo $total_in; ?></th>
-					    <th><?php echo $total_out; ?></th>
-					    <th><?php echo $total_now; ?></th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
+					    <th class="text-center"><?php echo number_format($total_in); ?></th>
+					    <th class="text-center"><?php echo number_format($total_out); ?></th>
+					    <th class="text-center"><?php echo number_format($total_now); ?></th>
+					    <th class="text-center">&nbsp;</th>
+					    <th class="text-center">&nbsp;</th>
+					    <th class="text-center">&nbsp;</th>
 					  </tr>
 
 
 					 </table>
 					</div>
-
-					<div class="row">
-					 	<a href="part_movement_add.php?batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success text-left"><i class="fa fa-plus-square"></i></a>
-					 </div>
+					 
+					 			 <?php add_button($record_id, 'part_movement_add', 'batch_id'); ?>
 
 								<!-- now close the panel -->
 								</div>
