@@ -407,6 +407,7 @@ pagehead($page_id);
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					  <tr>
+					    <th class="text-center"><span class="btn btn-default"><i class="fa fa-gear"></i></span></th>
 					    <th class="text-center">Date</th>
 					    <th class="text-center">QTY In</th>
 					    <th class="text-center">QTY Out</th>
@@ -425,7 +426,7 @@ pagehead($page_id);
 					  $total_in = 0; // default
 					  $total_out = 0; // default
 
-					  	$get_batch_movement_SQL = "SELECT * FROM  `part_batch_movement` WHERE  `part_batch_ID` =" . $record_id . " ORDER BY `date` ASC";
+					  	$get_batch_movement_SQL = "SELECT * FROM  `part_batch_movement` WHERE  `part_batch_ID` =" . $record_id . " AND `record_status` = '2' ORDER BY `date` ASC";
 
 						$result_get_batch_movement = mysqli_query($con,$get_batch_movement_SQL);
 						// while loop
@@ -439,6 +440,7 @@ pagehead($page_id);
 								$movement_remarks 		= $row_get_batch_movement['remarks'];
 								$movement_user_ID 		= $row_get_batch_movement['user_ID'];
 								$movement_date 			= $row_get_batch_movement['date'];
+								$movement_record_status = $row_get_batch_movement['record_status'];
 
 								// now let's do the running total math:
 
@@ -469,6 +471,77 @@ pagehead($page_id);
 
 					  ?>
 					  <tr<?php if ($batch_movement_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
+					    <td class="text-center">
+					    
+					    
+					    <!-- ********************************************************* -->
+						<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+						<!-- ********************************************************* -->
+						 
+						    <a class="modal-with-form btn btn-default" href="#modalForm_<?php echo $batch_movement_id; ?>"><i class="fa fa-gear"></i></a>
+
+							<!-- Modal Form -->
+							<div id="modalForm_<?php echo $batch_movement_id; ?>" class="modal-block modal-block-primary mfp-hide">
+								<section class="panel">
+									<header class="panel-heading">
+										<h2 class="panel-title">Admin Options</h2>
+									</header>
+									<div class="panel-body">
+									
+										<div class="table-responsive">
+										 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+										 <thead>
+											<tr>
+												<th class="text-left" colspan="2">Action</th>
+												<th>Decsription</th>
+											</tr>
+										  </thead>
+										  <tbody>
+											<tr>
+											  <td>EDIT</td>
+											  <td>
+											  <a href="batch_movement_edit.php?id=<?php echo $batch_movement_id; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
+											  <td>Edit this record</td>
+											</tr>
+											<tr>
+											  <td>DELETE</td>
+											  <td><a href="record_delete_do.php?table_name=part_batch_movement&src_page=batch_view.php&id=<?php echo $batch_movement_id; ?>&batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a></td>
+											  <td>Delete this record</td>
+											</tr>
+											<tr>
+											  <td>ADD BATCH</td>
+											  <td><a href="part_movement_add.php?batch_id=<?php echo $record_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus"></i></a></td>
+											  <td>Add a batch movement to this batch</td>
+											</tr>
+										  </tbody>
+										  <tfoot>
+										  	<tr>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	</tr>
+										  </tfoot>
+										  </table>
+										</div><!-- end of responsive table -->	
+									
+									</div><!-- end panel body -->
+									<footer class="panel-footer">
+										<div class="row">
+											<div class="col-md-12 text-right">
+												<button class="btn btn-danger modal-dismiss"><i class="fa fa-times"></i> Cancel</button>
+											</div>
+										</div>
+									</footer>
+								</section>
+							</div>
+							
+						<!-- ********************************************************* -->
+						<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+						<!-- ********************************************************* -->
+					    
+					    
+					    
+					    </td>
 					    <td class="text-center"><?php echo date("Y-m-d", strtotime($movement_date)); ?></td>
 					    <td class="text-center"><?php if ($amount_in > 0) { echo number_format($amount_in); } ?></td>
 					    <td class="text-center"><?php if ($amount_out > 0) { echo number_format($amount_out); } ?></td>
@@ -495,6 +568,7 @@ pagehead($page_id);
 					  <!-- END DATASET -->
 
 					  <tr>
+					    <th>&nbsp;</th>
 					    <th>TOTAL ENTRIES: <?php echo $total_movements ;?></th>
 					    <th class="text-center"><?php echo number_format($total_in); ?></th>
 					    <th class="text-center"><?php echo number_format($total_out); ?></th>

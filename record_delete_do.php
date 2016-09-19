@@ -33,6 +33,9 @@ $add_URL_vars = '';
 if ($src_page == 'purchase_order_view.php') {
 	$add_URL_vars = "&id=" . $_REQUEST['PO_ID'];
 }
+else if ($src_page == 'batch_view.php') {
+	$add_URL_vars = "&id=" . $_REQUEST['batch_id'];
+}
 
 $delete_SQL = "UPDATE `".$table_name."` set `record_status`=0 WHERE `ID` = '".$id."' ";
 

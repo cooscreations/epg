@@ -2560,7 +2560,7 @@ function purchase_orders_drop_down($part_batch_po_id=0) {
 
 <select data-plugin-selectTwo class="form-control populate" name="PO_ID" required>
 			<?php
-			$get_PO_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` = 2";
+			$get_PO_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` = 2 ORDER BY `PO_number` ASC ";
 			$result_get_PO = mysqli_query($con,$get_PO_SQL);
 			// while loop
 			while($row_get_PO = mysqli_fetch_array($result_get_PO)) {

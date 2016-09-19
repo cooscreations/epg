@@ -54,7 +54,7 @@ pagehead($page_id); ?>
 					<!-- start: page -->
 					<h1>Welcome</h1>
 					<div class="alert alert-success">
-						<strong>UPDATE:</strong> This is now being dynamically generate in order to enable page authentication / permission access.
+						<strong>UPDATE:</strong> This is now being dynamically generated in order to enable page authentication / permission access.
 					</div>
 
 
@@ -78,6 +78,8 @@ pagehead($page_id); ?>
 									<table class="table table-bordered table-striped table-condensed mb-none">
 										<thead>
 											<tr>
+												<th class="text-center"><span class="btn btn-default"><i class="fa fa-cog"></i></span></th>
+												<th class="text-center"><span class="btn btn-info"><i class="fa fa-info"></i></span></th>
 												<th class="text-center">Icon</th>
 												<th class="text-center"><a href="index.php?sort=name_EN">Name / 中文名</a></th>
 												<th class="text-center">Menu?</th>
@@ -86,7 +88,6 @@ pagehead($page_id); ?>
 												<th class="text-center">Min. <br />User Level</th>
 												<th class="text-center">Lookup Table</th>
 												<th class="text-center">Sub <br />Pages</th>
-												<th class="text-center">ACTION</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -183,94 +184,83 @@ pagehead($page_id); ?>
 
 					  ?>
 											<tr>
-												<td align="center"><i class="fa <?php echo $page_icon; ?> fa-2x" title="PAGE ID: <?php echo $page_ID; ?>"></i></td>
+											
 												<td>
-													<a href="<?php echo $page_filename; ?>">
-														<?php echo $page_name_EN; if (($page_name_CN!='')&&($page_name_CN!='中文名')) { echo ' / ' . $page_name_CN; } ?>
-													</a>
+
+						<!-- ********************************************************* -->
+						<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+						<!-- ********************************************************* -->
+						 
+						    <a class="modal-with-form btn btn-default" href="#modalForm_<?php echo $page_ID; ?>"><i class="fa fa-gear"></i></a>
+
+							<!-- Modal Form -->
+							<div id="modalForm_<?php echo $page_ID; ?>" class="modal-block modal-block-primary mfp-hide">
+								<section class="panel">
+									<header class="panel-heading">
+										<h2 class="panel-title">Admin Options</h2>
+									</header>
+									<div class="panel-body">
+									
+										<div class="table-responsive">
+										 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+										 <thead>
+											<tr>
+												<th class="text-left" colspan="2">Action</th>
+												<th>Decsription</th>
+											</tr>
+										  </thead>
+										  <tbody>
+											<tr>
+											  <td>VIEW</td>
+											  <td>
+											  <a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success" target="_blank"><i class="fa fa-arrow-right"></i></a></td>
+											  <td>View this page (opens in a new window)</td>
+											</tr>
+											<tr>
+											  <td>EDIT</td>
+											  <td>
+											  <a href="page_edit.php?id=<?php echo $batch_movement_id; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
+											  <td>Edit this page (page variables in the database)</td>
+											</tr>
+											<tr>
+											  <td>DELETE</td>
+											  <td><a href="record_delete_do.php?table_name=pages&src_page=index.php&id=<?php echo $page_ID; ?>" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a></td>
+											  <td>Delete this record</td>
+											</tr>
+											<tr>
+											  <td>ADD PAGE</td>
+											  <td><a href="page_add.php" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus"></i></a></td>
+											  <td>Add a new page to the system</td>
+											</tr>
+										  </tbody>
+										  <tfoot>
+										  	<tr>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	</tr>
+										  </tfoot>
+										  </table>
+										</div><!-- end of responsive table -->	
+									
+									</div><!-- end panel body -->
+									<footer class="panel-footer">
+										<div class="row">
+											<div class="col-md-12 text-right">
+												<button class="btn btn-danger modal-dismiss"><i class="fa fa-times"></i> Cancel</button>
+											</div>
+										</div>
+									</footer>
+								</section>
+							</div>
+							
+						<!-- ********************************************************* -->
+						<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+						<!-- ********************************************************* -->
+												
+												
 												</td>
-												<td class="text-center"><?php
-												if ($page_main_menu == 1) {
-													?>
-													<i class="fa fa-check text-success fa-2x" title="THIS PAGE APPEARS IN THE MAIN MENU"></i>
-													<?php
-												}
-												else {
-													?>
-													<i class="fa fa-times text-danger fa-2x" title="THIS PAGE DOES NOT APPEAR IN THE MAIN MENU"></i>
-													<?php
-												}
-												?></td>
-												<td class="text-center">
-												<?php
-												if ($page_privacy == 'PUBLIC') {
-													?>
-													<i class="fa fa-eye text-success fa-2x" title="THIS PAGE IS PUBLIC"></i>
-													<?php
-												}
-												else {
-													?>
-													<i class="fa fa-eye-slash text-warning fa-2x" title="THIS PAGE IS VIEWABLE BY LOGGED IN USERS ONLY"></i>
-													<?php
-												}
-												?>
-												</td>
-												<td>
-												<!-- PAGE TYPE INFO: -->
-												<?php
-												if ($page_og_type == 'list') {
-													?>
-													<i class="fa fa-list text-default fa-2x" title="<?php echo $page_og_type; ?>: This page is a list of data, similar to a spreadsheet"></i>
-													<?php
-												}
-												else if ($page_og_type == 'add') {
-													?>
-													<i class="fa fa-plus-square text-success fa-2x" title="<?php echo $page_og_type; ?>: Using this page, you can add a new entry to the system"></i>
-													<?php
-												}
-												else if ($page_og_type == 'system') {
-													?>
-													<i class="fa fa-cogs text-warning fa-2x" title="<?php echo $page_og_type; ?>: This type of page is required to run / operate the information system"></i>
-													<?php
-												}
-												else if ($page_og_type == 'report') {
-													?>
-													<i class="fa fa-bar-chart text-default fa-2x" title="<?php echo $page_og_type; ?>: Extrapolate data into a helpful report"></i>
-													<?php
-												}
-												else if ($page_og_type == 'profile') {
-													?>
-													<i class="fa fa-file-o text-info fa-2x" title="<?php echo $page_og_type; ?>: View a single record in more detail"></i>
-													<?php
-												}
-												else if ($page_og_type == 'edit') {
-													?>
-													<i class="fa fa-pencil text-warning fa-2x" title="<?php echo $page_og_type; ?>: Using this page, you can add a new entry to the system"></i>
-													<?php
-												}
-												else {
-													?>
-													<i class="fa fa-exclamation-triangle text-danger fa-2x" title="<?php echo $page_og_type; ?>: TYPE NOT SET!"></i>
-													<?php
-												}
-												?>
-												<!-- END OF PAGE TYPE INFO -->
-												</td>
-												<td class="text-center"><?php echo $page_min_user_level; ?></td>
-												<td class="text-center">
-												<?php
-												if ($page_lookup_table != '') {
-													echo $page_lookup_table;
-												}
-												else {
-													echo '<acronym title="Not Applicable">N/A</acronym>';
-												}
-												?>
-												</td>
-												<td class="text-center">
-												<?php echo $total_sub_pages; ?>
-												</td>
-												<td class="text-center">
+											<td class="text-center">
 													<a class="mb-xs mt-xs mr-xs btn btn-info" data-toggle="modal" data-target="#menu_item_<?php echo $page_ID; ?>"><i class="fa fa-info"></i></a>
 <!-- START MODAL POP-UP CONTAINING PAGE INFO -->
 
@@ -529,20 +519,110 @@ pagehead($page_id); ?>
 									</div>
 
 <!-- END OF MODEL POP-UP CONTAINING PAGE INFO -->
-
-													<a href="page_edit.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
-													<a href="delete_page.php?id=<?php echo $page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
-													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-arrow-right"></i></a>
+												</td>
+												<td align="center"><i class="fa <?php echo $page_icon; ?> fa-2x" title="PAGE ID: <?php echo $page_ID; ?>"></i></td>
+												<td>
+													<a href="<?php echo $page_filename; ?>">
+														<?php echo $page_name_EN; if (($page_name_CN!='')&&($page_name_CN!='中文名')) { echo ' / ' . $page_name_CN; } ?>
+													</a>
+												</td>
+												<td class="text-center"><?php
+												if ($page_main_menu == 1) {
+													?>
+													<i class="fa fa-check text-success fa-2x" title="THIS PAGE APPEARS IN THE MAIN MENU"></i>
+													<?php
+												}
+												else {
+													?>
+													<i class="fa fa-times text-danger fa-2x" title="THIS PAGE DOES NOT APPEAR IN THE MAIN MENU"></i>
+													<?php
+												}
+												?></td>
+												<td class="text-center">
+												<?php
+												if ($page_privacy == 'PUBLIC') {
+													?>
+													<i class="fa fa-eye text-success fa-2x" title="THIS PAGE IS PUBLIC"></i>
+													<?php
+												}
+												else {
+													?>
+													<i class="fa fa-eye-slash text-warning fa-2x" title="THIS PAGE IS VIEWABLE BY LOGGED IN USERS ONLY"></i>
+													<?php
+												}
+												?>
+												</td>
+												<td>
+												<!-- PAGE TYPE INFO: -->
+												<?php
+												if ($page_og_type == 'list') {
+													?>
+													<i class="fa fa-list text-default fa-2x" title="<?php echo $page_og_type; ?>: This page is a list of data, similar to a spreadsheet"></i>
+													<?php
+												}
+												else if ($page_og_type == 'add') {
+													?>
+													<i class="fa fa-plus-square text-success fa-2x" title="<?php echo $page_og_type; ?>: Using this page, you can add a new entry to the system"></i>
+													<?php
+												}
+												else if ($page_og_type == 'system') {
+													?>
+													<i class="fa fa-cogs text-warning fa-2x" title="<?php echo $page_og_type; ?>: This type of page is required to run / operate the information system"></i>
+													<?php
+												}
+												else if ($page_og_type == 'report') {
+													?>
+													<i class="fa fa-bar-chart text-default fa-2x" title="<?php echo $page_og_type; ?>: Extrapolate data into a helpful report"></i>
+													<?php
+												}
+												else if ($page_og_type == 'profile') {
+													?>
+													<i class="fa fa-file-o text-info fa-2x" title="<?php echo $page_og_type; ?>: View a single record in more detail"></i>
+													<?php
+												}
+												else if ($page_og_type == 'edit') {
+													?>
+													<i class="fa fa-pencil text-warning fa-2x" title="<?php echo $page_og_type; ?>: Using this page, you can add a new entry to the system"></i>
+													<?php
+												}
+												else {
+													?>
+													<i class="fa fa-exclamation-triangle text-danger fa-2x" title="<?php echo $page_og_type; ?>: TYPE NOT SET!"></i>
+													<?php
+												}
+												?>
+												<!-- END OF PAGE TYPE INFO -->
+												</td>
+												<td class="text-center"><?php echo $page_min_user_level; ?></td>
+												<td class="text-center">
+												<?php
+												if ($page_lookup_table != '') {
+													echo $page_lookup_table;
+												}
+												else {
+													echo '<acronym title="Not Applicable">N/A</acronym>';
+												}
+												?>
+												</td>
+												<td class="text-center">
+												<?php echo $total_sub_pages; ?>
 												</td>
 											</tr>
 
 
 						<?php
+						
+						$page_count = $page_count + 1;
 
 						} // end of get pages...
 
 						?>
 										</tbody>
+										<tfoot>
+											<tr>
+											  <th colspan="10">TOTAL PAGES: <?php echo $page_count; ?></th>
+											</tr>
+										</tfoot>
 									</table>
 								</div>
 							</div>

@@ -894,13 +894,13 @@ pagehead($page_id);
 					<strong>Confirmation Received</strong>
 					<br />
 						<?php 
-						if ($PO_approval_date != '0000-00-00 00:00:00') { // YES! 
+						if ($PO_date_confirmed != '0000-00-00 00:00:00') { // YES! 
 						?>
 							<span class="btn btn-success">
 								<i class="fa fa-tick"></i> YES
 							</span> 
 							| 
-							<span class="btn btn-success">
+							<span class="btn btn-default">
 								<s>NO</s>
 							</span>
 						<?php }

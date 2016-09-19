@@ -167,7 +167,7 @@ else {
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					  <tr>
-					    <th>
+					    <th class="text-center">
 					    	Batch #
 					    	<span class="col_sort pull-right"><?php
 					    	// column sort - this should be written better! :-/
@@ -178,7 +178,7 @@ else {
 					    	else { // show default icon ?><a href="?part_id=<?php echo $part_id; ?>&sort=batch_num&sort_dir=ASC"><i class="fa fa-sort"></i></a><?php } ?>
 					    	</span>
 					    </th>
-					    <th>P.O. #
+					    <th class="text-center">P.O. #
 					    	<span class="col_sort pull-right"><?php
 					    	// column sort - this should be written better! :-/
 					    	if ($sort == 'PO_ID') {
@@ -188,8 +188,8 @@ else {
 					    	else { // show default icon ?><a href="?part_id=<?php echo $part_id; ?>&sort=PO_ID&sort_dir=ASC"><i class="fa fa-sort"></i></a><?php } ?>
 					    	</span>
 					    </th>
-					    <th>P.O. Date</th>
-					    <th>Part #
+					    <th class="text-center">P.O. Date</th>
+					    <th class="text-center">Part #
 					    	<span class="col_sort pull-right"><?php
 					    	// column sort - this should be written better! :-/
 					    	if ($sort == 'part_ID') {
@@ -199,16 +199,23 @@ else {
 					    	else { // show default icon ?><a href="?part_id=<?php echo $part_id; ?>&sort=part_ID&sort_dir=ASC"><i class="fa fa-sort"></i></a><?php } ?>
 					    	</span>
 					    </th>
-					    <th>Part Rev.</th>
-					    <th>Part Name / 名字</th>
+					    <th class="text-center">Part Rev.</th>
+					    <th class="text-center">Part Name / 名字</th>
+						<th class="text-center">QTY In</th>
+						<th class="text-center">QTY Out</th>
+						<th class="text-center">Batch Balance</th>
 					  </tr>
 
 					  <!-- START DATASET -->
 					  <?php
 
 					  // get batch list
-
-					  $total_batches = 0; // default
+					  
+					  $grand_total_in 			= 0; // default
+					  $grand_total_out 			= 0; // default
+					  $grand_total_remaining 	= 0; // default
+					  $total_batches 			= 0; // default
+					  $array_total_in_by_rev	= array[]; // BLANK EMPTY ARRAY
 
 					  // SORT IT!
 
@@ -229,11 +236,10 @@ else {
 
 					  //SHOW 1 PART ONLY:
 
+						$WHERE_SQL = " WHERE `record_status` = '2'";
+
 					  if ($part_id >0) {
-						$WHERE_SQL = " WHERE `part_ID` = " . $part_id;
-					  }
-					  else {
-					  	$WHERE_SQL = "";
+						$WHERE_SQL .= " AND `part_ID` = " . $part_id;
 					  }
 
 					  // END SHOW 1 PART ONLY
@@ -294,15 +300,41 @@ else {
 									$rev_user = $row_get_part_rev['user_ID'];
 
 								}
+								
+								// UPDATE: Let's calculate total in-bound QTY over all time
+								
+								$get_in_and_out_totals_SQL = "SELECT sum(`amount_in`), sum(`amount_out`) FROM `part_batch_movement` WHERE `part_batch_ID` = '" . $batch_id . "' AND `record_status` = 2";
+								$result_get_in_and_out_totals = mysqli_query($con,$get_in_and_out_totals_SQL);
+								// while loop
+								while($row_get_in_and_out_totals = mysqli_fetch_array($result_get_in_and_out_totals)) {
+
+									// now print each result:
+									$total_qty_in 	= $row_get_in_and_out_totals['sum(`amount_in`)'];
+									$total_qty_out 	= $row_get_in_and_out_totals['sum(`amount_out`)'];
+
+								}
+								
+								// THEN let's calculate how many are in stock at present
+								$qty_remaining = $total_qty_in - $total_qty_out;
+								
+								// UPDATE 2016-09-16 - SHOW A RUNNING TOTAL FOR DIFFERENT REVISIONS
+								
+								$array_total_in_by_rev_value = $array_total_in_by_rev[$rev_id] + $total_qty_in;
+								
+								$array_total_in_by_rev = array($rev_id => $array_total_in_by_rev_value);
+								
+								$stack = array("orange", "banana");
+								array_push($stack, "apple", "raspberry");
+								print_r($stack);
 
 					// NOW LET'S DO THIS!
 
 					  ?>
 					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
-					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>" title="Database Record ID = <?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
-					    <td><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
-					    <td><?php echo substr($PO_created_date, 0, 10); ?></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-info btn-xs" title="View <?php
+					    <td class="text-center"><a href="batch_view.php?id=<?php echo $batch_id; ?>" title="Database Record ID = <?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
+					    <td class="text-center"><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
+					    <td class="text-center"><?php echo substr($PO_created_date, 0, 10); ?></td>
+					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-info btn-xs" title="View <?php
 					    	echo $part_name_EN;
 					    	if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
 					    		echo " / " . $part_name_CN;
@@ -317,19 +349,24 @@ else {
 					    }
 
 					    ?></a></td>
-					    <td><span class="btn btn-warning" title="Rev. #: <?php echo $rev_id; ?>"><?php echo $rev_number; ?></span></td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
+					    <td class="text-center"><span class="btn btn-xs btn-warning" title="Rev. #: <?php echo $rev_id; ?>"><?php echo $rev_number; ?></span></td>
+					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
 					    	echo $part_name_EN;
 					    	if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
 					    		echo " / " . $part_name_CN;
 					    	}
 					    ?></a></td>
+					    <td class="text-center"><?php echo number_format($total_qty_in); ?></td>
+					    <td class="text-center"><?php echo number_format($total_qty_out); ?></td>
+					    <td class="text-center"><?php echo number_format($qty_remaining); ?></td>
 					  </tr>
 					  <?php
-
-
-
-					  $total_batches = $total_batches + 1;
+					  
+					  $grand_total_in 			= $grand_total_in + $total_qty_in;
+					  $grand_total_out 			= $grand_total_out + $total_qty_out;
+					  $grand_total_remaining 	= $grand_total_remaining + $qty_remaining;
+					  // $grand_total_remaining	= $grand_total_in - $grand_total_out; // should be the same as line above! :)
+					  $total_batches 			= $total_batches + 1;
 					  } // END GET BATCH 'WHILE' LOOP
 
 					  ?>
@@ -337,10 +374,24 @@ else {
 
 					  <tr>
 					    <th colspan="6">TOTAL ENTRIES: <?php echo $total_batches ;?></th>
+					    <th class="text-center"><?php echo number_format($grand_total_in); ?></th>
+						<th class="text-center"><?php echo number_format($grand_total_out); ?></th>
+						<th class="text-center"><?php echo number_format($grand_total_remaining); ?></th>
 					  </tr>
 
 
 					 </table>
+					 
+					 <?php 
+					 
+						foreach($array_total_in_by_rev as $in => $in_value) {
+							echo "Key=" . $in . ", Value=" . $in_value;
+							echo "<br>";
+						}
+					 
+					 
+					 ?>
+					 
 					</div>
 
 					<div class="row">

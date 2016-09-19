@@ -1369,9 +1369,12 @@ pagehead($page_id);
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					   <thead>
 						  <tr>
-							<th>Batch #</th>
-							<th>P.O. #</th>
-							<th>P.O. Date</th>
+							<th class="text-center">Batch #</th>
+							<th class="text-center">P.O. #</th>
+							<th class="text-center">P.O. Date</th>
+							<th class="text-center">QTY In</th>
+							<th class="text-center">QTY Out</th>
+							<th class="text-center">Batch Balance</th>
 						  </tr>
 					  </thead>
 					  <tbody>
@@ -1381,7 +1384,10 @@ pagehead($page_id);
 
 					  // get batch list
 
-					  $total_batches = 0; // default
+					  $grand_total_in 			= 0; // default
+					  $grand_total_out 			= 0; // default
+					  $grand_total_remaining 	= 0; // default
+					  $total_batches 			= 0; // default
 
 					  if ($sort == '') {
 					  	$sort_SQL = " ORDER BY `PO_ID` ASC";
@@ -1452,20 +1458,41 @@ pagehead($page_id);
 									$rev_user 		= $row_get_part_rev['user_ID'];
 
 								}
+								
+								// UPDATE: Let's calculate total in-bound QTY over all time
+								
+								$get_in_and_out_totals_SQL = "SELECT sum(`amount_in`), sum(`amount_out`) FROM `part_batch_movement` WHERE `part_batch_ID` = '" . $batch_id . "' AND `record_status` = 2";
+								$result_get_in_and_out_totals = mysqli_query($con,$get_in_and_out_totals_SQL);
+								// while loop
+								while($row_get_in_and_out_totals = mysqli_fetch_array($result_get_in_and_out_totals)) {
+
+									// now print each result:
+									$total_qty_in 	= $row_get_in_and_out_totals['sum(`amount_in`)'];
+									$total_qty_out 	= $row_get_in_and_out_totals['sum(`amount_out`)'];
+
+								}
+								
+								// THEN let's calculate how many are in stock at present
+								$qty_remaining = $total_qty_in - $total_qty_out;
 
 					// NOW LET'S DO THIS!
 
 					  ?>
 					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
-					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
-					    <td><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
-					    <td><?php echo date("Y-m-d", strtotime($PO_created_date)); ?></td>
+					    <td class="text-center"><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
+					    <td class="text-center"><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
+					    <td class="text-center"><?php echo date("Y-m-d", strtotime($PO_created_date)); ?></td>
+					    <td class="text-center"><?php echo number_format($total_qty_in); ?></td>
+					    <td class="text-center"><?php echo number_format($total_qty_out); ?></td>
+					    <td class="text-center"><?php echo number_format($qty_remaining); ?></td>
 					  </tr>
 					  <?php
-
-
-
-					  $total_batches = $total_batches + 1;
+					  
+					  $grand_total_in 			= $grand_total_in + $total_qty_in;
+					  $grand_total_out 			= $grand_total_out + $total_qty_out;
+					  $grand_total_remaining 	= $grand_total_remaining + $qty_remaining;
+					  // $grand_total_remaining	= $grand_total_in - $grand_total_out; // should be the same as line above! :)
+					  $total_batches 			= $total_batches + 1;
 					  } // END GET BATCH 'WHILE' LOOP
 
 					  ?>
@@ -1491,6 +1518,9 @@ pagehead($page_id);
 												 } ?>
 
 							</th>
+							<th class="text-center"><?php echo number_format($grand_total_in); ?></th>
+							<th class="text-center"><?php echo number_format($grand_total_out); ?></th>
+							<th class="text-center"><?php echo number_format($grand_total_remaining); ?></th>
 						  </tr>
 					  </tfoot>
 
@@ -1507,7 +1537,7 @@ pagehead($page_id);
 					</div>
 								  <div class="panel-footer">
 									<div class="text-right">
-											<a class="text-uppercase text-muted" href="batch_log.php?part_id=<?php echo $part_ID; ?>'">(View All)</a>
+											<a class="text-uppercase text-muted" href="batch_log.php?part_id=<?php echo $part_ID; ?>">(View All)</a>
 										</div>
 								  </div>
 								</div>
