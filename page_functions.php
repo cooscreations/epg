@@ -402,6 +402,7 @@
 
 		<!-- Vendor CSS -->
 		<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="print" ><!-- printer-friendly? -->
 
 		<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -409,10 +410,10 @@
 		<link rel="stylesheet" href="assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
 		<link rel="stylesheet" href="assets/vendor/intl-tel-input/css/intlTelInput.css" />
 
-		<!-- Specific Page Vendor CSS -->
 		<?php
 		if ($page_id == 2) {
 			?>
+		<!-- Specific Page Vendor CSS -->
 			<link rel="stylesheet" href="assets/vendor/select2/select2.css" />
 			<link rel="stylesheet" href="assets/vendor/jquery-datatables-bs3/assets/css/datatables.css" />
 			<?php
@@ -458,7 +459,7 @@
 			<header class="header">
 				<div class="logo-container">
 					<a href="/" class="logo">
-						<img src="assets/images/logo.png" height="35" alt="EPG Connect" />
+						<img src="assets/images/logo.png" height="35" alt="European Pharma Group" title="European Pharma Group" />
 					</a>
 					<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
 						<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
@@ -470,7 +471,7 @@
 
 					<form action="search.php" class="search nav-form">
 						<div class="input-group input-search">
-							<input type="text" class="form-control" name="query" id="query" placeholder="Search...">
+							<input type="text" class="form-control" name="query" id="query" placeholder="Search / 搜索...">
 							<span class="input-group-btn">
 								<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
 							</span>
@@ -671,13 +672,13 @@
 							<ul class="list-unstyled">
 								<li class="divider"></li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="user_view.php?id=<?php echo $result_row['ID']; ?>"><i class="fa fa-user"></i> My Profile</a>
+									<a role="menuitem" tabindex="-1" href="user_view.php?id=<?php echo $result_row['ID']; ?>"><i class="fa fa-user"></i> My Profile / 我的简历</a>
 								</li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Lock Screen</a>
+									<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Lock Screen / 锁屏</a>
 								</li>
 								<li>
-									<a role="menuitem" tabindex="-1" href="logout.php"><i class="fa fa-power-off"></i> Logout</a>
+									<a role="menuitem" tabindex="-1" href="logout.php"><i class="fa fa-power-off"></i> Logout / 登出</a>
 								</li>
 							</ul>
 						</div>
@@ -697,7 +698,7 @@
 
 					<div class="sidebar-header">
 						<div class="sidebar-title">
-							Navigation
+							Navigation / 导航
 						</div>
 						<div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
 							<i class="fa fa-bars" aria-label="Toggle sidebar"></i>
@@ -711,53 +712,53 @@
 									<li<?php if ($page_id == 1) { ?> nav-active<?php } ?>>
 										<a href="index.php">
 											<i class="fa fa-home" aria-hidden="true"></i>
-											<span>Dashboard</span>
+											<span>Dashboard / 主页</span>
 										</a>
 									</li>
 									<li class="nav-parent<?php if ($page_id == 2) { ?> nav-active<?php } ?>">
 										<a>
 											<i class="fa fa-table" aria-hidden="true"></i>
-											<span>Logs</span>
+											<span>Logs / 日志</span>
 										</a>
 										<ul class="nav nav-children">
 											<li>
 												<a href="logs.php">
-													 View All
+													 View All / 查看全部
 												</a>
 											</li>
 											<li>
 												<a href="master_document_log.php">
-													 Master Document Log
+													 Master Document Log / 主控文档记录
 												</a>
 											</li>
 											<li>
 												<a href="parts.php">
-													 Part Number
+													 Part Number / 零件编号
 												</a>
 											</li>
 											<li>
 												<a href="part_revisions.php">
-													 Part Revisions
+													 Part Revisions / 部分修订
 												</a>
 											</li>
 											<li>
 												<a href="BOM.php">
-													 Bill Of Material (BOM)
+													 Bill Of Material (BOM) / 物料清单
 												</a>
 											</li>
 											<li>
 												<a href="purchase_orders.php">
-													 Purchase Orders
+													 Purchase Orders / 订单
 												</a>
 											</li>
 											<li>
 												<a href="batch_log.php">
-													 Batch Log
+													 Batch Log / 批处理日志
 												</a>
 											</li>
 											<li>
 												<a href="warehouse_stock_log.php">
-													 Warehouse Stock Log
+													 Warehouse Stock Log / 仓库库存日志
 												</a>
 											</li>
 										</ul>
@@ -765,34 +766,28 @@
 									<li>
 										<a href="parts.php?show=products">
 											<i class="fa fa-eyedropper" aria-hidden="true"></i>
-											<span>Products</span>
-										</a>
-									</li>
-									<li>
-										<a href="users.php">
-											<i class="fa fa-users" aria-hidden="true"></i>
-											<span>Users</span>
+											<span>Products / 产品</span>
 										</a>
 									</li>
 									<li class="nav-parent<?php if ($page_id == 2) { ?> nav-active<?php } ?>">
 										<a>
-											<i class="fa fa-table" aria-hidden="true"></i>
-											<span>Users</span>
+											<i class="fa fa-users" aria-hidden="true"></i>
+											<span>Users / 用户</span>
 										</a>
 										<ul class="nav nav-children">
 											<li>
 												<a href="users.php">
-													 View All
+													 View All / 查看全部
 												</a>
 											</li>
 											<li>
 												<a href="update_log.php">
-													 Update Log
+													 Update Log / 更新日志
 												</a>
 											</li>
 											<li>
 												<a href="feedback.php">
-													 Feedback
+													 Feedback / 反馈
 												</a>
 											</li>
 										</ul>
@@ -800,26 +795,26 @@
 									<li>
 										<a href="materials.php">
 											<i class="fa fa-flask" aria-hidden="true"></i>
-											<span>Materials</span>
+											<span>Materials / 材料</span>
 										</a>
 									</li>
 									<li>
 										<a href="suppliers.php">
 											<i class="fa fa-building" aria-hidden="true"></i>
-											<span>Suppliers</span>
+											<span>Suppliers / 供应商</span>
 										</a>
 									</li>
 									<li>
 										<a href="logout.php">
 											<i class="fa fa-sign-out" aria-hidden="true"></i>
-											<span>Log Out</span>
+											<span>Log Out / 登出</span>
 										</a>
 									</li>
 								</ul>
 							</nav>
 
 							<hr class="separator" />
-
+<!-- 
 							<div class="sidebar-widget widget-tasks">
 								<div class="widget-header">
 									<h6>Projects</h6>
@@ -873,6 +868,7 @@
 									</ul>
 								</div>
 							</div>
+-->
 						</div>
 
 					</div>
@@ -885,7 +881,7 @@
 			echo '
 			<section role="main" class="content-body">
 			  <div class="row">
-				<span class="btn btn-danger">Page not found in the database. Please contact the system administrator.</span>
+				<span class="btn btn-danger">Page not found in the database. Please contact the system administrator. 网页在数据库中找不到。请与系统管理员联系。</span>
 			  </div>
 			</section>';
 		}
@@ -897,12 +893,12 @@
 
 		?>
 		<div class="rotate bootstro" style="position: fixed; right: -30px; top: 50%; z-index: 9999; margin-top: -100px;"
-                                    data-bootstro-title="feedback!"
-                                    data-bootstro-content='You can click this on any page to send us feedback about your experience.<br /><br />We will also log the page you are on'
-                                    data-bootstro-placement='left'
-                                    data-bootstro-width='400px'
-                                     data-bootstro-step='7'
-                                     data-boostro-html='true'><a class="btn btn-warning simple-ajax-modal" href="info_pop.php?id=feedback&referrer=<?php echo $_SERVER['HTTP_REFERER']; ?>&ref_page=<?php echo $page_filename; ?>&page_id=<?php echo $page_id; ?>">Feedback / 反馈</a></div>
+			data-bootstro-title="feedback!"
+			data-bootstro-content='You can click this on any page to send us feedback about your experience.<br /><br />We will also log the page you are on'
+			data-bootstro-placement='left'
+			data-bootstro-width='400px'
+			 data-bootstro-step='7'
+			 data-boostro-html='true'><a class="btn btn-warning simple-ajax-modal" href="info_pop.php?id=feedback&referrer=<?php echo $_SERVER['HTTP_REFERER']; ?>&ref_page=<?php echo $page_filename; ?>&page_id=<?php echo $page_id; ?>">Feedback / 反馈</a></div>
 	<?php
 
 
@@ -1268,11 +1264,11 @@
 			<!-- Specific Page Vendor - PROFILE -->
 			<script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
 
-			<!-- Specific Page Vendor -->
 			<?php
 
 			if ($page_id == 2) {
 				?>
+			<!-- Specific Page Vendor -->
 				<script src="assets/vendor/select2/select2.js"></script>
 				<script src="assets/vendor/jquery-datatables/media/js/jquery.dataTables.js"></script>
 				<script src="assets/vendor/jquery-datatables-bs3/assets/js/datatables.js"></script>
@@ -1589,7 +1585,7 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 /* ****************************************************************** */
 /* ****************************************************************** */
 
-function get_creator($user_id) {
+function get_creator($user_id, $display_weblink = 1) {
 
 	// start the session:
 	session_start();
@@ -1620,12 +1616,21 @@ function get_creator($user_id) {
 				$user_last_name = $row_get_user['last_name'];
 				$user_name_CN = $row_get_user['name_CN'];
 		}
-		?><a href="user_view.php?id=<?php echo $user_id; ?>" title="Click here to view this user profile"><?php
+		
+		if ($display_weblink == 1) { 
+			$open_link = '<a href="user_view.php?id=' . $user_id . '" title="Click here to view this user profile">';
+			$close_link = '</a>';
+		}
+		else {
+			$open_link = '';
+			$close_link = '';
+		}
+			echo $open_link;
 			echo $user_first_name . " " . $user_last_name;
 			if (($user_name_CN!='')&&($user_name_CN!='中文名')) {
 			  echo " / " . $user_name_CN;
 			}
-		  ?></a><?php
+			echo $close_link;
 	}
 }
 /* ****************************************************************** */
@@ -1648,7 +1653,7 @@ function get_supplier($sup_id, $display_type = 0, $profile_link = 1) {
 	
 	0 / null / default	=	display the company name and a link to the profile page
 	1 					=	show the name and address for the purchase order
-	
+	2					= 	show minial output for purchase order PRINT view
 	*/
 
 	// start the session:
@@ -1772,8 +1777,8 @@ function get_supplier($sup_id, $display_type = 0, $profile_link = 1) {
 						}
 						else {
 							$start_icon_list = '';
-							$start_icon_name_item = '';
-							$end_icon_name_item = '';
+							$start_icon_name_item = '<strong>';
+							$end_icon_name_item = '</strong><br />';
 							$end_icon_list = '';
 						}
 					
@@ -1810,6 +1815,20 @@ function get_supplier($sup_id, $display_type = 0, $profile_link = 1) {
 								if ($sup_email_1 			!= '') { 	echo '<li title="E-mail"><i class="fa-li fa fa-envelope"></i><a href="mailto:' . $sup_email_1 . '" title="Click here to send an email">' . $sup_email_1 . '</a></li>'; }
 								if ($sup_email_2 			!= '') { 	echo '<li title="E-mail"><i class="fa-li fa fa-envelope"></i><a href="mailto:' . $sup_email_2 . '" title="Click here to send an email">' . $sup_email_2 . '</a></li>'; }
 								if ($sup_web 				!= '') { 	echo '<li title="Website / 网站"><i class="fa-li fa fa-external-link"></i><a href="' . $sup_web . '" target="_blank" title="Launch website in a new window">' . $sup_web . '</a></li>'; }
+						
+							
+							} // end of Purchase Order display full address / contact detils
+						
+							else if ($display_type == 2) {
+								// now show the address!
+							
+								if ($sup_address_EN			!= '') { 	echo $sup_address_EN . '<br />'; }
+								if (($sup_address_CN != '')&&($sup_address_CN != '没有中文地址')) { 	echo $sup_address_CN . '<br />'; }
+								if ($sup_country_name_EN 	!= '') {	echo $sup_country_name_EN; if (($sup_country_name_CN != '')&&($sup_country_name_CN != '中文名')) { echo ' / ' . $sup_country_name_CN; } echo '<br />'; }
+								if ($sup_telephone 			!= '') {	echo 'T: ' . $sup_telephone; }
+								if (($sup_telephone != '')&&($sup_fax != '')) { echo ' | '; }
+								if ($sup_fax 				!= '') { 	echo 'F:' . $sup_fax; }
+								if (($sup_telephone != '')||($sup_fax != '')) { echo '<br />'; }
 						
 							
 							} // end of Purchase Order display full address / contact detils
@@ -1971,6 +1990,7 @@ function record_status_drop_down($current_status) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
+/* -- UPDATE - I HAVE MADE A BETTER VERSION OF THIS FUNCTION BELOW!
 function record_status($current_status) {
 	// we will make this a small button and look awesome:
 
@@ -2009,6 +2029,7 @@ function record_status($current_status) {
 	}
 
 } // CLOSE FUNCTION
+*/
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
@@ -2120,7 +2141,7 @@ function get_part_name($part_id, $profile_link) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 
-function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS IS VERY SIMILAR TO GET SUPPLIER FUNCTION...
+function get_location($loc_id, $display_type = 0, $profile_link = 1) { // THIS IS VERY SIMILAR TO GET SUPPLIER FUNCTION...
 
 	// start the session:
 	session_start();
@@ -2190,7 +2211,7 @@ function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS I
 			
 			// NOTE: default display_type (0) is a list, using FONTAWESOME icons to decorate it.
 			
-			if ($profile_link == 0) { // By default, we will link the name to the profile page
+			if ($profile_link == 1) { // By default, we will link the name to the profile page
 				$start_url = '<a href="location_view.php?id=' . $loc_id . '" title="Click here to view this location profile">';
 				$end_url = "</a>";
 			}
@@ -2199,7 +2220,7 @@ function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS I
 				$end_url = '';
 			}
 			
-			if ($display_type == 1) {
+						if ($display_type == 1) {
 							// let's make a list!
 							
 							$start_icon_list = '<ul class="fa-ul">';
@@ -2209,8 +2230,8 @@ function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS I
 						}
 						else {
 							$start_icon_list = '';
-							$start_icon_name_item = '';
-							$end_icon_name_item = '';
+							$start_icon_name_item = '<strong>';
+							$end_icon_name_item = '</strong><br />';
 							$end_icon_list = '';
 						}
 					
@@ -2230,6 +2251,13 @@ function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS I
 								echo $end_url;
 						
 							echo $end_icon_name_item;
+							
+							
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
 						
 							if ($display_type == 1) {
 								// now show the address!
@@ -2284,9 +2312,64 @@ function get_location($loc_id, $display_type = 0, $profile_link = 0) { // THIS I
 						
 							
 							} // end of Purchase Order display full address / contact detils for an EPG location
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							else if ($display_type == 2) {
+								// now show the address!
+								
+								if ($loc_address_line_1!='') {
+									// for now, we will only specify that if the ADDRESS LINE 1 is blank, it will return an error...
+									echo $loc_address_line_1;
+									
+									if ($loc_address_line_2 != '') {
+										echo ', ' . $loc_address_line_2;
+									}
+									
+									if ($loc_address_line_3 != '') {
+										echo ', ' . $loc_address_line_3;
+									}
+									
+									if ($loc_city != '') {
+										echo '<br />' . $loc_city;
+									}
+									
+									if ($loc_state != '') {
+										echo ', ' . $loc_state;
+									}
+									
+									if ($loc_zipcode != '') {
+										echo ', ' . $loc_zipcode;
+									}
+									
+								}
+								else { 
+									?>
+									<strong>NO ADDRESS PROVIDED!</strong>
+									<?php
+								}
+								
+								
+								if (($loc_address_CN != '')&&($loc_address_CN != '没有中文地址')) { 	echo $loc_address_CN . '<br />'; }
+								if ($loc_country_name_EN 	!= '') {	echo $loc_country_name_EN; if (($loc_country_name_CN != '')&&($loc_country_name_CN != '中文名')) { echo ' / ' . $loc_country_name_CN; } echo '<br />'; }
+								if ($loc_telephone 			!= '') {	echo 'T: ' . $loc_telephone; }
+								if (($loc_telephone != '')&&($loc_fax != '')) { echo ' | '; }
+								if ($loc_fax 				!= '') { 	echo 'F:' . $loc_fax; }
+								if (($loc_telephone != '')||($loc_fax != '')) { echo '<br />'; }
+						
+							
+							} // end of Purchase Order display full address / contact detils for an EPG location
+							
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
+							/////////////////////////////////////////////////
 						
 						
-						echo $end_icon_list; // now close the UL is it exists...
+						echo $end_icon_list; // now close the UL if it exists...
 						
 						
 						
@@ -2450,6 +2533,78 @@ function add_button($record_id, $add_page_url, $record_var = 'id', $add_title='C
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
+
+function part_num_button($part_id) {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	if ($part_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO PART FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+
+		// now get the part info:
+		$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_id;
+		// echo $get_parts_SQL;
+
+		$result_get_part = mysqli_query($con,$get_part_SQL);
+
+		// while loop
+		while($row_get_part = mysqli_fetch_array($result_get_part)) {
+			$part_ID 					= $row_get_part['ID'];
+			$part_code 					= $row_get_part['part_code'];
+			$part_name_EN 				= $row_get_part['name_EN'];
+			$part_name_CN 				= $row_get_part['name_CN'];
+			$description 				= $row_get_part['description'];
+			$type_ID 					= $row_get_part['type_ID'];
+			$classification_ID 			= $row_get_part['classification_ID'];
+			$part_default_suppler_ID 	= $row_get_part['default_suppler_ID'];
+			$part_record_status 		= $row_get_part['record_status'];
+			$part_product_type_ID 		= $row_get_part['product_type_ID'];
+			$part_created_by 			= $row_get_part['created_by'];
+			$part_is_finished_product 	= $row_get_part['is_finished_product'];
+
+			// now print the result (no link here)
+			
+			?>
+			<a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-info btn-xs" title="View <?php
+					    	echo $part_name_EN;
+					    	if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
+					    		echo " / " . $part_name_CN;
+					    	}
+					    ?> Part Profile"><?php
+					    // now do a quick check to make sure that the batch number (first 5 chars) matches the part code:
+					    if (substr($batch_number,0,5)!= $part_code) {
+					    	echo '<span class="text-danger" title="Batch Number Does Not Match Part Code!">' . $part_code . '</span>';
+					    }
+					    else {
+					    	echo $part_code;
+					    }
+
+					    ?></a>
+				<?php
+
+
+		} // end get part info WHILE loop
+	}
+}
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
 function part_rev_drop_down($current_ID=0) {
 
 	// start the session:
@@ -2463,7 +2618,7 @@ function part_rev_drop_down($current_ID=0) {
 	<option value=""></option>
 	<?php
 	// get parts list
-	$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = 2 ORDER BY `part_code` ASC";
+	$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = '2' ORDER BY `part_code` ASC";
 	// echo $get_parts_SQL;
 
 	$part_count = 0;
@@ -2508,7 +2663,7 @@ function part_rev_drop_down($current_ID=0) {
 
 		// now list the revisions for this part:
 
-		$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `part_ID` =" . $row_get_parts['ID'] . " AND `record_status`=2";
+		$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `part_ID` =" . $row_get_parts['ID'] . " AND `record_status`='2' ORDER BY `revision_number` DESC";
 		$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
 
 		// while loop
@@ -2539,7 +2694,7 @@ function part_rev_drop_down($current_ID=0) {
 	
 <!-- end part_rev_drop_down function: -->
 <?php
-}
+} // END OF FUNCTION
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
@@ -2609,7 +2764,64 @@ function purchase_orders_drop_down($part_batch_po_id=0) {
 </select>
 <?php 
 
-} // END OF FUNCTIONS
+} // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+function part_num($part_id, $show_button = 1){ // default is to show a light blue button. Print view requires '0' to remove button styling
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+	if ($part_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO PART FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+	
+		// now get the part info
+		$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = '" . $part_id . "'";
+		// debug:
+		// echo '<h3>' . $get_part_SQL . '</h3>'; 
+		$result_get_part = mysqli_query($con,$get_part_SQL);
+		// while loop
+		while($row_get_part = mysqli_fetch_array($result_get_part)) {
+
+			// now print each result to a variable:
+			$part_id 		= $row_get_part['ID'];
+			$part_code 		= $row_get_part['part_code'];
+			$part_name_EN 	= $row_get_part['name_EN'];
+			$part_name_CN 	= $row_get_part['name_CN'];
+
+		}
+	
+			$close_link = '';
+	
+			if ($show_button == 1) { 
+	
+				$close_link = '</a>';
+	
+				?><a href="part_view.php?id=<?php echo $part_id; ?>" class="btn btn-info btn-xs" title="View <?php echo $part_name_EN; 
+				if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo ' / ' . $part_name_CN; } ?> Part Profile"><?php 
+			} 
+	
+			echo $part_code; 
+			echo $close_link;
+	}
+
+} // END OF FUNCTION
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
@@ -2619,4 +2831,401 @@ function purchase_orders_drop_down($part_batch_po_id=0) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 
+function part_rev($part_rev_id, $show_button = 1) {
+
+	// this function returns the part revision orange button with the part_rev_ID as a mouse-over title to help with development
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	if ($part_rev_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO REVISION FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+			$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `ID` = '" . $part_rev_id . "'";
+			// debug:
+			// echo $get_part_rev_SQL;
+			$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+
+				// while loop
+				while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+		
+					$part_rev_ID 				= $row_get_part_rev['ID'];
+					$part_rev_part_ID 			= $row_get_part_rev['part_ID'];
+					$part_rev_revision_number 	= $row_get_part_rev['revision_number'];
+					$part_rev_remarks 			= $row_get_part_rev['remarks'];
+					$part_rev_date_approved 	= $row_get_part_rev['date_approved'];
+					$part_rev_user_ID 			= $row_get_part_rev['user_ID'];
+					$part_rev_price_USD 		= $row_get_part_rev['price_USD'];
+					$part_rev_weight_g 			= $row_get_part_rev['weight_g'];
+					$part_rev_status_ID 		= $row_get_part_rev['status_ID'];
+					$part_rev_material_ID 		= $row_get_part_rev['material_ID'];
+					$part_rev_treatment_ID 		= $row_get_part_rev['treatment_ID'];
+					$part_rev_treatment_notes 	= $row_get_part_rev['treatment_notes'];
+					$part_rev_record_status 	= $row_get_part_rev['record_status'];
+			
+						// now print the results:
+			
+						if ($part_rev_record_status != 2) {
+							// this revision is either pending review or turned off!
+							$button_style = 'danger'; // highlight red!
+						}
+						else {
+							$button_style = 'warning'; // default orange
+						}
+			
+			
+			
+			
+				$close_link = '';
+	
+				if ($show_button == 1) { 
+	
+					$close_link = '</span>';
+	
+					?><span class="btn btn-xs btn-<?php echo $button_style; ?>" title="Rev. #: <?php echo $part_rev_ID; ?> (Part #: <?php echo $part_rev_part_ID; ?>)"><?php 
+				} 
+				else { 
+					?>Rev. <?php
+				}
+	
+				echo $part_rev_revision_number; 
+				echo $close_link;
+
+				} // end of while results loop
+				
+		} // end else 0 results flag
+
+ } // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+function part_name($part_id, $show_button = 1){ // default is to show a default button. Print view requires '0' to remove button styling and link
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+	if ($part_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO PART FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+	
+		// now get the part info
+		$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = '" . $part_id . "'";
+		// debug:
+		// echo '<h3>' . $get_part_SQL . '</h3>'; 
+		$result_get_part = mysqli_query($con,$get_part_SQL);
+		// while loop
+		while($row_get_part = mysqli_fetch_array($result_get_part)) {
+
+			// now print each result to a variable:
+			$part_id 		= $row_get_part['ID'];
+			$part_code 		= $row_get_part['part_code'];
+			$part_name_EN 	= $row_get_part['name_EN'];
+			$part_name_CN 	= $row_get_part['name_CN'];
+
+		}
+	
+			$close_link = '';
+	
+			if ($show_button == 1) { 
+	
+				$close_link = '</a>';
+	
+				?><a href="part_view.php?id=<?php echo $part_id; ?>" class="btn btn-default btn-xs" title="View <?php echo $part_name_EN; 
+				if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo ' / ' . $part_name_CN; } ?> Part Profile"><?php 
+			} 
+	
+			echo $part_name_EN; 
+			if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo ' / ' . $part_name_CN; } 
+			echo $close_link;
+	}
+
+} // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+function part_img($part_rev_id, $profile_link = 1, $img_width_px = 100){ // default is to show a default button. Print view requires '0' to remove button styling and link
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+	if ($part_rev_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO PART FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+	
+	
+		// now get the part revision photo!
+		$num_component_photos_found = 0;
+		$component_photo_location = "assets/images/no_image_found.jpg";
+
+		$get_part_component_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $part_rev_id;
+		// echo "<h1>".$get_part_component_photo_SQL."</h1>";
+		$result_get_part_component_photo = mysqli_query($con,$get_part_component_photo_SQL);
+		// while loop
+		while($row_get_part_component_photo = mysqli_fetch_array($result_get_part_component_photo)) {
+
+			$num_component_photos_found = $num_component_photos_found + 1;
+
+			// now print each record:
+			$component_photo_id 				= $row_get_part_component_photo['ID'];
+			$component_photo_name_EN 			= $row_get_part_component_photo['name_EN'];
+			$component_photo_name_CN 			= $row_get_part_component_photo['name_CN'];
+			$component_photo_filename 			= $row_get_part_component_photo['filename'];
+			$component_photo_filetype_ID 		= $row_get_part_component_photo['filetype_ID'];
+			$component_photo_location 			= $row_get_part_component_photo['file_location'];
+			$component_photo_lookup_table 		= $row_get_part_component_photo['lookup_table'];
+			$component_photo_lookup_id 			= $row_get_part_component_photo['lookup_ID'];
+			$component_photo_document_category 	= $row_get_part_component_photo['document_category'];
+			$component_photo_record_status 		= $row_get_part_component_photo['record_status'];
+			$component_photo_created_by 		= $row_get_part_component_photo['created_by'];
+			$component_photo_date_created 		= $row_get_part_component_photo['date_created'];
+			$component_photo_filesize_bytes 	= $row_get_part_component_photo['filesize_bytes'];
+			$component_photo_document_icon 		= $row_get_part_component_photo['document_icon'];
+			$component_photo_document_remarks 	= $row_get_part_component_photo['document_remarks'];
+			$component_photo_doc_revision 		= $row_get_part_component_photo['doc_revision'];
+
+			if ($component_photo_filename!='') {
+				// now apply filename
+				$component_photo_location = "assets/images/" . $component_photo_location . "/" . $component_photo_filename;
+			}
+			else {
+				$component_photo_location = "assets/images/no_image_found.jpg";
+			}
+
+		} // end get part rev photo
+	
+		$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `ID` = '" . $part_rev_id . "'";
+		// debug:
+		// echo $get_part_rev_SQL;
+		$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+
+			// while loop
+			while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+	
+				$part_rev_ID 				= $row_get_part_rev['ID'];
+				$part_rev_part_ID 			= $row_get_part_rev['part_ID'];
+				$part_rev_revision_number 	= $row_get_part_rev['revision_number'];
+				$part_rev_remarks 			= $row_get_part_rev['remarks'];
+				$part_rev_date_approved 	= $row_get_part_rev['date_approved'];
+				$part_rev_user_ID 			= $row_get_part_rev['user_ID'];
+				$part_rev_price_USD 		= $row_get_part_rev['price_USD'];
+				$part_rev_weight_g 			= $row_get_part_rev['weight_g'];
+				$part_rev_status_ID 		= $row_get_part_rev['status_ID'];
+				$part_rev_material_ID 		= $row_get_part_rev['material_ID'];
+				$part_rev_treatment_ID 		= $row_get_part_rev['treatment_ID'];
+				$part_rev_treatment_notes 	= $row_get_part_rev['treatment_notes'];
+				$part_rev_record_status 	= $row_get_part_rev['record_status'];
+		}
+	
+		// now get the part info
+		$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = '" . $part_rev_part_ID . "'";
+		// debug:
+		// echo '<h3>' . $get_part_SQL . '</h3>'; 
+		$result_get_part = mysqli_query($con,$get_part_SQL);
+		// while loop
+		while($row_get_part = mysqli_fetch_array($result_get_part)) {
+
+			// now print each result to a variable:
+			$part_id 		= $row_get_part['ID'];
+			$part_code 		= $row_get_part['part_code'];
+			$part_name_EN 	= $row_get_part['name_EN'];
+			$part_name_CN 	= $row_get_part['name_CN'];
+
+		}
+	
+			$close_link = '';
+	
+			if ($profile_link == 1) { 
+	
+				$close_link = '</a>';
+	
+				?><a href="part_view.php?id=<?php echo $part_id; ?>" title="View <?php echo $part_name_EN; 
+				if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo ' / ' . $part_name_CN; } ?> Part Profile"><?php 
+			} 
+			
+			?>
+				<img src="<?php 
+				  echo $component_photo_location; 
+				?>" class="rounded img-responsive" alt="<?php 
+				  echo $part_code; 
+				?> - <?php 
+				  echo $part_name_EN; 
+				  if (($part_name_CN!='')&&($part_name_CN!='中文名')) { 
+				    echo ' / ' . $part_name_CN; 
+				  } 
+				?>" style="width:<?php 
+				  echo $img_width_px; 
+				?>px; border:0;" />
+			<?php
+			
+			echo $close_link;
+			
+	}
+
+} // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+
+function batch_num_dropdown($record_id = 0) {
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+?>
+	<select data-plugin-selectTwo class="form-control populate" name="batch_ID" required>
+	<option value=""></option>
+	<?php
+	// get batch list
+	$get_batch_list_SQL = "SELECT `part_batch`.`ID`,
+	`part_batch`.`PO_ID`,
+	`part_batch`.`part_ID`,
+	`part_batch`.`batch_number`,
+	`part_batch`.`part_rev`,
+	`purchase_orders`.`PO_number`,
+	`purchase_orders`.`created_date`,
+	`purchase_orders`.`description`
+	FROM  `part_batch` ,  `purchase_orders`
+	WHERE  `part_batch`.`PO_ID` =  `purchase_orders`.`ID` ";
+	$result_get_batch_list = mysqli_query($con,$get_batch_list_SQL);
+	// while loop
+	while($row_get_batch_list = mysqli_fetch_array($result_get_batch_list)) {
+
+		// now print each record:
+		$batch_id = $row_get_batch_list['ID'];
+		$PO_id = $row_get_batch_list['PO_ID'];
+		$part_id = $row_get_batch_list['part_ID'];
+		$batch_number = $row_get_batch_list['batch_number'];
+		$part_rev = $row_get_batch_list['part_rev'];
+		$PO_number = $row_get_batch_list['PO_number'];
+		$created_date = $row_get_batch_list['created_date'];
+
+		// get part revision info:
+		$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
+		$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+		// while loop
+		while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+
+			// now print each record:
+			$rev_id = $row_get_part_rev['ID'];
+			$rev_part_id = $row_get_part_rev['part_ID'];
+			$rev_number = $row_get_part_rev['revision_number'];
+			$rev_remarks = $row_get_part_rev['remarks'];
+			$rev_date = $row_get_part_rev['date_approved'];
+			$rev_user = $row_get_part_rev['user_ID'];
+
+		}
+
+	?>
+		<option value="<?php echo $batch_id; ?>"<?php if ($batch_id == $record_id) { ?> selected=""<?php } ?>><?php echo $batch_number; ?> (<?php echo $rev_number; ?>) [PO: <?php echo $PO_number; ?>]</option>
+
+		<?php
+		}
+		?>
+	</select>
+<?php
+} // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+function record_status($record_status_ID, $show_button = 1) {
+				
+	if ($record_status_ID == 2) {
+		// OK
+		$status_color 		= 'success';
+		$status_label 		= 'OK';
+		$status_icon 		= 'check-circle';
+		$status_message 	= 'This record is active and published';
+	}
+	else if ($record_status_ID == 1) {
+		// PENDING
+		$status_color 		= 'warning';
+		$status_label 		= 'PENDING';
+		$status_icon 		= 'exclaimation-circle';
+		$status_message		= 'This record is pending review';
+	}
+	else {
+		// DELETED!
+		$status_color 		= 'danger';
+		$status_label 		= 'UNPUBLISHED';
+		$status_icon 		= 'times-circle';
+		$status_message 	= 'This record is deleted / unpublished';
+	}
+
+	// now chek if we need a button and icon
+	if ($show_button == 1) {
+		$open_button 	= '<span class="btn btn-' . $status_color . ' btn-xs" title="' . $status_message . '">';
+		$icon_code 		= '<i class="fa fa-' . $status_icon . '"></i> ';
+		$close_button 	= '</span>';
+	}
+	else {
+		$open_button = '';
+		$icon_code = '';
+		$close_button = '';
+	}
+	
+	// now build the output:
+	echo $open_button;
+	echo $icon_code;
+	// echo $status_label;
+	echo $close_button;
+
+} // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
 ?>

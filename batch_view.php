@@ -64,21 +64,21 @@ else {
 
 
 
-								// get part revision info:
-								$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
-								$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
-								// while loop
-								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+						// get part revision info:
+						$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
+						$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+						// while loop
+						while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 
-									// now print each record:
-									$rev_id 		= $row_get_part_rev['ID'];
-									$rev_part_id 	= $row_get_part_rev['part_ID'];
-									$rev_number 	= $row_get_part_rev['revision_number'];
-									$rev_remarks 	= $row_get_part_rev['remarks'];
-									$rev_date 		= $row_get_part_rev['date_approved'];
-									$rev_user 		= $row_get_part_rev['user_ID'];
+							// now print each record:
+							$rev_id 		= $row_get_part_rev['ID'];
+							$rev_part_id 	= $row_get_part_rev['part_ID'];
+							$rev_number 	= $row_get_part_rev['revision_number'];
+							$rev_remarks 	= $row_get_part_rev['remarks'];
+							$rev_date 		= $row_get_part_rev['date_approved'];
+							$rev_user 		= $row_get_part_rev['user_ID'];
 
-								}
+						}
 
 
 				// GET P.O. DETAILS:
@@ -265,21 +265,17 @@ pagehead($page_id);
 					 					  <tr>
 					 					    <th>Part Code:</th>
 					 					    <td>
-					 					      <a href="part_view.php?id=<?php echo $part_id; ?>" class="btn btn-info btn-xs" title="View <?php echo $part_name_EN; if (($part_name_CN!='中文名')&&($part_name_CN!='')) { echo ' / '. $part_name_CN; } ?> Part Profile">
-					 					    	<?php echo $part_code; ?>
-					 					      </a>
+					 					      <?php part_num($part_id); ?>
 					 					   </td>
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Part Name:</th>
-					 					    <td><a href="part_view.php?id=<?php echo $part_id; ?>"><?php echo $part_name_EN; if (($part_name_CN!='中文名')&&($part_name_CN!='')) { echo ' / '. $part_name_CN; } ?></a></td>
+					 					    <td><?php part_name($part_id); ?></td>
 					 					  </tr>
 					 					  <tr>
 					 					    <th>Part Revision:</th>
 					 					    <td>
-					 					      <span class="btn btn-xs btn-warning" title="Rev. #: <?php echo $rev_id; ?>">
-					 					    	<?php echo $rev_number; ?>
-					 					      </span>
+					 					      <?php part_rev($part_rev); ?>
 					 					    </td>
 					 					  </tr>
 					 					  <tr>
@@ -330,11 +326,9 @@ pagehead($page_id);
 											show_code('batch_QR', $_REQUEST['id']);
 										?>
 										<br />
-										<a href="#" id="printOut">
-										<span class="fa-stack fa-lg">
-										  <i class="fa fa-square fa-stack-2x"></i>
-										  <i class="fa fa-print fa-stack-1x fa-inverse"></i>
-										</span>
+										<a href="#" id="printOut" class="btn btn-primary">
+										  <i class="fa fa-print"></i>
+										  PRINT BATCH LABEL
 										</a>
 									</div>
 
@@ -500,7 +494,7 @@ pagehead($page_id);
 											<tr>
 											  <td>EDIT</td>
 											  <td>
-											  <a href="batch_movement_edit.php?id=<?php echo $batch_movement_id; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
+											  <a href="part_movement_edit.php?id=<?php echo $batch_movement_id; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
 											  <td>Edit this record</td>
 											</tr>
 											<tr>

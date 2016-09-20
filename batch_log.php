@@ -215,7 +215,8 @@ else {
 					  $grand_total_out 			= 0; // default
 					  $grand_total_remaining 	= 0; // default
 					  $total_batches 			= 0; // default
-					  $array_total_in_by_rev	= array[]; // BLANK EMPTY ARRAY
+				      $array_total_in_by_rev	= array(); // BLANK EMPTY ARRAY
+				      $array_total_out_by_rev	= array(); // BLANK EMPTY ARRAY
 
 					  // SORT IT!
 
@@ -317,15 +318,97 @@ else {
 								// THEN let's calculate how many are in stock at present
 								$qty_remaining = $total_qty_in - $total_qty_out;
 								
-								// UPDATE 2016-09-16 - SHOW A RUNNING TOTAL FOR DIFFERENT REVISIONS
 								
-								$array_total_in_by_rev_value = $array_total_in_by_rev[$rev_id] + $total_qty_in;
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// UPDATE 2016-09-16 - SHOW A RUNNING TOTAL FOR DIFFERENT REVISIONS
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								
+								// NOTE: Blank arrays are first declared above
+								
+								if ($array_total_in_by_rev[$rev_id]) {
+									// echo '<h1>ARRAY IN ' . $rev_id . ' FOUND!</h1>';
+									
+									// THE GOAL HERE IS TO ADD THE NEW QTY TO THE PREVIOUS QTY:
+									
+									$previous_total_in = $array_total_in_by_rev[$rev_id];
+									// now update the value:
+									$array_total_in_by_rev[$rev_id] = $previous_total_in + $total_qty_in;
+									
+									// echo '<h2>Current Value for array in = ' . $array_total_in_by_rev_value . '</h2>';
+									// echo '<h2>PRINT ARRAY IN:</h2>';
+									// print_r($array_total_in_by_rev);
+									// echo '<h2>COUNT ARRAY IN:</h2>';
+									// echo 'COUNT: ' . count($array_total_in_by_rev);
+								}
+								else {
+									// echo '<h1>ARRAY IN ' . $rev_id . ' NOT FOUND!</h1>';
+									$array_total_in_by_rev[$rev_id] = $total_qty_in;
+									// echo '<h2>PRINT ARRAY:</h2>';
+									// print_r($array_total_in_by_rev);
+									// echo '<h2>COUNT ARRAY IN:</h2>';
+									// echo 'COUNT: ' . count($array_total_in_by_rev);
+								}
+									// echo '<h2>PRINT ARRAY:</h2>';
+									// print_r($array_total_in_by_rev);
+									
+									
+									
+								// NOW REPEAT FOR OUT-GOING PARTS:
+								
+								if ($array_total_out_by_rev[$rev_id]) {
+									// debug
+									// echo '<h1>ARRAY OUT ' . $rev_id . ' FOUND!</h1>';
+									
+									$previous_total_out = $array_total_out_by_rev[$rev_id];
+									// now update the value:
+									$array_total_out_by_rev[$rev_id] = $previous_total_out + $total_qty_out;
+									
+									// debug:
+										// echo '<h2>Current Value for array = ' . $array_total_out_by_rev_value . '</h2>';
+										// echo '<h2>PRINT ARRAY OUT:</h2>';
+										// print_r($array_total_out_by_rev);
+										// echo '<h2>COUNT ARRAY OUT:</h2>';
+										// echo 'COUNT ARRAY OUT: ' . count($array_total_out_by_rev);
+									// end debug
+								}
+								else {
+									// debug:
+									// echo '<h1>ARRAY OUT ' . $rev_id . ' NOT FOUND!</h1>';
+									$array_total_out_by_rev[$rev_id] = $total_qty_out;
+									// echo '<h2>PRINT ARRAY OUT:</h2>';
+									// print_r($array_total_out_by_rev);
+									// echo '<h2>COUNT ARRAY OUT:</h2>';
+									// echo 'COUNT ARRAY OUT: ' . count($array_total_out_by_rev);
+								}
+									
+									
+								
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								//                       END OF ARRAYS UPDATE :)
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								// //////////////////////////////////////////////////////////////// //
+								
+								/*
 								
 								$array_total_in_by_rev = array($rev_id => $array_total_in_by_rev_value);
+								
+								$$array_total_in_by_rev[] = 6;
 								
 								$stack = array("orange", "banana");
 								array_push($stack, "apple", "raspberry");
 								print_r($stack);
+								*/
 
 					// NOW LET'S DO THIS!
 
@@ -349,7 +432,7 @@ else {
 					    }
 
 					    ?></a></td>
-					    <td class="text-center"><span class="btn btn-xs btn-warning" title="Rev. #: <?php echo $rev_id; ?>"><?php echo $rev_number; ?></span></td>
+					    <td class="text-center"><?php part_rev($rev_id); ?></td>
 					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
 					    	echo $part_name_EN;
 					    	if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
@@ -382,23 +465,71 @@ else {
 
 					 </table>
 					 
+					 
+					 
 					 <?php 
 					 
+					 // DEBUG: SHOW THE VALUE OF EACH ARRAY:
+					 /*
 						foreach($array_total_in_by_rev as $in => $in_value) {
-							echo "Key=" . $in . ", Value=" . $in_value;
+							echo "Key = " . $in . ", Value in = " . number_format($in_value);
 							echo "<br>";
 						}
-					 
+						
+						foreach($array_total_out_by_rev as $out => $out_value) {
+							echo "Key = " . $out . ", Value out = " . number_format($out_value);
+							echo "<br>";
+						}
+					 */
 					 
 					 ?>
 					 
 					</div>
+					 
+					
 
 					<div class="row">
 					  <div class="col-md-12">
 					 	<a href="part_batch_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
 					</div>
 					 </div>
+					
+					<h1>BATCH SUMMARY BY PART REVISION:</h1>
+					
+					<div class="table-responsive">
+					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					 <thead>
+					  <tr>
+					    <th class="text-center">Rev. #</th>
+					    <th class="text-center">TOTAL IN</th>
+					    <th class="text-center">TOTAL OUT</th>
+					    <th class="text-center">TOTAL BALANCE</th>
+					  </tr>
+					 </thead>
+					 <tbody>
+					 <?php foreach($array_total_in_by_rev as $in => $in_value) {
+					 
+					 ?>
+					 	<tr>
+					 	  <td class="text-center"><?php part_rev($in); ?></td>
+					 	  <td class="text-right"><?php echo number_format($in_value); ?></td>
+					 	  <td class="text-right"><?php echo number_format($array_total_out_by_rev[$in]); ?></td>
+					 	  <td class="text-right"><?php 
+					 	  	echo number_format(($in_value - $array_total_out_by_rev[$in]));
+					 	  ?></td>
+					 	</tr>
+					 <?php } ?>
+					 </tbody>
+					 <tfoot>
+					 	<tr>
+					 	  <td>&nbsp;</td>
+					 	  <td>&nbsp;</td>
+					 	  <td>&nbsp;</td>
+					 	  <td>&nbsp;</td>
+					 	</tr>
+					 </tfoot>
+				    </table>
+				  </div>
 
 								<!-- now close the panel -->
 								</div>

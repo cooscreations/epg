@@ -160,56 +160,8 @@ if (isset($_REQUEST['batch_id'])) { $record_id = $_REQUEST['batch_id']; }
 											<div class="form-group">
 												<label class="col-md-3 control-label">Batch #:<span class="required">*</span></label>
 												<div class="col-md-5">
-													<select data-plugin-selectTwo class="form-control populate" name="batch_ID" required>
-                                                        <option value=""></option>
-													<?php
-													// get batch list
-													$get_batch_list_SQL = "SELECT `part_batch`.`ID`,
-													`part_batch`.`PO_ID`,
-													`part_batch`.`part_ID`,
-													`part_batch`.`batch_number`,
-													`part_batch`.`part_rev`,
-													`purchase_orders`.`PO_number`,
-													`purchase_orders`.`created_date`,
-													`purchase_orders`.`description`
-													FROM  `part_batch` ,  `purchase_orders`
-													WHERE  `part_batch`.`PO_ID` =  `purchase_orders`.`ID` ";
-													$result_get_batch_list = mysqli_query($con,$get_batch_list_SQL);
-													// while loop
-													while($row_get_batch_list = mysqli_fetch_array($result_get_batch_list)) {
-
-														// now print each record:
-														$batch_id = $row_get_batch_list['ID'];
-														$PO_id = $row_get_batch_list['PO_ID'];
-														$part_id = $row_get_batch_list['part_ID'];
-														$batch_number = $row_get_batch_list['batch_number'];
-														$part_rev = $row_get_batch_list['part_rev'];
-														$PO_number = $row_get_batch_list['PO_number'];
-														$created_date = $row_get_batch_list['created_date'];
-
-														// get part revision info:
-														$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
-														$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
-														// while loop
-														while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
-
-															// now print each record:
-															$rev_id = $row_get_part_rev['ID'];
-															$rev_part_id = $row_get_part_rev['part_ID'];
-															$rev_number = $row_get_part_rev['revision_number'];
-															$rev_remarks = $row_get_part_rev['remarks'];
-															$rev_date = $row_get_part_rev['date_approved'];
-															$rev_user = $row_get_part_rev['user_ID'];
-
-														}
-
-													?>
-														<option value="<?php echo $batch_id; ?>"<?php if ($batch_id == $record_id) { ?> selected=""<?php } ?>><?php echo $batch_number; ?> (<?php echo $rev_number; ?>) [PO: <?php echo $PO_number; ?>]</option>
-
-														<?php
-														}
-														?>
-													</select>
+													
+													<?php batch_num_dropdown($record_id); ?>
 												</div>
 												<div class="col-md-1">
 													<a href="part_batch_add.php?PO_ID=<?php echo $PO_id; ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>

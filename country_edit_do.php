@@ -25,10 +25,10 @@ if (!isset($_SESSION['username'])) {
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
 */
-$id = $_REQUEST['id'];
-$name_en = $_REQUEST['name_en'];
-$name_cn = $_REQUEST['name_cn'];
-$code = $_REQUEST['code'];
+$id 		= checkaddslashes($_REQUEST['id']);
+$name_en 	= checkaddslashes($_REQUEST['name_en']);
+$name_cn 	= checkaddslashes($_REQUEST['name_cn']);
+$code 		= checkaddslashes($_REQUEST['code']);
 
 $update_note = "Editing a Country in the system.";
 

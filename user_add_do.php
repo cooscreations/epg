@@ -26,29 +26,33 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 
 */
 
-$id = $_REQUEST['id'];
-$user_fn = $_REQUEST['fn_text'];
-$user_mn = $_REQUEST['mn_text'];
-$user_ln = $_REQUEST['ln_text'];
-$user_cn = $_REQUEST['cn_text'];
+// $id 					= checkaddslashes($_REQUEST['id']); 					// NOT USED!
+$user_fn 				= checkaddslashes($_REQUEST['fn_text']);
+$user_mn 				= checkaddslashes($_REQUEST['mn_text']);
+$user_ln 				= checkaddslashes($_REQUEST['ln_text']);
+$user_cn 				= checkaddslashes($_REQUEST['cn_text']);
+$user_email 			= checkaddslashes($_REQUEST['email_text']);
+$user_pwd 				= md5($_REQUEST['pwd_text']);
+$user_level 			= checkaddslashes($_REQUEST['level_text']);
+$user_pos 				= checkaddslashes($_REQUEST['pos_text']);
+$user_mobile_number 	= checkaddslashes($_REQUEST['mobile_number']);
+$user_facebook 			= checkaddslashes($_REQUEST['facebook']);
+$user_linkedin 			= checkaddslashes($_REQUEST['linkedin']);
+$user_twitter 			= checkaddslashes($_REQUEST['twitter']);
+$user_wechat 			= checkaddslashes($_REQUEST['wechat']);
+$user_skype 			= checkaddslashes($_REQUEST['skype']);
 if($_REQUEST['cn_text'] == ''){
-	$user_cn = '中文名';
-}else{
-	$user_cn = $_REQUEST['cn_text'];
+	$user_cn 			= '中文名';
 }
-
-$user_email = $_REQUEST['email_text'];
-$user_pwd = md5($_REQUEST['pwd_text']);
-$user_level = $_REQUEST['level_text'];
-$user_pos = $_REQUEST['pos_text'];
-$user_mobile_number = $_REQUEST['mobile_number'];
+else{
+	$user_cn 			= checkaddslashes($_REQUEST['cn_text']);
+}
 
 
 
 $update_note = "Adding a new user to the system.";
 
-$add_user_SQL = "INSERT INTO `users`(`ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `mobile_number`) VALUES (NULL,'".$user_fn."','".$user_mn."','".$user_ln."','".$user_cn."','".$user_email."','".$user_pwd."','".$user_level."','".$user_pos."','".$user_mobile_number."')";
-
+$add_user_SQL = "INSERT INTO `users`(`ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `last_login_date`, `facebook_profile`, `twitter_profile`, `linkedin_profile`, `skype_profile`, `wechat_profile`, `record_status`, `mobile_number`) VALUES (NULL,'".$user_fn."','".$user_mn."','".$user_ln."','".$user_cn."','".$user_email."','".$user_pwd."','".$user_level."','".$user_pos."','0000-00-00 00:00:00','" . $user_facebook . "','" . $user_twitter . "','" . $user_linkedin . "','" . $user_skype . "','" . $user_wechat . "','2','" . $user_mobile_number . "')";
 
 // echo $add_movement_SQL;
 

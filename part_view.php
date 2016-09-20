@@ -123,7 +123,7 @@ pagehead($page_id);
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Part Profile - <?php echo $part_code; ?> - <?php echo $name_EN; if (($name_CN!='')&&($name_CN!='中文名')) { ?> / <?php echo $name_CN; } ?></h2>
+						<h2>Part Profile - <?php part_num($part_ID, 0); ?> - <?php part_name($part_ID, 0); ?></h2>
 
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -214,7 +214,7 @@ pagehead($page_id);
 
 							// get part revision info:
 							// NOTE: I use this query again lower down for the panel body. It's a little sloppy, but it should work :)
-								$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE  `part_ID` ='" . $part_ID . "' ORDER BY `revision_number` DESC";
+								$get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE  `part_ID` ='" . $part_ID . "' AND `record_status` = '2' ORDER BY `revision_number` DESC";
 
 								$loop_count = 0;
 
@@ -347,7 +347,7 @@ pagehead($page_id);
 									<ul>
 									  <li><strong>Type:</strong> <?php echo $part_type_EN; if (($part_type_CN!='')&&($part_type_CN!='中文名')) { echo " / " . $part_type_CN; } ?></li>
 									  <li><strong>Release Date:</strong> <?php echo date("Y-m-d", strtotime($rev_body_date)); ?></li>
-									  <li><strong>Released By:</strong> <a href="user_view.php?id=<?php echo $rev_body_user; ?>"><?php echo $rev_user_first_name . " " . $rev_user_last_name; if (($rev_user_name_CN != '')&&($rev_user_name_CN != '中文名')) { echo " / " . $rev_user_name_CN; } ?></a></li>
+									  <li><strong>Released By:</strong> <?php get_creator($rev_body_user); ?></li>
 									</ul>
 
 									<hr />
@@ -835,17 +835,12 @@ pagehead($page_id);
 									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-xs btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a>
 									</td>
 									<td>
-
-									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-xs btn-info"><?php echo $rev_part_join_part_code; ?></a>
-
-									  <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-										<?php echo $rev_part_join_name_EN; if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { echo " / " . $rev_part_join_name_CN; }?>
-									  </a>
+									  <?php part_num($rev_part_join_part_ID); ?>
+									  
+									  <?php part_name($rev_part_join_part_ID); ?>
 									</td>
-									<td>
-									  <a class="btn btn-xs btn-warning">
-										<?php echo $rev_part_join_rev_num; ?>
-									  </a>
+									<td class="text-center">
+									  <?php part_rev($BOM_part_rev_ID); ?>
 									</td>
 									<td><?php echo date("Y-m-d", strtotime($BOM_date_entered)); ?></td>
 									<td>
@@ -975,19 +970,16 @@ pagehead($page_id);
 												  ?>
 
 												  <tr>
-													<td>
+													<td class="text-center">
 													  <a href="BOM_view.php?id=<?php echo $this_BOM_ID; ?>" class="btn btn-xs btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $this_BOM_ID; ?></a>
 													</td>
 													<td>
-					     							  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>" class="btn btn-xs btn-info"><?php echo $this_rev_part_join_part_code; ?></a>
-													  <a href="part_view.php?id=<?php echo $this_rev_part_join_part_ID; ?>">
-														<?php echo $this_rev_part_join_name_EN; if (($this_rev_part_join_name_CN!='')&&($this_rev_part_join_name_CN!='中文名')) { echo " / " . $this_rev_part_join_name_CN; }?>
-													  </a>
+					     							  <?php part_num($this_rev_part_join_part_ID); ?>
+									  
+									  				  <?php part_name($this_rev_part_join_part_ID); ?>
 													</td>
-													<td>
-													  <a class="btn btn-xs btn-warning">
-													    <?php echo $this_rev_part_join_rev_num; ?>
-													  </a>
+													<td class="text-center">
+													  <?php part_rev($this_BOM_part_rev_ID); ?>
 													</td>
 													<td><?php echo date("Y-m-d", strtotime($this_BOM_date_entered)); ?></td>
 													<td><?php
@@ -1076,7 +1068,7 @@ pagehead($page_id);
 								 $total_components = 0;
 								 $total_assemblies = 0;
 
-					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $find_BOM . " AND  `record_status` =2 ORDER BY `entry_order` ASC";
+					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $find_BOM . " AND  `record_status` = '2' ORDER BY `entry_order` ASC";
 
 					 			 // DEBUG:
 					 			 // echo $get_components_SQL;
@@ -1137,7 +1129,7 @@ pagehead($page_id);
 
 									$order_by = " ORDER BY `parts`.`type_ID` ASC";
 
-									$combine_part_and_rev_SQL = "SELECT `parts`.`ID` AS `part_ID`, `parts`.`type_ID`, `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`ID` AS `rev_revision_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $components_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2" . $order_by;
+									$combine_part_and_rev_SQL = "SELECT `parts`.`ID` AS `part_ID`, `parts`.`type_ID`, `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`ID` AS `rev_revision_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $components_part_rev_ID . " AND `part_revisions`.`record_status` = '2' AND `parts`.`record_status` = '2'" . $order_by;
 					    			// DEBUG:
 					    			// echo 'DEBUG: ' . $combine_part_and_rev_SQL . '<br />';
 
@@ -1168,47 +1160,6 @@ pagehead($page_id);
 											}
 
 
-										// now get the part revision photo!
-										$num_component_photos_found = 0;
-										$component_photo_location = "assets/images/no_image_found.jpg";
-
-										$get_part_component_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $rev_part_join_revision_ID;
-										// echo "<h1>".$get_part_component_photo_SQL."</h1>";
-										$result_get_part_component_photo = mysqli_query($con,$get_part_component_photo_SQL);
-										// while loop
-										while($row_get_part_component_photo = mysqli_fetch_array($result_get_part_component_photo)) {
-
-											$num_component_photos_found = $num_component_photos_found + 1;
-
-											// now print each record:
-											$component_photo_id 				= $row_get_part_component_photo['ID'];
-											$component_photo_name_EN 			= $row_get_part_component_photo['name_EN'];
-											$component_photo_name_CN 			= $row_get_part_component_photo['name_CN'];
-											$component_photo_filename 			= $row_get_part_component_photo['filename'];
-											$component_photo_filetype_ID 		= $row_get_part_component_photo['filetype_ID'];
-											$component_photo_location 			= $row_get_part_component_photo['file_location'];
-											$component_photo_lookup_table 		= $row_get_part_component_photo['lookup_table'];
-											$component_photo_lookup_id 			= $row_get_part_component_photo['lookup_ID'];
-											$component_photo_document_category 	= $row_get_part_component_photo['document_category'];
-											$component_photo_record_status 		= $row_get_part_component_photo['record_status'];
-											$component_photo_created_by 		= $row_get_part_component_photo['created_by'];
-											$component_photo_date_created 		= $row_get_part_component_photo['date_created'];
-											$component_photo_filesize_bytes 	= $row_get_part_component_photo['filesize_bytes'];
-											$component_photo_document_icon 		= $row_get_part_component_photo['document_icon'];
-											$component_photo_document_remarks 	= $row_get_part_component_photo['document_remarks'];
-											$component_photo_doc_revision 		= $row_get_part_component_photo['doc_revision'];
-
-											if ($component_photo_filename!='') {
-												// now apply filename
-												$component_photo_location = "assets/images/" . $component_photo_location . "/" . $component_photo_filename;
-											}
-											else {
-												$component_photo_location = "assets/images/no_image_found.jpg";
-											}
-
-										} // end get part rev photo
-
-
 									if ($rev_part_join_part_type_ID == 10) {
 										$total_assemblies = $total_assemblies + 1;
 									}
@@ -1224,36 +1175,16 @@ pagehead($page_id);
 
 					 			<tr>
 					 			  <td class="text-center">
-									<img src="<?php
-										echo $component_photo_location;
-									?>" class="rounded img-responsive" alt="<?php
-										echo $rev_part_join_part_code;
-									?> - <?php
-										echo $rev_part_join_name_EN;
-										if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) {
-											echo " / " . $rev_part_join_name_CN;
-										}
-									?>" style="width:100px;" />
+								  <?php part_img($components_part_rev_ID); ?>
 								  </td>
-					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					 			  		<?php echo $rev_part_join_part_code; ?>
-					 			  	</a>
+					 			  <td class="text-center">
+					 			  	<?php part_num($rev_part_join_part_ID); ?>
 					 			  </td>
 					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					 			  		<?php
-					 			  			echo $rev_part_join_name_EN;
-					 			  			if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) {
-					 			  				echo " / " . $rev_part_join_name_CN;
-					 			  			}
-					 			  		?>
-					 			  	</a>
+					 			  	<?php part_name($rev_part_join_part_ID); ?>
 					 			  </td>
-					 			  <td>
-					 			  	<a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-xs btn-warning" title="Rev #: <?php echo $rev_part_join_revision_ID; ?>">
-					 			  		<?php echo $rev_part_join_rev_num; ?>
-					 			  	</a>
+					 			  <td class="text-center">
+					 			  	<?php part_rev($rev_part_join_part_ID); ?>
 					 			  </td>
 					 			  <td>
 					 			  	<?php
@@ -1351,19 +1282,20 @@ pagehead($page_id);
 					// firstly, let's make sure we have some batches to display...
 
 					// count variants for this purchase order
-        			$count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_rev` = " . $rev_body_id;
+        			$count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_rev` = '" . $rev_body_id . "' AND `record_status` = '2'";
         			$count_batches_query 	= mysqli_query($con, $count_batches_sql);
         			$count_batches_row 		= mysqli_fetch_row($count_batches_query);
         			$total_batches 			= $count_batches_row[0];
 
 					if ($total_batches == 0) {
-						?><center>No batches found. <a href="part_batch_add.php?new_record_id=<?php echo $rev_body_id; ?>">Add one?</a></center><?php
+						?><center>No batches found. <a href="part_batch_add.php?new_record_id=<?php echo $rev_body_id; ?>" class="btn btn-success"><i class="fa fa-plus"></i> Add one? <i class="fa fa-plus"></i></a></center><?php
 					}
 					else { // FOUND BATCHES - SHOW THEM!
 
 					?>
 
 
+					<?php add_button($rev_body_id, 'part_batch_add', 'new_record_id'); ?>
 
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
@@ -1402,7 +1334,7 @@ pagehead($page_id);
 					  	$sort_SQL = " ORDER BY `part_ID` " . $sort_dir;
 					  }
 
-					  $get_batch_SQL = "SELECT * FROM  `part_batch` WHERE `part_rev` = ".$rev_body_id."" . $sort_SQL;
+					  $get_batch_SQL = "SELECT * FROM  `part_batch` WHERE `record_status` = '2' AND `part_rev` = ".$rev_body_id."" . $sort_SQL;
 						$result_get_batch = mysqli_query($con,$get_batch_SQL);
 						// while loop
 						while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
@@ -1526,6 +1458,8 @@ pagehead($page_id);
 
 					 </table>
 					</div>
+					
+					<?php add_button($rev_body_id, 'part_batch_add', 'new_record_id'); ?>
 
 					<?php
 

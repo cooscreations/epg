@@ -143,14 +143,14 @@ if ($record_id != 0) {
 								</div>
 
 								<div class="form-group">
-												<label class="col-md-3 control-label">Part / Revision #:<span class="required">*</span></label>
-												<div class="col-md-5">
-													<?php part_rev_drop_down($part_rev_ID); ?>
-												</div>
-												<div class="col-md-1">
-													<a href="part_revision_add.php<?php if ($record_id != 0) { ?>?PO_ID=<?php echo $record_id; } ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
-												</div>
-											</div>
+									<label class="col-md-3 control-label">Part / Revision #:<span class="required">*</span></label>
+									<div class="col-md-5">
+										<?php part_rev_drop_down($part_rev_ID); ?>
+									</div>
+									<div class="col-md-1">
+										<a href="part_revision_add.php<?php if ($record_id != 0) { ?>?PO_ID=<?php echo $record_id; } ?>" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+									</div>
+								</div>
 
 
 								<div class="form-group">

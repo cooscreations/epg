@@ -11,6 +11,12 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
+// THIS PAGE HAS A PRINTABLE VERSION...
+$print_view = 0;
+if ($_REQUEST['print_view'] == 1) {
+	$print_view = 1;
+}
+
 header('Content-Type: text/html; charset=utf-8');
 require ('page_functions.php');
 include 'db_conn.php';
@@ -101,8 +107,107 @@ while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 
 } // end while loop
 
-// pull the header and template stuff:
-pagehead($page_id);
+
+if ($print_view == 0) { // regular page
+	// pull the header and template stuff:
+	pagehead($page_id);
+	// show regular button / weblinks
+	$display_button = 1;
+}
+else {
+	// show plain text
+	$display_button = 0;
+	// show printable header here:
+	?>
+	<!doctype html>
+
+	<!--
+
+	<html class="fixed js flexbox flexboxlegacy no-touch csstransforms csstransforms3d no-overflowscrolling no-mobile-device custom-scroll sidebar-left-collapsed">
+
+	-->
+
+	<html class="fixed sidebar-left-collapsed">
+
+	<head>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+
+		<!-- Basic -->
+		<meta charset="UTF-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<title>EPG Purchase Order <?php echo $PO_number; ?></title>
+		<meta name="keywords" content="EPG Connect, <?php echo $PO_number; ?>" />
+		<meta name="description" content="PO # <?php echo $PO_number; ?> (printable version)">
+		<meta name="author" content="MarkClulow.com">
+
+		<!-- Mobile Metas -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<!-- Web Fonts  -->
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+		<!-- Vendor CSS -->
+		<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="print" ><!-- printer-friendly? -->
+
+		<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="assets/vendor/magnific-popup/magnific-popup.css" />
+		<link rel="stylesheet" href="assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+		<link rel="stylesheet" href="assets/vendor/intl-tel-input/css/intlTelInput.css" />
+
+		<!-- Specific Page Vendor CSS - ADVANCED FORMS-->
+		<link rel="stylesheet" href="assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
+		<link rel="stylesheet" href="assets/vendor/select2/select2.css" />
+		<link rel="stylesheet" href="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+		<link rel="stylesheet" href="assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css" />
+		<link rel="stylesheet" href="assets/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css" />
+		<link rel="stylesheet" href="assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css" />
+		<link rel="stylesheet" href="assets/vendor/dropzone/css/basic.css" />
+		<link rel="stylesheet" href="assets/vendor/dropzone/css/dropzone.css" />
+		<link rel="stylesheet" href="assets/vendor/bootstrap-markdown/css/bootstrap-markdown.min.css" />
+		<link rel="stylesheet" href="assets/vendor/summernote/summernote.css" />
+		<link rel="stylesheet" href="assets/vendor/summernote/summernote-bs3.css" />
+		<link rel="stylesheet" href="assets/vendor/codemirror/lib/codemirror.css" />
+		<link rel="stylesheet" href="assets/vendor/codemirror/theme/monokai.css" />
+
+
+		<!-- Specific Page Vendor CSS -->
+		<link rel="stylesheet" href="assets/vendor/pnotify/pnotify.custom.css" />
+
+		<!-- Theme CSS -->
+		<link rel="stylesheet" href="assets/stylesheets/theme.css" />
+
+		<!-- Skin CSS -->
+		<link rel="stylesheet" href="assets/stylesheets/skins/default.css" />
+
+		<!-- Theme Custom CSS -->
+		<link rel="stylesheet" href="assets/stylesheets/theme-custom.css">
+
+		<!-- Head Libs -->
+		<script src="assets/vendor/modernizr/modernizr.js"></script>
+		
+		<style>
+		  body, * {
+		  	/* font-size: small; */
+		  }
+		</style>
+
+	</head>
+	<body>
+		<section class="body">
+		
+		  <div class="row text-center">
+			<img src="assets/images/logo.png" height="50" alt="EPG Connect" class="text-center" />
+		  </div>
+		  <div class="row text-center">
+			<h2 class="text-center">PURCHASE ORDER</h2>
+		  </div>
+	<?php
+}
 
 ?>
 
@@ -111,6 +216,11 @@ pagehead($page_id);
 <!-- START MAIN PAGE BODY : -->
 
 				<section role="main" class="content-body">
+				<?php 
+				if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+				?>
+				
+				
 					<header class="page-header">
 						<h2>Purchase Order Record - <?php echo $PO_number; ?></h2>
 
@@ -130,6 +240,14 @@ pagehead($page_id);
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
+					
+				<?php
+				}
+				else {
+					// show printable header here:
+
+				}
+				?>
 
 					<!-- start: page -->
 
@@ -154,83 +272,113 @@ pagehead($page_id);
 
 
 
-<div class="col-md-4">
-
 	<?php
 	// now run the admin bar function:
-	// Fix for bug#39 and 37- main table os part_batch
-	admin_bar('purchase_order');
+	// Fix for bug#39 and 37 - main table os part_batch
+	if ($print_view == 0) { // HIDE ADMIN BAR ON PRINT VIEW
 	?>
 
-	<!-- START PANEL - SUPPLIER INFORMATION -->
-	<section class="panel">
-		<header class="panel-heading">
-			<div class="panel-actions">
-				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-			</div>
-
-			<h2 class="panel-title">
-				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
-				<span class="va-middle">Supplier Information</span>
-			</h2>
-		</header>
-		<div class="panel-body">
-			<div class="content">
-				<!-- PANEL CONTENT HERE -->
-				<?php get_supplier($PO_supplier_ID, 1); // show name and address in P.O. format, with link to vendor profile ?>
-		  </div>
-		</div>
-	</section>
-	<!-- END PANEL - SUPPLIER INFORMATION -->
-	
-</div>
-
-
-<div class="col-md-8">
-
-	<!-- START PANEL - PURCHASER INFORMATION -->
-	<section class="panel">
-		<header class="panel-heading">
-			<div class="panel-actions">
-				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-			</div>
-
-			<h2 class="panel-title">
-				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
-				<span class="va-middle">Purchaser Information</span>
-			</h2>
-		</header>
-		<div class="panel-body">
-			<div class="content">
-				<!-- PANEL CONTENT HERE -->
-				
-				<div class="row">
-				
-					<!-- GET THIS FROM THE `locations` TABLE! -->
-				
-					<div class="col-md-6">
-					  <?php get_location($PO_local_location_ID,1); ?>
+		<div class="col-md-4">
+			<?php
+				admin_bar('purchase_order');
+			?>
+			<!-- START PANEL - SUPPLIER INFORMATION -->
+			<section class="panel">
+				<header class="panel-heading">
+					<div class="panel-actions">
+						<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+						<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
 					</div>
-				
-					<div class="col-md-6">
-					  <?php get_location($PO_HQ_location_ID,1);; ?>
-					</div>
-				
+
+					<h2 class="panel-title">
+						<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+						<span class="va-middle">Supplier Information</span>
+					</h2>
+				</header>
+				<div class="panel-body">
+					<div class="content">
+						<!-- PANEL CONTENT HERE -->
+						<?php get_supplier($PO_supplier_ID, 1); // show name and address in P.O. format, with link to vendor profile ?>
+				  </div>
 				</div>
-				
-				
-		  </div>
+			</section>
+			<!-- END PANEL - SUPPLIER INFORMATION -->
+	
+	
 		</div>
-	</section>
-	<!-- END PANEL - PURCHASER INFORMATION -->
 
-</div>
+
+		<div class="col-md-8">
+
+			<!-- START PANEL - PURCHASER INFORMATION -->
+			<section class="panel">
+				<header class="panel-heading">
+					<div class="panel-actions">
+						<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+						<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+					</div>
+
+					<h2 class="panel-title">
+						<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
+						<span class="va-middle">Purchaser Information</span>
+					</h2>
+				</header>
+				<div class="panel-body">
+					<div class="content">
+						<!-- PANEL CONTENT HERE -->
+				
+						<div class="row">
+				
+							<!-- GET THIS FROM THE `locations` TABLE! -->
+				
+							<div class="col-md-6">
+							  <?php get_location($PO_local_location_ID,1); ?>
+							</div>
+				
+							<div class="col-md-6">
+							  <?php get_location($PO_HQ_location_ID,1); ?>
+							</div>
+				
+						</div>
+				
+				
+				  </div>
+				</div>
+			</section>
+			<!-- END PANEL - PURCHASER INFORMATION -->
+
+		</div>
+<?php 
+	} // END OF HIDE FOR PRINT
+	else {
+		// UGLY PRINT VIEW! 
+		?>
+		<table class="table table-bordered table-striped table-hover table-condensed mb-none">
+		  <thead>
+		  	<tr>
+		      <th class="text-center">SUPPLIER INFORMATION:</th>
+		      <th class="text-center" colspan="2">PURCHASED BY:</th>
+		  	</tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <td valign="top" width="33%"><?php get_supplier($PO_supplier_ID,2,0); ?></td>
+		      <td valign="top" width="33%"><?php get_location($PO_local_location_ID,2,0); ?></td>
+		      <td valign="top" width="33%"><?php get_location($PO_HQ_location_ID,2,0); ?></td>
+		    </tr>
+		  </tbody>
+		</table>
+		<?php
+	} // END PRINT VIEW TABLE
+	?>
 
 </div><!-- END P.O. ROW 1 -->
 
 <div class="row"><!-- P.O. ROW 2 -->
+
+<?php 
+if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+?>
 
   <div class="col-md-8">
 
@@ -250,24 +398,42 @@ pagehead($page_id);
 		<div class="panel-body">
 			<div class="content">
 				<!-- PANEL CONTENT HERE -->
-				
+<?php 
+} // END OF HIDE FOR PRINT
+?>				
 				<div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+                    	<?php 
+						if ($print_view == 1) { // ONLY SHOW THIS ON PRINT VERSION!
+						?>
+                      <thead>
+						<tr>
+						  <th class="text-center" colspan="2">ORDER</th>
+						</tr>
+					  </thead>
+						<?php } ?>
+					  <tbody>
                         <tr>
                             <th style="text-align: right">Purchase Order No.</th>
                             <td><?php echo $PO_number; ?></td>
                         </tr>
-                        <tr>
-                        	<th style="text-align: right">Short Description</th>
-                        	<td><?php echo $PO_description; ?></td>
-                        </tr>
+                        <?php 
+						if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+							?>
+							<tr>
+								<th style="text-align: right">Short Description</th>
+								<td><?php echo $PO_description; ?></td>
+							</tr>
+							<?php 
+                        } 
+                        ?>
                         <tr>
                             <th style="text-align: right">Ship Via.</th>
                             <td><?php echo $PO_ship_via; ?></td>
                         </tr>
                         <tr>
                             <th style="text-align: right">Ordered By</th>
-                            <td><?php get_creator($PO_created_by); ?></td>
+                            <td><?php get_creator($PO_created_by, $display_button); ?></td>
                         </tr>
                         <tr>
                             <th style="text-align: right">Date Ordered</th>
@@ -277,173 +443,207 @@ pagehead($page_id);
                             <th style="text-align: right">Date Needed</th>
                             <td><?php echo substr($PO_date_needed, 0, 10); ?></td>
                         </tr>
-                        <tr>
-                            <th style="text-align: right">Date Delivered</th>
-                            <td><?php echo substr($PO_date_delivered, 0, 10); ?> <span class="btn btn-xs btn-info" title="DEV. NOTE: We should add the difference in days between target date and actual date"><i class="fa fa-lightbulb-o"></i></span></td>
-                        </tr>
-						  <tr>
-							<th style="text-align: right">Total Batches in System:</th>
-							<td><?php echo $total_batches; ?> (see below)</td>
-						  </tr>
+                        
+                        <?php 
+						if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+							?>
+							<tr>
+								<th style="text-align: right">Date Delivered</th>
+								<td><?php echo substr($PO_date_delivered, 0, 10); ?> <span class="btn btn-xs btn-info" title="DEV. NOTE: We should add the difference in days between target date and actual date"><i class="fa fa-lightbulb-o"></i></span></td>
+							</tr>
+							<tr>
+							  <th style="text-align: right">Total Batches in System:</th>
+							  <td><?php echo $total_batches; ?> (see below)</td>
+							</tr>
+							<?php 
+					    } 
+					    ?>
                         <tr>
                             <th style="text-align: right">Ship To</th>
                             <td><?php get_location($PO_ship_to_location_ID,0); ?></td>
                         </tr>
-                        <tr>
-							<th style="text-align: right">Completition Status:</th>
-							<td><?php
-
-							if ($PO_completion_status > 66) {
-								$bar_color = "success";
-							}
-							else if ($PO_completion_status > 33) {
-								$bar_color = "warning";
-							}
-							else {
-								$bar_color = "danger";
-							}
-
+                        <?php 
+						if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
 							?>
+							<tr>
+								<th style="text-align: right">Completition Status:</th>
+								<td><?php
 
-
-							<div class="progress">
-							  <div class="progress-bar progress-bar-striped active progress-bar-<?php echo $bar_color; ?>"
-								role="progressbar"
-								aria-valuenow="<?php echo $PO_completion_status; ?>"
-								aria-valuemin="0"
-								aria-valuemax="100"
-								style="width:<?php echo $PO_completion_status; ?>%">
-								<?php echo $PO_completion_status; ?>%
-							  </div>
-							</div>
-
-
-
-							</td>
-						  </tr>
-						  
-						  <!-- **************************************** -->
-						  <tr>
-							<th style="text-align: right">P.O. Payment Status:</th>
-							<?php
-
-							if ($PO_payment_status == 0) {
-								?>
-								<td>
-									<span class="btn btn-danger">
-								  		<i class="fa fa-times"></i>
-								  		DELETED
-								  	</span>
-								</td>
-								<?php
-							}
-							else if ($PO_payment_status == 1) {
-								?>
-								<td>
-									<span class="btn btn-warning">
-										<i class="fa fa-exclamation-triangle"></i>
-										PENDING
-								  	</span>
-								</td>
-								<?php
-							}
-							else {
-								?>
-								<td>
-									<span class="btn btn-success">
-								 		<i class="fa fa-check"></i>
-								  		OK
-								  	</span>
-								</td>
-								<?php
-							}
-
-
-							?>
-						  </tr>
-						  <!-- **************************************** -->
-						  
-						  <tr>
-							<th style="text-align: right">P.O. Currency:</th>
-							<td>
-							  <span class="btn btn-default" title="<?php 
-							  	echo $PO_default_currency_name_EN;
-							  	if (($PO_default_currency_name_CN!='')&&($PO_default_currency_name_CN!='中文名')) {
-							  		echo ' / ' . $PO_default_currency_name_CN;
-							  	}
-							  	
-							  	if ($PO_default_currency_symbol != 1) { // SHOW USD CONVERSION RATE!
-									echo ' @ ' . $PO_default_currency_symbol . $PO_default_currency_rate . ' / $1 USD';
+								if ($PO_completion_status > 66) {
+									$bar_color = "success";
 								}
-							  ?>">
-								<?php
-								
-								echo $PO_default_currency_symbol;
-								echo $PO_default_currency_abbreviation; 
-								
+								else if ($PO_completion_status > 33) {
+									$bar_color = "warning";
+								}
+								else {
+									$bar_color = "danger";
+								}
+
 								?>
-							  </span>
-							</td>
-						  </tr>
+
+
+								<div class="progress">
+								  <div class="progress-bar progress-bar-striped active progress-bar-<?php echo $bar_color; ?>"
+									role="progressbar"
+									aria-valuenow="<?php echo $PO_completion_status; ?>"
+									aria-valuemin="0"
+									aria-valuemax="100"
+									style="width:<?php echo $PO_completion_status; ?>%">
+									<?php echo $PO_completion_status; ?>%
+								  </div>
+								</div>
+
+
+
+								</td>
+							  </tr>
+						  
+							  <!-- **************************************** -->
+							  <tr>
+								<th style="text-align: right">P.O. Payment Status:</th>
+								<?php
+
+								if ($PO_payment_status == 0) {
+									?>
+									<td>
+										<span class="btn btn-danger">
+											<i class="fa fa-times"></i>
+											DELETED
+										</span>
+									</td>
+									<?php
+								}
+								else if ($PO_payment_status == 1) {
+									?>
+									<td>
+										<span class="btn btn-warning">
+											<i class="fa fa-exclamation-triangle"></i>
+											PENDING
+										</span>
+									</td>
+									<?php
+								}
+								else {
+									?>
+									<td>
+										<span class="btn btn-success">
+											<i class="fa fa-check"></i>
+											OK
+										</span>
+									</td>
+									<?php
+								}
+
+
+								?>
+							  </tr>
+							  <!-- **************************************** -->
+						  
+							  <tr>
+								<th style="text-align: right">P.O. Currency:</th>
+								<td>
+								  <span class="btn btn-default" title="<?php 
+									echo $PO_default_currency_name_EN;
+									if (($PO_default_currency_name_CN!='')&&($PO_default_currency_name_CN!='中文名')) {
+										echo ' / ' . $PO_default_currency_name_CN;
+									}
+								
+									if ($PO_default_currency_symbol != 1) { // SHOW USD CONVERSION RATE!
+										echo ' @ ' . $PO_default_currency_symbol . $PO_default_currency_rate . ' / $1 USD';
+									}
+								  ?>">
+									<?php
+								
+									echo $PO_default_currency_symbol;
+									echo $PO_default_currency_abbreviation; 
+								
+									?>
+								  </span>
+								</td>
+							  </tr>
+						  
+							  <?php 
+						  } // END OF SCREEN ONLY DATA (Don't print)
+						  ?>
+						</tbody>
 						  <!-- **************************************** -->
                     </table>
                 </div>
-				
+<?php 
+if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+?>				
 		  </div>
 		</div>
 	</section>
 	<!-- END PANEL - ORDER INFORMATION -->
-	
+<?php } // end of hide for print ?>	
   </div>
+<?php 
+if ($print_view == 0) { 
+// DO NOT SHOW THIS SECTION ON THE PRINT VERSION!
+?>  
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
+			  <!--      START AUTO QR CODE PANEL HERE       -->
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
   
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-  <!--      START AUTO QR CODE PANEL HERE       -->
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-  
-<div class="col-md-4">
-	<section class="panel">
-		<header class="panel-heading">
-			<div class="panel-actions">
-				<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-				<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+			<div class="col-md-4">
+				<section class="panel">
+					<header class="panel-heading">
+						<div class="panel-actions">
+							<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+							<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+						</div>
+
+						<h2 class="panel-title">QR Code to this page:</h2>
+					</header>
+					<div class="panel-body">
+
+
+						<!-- ********************************************************* -->
+
+						<div class="thumb-info mb-md" style="text-align:center;">
+							<?php
+								// now show their QR code!
+								show_code('PO_QR', $record_id);
+							?>
+				
+							<!-- LINK TO PDF VERSION -->
+							<div class="row">
+							  <div class="text-center">
+								<a class="btn btn-danger" href="purchase_order_view.php?id=<?php echo $record_id; ?>&print_view=1" target="_blank" title="View printable version">
+								  <i class="fa fa-file-pdf-o"></i>
+								  VIEW PRINT VERSION
+								</a>
+							  </div>
+							</div>
+						</div>
+
+						<!-- ********************************************************* -->
+
+					</div>
+				</section>
 			</div>
-
-			<h2 class="panel-title">QR Code to this page:</h2>
-		</header>
-		<div class="panel-body">
-
-
-			<!-- ********************************************************* -->
-
-			<div class="thumb-info mb-md" style="text-align:center;">
-				<?php
-					// now show their QR code!
-					show_code('PO_QR', $record_id);
-				?>
-			</div>
-
-			<!-- ********************************************************* -->
-
-		</div>
-	</section>
-</div>
   
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-  <!--        END AUTO QR CODE PANEL HERE       -->
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-  <!-- **************************************** -->
-
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
+			  <!--        END AUTO QR CODE PANEL HERE       -->
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
+			  <!-- **************************************** -->
+<?php 
+} // END OF HIDE SECTION FOR PRINT VIEW
+?>
 </div><!-- END P.O. ROW 2 -->
 
 <div class="row"><!-- P.O. ROW 3 -->
-
+<?php 
+if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+?>
 	<!-- START PANEL - INSTRUCTIONS -->
 	<section class="panel">
 		<header class="panel-heading">
@@ -454,11 +654,32 @@ pagehead($page_id);
 
 			<h2 class="panel-title">
 				<span class="label label-primary label-sm text-normal va-middle mr-sm"><i class="fa fa-info"></i></span>
-				<span class="va-middle">Instructions</span>
+				<span class="va-middle">Special Instructions</span>
 			</h2>
 		</header>
 		<div class="panel-body">
 			<div class="content">
+<?php 
+} // end of print only view
+else {
+	?>
+	<div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+                    	<?php 
+						if ($print_view == 1) { // ONLY SHOW THIS ON PRINT VERSION!
+						?>
+                      <thead>
+						<tr>
+						  <th class="text-center">SPECIAL INSTRUCTIONS</th>
+						</tr>
+					  <thead>
+					  <tbody>
+					    <tr>
+					  	  <td>
+						<?php } ?>
+	<?php
+} // end of PRINT ONLY view
+?>
 				<!-- PANEL CONTENT HERE -->
 				<ol>
 					<li>Please confirm the receipt of this order indicating the shipping date and address and quantity.</li>
@@ -466,33 +687,50 @@ pagehead($page_id);
 					<li>Supplier agrees to notify European Pharma Group of any changes to the product or the process in order to give European Pharma Group the opportunity to determine whether the change may affect the Quality of the finished Medical Device.</li>
 					<li>Fax or e-mail the confirmation to European Pharma Group.</li>
 				</ol>
+<?php 
+if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+?>
 		  </div>
 		</div>
 	</section>
 	<!-- END PANEL - INSTRUCTIONS -->
-
+<?php 
+} // end of print only view
+else {
+	?>
+	        </td>
+	      </tr>
+	    </tbody>
+	  </table>
+	</div>
+<?php 
+} // end of print only view
+?>
 </div><!-- END P.O. ROW 3 -->
 
 <div class="row"><!-- P.O. ROW 4 -->
-
+<?php 
+if ($print_view == 0) { // ONLY SHOW THIS ON SCREEN VERSION!
+?>
 	<!-- START PANEL - LINE ITEMS -->
 	<section class="panel">
 		<!-- NO HEADER FOR THIS PANEL -->
 		<div class="panel-body">
 			<div class="content">
 				<!-- PANEL CONTENT HERE -->
-				
 				<?php add_button($record_id, 'purchase_order_item_add', 'PO_ID', 'Click here to add another item to this Purchase Order'); ?>
-				
+<?php 
+} // end of SCREEN ONLY view 
+?>				
 				<div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover table-condensed mb-none">
                         <tr>
-                            <th><i class="fa fa-cog"></i></th>
-                            <th>ITEM NO.</th>
-                            <th>DESCRIPTION</th>
-                            <th>QTY</th>
-                            <th>UNIT PRICE</th>
-                            <th>TOTAL</th>
+                            <?php if ($print_view == 0) { ?><th class="text-center"><i class="fa fa-cog"></i></th><?php } ?>
+                            <th class="text-center">ITEM NO.</th>
+                            <th class="text-center">DESCRIPTION</th>
+                            <th class="text-center">QTY</th>
+                            <th class="text-center">UNIT PRICE</th>
+                            <th class="text-center">TOTAL</th>
                         </tr>
                         <?php 
                         
@@ -604,127 +842,126 @@ pagehead($page_id);
 					  
 					  
                         <tr>
-                        	<td> 
-								<!-- ********************************************************* -->
-								<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
-								<!-- ********************************************************* -->
+                        <?php if ($print_view == 0) { ?>
+									<td> 
+										<!-- ********************************************************* -->
+										<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+										<!-- ********************************************************* -->
 								
-								<?php 
+										<?php 
 								
-								// VARS YOU NEED TO WATCH / CHANGE:
-								$add_to_form_name 	= 'line_item_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
-								$form_ID 			= $po_item_ID;					// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
-								$edit_URL 			= 'purchase_order_item_edit'; 	// REQUIRED - specify edit page URL
-								$add_URL 			= 'purchase_order_item_add'; 	// REQURED - specify add page URL
-								$table_name 		= 'purchase_order_items';		// REQUIRED - which table are we updating?
-								$src_page 			= $this_file;					// REQUIRED - this SHOULD be coming from page_functions.php
-								$add_VAR 			= 'PO_ID='.$record_id.''; 		// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+										// VARS YOU NEED TO WATCH / CHANGE:
+										$add_to_form_name 	= 'line_item_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+										$form_ID 			= $po_item_ID;					// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+										$edit_URL 			= 'purchase_order_item_edit'; 	// REQUIRED - specify edit page URL
+										$add_URL 			= 'purchase_order_item_add'; 	// REQURED - specify add page URL
+										$table_name 		= 'purchase_order_items';		// REQUIRED - which table are we updating?
+										$src_page 			= $this_file;					// REQUIRED - this SHOULD be coming from page_functions.php
+										$add_VAR 			= 'PO_ID='.$record_id.''; 		// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
 								
-								?>
+										?>
 						 
-									<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+											<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
 									
-										echo $add_to_form_name; 
-										echo $form_ID; 
+												echo $add_to_form_name; 
+												echo $form_ID; 
 									
-									?>"><i class="fa fa-gear"></i></a>
+											?>"><i class="fa fa-gear"></i></a>
 
-									<!-- Modal Form -->
-									<div id="modalForm_<?php 
+											<!-- Modal Form -->
+											<div id="modalForm_<?php 
 									
-										echo $add_to_form_name; 
-										echo $form_ID; 
+												echo $add_to_form_name; 
+												echo $form_ID; 
 										
-									?>" class="modal-block modal-block-primary mfp-hide">
-										<section class="panel">
-											<header class="panel-heading">
-												<h2 class="panel-title">Admin Options</h2>
-											</header>
-											<div class="panel-body">
+											?>" class="modal-block modal-block-primary mfp-hide">
+												<section class="panel">
+													<header class="panel-heading">
+														<h2 class="panel-title">Admin Options</h2>
+													</header>
+													<div class="panel-body">
 									
-												<div class="table-responsive">
-												 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
-												 <thead>
-													<tr>
-														<th class="text-left" colspan="2">Action</th>
-														<th>Decsription</th>
-													</tr>
-												  </thead>
-												  <tbody>
-													<tr>
-													  <td>EDIT</td>
-													  <td>
-													  	<a href="<?php 
-													  		echo $edit_URL; 
-													  	?>.php?id=<?php 
-													  		echo $form_ID; 
-													  	?>" class="mb-xs mt-xs mr-xs btn btn-warning">
-													  		<i class="fa fa-pencil" stlye="color: #999"></i>
-													  	</a>
-													  </td>
-													  <td>Edit this record</td>
-													</tr>
-													<tr>
-													  <td>DELETE</td>
-													  <td>
-													  	<a href="record_delete_do.php?table_name=<?php 
-													  		echo $table_name; 
-													  	?>&src_page=<?php 
-													  		echo $src_page; 
-													  	?>&id=<?php 
-													  		echo $form_ID;
-													  		echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
-													  	?>" class="mb-xs mt-xs mr-xs btn btn-danger">
-													  		<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
-													  	</a>
-													  </td>
-													  <td>Delete this record</td>
-													</tr>
-													<tr>
-													  <td>ADD</td>
-													  <td>
-													  	<a href="<?php 
-													  		echo $add_URL; 
-													  		echo '?' . $add_VAR;  // NOTE THE LEADING '?' <<<
-													  	?>" class="mb-xs mt-xs mr-xs btn btn-success">
-													  		<i class="fa fa-plus" stlye="color: #999"></i>
-													  	</a>
-													  </td>
-													  <td>Add a similar item to this table</td>
-													</tr>
-												  </tbody>
-												  <tfoot>
-													<tr>
-													  <td>&nbsp;</td>
-													  <td>&nbsp;</td>
-													  <td>&nbsp;</td>
-													</tr>
-												  </tfoot>
-												  </table>
-												</div><!-- end of responsive table -->	
+														<div class="table-responsive">
+														 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+														 <thead>
+															<tr>
+																<th class="text-left" colspan="2">Action</th>
+																<th>Decsription</th>
+															</tr>
+														  </thead>
+														  <tbody>
+															<tr>
+															  <td>EDIT</td>
+															  <td>
+																<a href="<?php 
+																	echo $edit_URL; 
+																?>.php?id=<?php 
+																	echo $form_ID; 
+																?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+																	<i class="fa fa-pencil" stlye="color: #999"></i>
+																</a>
+															  </td>
+															  <td>Edit this record</td>
+															</tr>
+															<tr>
+															  <td>DELETE</td>
+															  <td>
+																<a href="record_delete_do.php?table_name=<?php 
+																	echo $table_name; 
+																?>&src_page=<?php 
+																	echo $src_page; 
+																?>&id=<?php 
+																	echo $form_ID;
+																	echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+																?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+																	<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+																</a>
+															  </td>
+															  <td>Delete this record</td>
+															</tr>
+															<tr>
+															  <td>ADD</td>
+															  <td>
+																<a href="<?php 
+																	echo $add_URL; 
+																	echo '?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+																?>" class="mb-xs mt-xs mr-xs btn btn-success">
+																	<i class="fa fa-plus" stlye="color: #999"></i>
+																</a>
+															  </td>
+															  <td>Add a similar item to this table</td>
+															</tr>
+														  </tbody>
+														  <tfoot>
+															<tr>
+															  <td>&nbsp;</td>
+															  <td>&nbsp;</td>
+															  <td>&nbsp;</td>
+															</tr>
+														  </tfoot>
+														  </table>
+														</div><!-- end of responsive table -->	
 									
-											</div><!-- end panel body -->
-											<footer class="panel-footer">
-												<div class="row">
-													<div class="col-md-12 text-left">
-														<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
-													</div>
-												</div>
-											</footer>
-										</section>
-									</div>
+													</div><!-- end panel body -->
+													<footer class="panel-footer">
+														<div class="row">
+															<div class="col-md-12 text-left">
+																<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+															</div>
+														</div>
+													</footer>
+												</section>
+											</div>
 							
-								<!-- ********************************************************* -->
-								<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
-								<!-- ********************************************************* -->
+										<!-- ********************************************************* -->
+										<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+										<!-- ********************************************************* -->
 						
-                        	</td>
-                            <td><?php echo $po_line_number; ?></td>
+									</td>
+                        	<?php } // END OF HIDE ADMIN ACTIONS BUTTON FOR PRINT VIEW! ?>
+                            <td class="text-center"><?php echo $po_line_number; ?></td>
                             <td>
-                            	<a href="part_view.php?id=<?php echo $po_part_id; ?>" class="btn btn-info btn-xs" title="View Part Profile">
-                            		<?php echo 
-                            			$po_part_code; 
-                            		?></a> 
+                            		<?php part_num($po_part_id, $display_button); ?> 
                             		
                             		- 
                             		
@@ -737,18 +974,17 @@ pagehead($page_id);
                             		?>
                             	</a>
                             	
-                            	<span class="btn btn-xs btn-warning" title="Rev. ID#: <?php echo $rev_id; ?>">
-									<?php echo $po_rev_number; ?>
-								</span>
+								
+								<?php part_rev($po_rev_id, $display_button); ?>
                             	
 								<br />
                             	<?php echo nl2br($po_item_item_notes); ?>
                             </td>
-                            <td><?php echo number_format($po_item_part_qty); ?></td>
-                            <td><?php 
+                            <td class="text-right"><?php echo number_format($po_item_part_qty); ?></td>
+                            <td class="text-right"><?php 
                             	echo $PO_default_currency_symbol;	// NOTE: We are using the default PO currency symbol
                             	echo number_format($po_item_unit_price_currency, 2); ?></td>
-                            <td><?php
+                            <td class="text-right"><?php
                             	echo $PO_default_currency_symbol;
                             	
                             	// LINE TOTALS!
@@ -766,17 +1002,28 @@ pagehead($page_id);
                     </table>
                 </div>
                 
-                <?php add_button($record_id, 'purchase_order_item_add', 'PO_ID', 'Click here to add another item to this Purchase Order'); ?>
+                <?php 
 				
-		  </div>
-		</div>
-	</section>
-	<!-- END PANEL - LINE ITEMS -->
+	if ($print_view == 0) { // UPDATE: Hide this for print view!
+				
+		add_button($record_id, 'purchase_order_item_add', 'PO_ID', 'Click here to add another item to this Purchase Order'); 
+		
+		?>
+				
+			  </div>
+			</div>
+		</section>
+		<!-- END PANEL - LINE ITEMS -->
+		<?php 
+	} // END OF SCREEN ONLY DATA 
+	?>
 
 </div><!-- END P.O. ROW 4 -->
 
 <div class="row"><!-- P.O. ROW 5 -->
-
+<?php 		
+	if ($print_view == 0) { // UPDATE: Hide this for print view!
+?>
 	<!-- START PANEL - OTHER INSTRUCTIONS -->
 	<section class="panel">
 		<header class="panel-heading">
@@ -793,6 +1040,23 @@ pagehead($page_id);
 		<div class="panel-body">
 			<div class="content">
 				<!-- PANEL CONTENT HERE -->
+<?php 
+} // END SCREEN-ONLY DATA
+else {
+	?>
+	<div class="table-responsive">
+	 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+	 <thead>
+		<tr>
+			<th class="text-center">OTHER INSTRUCTIONS</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<tr>
+		  <td>
+	<?php
+}
+?>
 				<ol>
 					<li>
 						<strong>
@@ -834,10 +1098,24 @@ pagehead($page_id);
 						</strong>	
 					</li>
 				</ol>
+<?php 		
+	if ($print_view == 0) { // UPDATE: Hide this for print view!
+?>
 		  </div>
 		</div>
 	</section>
 	<!-- END PANEL - OTHER INSTRUCTIONS -->
+<?php 
+} // END SCREEN ONLY DATA
+else {
+	?>
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+	<?php
+} // end PRINT ONLY view
+?>
 
 </div><!-- END P.O. ROW 5 -->
 
@@ -886,7 +1164,7 @@ pagehead($page_id);
 						} 
 						?>
 					<br />
-					<strong>Approved By:</strong> <?php get_creator($PO_approved_by); ?>
+					<strong>Approved By:</strong> <?php get_creator($PO_approved_by, $display_button); ?>
 					<strong>Date:</strong> <?php echo substr($PO_approval_date, 0, 10); ?>
 				
 				<br />
@@ -1015,14 +1293,16 @@ pagehead($page_id);
 
 </div><!-- END P.O. ROW 6 -->
 
-<p>Page 1 of 1</p>
 <!-- END OF TOTAL P.O. CONTENT -->
 
 
 <br />
 <hr />
 <br />
-
+<?php 
+if ($print_view == 0) { 
+// DO NOT SHOW THIS SECTION ON THE PRINT VERSION!
+?>
 
 
 
@@ -1179,6 +1459,10 @@ pagehead($page_id);
 						</div>
 					</div> <!-- end row! -->
 
+<?php 
+} // end of HIDE SECTION FOR PRINT VIEW
+
+?>
 
 
 
@@ -1188,8 +1472,95 @@ pagehead($page_id);
 <!-- : END MAIN PAGE BODY -->
 
 <?php
-// now close the page out:
-pagefoot($page_id);
+
+if ($print_view == 0) {
+	// now close the page out:
+	pagefoot($page_id);
+}
+else {
+	// show printable header here:
+	?>
+	</section>
+	
+	<section role="main" class="content-body content-footer-body">
+
+		<div>
+		  <div class="col-md-12">
+		  Page 1/1
+		  </div>
+		</div>
+		
+	</section>
+	
+	<!-- Vendor -->
+			<script src="assets/vendor/jquery/jquery.js"></script>
+			<script src="assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+			<script src="assets/vendor/bootstrap/js/bootstrap.js"></script>
+			<script src="assets/vendor/nanoscroller/nanoscroller.js"></script>
+			<script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+			<script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
+			<script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+			<!-- Specific Page Vendor (LIGHTBOX) -->
+			<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
+			<!-- Examples (LIGHTBOX) -->
+			<script src="assets/javascripts/ui-elements/examples.lightbox.js"></script>
+
+			<!-- Specific Page Vendor - PROFILE -->
+			<script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
+
+			<!-- Specific Page Vendor -->
+		<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
+
+<!-- Examples -->
+		<script src="assets/javascripts/ui-elements/examples.modals.js"></script>
+
+		<!-- Specific Page Vendor - ADVANCED FORMS -->
+		<script src="assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+		<script src="assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+		<script src="assets/vendor/select2/select2.js"></script>
+		<script src="assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+		<script src="assets/vendor/jquery-maskedinput/jquery.maskedinput.js"></script>
+		<script src="assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+		<script src="assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+		<script src="assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+		<script src="assets/vendor/fuelux/js/spinner.js"></script>
+		<script src="assets/vendor/dropzone/dropzone.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/markdown.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/to-markdown.js"></script>
+		<script src="assets/vendor/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+		<script src="assets/vendor/codemirror/lib/codemirror.js"></script>
+		<script src="assets/vendor/codemirror/addon/selection/active-line.js"></script>
+		<script src="assets/vendor/codemirror/addon/edit/matchbrackets.js"></script>
+		<script src="assets/vendor/codemirror/mode/javascript/javascript.js"></script>
+		<script src="assets/vendor/codemirror/mode/xml/xml.js"></script>
+		<script src="assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+		<script src="assets/vendor/codemirror/mode/css/css.js"></script>
+		<script src="assets/vendor/summernote/summernote.js"></script>
+		<script src="assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+		<script src="assets/vendor/ios7-switch/ios7-switch.js"></script>
+		<script src="assets/vendor/bootstrap-confirmation/bootstrap-confirmation.js"></script>
+		<script src="assets/vendor/intl-tel-input/js/intlTelInput.min.js"></script>
+
+			<!-- Theme Base, Components and Settings -->
+			<script src="assets/javascripts/theme.js"></script>
+
+			<!-- Theme Custom -->
+			<script src="assets/javascripts/theme.custom.js"></script>
+
+			<!-- Theme Initialization Files -->
+			<script src="assets/javascripts/theme.init.js"></script>
+
+			<!--  Validations -->
+			<script src="assets/vendor/jquery-validation/jquery.validate.js"></script>
+			<script src="assets/javascripts/forms/examples.validation.js"></script>
+
+		</section>
+	</body>
+</html>
+		
+	<?php
+}
 
 ?>
 	

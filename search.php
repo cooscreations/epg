@@ -270,7 +270,7 @@ if (isset($_REQUEST['query'])) {
 							// lookup record
 							$name_EN = $row_get_details['first_name'] . " " . $row_get_details['last_name'];
 							$link_to = 'user_view';
-							$display_type = 'User';
+							$display_type = 'User / 用户';
 							$has_thumb = true;
 							$pic_link = 'assets/images/users/user_' . $result_ID . '.png';
 							$description_text = 'Current member of staff.';
@@ -285,7 +285,7 @@ if (isset($_REQUEST['query'])) {
 							$name_EN = $row_get_details['name_EN'];
 							$name_CN = $row_get_details['name_CN'];
 							$link_to = 'supplier_view';
-							$display_type = 'Supplier Profile';
+							$display_type = 'Supplier / 供应商';
 							/*
 							$has_thumb = true;
 							$pic_link = 'images/vendors/ven_' . $result_ID . '.jpg';
@@ -410,7 +410,7 @@ if (isset($_REQUEST['query'])) {
 
 
 
-							$display_type = 'Part';
+							$display_type = 'Part / 零件';
 
 						}
 						else if ($type == 'documents') {
@@ -464,7 +464,7 @@ if (isset($_REQUEST['query'])) {
 							$pic_link = $rev_doc_location;
 
 
-							$display_type = 'Document';
+							$display_type = 'Document / 文件';
 						}
 
 						else if ($type == 'purchase_orders') {
@@ -497,7 +497,7 @@ if (isset($_REQUEST['query'])) {
 							$link_to = 'view_mat_profile';
 							$has_thumb = true;
 							$pic_link = 'images/materials/thumbs/mat_' . $result_ID . '.jpg';
-							$display_type = 'Material';
+							$display_type = 'Material / 材料';
 						}
 						else if ($type == 'processes') {
 							// lookup record
@@ -681,10 +681,10 @@ if (isset($_REQUEST['query'])) {
     								<li>
 										<p class="result-type">
 											<span class="label label-<?php
-												if ($display_type == 'Document') {
+												if ($display_type == 'Document / 文件') {
 													?>warning<?php
 												}
-												else if ($display_type == 'Part') {
+												else if ($display_type == 'Part / 零件') {
 													?>success<?php
 												}
 												else {

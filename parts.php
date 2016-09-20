@@ -94,6 +94,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					?>
 
 					<div class="row">
+						
 						<div class="col-md-11">
 						<!-- PART TYPE JUMPER -->
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
@@ -121,10 +122,9 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
                              </select>
                             <!-- / PART TYPE JUMPER -->
 						</div>
+						
+						<?php add_button(0, 'part_add'); ?>
 
-						<div class="col-md-1">
-					 		<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success text-center"><i class="fa fa-plus-square"></i></a>
-					 	</div>
 					</div>
 
 
@@ -369,17 +369,11 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 					    	<a class="mt-xs mb-xs mr-xs popup-with-zoom-anim" href="#small-dialog_<?php echo $part_ID; ?>">
 
-					    	<img src="<?php
-					    		echo $rev_photo_location;
-					    	?>" class="rounded img-responsive" alt="<?php
-					    		echo $row_get_parts['part_code'];
-					    	?> - <?php
-					    		echo $row_get_parts['name_EN'];
-
-					    		if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) {
-					    			echo " / " . $row_get_parts['name_CN'];
-					    		}
-					    	?>" style="width:100px;" /></a>
+					    	
+					    	<?php part_img($rev_id, 0); ?>
+					    	
+					    	
+					    	</a>
 
 
 					     <!-- START MODAL POP-UP -->
@@ -388,16 +382,18 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 									<div id="small-dialog_<?php echo $part_ID; ?>" class="dialog dialog-sm zoom-anim-dialog mfp-hide">
 										<div class="row">
 											<div class="col-sm-12">
-												<h3><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
-													echo $part_code;
-												?> - <?php
-													echo $part_name_EN;
-
-												if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
-												 	echo " / " . $part_name_CN;
-												}
-												?></a></h3>
+												<h3><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php 
+												
+												part_num($part_ID, 0); 
+												
+												?> - <?php 
+												
+												part_name($part_ID, 0); 
+												
+												?>
+												</a></h3>
 												<p class="mb-lg">This is a deeper look at this record.</p>
+												<!--
 												<img src="<?php
 													echo $rev_photo_location;
 												?>" class="rounded img-responsive btn btn-default text-center" alt="<?php
@@ -408,7 +404,9 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 													if (($row_get_parts['name_CN']!='')&&($row_get_parts['name_CN']!='中文名')) {
 														echo " / " . $row_get_parts['name_CN'];
 													}
-												?>" style="width:300px;">
+												?>" style="width:300px;"> -->
+												
+												<?php part_img($rev_id, 0, 300); ?>
 
 												<hr noshade="noshade" />
 
@@ -509,11 +507,11 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 
 					    </td>
-					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
+					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php part_num($part_ID); ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
 					    <td><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo $part_name_CN; } ?></a></td>
 					    <td><?php
-							if ($total_part_revs != 0) { echo '<span class="btn btn-warning" title="Rev #: <?php echo $rev_id; ?>">' . $rev_number . '</span>'; }
+							if ($total_part_revs != 0) { part_rev($rev_id); }
 							else { ?>
 								<span class="btn btn-danger">0</span>
 							<?php } ?></td>
@@ -561,10 +559,8 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 					 </table>
 					</div>
-
-					<div class="row">
-					 	<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
-					 </div>
+					 
+					 <?php add_button(0, 'part_add'); ?>
 
 					<!-- end: page -->
 				</section>

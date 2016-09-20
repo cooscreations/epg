@@ -38,17 +38,24 @@ if ($record_id != 0) {
 	$result_get_user = mysqli_query($con,$get_user_SQL);
 
     // while loop
-    while($row_get_user = mysqli_fetch_array($result_get_user)) {
-        $user_ID = $row_get_user['ID'];
-        $user_fn = $row_get_user['first_name'];
-        $user_mn = $row_get_user['middle_name'];
-        $user_ln = $row_get_user['last_name'];
-        $user_name_cn = $row_get_user['name_CN'];
-        $user_email = $row_get_user['email'];
-        $user_pwd = $row_get_user['password'];
-        $user_level = $row_get_user['user_level'];
-        $user_position = $row_get_user['position'];
-        $user_last_login_date = $row_get_user['last_login_date'];
+    while($row_get_users = mysqli_fetch_array($result_get_user)) {
+		$user_ID 				= $row_get_users['ID'];					// N/A
+		$user_first_name 		= $row_get_users['first_name'];			//
+		$user_middle_name 		= $row_get_users['middle_name'];		//
+		$user_last_name 		= $row_get_users['last_name'];			//
+		$user_name_CN 			= $row_get_users['name_CN'];			//
+		$user_email 			= $row_get_users['email'];				//	
+		$user_password 			= $row_get_users['password'];			//
+		$user_level 			= $row_get_users['user_level'];			//
+		$user_position 			= $row_get_users['position'];			//	
+		$user_last_login_date 	= $row_get_users['last_login_date'];	// N/A
+		$user_facebook_profile 	= $row_get_users['facebook_profile'];	//
+		$user_twitter_profile 	= $row_get_users['twitter_profile'];	//
+		$user_linkedin_profile 	= $row_get_users['linkedin_profile'];	//
+		$user_skype_profile 	= $row_get_users['skype_profile'];		//
+		$user_wechat_profile 	= $row_get_users['wechat_profile'];		//
+		$user_record_status 	= $row_get_users['record_status'];		// N/A
+		$user_mobile_number 	= $row_get_users['mobile_number'];		// 
 
     } // end get part info WHILE loop
 }
@@ -58,8 +65,7 @@ if ($record_id != 0) {
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Add A New User<?php if ($record_id != 0) { ?> <?php echo $user_fn; ?> <?php echo $user_mn; ?> <?php echo $user_ln; ?> / <?php echo $user_name_cn;
-                                } ?></h2>
+        <h2>Add A New User</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
@@ -160,25 +166,11 @@ if ($record_id != 0) {
                             </div>
                         </div>
 
-												<!--
-                        <div class="form-group">
-													<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
-													<div class="col-md-5">
-														<div class="input-group">
-															<span class="input-group-addon">
-																<i class="fa fa-phone"></i>
-															</span>
-															<input id="inputDefault" name="mobile_number" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control" required />
-														</div>
-													</div>
-												</div>
-											-->
-
 											<div class="form-group">
-												<label class="col-md-3 control-label">Mobile Number:<span class="required">*</span></label>
+												<label class="col-md-3 control-label">Mobile Number:</label>
 												<div class="col-md-5">
 													<div class="input-group">
-														<input id="phone_number" type="tel"  class="form-control" required />
+														<input id="phone_number" type="tel"  class="form-control" placeholder="+8612312312312" />
 														<input id="mobile_number" type="hidden" name="mobile_number"/>
 													</div>
 
@@ -231,21 +223,18 @@ if ($record_id != 0) {
 											</script>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Level:<span class="required">*</span></label>
+                            <label class="col-md-3 control-label">Level:</label>
                             <div class="col-md-5">
-                              <!--   <input type="number" class="form-control" id="inputDefault" name="level_text" min="10" max="100" required />  -->
-                            <select data-plugin-selectTwo class="form-control populate" name="level_text" required>
-
-														<option value="10">10</option>
-														<option value="20">20</option>
-														<option value="30">30</option>
-														<option value="40">40</option>
-														<option value="50">50</option>
-														<option value="60">60</option>
-														<option value="70">70</option>
-														<option value="80">80</option>
-
-													</select>
+                            	<select data-plugin-selectTwo class="form-control populate" name="level_text">
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="30">30</option>
+									<option value="40">40</option>
+									<option value="50">50</option>
+									<option value="60">60</option>
+									<option value="70">70</option>
+									<option value="80">80</option>
+								</select>
                             </div>
 
 
@@ -255,24 +244,88 @@ if ($record_id != 0) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Position:<span class="required">*</span></label>
+                            <label class="col-md-3 control-label">Position:</label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" name="pos_text" required />
+                                <input type="text" class="form-control" name="pos_text" />
                             </div>
 
                             <div class="col-md-1">
                                 &nbsp;
                             </div>
                         </div>
+                        
+                        
+                        <!-- SOCIAL INFO (optional) -->
+                        
+                        
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Facebook:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="facebook" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+                        
+                        
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Twitter:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="twitter" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+                        
+                        
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">LinkedIn:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="linkedin" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+                        
+                        
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">WeChat:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="wechat" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+                        
+                        
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Skype:</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" name="skype" />
+                            </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+                        
+                        
+                        
                     </div>
                     <footer class="panel-footer">
-                        <?php
-										if (isset($_REQUEST['id'])) {
-											?>
-                        <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="user_id" />
-                        <?php
-										}
-										?>
                         <button type="submit" class="btn btn-success">Submit </button>
                         <button type="reset" class="btn btn-default">Reset</button>
                     </footer>
