@@ -12,9 +12,11 @@
 //////////////////////////////////////////////////
 
 // THIS PAGE HAS A PRINTABLE VERSION...
-$print_view = 0;
+$print_view = 0; // DO NOT SHOW PRINT VIEW BY DEFAULT
+$print_function_var = 1; // SHOW LINKS AND NON-PRINT STUFF BY DEFAULT (this is a little clunky)
 if ($_REQUEST['print_view'] == 1) {
 	$print_view = 1;
+	$print_function_var = 0;
 }
 
 header('Content-Type: text/html; charset=utf-8');
@@ -199,13 +201,30 @@ else {
 	</head>
 	<body>
 		<section class="body">
+				<section role="main" class="content-body">
+				<div class="row"><!-- ROW 0 -->
 		
+		<!-- 
 		  <div class="row text-center">
-			<img src="assets/images/logo.png" height="50" alt="EPG Connect" class="text-center" />
+			<img src="assets/images/logo.png" height="30" alt="EPG Connect" class="text-center" />
 		  </div>
 		  <div class="row text-center">
-			<h2 class="text-center">PURCHASE ORDER</h2>
+			<h3 class="text-center">PURCHASE ORDER</h3>
 		  </div>
+		-->
+		<div class="table-responsive">  
+		  <table class="table table-condensed mb-none">
+		  <tbody>
+		    <tr>
+		      <td style="vertical-align: middle; text-align: center; width: 25%;"><img src="assets/images/logo.png" height="30" alt="EPG Connect" class="text-center" /></td>
+		      <td style="vertical-align: middle; text-align: center;"><h3 class="text-center">PURCHASE ORDER # <?php echo $PO_number; ?></h3></td>
+		    </tr>
+		  </tbody>
+		</table>
+	  </div>
+	  
+	  </div><!-- END ROW 0 -->
+		  
 	<?php
 }
 
@@ -215,12 +234,12 @@ else {
 
 <!-- START MAIN PAGE BODY : -->
 
-				<section role="main" class="content-body">
 				<?php 
 				if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
 				?>
 				
 				
+				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Purchase Order Record - <?php echo $PO_number; ?></h2>
 
@@ -353,6 +372,7 @@ else {
 	else {
 		// UGLY PRINT VIEW! 
 		?>
+		<div class="table-responsive">
 		<table class="table table-bordered table-striped table-hover table-condensed mb-none">
 		  <thead>
 		  	<tr>
@@ -368,6 +388,7 @@ else {
 		    </tr>
 		  </tbody>
 		</table>
+		</div>
 		<?php
 	} // END PRINT VIEW TABLE
 	?>
@@ -403,34 +424,31 @@ if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
 ?>				
 				<div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover table-condensed mb-none">
-                    	<?php 
-						if ($print_view == 1) { // ONLY SHOW THIS ON PRINT VERSION!
-						?>
-                      <thead>
-						<tr>
-						  <th class="text-center" colspan="2">ORDER</th>
-						</tr>
-					  </thead>
-						<?php } ?>
 					  <tbody>
-                        <tr>
-                            <th style="text-align: right">Purchase Order No.</th>
-                            <td><?php echo $PO_number; ?></td>
-                        </tr>
                         <?php 
 						if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
 							?>
+							<tr>
+								<th style="text-align: right">Purchase Order No.</th>
+								<td><?php echo $PO_number; ?></td>
+							</tr>
 							<tr>
 								<th style="text-align: right">Short Description</th>
 								<td><?php echo $PO_description; ?></td>
 							</tr>
 							<?php 
                         } 
+                        
+                        
+                        if ($PO_ship_via != 'N/A') { 
+							?>
+							<tr>
+								<th style="text-align: right">Ship Via.</th>
+								<td><?php echo $PO_ship_via; ?></td>
+							</tr>
+							<?php 
+                        }
                         ?>
-                        <tr>
-                            <th style="text-align: right">Ship Via.</th>
-                            <td><?php echo $PO_ship_via; ?></td>
-                        </tr>
                         <tr>
                             <th style="text-align: right">Ordered By</th>
                             <td><?php get_creator($PO_created_by, $display_button); ?></td>
@@ -460,7 +478,7 @@ if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
 					    ?>
                         <tr>
                             <th style="text-align: right">Ship To</th>
-                            <td><?php get_location($PO_ship_to_location_ID,0); ?></td>
+                            <td><?php get_location($PO_ship_to_location_ID,0,$print_function_var); ?></td>
                         </tr>
                         <?php 
 						if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
@@ -843,7 +861,7 @@ if ($print_view == 0) { // ONLY SHOW THIS ON SCREEN VERSION!
 					  
                         <tr>
                         <?php if ($print_view == 0) { ?>
-									<td> 
+									<td class="text-center"> 
 										<!-- ********************************************************* -->
 										<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
 										<!-- ********************************************************* -->
@@ -964,16 +982,10 @@ if ($print_view == 0) { // ONLY SHOW THIS ON SCREEN VERSION!
                             		<?php part_num($po_part_id, $display_button); ?> 
                             		
                             		- 
-                            		
-                            	<a href="part_view.php?id=<?php echo $po_part_id; ?>" class="btn btn-default btn-xs" title="View Part Profile">
-                            		<?php 
-                            			echo $po_part_name_EN; 
-                            			if (($po_part_name_CN != '')&&($po_part_name_CN != '中文名')) { 
-                            				echo ' / ' . $po_part_name_CN; 
-                            			} 
-                            		?>
-                            	</a>
                             	
+                            	<?php part_name($po_part_id,0); ?>
+                            	
+                            		-
 								
 								<?php part_rev($po_rev_id, $display_button); ?>
                             	
@@ -1061,35 +1073,31 @@ else {
 					<li>
 						<strong>
 							Special requirements of the specifications, process requirements/protocols and requirements for approval of product or process:
-						</strong>
-						<br />
+						</strong> 
 						<?php echo $PO_special_reqs; ?>
 					</li>
 					<li>
 						<strong>
 							Related standards:
-						</strong>
-						<br />
+						</strong> 
 						<?php echo $PO_related_standards; ?>
 					</li>
 					<li>
 						<strong>
 							Special contracts, quality agreements/supply agreements:
-						</strong>
-						<br />
+						</strong> 
 						<?php echo $PO_special_contracts; ?>
 					</li>
 					<li>
 						<strong>
 							Special requirements for qualification personnel:
-						</strong>
-						<br />
+						</strong> 
 						<?php echo $PO_qualification_personnel; ?>
 					</li>
 					<li>
 						<strong>
 							Special requirements for Quality Management System:
-						</strong>
+						</strong> 
 						<?php echo $PO_QMS_reqs; ?>
 					</li>
 					<li>
@@ -1113,6 +1121,7 @@ else {
 	  </tr>
 	</tbody>
   </table>
+  </div>
 	<?php
 } // end PRINT ONLY view
 ?>
@@ -1120,7 +1129,9 @@ else {
 </div><!-- END P.O. ROW 5 -->
 
 <div class="row"><!-- P.O. ROW 6 -->
-		
+<?php 		
+	if ($print_view == 0) { // UPDATE: Hide this for print view!
+?>		
 		<!-- START PANEL - CHECK AND SIGN -->
 	<section class="panel col-md-9">
 		<header class="panel-heading">
@@ -1136,77 +1147,200 @@ else {
 		</header>
 		<div class="panel-body">
 			<div class="content">
+<?php 
+} // END SCREEN-ONLY DATA
+else {
+	?>
+	<div class="table-responsive">
+	 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+	  <tbody>
+		<tr>
+		  <td style="width:75%">
+	<?php
+}
+?>
 				<!-- PANEL CONTENT HERE -->  
 				
 					<strong>Include Certificate of Compliance with Order</strong>
 					<br />
-						<?php 
-						if ($PO_include_CoC == 1) { // YES! 
-						?>
-							<span class="btn btn-success">
-								<i class="fa fa-tick"></i> YES
-							</span> 
-							| 
-							<span class="btn btn-default">
-								<s>NO</s>
-							</span>
-						<?php }
+						<?php
+						
+						if ($print_view == 1) {
+								if ($PO_include_CoC == 1) { // YES!
+									?>
+									YES <big>☑</big> NO <big>☐</big>
+									<?php
+								}
+								else { // NO!
+									?>
+									YES <big>☐</big> NO <big>☐</big>
+									<?php
+								}
+						}
 						else {
-						?>
-							<span class="btn btn-default">
-								<s>YES</s>
-							</span> 
-							| 
-							<span class="btn btn-danger">
-								<i class="fa fa-times"></i> NO
-							</span>
-						<?php 
-						} 
+								if ($PO_include_CoC == 1) { // YES! 
+								?>
+									<span class="btn btn-success">
+										<i class="fa fa-tick"></i> YES
+									</span> 
+									| 
+									<span class="btn btn-default">
+										<s>NO</s>
+									</span>
+								<?php }
+								else { // NO!
+								?>
+									<span class="btn btn-default">
+										<s>YES</s>
+									</span> 
+									| 
+									<span class="btn btn-danger">
+										<i class="fa fa-times"></i> NO
+									</span>
+								<?php 
+								} 
+						}
+						
 						?>
 					<br />
-					<strong>Approved By:</strong> <?php get_creator($PO_approved_by, $display_button); ?>
-					<strong>Date:</strong> <?php echo substr($PO_approval_date, 0, 10); ?>
+					<br />
+					<?php 
+						if ($print_view == 1) {
+						
+									if ($PO_approved_by == 0) {
+										echo '<strong>Approved By:</strong> _______________________________________________'; // SPACE TO SIGN!
+									}
+									else {
+										?>
+							<strong>Approved By:</strong> <?php get_creator($PO_approved_by, $display_button); ?>
+										<?php
+									}
+						
+									// now let's but a big of space in here... 
+									echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+						}
+						else {
+							?>
+							<strong>Approved By:</strong> <?php get_creator($PO_approved_by, $display_button); ?>
+							<?php
+						}
+					?>
+					<strong>Date:</strong> <?php 
+					
+					if ($print_view == 1) {
+						if ($PO_approval_date == '0000-00-00 00:00:00') {
+							echo '2 0 __ __ - __ __ - __ __ <em>(YYYY-MM-DD)</em>';
+						}
+						else {
+							echo substr($PO_approval_date, 0, 10);
+						}
+					}
+					else {
+						echo substr($PO_approval_date, 0, 10); 
+					} ?>
 				
+				<br />
 				<br />
 				
 					<strong>Confirmation Received</strong>
 					<br />
-						<?php 
-						if ($PO_date_confirmed != '0000-00-00 00:00:00') { // YES! 
-						?>
-							<span class="btn btn-success">
-								<i class="fa fa-tick"></i> YES
-							</span> 
-							| 
-							<span class="btn btn-default">
-								<s>NO</s>
-							</span>
-						<?php }
+						<?php
+						
+						if ($print_view == 1) {
+								if ($PO_date_confirmed != '0000-00-00 00:00:00') { // YES!
+									?>
+									YES <big>☑</big> NO <big>☐</big>
+									<?php
+								}
+								else {
+									?>
+									YES <big>☐</big> NO <big>☐</big>
+									<?php
+								}
+								// now let's but a big of space in here... 
+								echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+						}
 						else {
+								if ($PO_date_confirmed != '0000-00-00 00:00:00') { // YES! 
+								?>
+									<span class="btn btn-success">
+										<i class="fa fa-tick"></i> YES
+									</span> 
+									| 
+									<span class="btn btn-default">
+										<s>NO</s>
+									</span>
+								<?php }
+								else {
+								?>
+									<span class="btn btn-default">
+										<s>YES</s>
+									</span> 
+									| 
+									<span class="btn btn-danger">
+										<i class="fa fa-times"></i> NO
+									</span>
+								<?php 
+								} 
+						}
+						
 						?>
-							<span class="btn btn-default">
-								<s>YES</s>
-							</span> 
-							| 
-							<span class="btn btn-danger">
-								<i class="fa fa-times"></i> NO
-							</span>
-						<?php 
-						} 
-						?>
-					<strong>Date:</strong> <?php echo substr($PO_date_confirmed, 0, 10); ?>
+					<strong>Date:</strong> <?php 
+					
+					if ($print_view == 1) {
+						if ($PO_date_confirmed == '0000-00-00 00:00:00') {
+							echo '2 0 __ __ - __ __ - __ __ <em>(YYYY-MM-DD)</em>';
+						}
+						else {
+							echo substr($PO_date_confirmed, 0, 10);
+						}
+					}
+					else {
+						echo substr($PO_date_confirmed, 0, 10); 
+					} ?>
 					<br />
-					<strong>Comments:</strong> <?php echo $PO_remark; ?>
+					<br />
+					<strong>Comments:</strong> <?php 
+					if ($print_view == 1) {
+						if ($PO_remark !='Please help to update this record.') {
+							echo $PO_remark; 
+						}
+						else {
+							// do nothing... leave a space for notes on the print version!
+						}
+						
+					}
+					else {
+						echo $PO_remark; 
+					}
+					
+					?>
 					
 				<!-- END OF PANEL CONTENT -->
 		
+<?php 		
+	if ($print_view == 0) { // UPDATE: Hide this for print view!
+?>
 		  </div>
 		</div>
 	</section>
+	<!-- END PANEL - OTHER INSTRUCTIONS -->
+<?php 
+} // END SCREEN ONLY DATA
+else {
+	?>
+		</td>
+		<!-- THE TOTALS GO ON THE SAME TABLE ROW, so don't close it until after! -->
+	<?php
+} // end PRINT ONLY view
+?>
 		
 		<!-- END CHECK AND SIGN -->
 	
 	<!-- START PANEL - P.O. SUMMARY / ORDER TOTALS $$$ -->
+<?php 		
+	if ($print_view == 0) { // UPDATE: Hide this for print view!
+?>	
 	<section class="panel col-md-3">
 		<header class="panel-heading">
 			<div class="panel-actions">
@@ -1221,6 +1355,10 @@ else {
 		</header>
 		<div class="panel-body">
 			<div class="content">
+<?php 
+} // END SCREEN-ONLY DATA
+else { ?><td><?php }
+	?>
 				<!-- PANEL CONTENT HERE -->
 	
 	
@@ -1240,7 +1378,7 @@ else {
                     <table class="table table-bordered table-striped table-hover table-condensed mb-none">
                         <tr>
                             <th>Total Qty</th>
-                            <td class="text-right"><?php echo number_format($total_qty); ?> pcs 个</td>
+                            <td class="text-right"><?php echo number_format($total_qty); ?> pcs</td>
                         </tr>
                         <tr>
                             <th>Subtotal</th>
@@ -1283,11 +1421,24 @@ else {
                 
 		<!-- END P.O. SUMMARY TABLE  -->
                 
-                
-		
+<?php 		
+	if ($print_view == 0) { // UPDATE: Hide this for print view!
+?>
 		  </div>
 		</div>
 	</section>
+	<!-- END PANEL - OTHER INSTRUCTIONS -->
+<?php 
+} // END SCREEN ONLY DATA
+else {
+	?>
+		</td>
+	</tr>
+	</tbody>
+	</table>
+	<?php
+} // end PRINT ONLY view
+?>
 	<!-- END P.O. SUMMARY / ORDER TOTALS $$$  -->
 	
 
@@ -1297,12 +1448,12 @@ else {
 
 
 <br />
-<hr />
-<br />
 <?php 
 if ($print_view == 0) { 
 // DO NOT SHOW THIS SECTION ON THE PRINT VERSION!
 ?>
+<hr />
+<br />
 
 
 
@@ -1480,16 +1631,6 @@ if ($print_view == 0) {
 else {
 	// show printable header here:
 	?>
-	</section>
-	
-	<section role="main" class="content-body content-footer-body">
-
-		<div>
-		  <div class="col-md-12">
-		  Page 1/1
-		  </div>
-		</div>
-		
 	</section>
 	
 	<!-- Vendor -->

@@ -32,14 +32,50 @@ $user_ID = $_REQUEST['user_ID'];
 $date_added = $_REQUEST['date_added'] . " 00:00:00";
 $remarks = $_REQUEST['remarks'];
 
+$id 					= checkaddslashes($_REQUEST['id']);
+$part_ID 				= checkaddslashes($_REQUEST['part_ID']);
+$revision_number 		= checkaddslashes($_REQUEST['revision_number']);
+$part_rev_material_ID 	= checkaddslashes($_REQUEST['part_rev_material_ID']);
+$price_USD 				= checkaddslashes($_REQUEST['price_USD']);
+$weight_g 				= checkaddslashes($_REQUEST['weight_g']);
+$part_rev_status_ID 	= checkaddslashes($_REQUEST['part_rev_status_ID']);
+$remarks 				= checkaddslashes($_REQUEST['remarks']);
+$date_added 			= check_date_time($_REQUEST['date_added']);
+$created_by 			= checkaddslashes($_REQUEST['created_by']);
+$record_status 			= checkaddslashes($_REQUEST['record_status']);
+
 $update_note = "Adding a new part revision to the system.";
 
-$add_revision_SQL = "INSERT INTO `part_revisions`(`ID`, `part_ID`, `revision_number`, `remarks`, `date_approved`, `user_ID`) VALUES (NULL,'".$part_ID."','".$rev_number."','".$remarks."','".$date_added."','".$user_ID."')";
+// $add_revision_SQL = "INSERT INTO `part_revisions`(`ID`, `part_ID`, `revision_number`, `remarks`, `date_approved`, `user_ID`) VALUES (NULL,'".$part_ID."','".$rev_number."','".$remarks."','".$date_added."','".$user_ID."')";
 
+$add_record_SQL = "INSERT INTO `part_revisions`(
+`ID`, 
+`part_ID`, 
+`revision_number`, 
+`remarks`, 
+`date_approved`, 
+`user_ID`, 
+`price_USD`, 
+`weight_g`, 
+`status_ID`, 
+`material_ID`, 
+`treatment_ID`, 
+`treatment_notes`, 
+`record_status`) VALUES (NULL,'" 
+. $part_ID . "','" 
+. $revision_number . "','" 
+. $remarks . "','" 
+. $date_added . "','" 
+. $created_by . "','" 
+. $price_USD . "','" 
+. $weight_g . "','" 
+. $part_rev_status_ID . "','" 
+. $part_rev_material_ID . "','0','No treatment notes at this stage','" 
+. $record_status . "')";
 
 // echo $add_movement_SQL;
 
-if (mysqli_query($con, $add_revision_SQL)) {
+if (mysqli_query($con, $add_record_SQL)) {
 
 	$record_id = mysqli_insert_id($con);
 

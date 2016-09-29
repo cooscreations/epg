@@ -21,95 +21,76 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$session_user_id = $_SESSION['username'];
+$page_id = 71;
 
-$page_id = 17;
-
-// pull the header and template stuff:
-pagehead($page_id);
-
-$record_id = NULL;
+$record_id = 0;
 
 if (isset($_REQUEST['id'])) {
 	$record_id = $_REQUEST['id'];
 }
-else if (isset($_REQUEST['part_ID'])) {
-	$record_id = $_REQUEST['part_ID'];
+else {
+	header("Location: part_revisions.php?msg=NG&action=view&error=no_id");
+	exit();
 }
 
 if ($record_id != 0) {
-		$get_parts_SQL = "SELECT * FROM `parts` WHERE `ID` =".$record_id;
-		// echo $get_parts_SQL;
+	// now get the part rev info:
+    $get_part_rev_SQL = "SELECT * FROM `part_revisions` WHERE `ID` = " . $record_id;
+    // echo $get_part_rev_SQL;
 
-		$result_get_parts = mysqli_query($con,$get_parts_SQL);
-		// while loop
-		while($row_get_parts = mysqli_fetch_array($result_get_parts)) {
+    $result_get_rev = mysqli_query($con,$get_part_rev_SQL);
 
-			$part_ID = $row_get_parts['ID'];
-			$part_code = $row_get_parts['part_code'];
-			$part_name_EN = $row_get_parts['name_EN'];
-			$part_name_CN = $row_get_parts['name_CN'];
-			$part_description = $row_get_parts['description'];
-			$part_type_ID = $row_get_parts['type_ID'];
-			$part_classification_ID = $row_get_parts['classification_ID'];
+    // while loop
+    while($row_get_rev = mysqli_fetch_array($result_get_rev)) {
+    
+        $record_id 				= $row_get_rev['ID'];					//
+		$rev_part_ID 			= $row_get_rev['part_ID'];				//
+		$rev_revision_number 	= $row_get_rev['revision_number'];		//
+		$rev_remarks 			= $row_get_rev['remarks'];				//
+		$rev_date_approved		= $row_get_rev['date_approved'];		//
+		$rev_user_ID 			= $row_get_rev['user_ID'];				//
+		$rev_price_USD 			= $row_get_rev['price_USD'];			//		
+		$rev_weight_g 			= $row_get_rev['weight_g'];				//
+		$rev_status_ID 			= $row_get_rev['status_ID'];			//
+		$rev_material_ID 		= $row_get_rev['material_ID'];			//
+		$rev_treatment_ID 		= $row_get_rev['treatment_ID'];			
+		$rev_treatment_notes 	= $row_get_rev['treatment_notes'];
+		$rev_record_status 		= $row_get_rev['record_status'];		// 
 
-			// GET PART TYPE:
-
-			$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $row_get_parts['type_ID'] . "'";
-			// echo $get_part_type_SQL;
-
-			$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
-			// while loop
-			while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
-				$part_type_EN = $row_get_part_type['name_EN'];
-				$part_type_CN = $row_get_part_type['name_CN'];
-			}
-
-			// GET PART CLASSIFICATION:
-
-			$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE  `ID` ='" . $row_get_parts['classification_ID'] . "'";
-			// echo $get_part_class_SQL;
-
-			$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
-			// while loop
-			while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
-				$part_class_EN = $row_get_part_class['name_EN'];
-				$part_class_CN = $row_get_part_class['name_CN'];
-			}
-
-		}
+    } // end get info WHILE loop
 }
+
+// pull the header and template stuff:
+pagehead($page_id);
 
 ?>
 <!-- START MAIN PAGE BODY : -->
 
-				<section role="main" class="content-body">
-					<header class="page-header">
-						<h2>Add A Part Revision<?php if ($record_id != 0) { ?> to <?php part_num($record_id,0); } ?> - <?php part_name($record_id,0); ?></h2>
-						<div class="right-wrapper pull-right">
-							<ol class="breadcrumbs">
-								<li>
-									<a href="index.php">
-										<i class="fa fa-home"></i>
-									</a>
-								</li>
-									<li>
-										<a href="part_revisions.php">All Part Revisions</a>
-									</li>
-								<li><span>Add New Part Revision Record</span></li>
-							</ol>
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Edit Part Revision : <?php part_num($rev_part_ID,0); ?> - <?php part_name($rev_part_ID,0); ?> - Revision <?php echo $rev_revision_number; ?></h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.php">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><a href="part_revisions.php">All Revisions</a></li>
+                <li><span>Edit Part Revision</span></li>
+            </ol>
 
-							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
-						</div>
-					</header>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
 
-					<!-- start: page -->
+    <!-- start: page -->
 
-					<div class="row">
-						<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
 
-						<!-- START THE FORM! -->
-						<form id="form" class="form-horizontal form-bordered" action="part_revision_add_do.php" method="post">
+            <!-- START THE FORM! -->
+            <form class="form-horizontal form-bordered" action="part_revision_edit_do.php" method="post">
 
                 <section class="panel">
                     <header class="panel-heading">
@@ -118,7 +99,7 @@ if ($record_id != 0) {
                             <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                         </div>
 
-                        <h2 class="panel-title">Add a Part Revision:</h2>
+                        <h2 class="panel-title">Edit Part Revision:</h2>
                     </header>
                     <div class="panel-body">
                         <div class="form-group">
@@ -139,7 +120,7 @@ if ($record_id != 0) {
                             </div>
 
 							<div class="col-md-1">
-								<!-- <button type="button" class="mb-xs mt-xs mr-xs btn btn-success pull-right" data-toggle="popover" data-container="body" data-placement="top" title="" data-content="A, B, C, D, E" data-original-title="EXISTING REVISIONS:" aria-describedby="popover876299">?</button> -->
+								&nbsp;
 							</div>
                         </div>
 						
@@ -148,7 +129,6 @@ if ($record_id != 0) {
 							<label class="col-md-3 control-label">Material:</label>
 							<div class="col-md-5">
 								<select data-plugin-selectTwo class="form-control populate" name="part_rev_material_ID" required>
-									<option value="" selected="selected">Select:</option>
 										<?php
 										$get_part_rev_material_SQL = "SELECT * FROM `material` WHERE `record_status` = '2' ORDER BY `name_EN` ASC";
 										$result_get_part_rev_material = mysqli_query($con,$get_part_rev_material_SQL);
@@ -164,7 +144,7 @@ if ($record_id != 0) {
 												$material_wiki_URL 		= $row_get_part_rev_material['wiki_URL'];
 												
 										?>
-								<option value="<?php echo $material_id; ?>"><?php echo $material_name_EN;
+								<option value="<?php echo $material_id; ?>"<?php if ($rev_material_ID == $material_id) { ?> selected="selected"<?php } ?>><?php echo $material_name_EN;
 	
 								if (($material_name_CN !='')&&($material_name_CN!='中文名')) {
 									echo ' / ' . $material_name_CN;
@@ -209,7 +189,7 @@ if ($record_id != 0) {
 								
 								<div class="input-group mb-md">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control" id="inputDefault" placeholder="0.00" name="price_USD" value="" />
+									<input type="text" class="form-control" id="inputDefault" placeholder="0.00" name="price_USD" value="<?php echo $rev_price_USD; ?>" />
 								</div>
 							</div>
 
@@ -225,7 +205,7 @@ if ($record_id != 0) {
 							<label class="col-md-3 control-label">Weight (g):</label>
 							<div class="col-md-3">
 							  <div class="input-group mb-md">
-								<input type="text" class="form-control text-right" id="inputDefault" placeholder="0.00" name="weight_g" value="" />
+								<input type="text" class="form-control text-right" id="inputDefault" placeholder="0.00" name="weight_g" value="<?php echo $rev_weight_g; ?>" />
 							 	<span class="input-group-addon ">grams (g)</span>
 							  </div>
 							</div>
@@ -255,13 +235,14 @@ if ($record_id != 0) {
 												$part_rev_status_record_status = $row_get_part_rev_status['record_status'];	// SHOULD BE 2!
 
 										?>
-										<option value="<?php echo $part_rev_status_id; ?>"<?php if ($part_rev_status_id == 1) { ?> selected="selected"<?php } ?>><?php echo $part_rev_status_name_EN;
+								<option value="<?php echo $part_rev_status_id; ?>"<?php if ($rev_status_ID == $part_rev_status_id) { ?> selected="selected"<?php } ?>><?php echo $part_rev_status_name_EN;
 	
-											if (($part_rev_status_name_CN !='')&&($part_rev_status_name_CN!='中文名')) {
-												echo ' / ' . $part_rev_status_name_CN;
-											}
+								if (($part_rev_status_name_CN !='')&&($part_rev_status_name_CN!='中文名')) {
+									echo ' / ' . $part_rev_status_name_CN;
+								}
 	
-										?></option>
+	
+								?></option>
 
 										<?php
 										} // END WHILE LOOP
@@ -279,7 +260,7 @@ if ($record_id != 0) {
 						<div class="form-group">
 							<label class="col-md-3 control-label">Remarks:<span class="required">*</span></label>
 							<div class="col-md-5">
-								<textarea class="form-control" rows="3" id="textareaDefault" name="remarks" required>Please help to update this record.</textarea>
+								<textarea class="form-control" rows="3" id="textareaDefault" name="remarks" required><?php echo $rev_remarks; ?></textarea>
 							</div>
 
 
@@ -295,7 +276,7 @@ if ($record_id != 0) {
 									<span class="input-group-addon">
 										<i class="fa fa-calendar"></i>
 									</span>
-									<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="<?php echo $rev_date_approved; ?>" name="date_added" required value="<?php echo date("Y-m-d H:i:s"); ?>" />
+									<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="<?php echo $rev_date_approved; ?>" name="date_added" required value="<?php echo $rev_date_approved; ?>" />
 								</div>
 							</div>
 
@@ -307,7 +288,7 @@ if ($record_id != 0) {
                         <div class="form-group">
 							<label class="col-md-3 control-label">User:<span class="required">*</label>
 							<div class="col-md-5">
-								<?php creator_drop_down($_SESSION['user_ID']); ?>
+								<?php creator_drop_down($rev_user_ID); ?>
 							</div>
 
 							<div class="col-md-1">
@@ -319,7 +300,7 @@ if ($record_id != 0) {
 						<div class="form-group">
 							<label class="col-md-3 control-label">Record Status:</label>
 							<div class="col-md-5">
-								<?php record_status_drop_down(2); ?>
+								<?php record_status_drop_down($rev_record_status); ?>
 							</div>
 
 
@@ -334,24 +315,19 @@ if ($record_id != 0) {
                     </div>
 
                     <footer class="panel-footer">
-                        <?php form_buttons('part_revisions.php',0); ?>
+                        <?php form_buttons('part_revisions.php', $record_id); ?>
                     </footer>
                 </section>
                 <!-- now close the form -->
             </form>
+        </div>
 
+    </div>
+    <!-- now close the panel -->
+    <!-- end row! -->
 
-						</div>
-
-						</div>
-
-
-
-
-								<!-- now close the panel --><!-- end row! -->
-
-					<!-- end: page -->
-				</section>
+    <!-- end: page -->
+</section>
 
 <!-- : END MAIN PAGE BODY -->
 

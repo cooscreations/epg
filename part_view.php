@@ -237,6 +237,10 @@ pagehead($page_id);
 								<?php
 								} // END GET PART REVISIONS TO BUILD TAB LIST...
 								?>
+								
+							<li>
+								<a href="part_revision_add.php?part_ID=<?php echo $part_ID; ?>" class="text-success" title="Add a New Revision"><i class="fa fa-plus"></i> NEW</a>
+							</li>
 
 						</ul>
 						<div class="tab-content">
@@ -349,17 +353,160 @@ pagehead($page_id);
 									  <li><strong>Release Date:</strong> <?php echo date("Y-m-d", strtotime($rev_body_date)); ?></li>
 									  <li><strong>Released By:</strong> <?php get_creator($rev_body_user); ?></li>
 									</ul>
-
+									
 									<hr />
+									
+									<h4>ADMIN OPTIONS</h4>
 
-									<?php
-									// now run the admin bar function:
-									admin_bar('part');
+									<!-- ********************************************************* -->
+									<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+									<!-- SPECIAL NOTE | SPECIAL NOTE | SPECIAL NOTE | SPECIAL NOTE -->
+									
+									<!--  PLEASE NOTE: THIS ADMIN POP-UP IS DIFFERENT IN THAT IT 
+									             CONTAINS OPTIONS FOR REVISION AND PART!!!         -->
+									
+									<!-- ********************************************************* -->
+			
+									<?php 
+			
+									// VARS YOU NEED TO WATCH / CHANGE:
+									$add_to_form_name 	= 'part_rev_';						// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+									$form_ID 			= $rev_body_id;						// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+									$edit_URL 			= 'part_revision_edit'; 			// REQUIRED - specify edit page URL
+									$add_URL 			= 'part_revision_add.php'; 			// REQURED - specify add page URL
+									$table_name 		= 'part_revisions';					// REQUIRED - which table are we updating?
+									$src_page 			= $this_file;						// REQUIRED - this SHOULD be coming from page_functions.php
+									$add_VAR 			= 'part_ID=' . $record_id; 			// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+			
 									?>
+	 
+										<a class="modal-with-form btn btn-default tet-center" href="#modalForm_<?php 
+				
+											echo $add_to_form_name; 
+											echo $form_ID; 
+				
+										?>"><i class="fa fa-gear"></i> ADMIN OPTIONS</a>
 
-									<hr />
-									<a class="btn btn-warning" href="rev_edit.php?id=<?php echo $rev_body_id; ?>" title="Click here to edit the part revision record (ID#: <?php echo $rev_body_id; ?>)"><i class="fa fa-pencil"></i> EDIT REVISION <?php echo $rev_body_number; ?></a>
-
+										<!-- Modal Form -->
+										<div id="modalForm_<?php 
+				
+											echo $add_to_form_name; 
+											echo $form_ID; 
+					
+										?>" class="modal-block modal-block-primary mfp-hide">
+											<section class="panel">
+												<header class="panel-heading">
+													<h2 class="panel-title">Admin Options</h2>
+												</header>
+												<div class="panel-body">
+				
+													<div class="table-responsive">
+													 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+													 <thead>
+														<tr>
+															<th class="text-left" colspan="2">Action</th>
+															<th>Decsription</th>
+														</tr>
+													  </thead>
+													  <tbody>
+														<tr>
+														  <td>EDIT REV. # <?php echo $rev_body_number; ?></td>
+														  <td>
+															<a href="<?php 
+																echo $edit_URL; 
+															?>.php?id=<?php 
+																echo $form_ID; 
+															?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+																<i class="fa fa-pencil" stlye="color: #999"></i>
+															</a>
+														  </td>
+														  <td>Edit this revision</td>
+														</tr>
+														<tr>
+														  <td>DELETE REV. # <?php echo $rev_body_number; ?></td>
+														  <td>
+															<a href="record_delete_do.php?table_name=<?php 
+																echo $table_name; 
+															?>&src_page=<?php 
+																echo $src_page; 
+															?>&id=<?php 
+																echo $form_ID;
+																echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+															?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+																<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+															</a>
+														  </td>
+														  <td>Delete this revision</td>
+														</tr>
+														<tr>
+														  <td>ADD PART REVISION</td>
+														  <td>
+															<a href="<?php 
+																echo $add_URL; 
+																echo '?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+															?>" class="mb-xs mt-xs mr-xs btn btn-success">
+																<i class="fa fa-plus" stlye="color: #999"></i>
+															</a>
+														  </td>
+														  <td>Add a new part revision to this part record</td>
+														</tr>
+														<tr>
+														  <td>&nbsp;</td>
+														  <td>&nbsp;</td>
+														  <td>&nbsp;</td>
+														</tr>
+														<tr>
+														  <td>EDIT PART # <?php echo $part_code; ?></td>
+														  <td>
+															<a href="part_edit.php?id=<?php echo $record_id ?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+																<i class="fa fa-pencil" stlye="color: #999"></i>
+															</a>
+														  </td>
+														  <td>Edit this part record</td>
+														</tr>
+														<tr>
+														  <td>DELETE PART # <?php echo $part_code; ?></td>
+														  <td>
+															<a href="record_delete_do.php?table_name=parts&src_page=<?php echo $src_page; ?>&id=<?php echo $record_id ?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+																<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+															</a>
+														  </td>
+														  <td>Delete this part record <em class="text-danger">(not recommended!)</em></td>
+														</tr>
+														<tr>
+														  <td>ADD NEW PART</td>
+														  <td>
+															<a href="part_add.php" class="mb-xs mt-xs mr-xs btn btn-success">
+																<i class="fa fa-plus" stlye="color: #999"></i>
+															</a>
+														  </td>
+														  <td>Add a new part to the system</td>
+														</tr>
+													  </tbody>
+													  <tfoot>
+														<tr>
+														  <td>&nbsp;</td>
+														  <td>&nbsp;</td>
+														  <td>&nbsp;</td>
+														</tr>
+													  </tfoot>
+													  </table>
+													</div><!-- end of responsive table -->	
+				
+												</div><!-- end panel body -->
+												<footer class="panel-footer">
+													<div class="row">
+														<div class="col-md-12 text-left">
+															<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+														</div>
+													</div>
+												</footer>
+											</section>
+										</div>
+		
+									<!-- ********************************************************* -->
+									<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+									<!-- ********************************************************* -->
 
 								</div>
 							</section>
@@ -740,10 +887,10 @@ pagehead($page_id);
 					  <tbody>
 					  <?php
 
-					  // FIRST, let's try to get the BOM it IS or it is on:
+					  // FIRST, let's try to get the BOM it IS or it is ON:
 
 					  // count BOMs made for this revision
-						$count_BOMs_sql = "SELECT COUNT( ID ) FROM  `product_BOM` WHERE  `part_rev_ID` =  '".$rev_body_id."'";
+						$count_BOMs_sql = "SELECT COUNT( ID ) FROM  `product_BOM` WHERE `record_status` = 2 AND `part_rev_ID` =  '".$rev_body_id."'";
 						$count_BOMs_query = mysqli_query($con, $count_BOMs_sql);
 						$count_BOMs_row = mysqli_fetch_row($count_BOMs_query);
 						$total_BOMs = $count_BOMs_row[0];
@@ -772,47 +919,57 @@ pagehead($page_id);
 
 
 									/* JOIN PLANNING:
-									PARTS:
+										PARTS:
 
-									`parts`.`ID` AS `part_ID`,
-									`parts`.`part_code`,
-									`parts`.`name_EN`,
-									`parts`.`name_CN`,
-									`parts`.`description`,
-									`parts`.`type_ID`,
-									`parts`.`classification_ID`,
-									`parts`.`record_status`,
-									`parts`.`product_type_ID`
+										`parts`.`ID` AS `part_ID`,
+										`parts`.`part_code`,
+										`parts`.`name_EN`,
+										`parts`.`name_CN`,
+										`parts`.`description`,
+										`parts`.`type_ID`,
+										`parts`.`classification_ID`,
+										`parts`.`record_status`,
+										`parts`.`product_type_ID`
 
-									PART REVISIONS:
+										PART REVISIONS:
 
-									`part_revisions`.`ID` AS `rev_revision_ID`,
-									`part_revisions`.`part_ID`,
-									`part_revisions`.`revision_number`,
-									`part_revisions`.`remarks`,
-									`part_revisions`.`date_approved`,
-									`part_revisions`.`user_ID`,
-									`part_revisions`.`price_USD`,
-									`part_revisions`.`weight_g`,
-									`part_revisions`.`status_ID`,
-									`part_revisions`.`material_ID`,
-									`part_revisions`.`treatment_ID`,
-									`part_revisions`.`treatment_notes`,
-									`part_revisions`.`record_status`
+										`part_revisions`.`ID` AS `rev_revision_ID`,
+										`part_revisions`.`part_ID`,
+										`part_revisions`.`revision_number`,
+										`part_revisions`.`remarks`,
+										`part_revisions`.`date_approved`,
+										`part_revisions`.`user_ID`,
+										`part_revisions`.`price_USD`,
+										`part_revisions`.`weight_g`,
+										`part_revisions`.`status_ID`,
+										`part_revisions`.`material_ID`,
+										`part_revisions`.`treatment_ID`,
+										`part_revisions`.`treatment_notes`,
+										`part_revisions`.`record_status`
 
-									SO WE NEED:
+										SO WE NEED:
 
-									`parts`.`part_code`,
-									`parts`.`name_EN`,
-									`parts`.`name_CN`,
-									`parts`.`type_ID`,
-									`part_revisions`.`revision_number`,
-									`part_revisions`.`part_ID`,
-									`part_revisions`.`part_ID`
-
+										`parts`.`part_code`,
+										`parts`.`name_EN`,
+										`parts`.`name_CN`,
+										`parts`.`type_ID`,
+										`part_revisions`.`revision_number`,
+										`part_revisions`.`part_ID`,
+										`part_revisions`.`part_ID`
 									*/
 
-									$combine_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $BOM_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+									$combine_part_and_rev_SQL = "SELECT 
+									`parts`.`part_code`, 
+									`parts`.`name_EN`, 
+									`parts`.`name_CN`, 
+									`parts`.`type_ID`, 
+									`part_revisions`.`revision_number`, 
+									`part_revisions`.`part_ID` 
+									FROM  `part_revisions` 
+									LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` 
+									WHERE `part_revisions`.`ID` =" . $BOM_part_rev_ID . " 
+									AND `part_revisions`.`record_status` = 2 
+									AND `parts`.`record_status` = 2";
 
 									$result_get_rev_part_join = mysqli_query($con,$combine_part_and_rev_SQL);
 									// while loop
@@ -832,7 +989,9 @@ pagehead($page_id);
 
 								  <tr>
 									<td>
-									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-xs btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a>
+									  <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-xs btn-primary">
+									  	<i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?>
+									  </a>
 									</td>
 									<td>
 									  <?php part_num($rev_part_join_part_ID); ?>
@@ -878,7 +1037,7 @@ pagehead($page_id);
 								  /* ********************************************************* */
 
 
-								  $get_BOM_ID_SQL = "SELECT * FROM `product_BOM_items` WHERE `part_rev_ID` ='" . $rev_body_id . "'";
+								  $get_BOM_ID_SQL = "SELECT * FROM `product_BOM_items` WHERE `record_status` = 2 AND `part_rev_ID` ='" . $rev_body_id . "'";
 								  $result_get_BOM_ID = mysqli_query($con,$get_BOM_ID_SQL);
 								  // while loop
 								  while($row_get_BOM_ID = mysqli_fetch_array($result_get_BOM_ID)) {
@@ -952,6 +1111,7 @@ pagehead($page_id);
 													*/
 
 													$combine_this_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $this_BOM_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
+													// echo $combine_this_part_and_rev_SQL;
 
 													$result_get_this_rev_part_join = mysqli_query($con,$combine_this_part_and_rev_SQL);
 													// while loop
@@ -1071,7 +1231,7 @@ pagehead($page_id);
 					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $find_BOM . " AND  `record_status` = '2' ORDER BY `entry_order` ASC";
 
 					 			 // DEBUG:
-					 			 // echo $get_components_SQL;
+					 			 echo $get_components_SQL;
 
 					 			 $result_get_components = mysqli_query($con,$get_components_SQL);
 								 // while loop
@@ -1184,7 +1344,7 @@ pagehead($page_id);
 					 			  	<?php part_name($rev_part_join_part_ID); ?>
 					 			  </td>
 					 			  <td class="text-center">
-					 			  	<?php part_rev($rev_part_join_part_ID); ?>
+					 			  	<?php part_rev($components_part_rev_ID); ?>
 					 			  </td>
 					 			  <td>
 					 			  	<?php
@@ -1201,6 +1361,7 @@ pagehead($page_id);
 
 												// GO GET THE CHILD INFO!
 												$get_child_BOM_SQL = "SELECT * FROM `product_BOM` WHERE `record_status` = 2 AND `parent_BOM_ID` = " . $record_id . " AND `part_rev_ID` = " . $rev_part_join_revision_ID . "  ORDER BY `entry_order` ASC";
+												// echo $get_child_BOM_SQL;
 
 												$result_get_child_BOM = mysqli_query($con,$get_child_BOM_SQL);
 

@@ -36,6 +36,9 @@ if ($src_page == 'purchase_order_view.php') {
 else if ($src_page == 'batch_view.php') {
 	$add_URL_vars = "&id=" . $_REQUEST['batch_id'];
 }
+else if ($table_name == 'part_revisions') {
+	$add_URL_vars = "&id=" . $_REQUEST['part_id'];
+}
 
 $delete_SQL = "UPDATE `".$table_name."` set `record_status`=0 WHERE `ID` = '".$id."' ";
 

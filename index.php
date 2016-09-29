@@ -219,7 +219,7 @@ pagehead($page_id); ?>
 											<tr>
 											  <td>EDIT</td>
 											  <td>
-											  <a href="page_edit.php?id=<?php echo $batch_movement_id; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
+											  <a href="page_edit.php?id=<?php echo $page_ID; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
 											  <td>Edit this page (page variables in the database)</td>
 											</tr>
 											<tr>

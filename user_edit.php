@@ -12,22 +12,15 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-echo "sometthing1";
 require ('page_functions.php');
-echo "sometthing2";
 include 'db_conn.php';
-echo "sometthing3";
 
 /* session check */
 if (!isset($_SESSION['username'])) {
 	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
-echo $_REQUEST['id'];
-$page_id = 99;
 
-// pull the header and template stuff:
-pagehead($page_id);
 
 $record_id = 0;
 
@@ -40,25 +33,36 @@ else {
 }
 
 if ($record_id != 0) {
-	$get_user_SQL = "SELECT `ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `last_login_date` ,`mobile_number` FROM `users` WHERE `ID` = " . $record_id;
+	$get_user_SQL = "SELECT * FROM `users` WHERE `ID` = " . $record_id;
 	echo $get_user_SQL;
 	$result_get_user = mysqli_query($con,$get_user_SQL);
 
     // while loop
     while($row_get_user = mysqli_fetch_array($result_get_user)) {
-        $user_ID = $row_get_user['ID'];
-        $user_fn = $row_get_user['first_name'];
-        $user_mn = $row_get_user['middle_name'];
-        $user_ln = $row_get_user['last_name'];
-        $user_cn = $row_get_user['name_CN'];
-        $user_email = $row_get_user['email'];
-        $user_pwd = _base64_decrypt($row_get_user['password']);
-        $user_level = $row_get_user['user_level'];
-        $user_pos = $row_get_user['position'];
-        $user_last_login_date = $row_get_user['last_login_date'];
-        $user_mobile_number = $row_get_user['mobile_number'];
-        echo $user_mobile_number;
-    } // end get part info WHILE loop
+        
+		$user_ID 				= $row_get_user['ID'];					// N/A
+		$user_fn 				= $row_get_user['first_name'];			//
+		$user_mn 				= $row_get_user['middle_name'];			//
+		$user_ln 				= $row_get_user['last_name'];			//
+		$user_cn 				= $row_get_user['name_CN'];				//
+		$user_email 			= $row_get_user['email'];				//	
+		// $user_pwd 			= $row_get_user['password'];			//
+		$user_pwd	 			= _base64_decrypt($row_get_user['password']);
+		$user_level 			= $row_get_user['user_level'];			//
+		$user_pos	 			= $row_get_user['position'];			//	
+		$user_last_login_date 	= $row_get_user['last_login_date'];		// N/A
+		$user_facebook_profile 	= $row_get_user['facebook_profile'];	//
+		$user_twitter_profile 	= $row_get_user['twitter_profile'];		//
+		$user_linkedin_profile 	= $row_get_user['linkedin_profile'];	//
+		$user_skype_profile 	= $row_get_user['skype_profile'];		//
+		$user_wechat_profile 	= $row_get_user['wechat_profile'];		//
+		$user_record_status 	= $row_get_user['record_status'];		// N/A
+		$user_mobile_number 	= $row_get_user['mobile_number'];		// 
+        
+        
+        
+        
+    } // end get user info WHILE loop
 }
 
 function _base64_decrypt($str,$passw=null){
@@ -111,6 +115,12 @@ function _mixing_passw($b,$passw){
     };
     return $c.''.$s;
 };
+
+
+$page_id = 99;
+
+// pull the header and template stuff:
+pagehead($page_id);
 
 ?>
 <!-- START MAIN PAGE BODY : -->

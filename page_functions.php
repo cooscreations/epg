@@ -1,4 +1,49 @@
 <?php
+
+/* 
+
+REFERENCE LIST OF FUNCTIONS:
+
+ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
+
+1	  MC		checkaddslashes($str)													Remove ' on form input					
+2	  MC		realStrip($input)														Remove ' on form input					
+3	  MC		check_date_time($date_to_check)											Add trailing HH:MM:SS to date					Surely there's a beter way to do this within PHP?
+4 	  MC		year_jumper($jump_to_URL, $show_year = '0', $start_year = 2010)			Drop down with YEAR select				
+5	  MC		pagehead($page_id, $record_id=NULL)										BUILD THE MAIN PAGE!!							Very important
+6	  MC		pagefoot($page_id, $record_id=NULL)										BUILD THE REST OF THE PAGE!!					Very important
+7	  MC		notify_me($page_id, $msg, $action, $change_record_id, $page_record_id)	Notification panel (top center)					Communicate something special to the user - this would be better as a true notification pop-up rather than a space of text...
+8	  VK		_base64_encrypt($str,$passw=null)										?												
+9	  VK		_base64_decrypt($str,$passw=null)										?												
+10	  VK		_mixing_passw($b,$passw)												?												
+11	  MC		get_creator($user_id, $display_weblink = 1)								Display user name and link (optional)			This could change to a nice Faebook-style pop-up with more user info
+12	  MC		get_supplier($sup_id, $display_type = 0, $profile_link = 1)				Display supplier name and link					
+13	  MC		creator_drop_down($this_user_ID, $form_element_name = 'created_by')		Show list of users with preselected (op.)		
+14	  MC		supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID')			Show list of suppliers with preselect (op.)		
+15	  MC		record_status_drop_down($current_status)								Show record status drop-down
+16	  MC		admin_bar($add_edit_file_name_append)									Admin controls to edit a record					This is usually displayed on a record VIEW page and could be updated to be just a cog with pop-up
+17	  MC		get_part_name($part_id, $profile_link)
+18	  MC		get_location($loc_id, $display_type = 0, $profile_link = 1)
+19	  MC		location_drop_down($this_loc_ID, $form_element_name = 'loc_ID')
+20	  MC		form_buttons($cancel_url, $record_id)
+21	  MC		function add_button($record_id, $add_page_url, $record_var = 'id', $add_title='Click here to add a new record to this table', $add_url = '')
+22	  MC		part_num_button($part_id)
+23	  MC		function part_drop_down($current_ID=0)
+24	  MC		part_rev_drop_down($current_ID=0)
+25	  MC		function purchase_orders_drop_down($part_batch_po_id=0)
+26	  MC		part_num($part_id, $show_button = 1)
+27	  MC		function part_rev($part_rev_id, $show_button = 1)
+28	  MC		part_name($part_id, $show_button = 1)
+29 	  MC		part_img($part_rev_id, $profile_link = 1, $img_width_px = 100)
+30 	  MC		batch_num_dropdown($record_id = 0)
+31	  MC		record_status($record_status_ID, $show_button = 1)
+
+*/
+
+
+
+
+
 	// start the session:
 	session_start();
 	// enable the DB connection:
@@ -1593,6 +1638,7 @@ function get_creator($user_id, $display_weblink = 1) {
 	include 'db_conn.php';
 
 	if ($user_id == 0) {
+	  if ($display_weblink == 1) {
 		?>
 		<span class="btn btn-danger">
 			<i class="fa fa-exclamation-triangle"></i>
@@ -1600,6 +1646,12 @@ function get_creator($user_id, $display_weblink = 1) {
 			<i class="fa fa-exclamation-triangle"></i>
 		</span>
 		<?php
+		}
+		else {
+			?>
+			*** NO USER FOUND! ***
+			<?php
+		}
 	}
 	else {
 
@@ -2605,6 +2657,93 @@ function part_num_button($part_id) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
+function part_drop_down($current_ID=0) {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+?>
+<!-- starting part_drop_down function: -->
+<select data-plugin-selectTwo class="form-control populate" name="part_ID" required>
+	<option value="">Select:</option>
+	<?php
+	// get parts list
+	$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = '2' ORDER BY `part_code` ASC";
+	// echo $get_parts_SQL;
+
+	$part_count = 0;
+
+	$result_get_parts = mysqli_query($con,$get_parts_SQL);
+	// while loop
+	while($row_get_parts = mysqli_fetch_array($result_get_parts)) {
+	
+		$part_ID 					= $row_get_parts['ID'];
+		$part_code 					= $row_get_parts['part_code'];
+		$part_name_EN 				= $row_get_parts['name_EN'];
+		$part_name_CN 				= $row_get_parts['name_CN'];
+		$part_description 			= $row_get_parts['description'];
+		$part_type_ID 				= $row_get_parts['type_ID'];
+		$part_classification_ID 	= $row_get_parts['classification_ID'];
+		$part_default_suppler_ID 	= $row_get_parts['default_suppler_ID'];
+		$part_record_status 		= $row_get_parts['record_status'];
+		$part_product_type_ID 		= $row_get_parts['product_type_ID'];
+		$part_created_by 			= $row_get_parts['created_by'];
+		$part_is_finished_product 	= $row_get_parts['is_finished_product'];
+
+		// GET PART TYPE:
+
+		$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $part_type_ID . "'";
+		// echo $get_part_type_SQL;
+
+		$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
+		// while loop
+		while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
+			$part_type_EN = $row_get_part_type['name_EN'];
+			$part_type_CN = $row_get_part_type['name_CN'];
+		}
+
+		// GET PART CLASSIFICATION:
+
+		$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $part_classification_ID . "'";
+		// echo $get_part_class_SQL;
+
+		$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+		// while loop
+		while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+			$part_class_EN = $row_get_part_class['name_EN'];
+			$part_class_CN = $row_get_part_class['name_CN'];
+		}
+		?>
+		
+		<option value="<?php echo $part_ID; ?>" <?php if ($part_ID == $current_ID) { ?> selected="selected"<?php } ?>>
+			<?php echo $part_code; ?> - <?php echo $part_name_EN; 
+			
+			if (($part_name_CN!='')&&($part_name_CN!='中文名')){
+				echo ' / ' . $part_name_CN;
+			}
+			
+			?>
+		</option>
+		
+	<?php
+	} // END WHILE LOOP
+
+	?>
+</select>
+	
+<!-- end part_drop_down function: -->
+<?php
+} // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
 function part_rev_drop_down($current_ID=0) {
 
 	// start the session:
@@ -3110,7 +3249,6 @@ function part_img($part_rev_id, $profile_link = 1, $img_width_px = 100){ // defa
 /* ****************************************************************** */
 /* ****************************************************************** */
 
-
 function batch_num_dropdown($record_id = 0) {
 	// start the session:
 	session_start();
@@ -3177,6 +3315,7 @@ function batch_num_dropdown($record_id = 0) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
+
 function record_status($record_status_ID, $show_button = 1) {
 				
 	if ($record_status_ID == 2) {
