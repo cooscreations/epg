@@ -78,8 +78,7 @@ pagehead ( $page_id );
 		?>
 		
 	<div class="table-responsive">
-		<table
-			class="table table-bordered table-striped table-condensed mb-none">
+		<table class="table table-bordered table-striped table-condensed mb-none">
 			<tr>
 				<th class="text-center">ID</th>
 				<th class="text-center">Code</th>

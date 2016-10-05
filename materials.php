@@ -74,8 +74,8 @@ pagehead ( $page_id );
 
 		<!-- start: page -->
 	<div class="table-responsive">
-		<table
-			class="table table-bordered table-striped table-condensed mb-none">
+		<table class="table table-bordered table-striped table-condensed mb-none">
+		  <thead>
 			<tr>
 				<th width="30%">Name</th>
 				<th width="20%">Description</th>
@@ -84,9 +84,11 @@ pagehead ( $page_id );
 				<th width="15%">Photo</th>
 				<th class="text-center" width="10%">Actions</th>
 			</tr>
+		  </thead>
+		  <tbody>
 
 						  <?php
-								$get_mats_SQL = "SELECT * FROM  `material` ORDER BY  `material`.`name_EN` ASC";
+								$get_mats_SQL = "SELECT * FROM `material` WHERE `record_status` = '2' ORDER BY `material`.`name_EN` ASC";
 								// echo $get_mats_SQL;
 
 								$mat_count = 0;
@@ -143,14 +145,14 @@ pagehead ( $page_id );
 									$mat_count = $mat_count + 1;
 								} // end while loop
 								?>
-
+		  </tbody>
+		  <tfoot>
 			 <tr>
 				<th colspan="6">TOTAL: <?php echo $mat_count; ?></th>
 				<th class="text-center"><a href="material_add.php"
 					class="mb-xs mt-xs mr-xs btn btn-success">ADD NEW +</a></th>
 			</tr>
-
-
+		  </tfoot>
 		</table>
 	</div>
 	<!-- end: page -->

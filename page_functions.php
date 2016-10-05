@@ -498,6 +498,17 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 
 	</head>
 	<body>
+	<!--  NICE LOADING FEATURE BUT IT HANGS WHEN THE PAGE IS TOO LARGE?!  
+	<body class="loading-overlay-showing" data-loading-overlay>
+    
+    <div class="loading-overlay dark">
+        <div class="loader white"></div>
+        <p class="text-center">LOADING, PLEASE WAIT...</p>
+    </div>
+    -->
+    
+    
+    
 		<section class="body">
 
 			<!-- start: header -->
@@ -1392,6 +1403,7 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
+
 					////////////////////////////////////////////////////////////
 					// MESSAGE NOTIFICATIONS
 					////////////////////////////////////////////////////////////
@@ -1403,67 +1415,54 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 						?>
 							<div class="alert alert-success">
 								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-								<!--  ADD -->
 								<?php if ($_REQUEST['action'] == 'add') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-
-
-								<strong>Well done!</strong> You successfully added a record to the database.
-
+									<!--  ADD -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-check fa-stack-1x"></i>
+									</span>
+									<strong>Well done!</strong> You successfully added a record to the database.
 								<?php }
 								
 								if ($_REQUEST['action'] == 'add_line_item') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-
-
-								<strong>Well done!</strong> You successfully added a new line item to this Purchase Order.
-
-								<?php } ?>
-
-								<!--  UPDATE -->
-								<?php if ($_REQUEST['action'] == 'edit') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-
-
-								<strong>Well done!</strong> You successfully updated the record in the database.
-								<?php } ?>
-
-								<!--  DELETE -->
-								<?php if ($_REQUEST['action'] == 'delete') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-
-
-								<strong>Well done!</strong> You successfully deleted the record in the database.
-								<?php } ?>
-
-								<!--  Feedback Sent -->
-								<?php if ($_REQUEST['action'] == 'feedback_sent') { ?>
-
-								<span class="fa-stack fa-3x">
+									<!-- ADD NEW LINE ITEM -->
+									<span class="fa-stack fa-3x">
 										<i class="fa fa-circle-o fa-stack-2x"></i>
 										<i class="fa fa-check fa-stack-1x"></i>
-								</span>
-
-
-								<strong>Thank you!</strong> Your feedback is sent.
-								<?php } ?>
-
+									</span>
+									<strong>Well done!</strong> You successfully added a new line item to this Purchase Order.
+								<?php 
+								}
+								
+								if ($_REQUEST['action'] == 'edit') { ?>
+									<!--  UPDATE -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-check fa-stack-1x"></i>
+									</span>
+									<strong>Well done!</strong> You successfully updated the record in the database.
+								<?php }
+								
+								if ($_REQUEST['action'] == 'delete') { ?>
+									<!--  DELETE -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-check fa-stack-1x"></i>
+									</span>
+									<strong>Well done!</strong> You successfully deleted the record in the database.
+								<?php 
+								}
+								
+								if ($_REQUEST['action'] == 'feedback_sent') { ?>
+									<!--  Feedback Sent -->
+									<span class="fa-stack fa-3x">
+											<i class="fa fa-circle-o fa-stack-2x"></i>
+											<i class="fa fa-check fa-stack-1x"></i>
+									</span>
+									<strong>Thank you!</strong> Your feedback is sent.
+								<?php 
+								} 
+								?>
 							</div>
 						<?php
 						} // END OF SUCCESS MESSAGES
@@ -1471,55 +1470,70 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 						?>
 							<div class="alert alert-warning">
 								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-								<?php if ($_REQUEST['error'] == 'no_id') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-exclamation fa-stack-1x"></i>
-								</span>
-
-								<strong>Oh No!</strong> You must select a record from the list below in order to view a single record page.
-
-
-								<?php } 
+								<?php
+								
+								if ($_REQUEST['error'] == 'level') { ?>
+									<!-- USER LEVEL ISN'T HIGH ENOUGH -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-exclamation fa-stack-1x"></i>
+									</span>
+									<strong>Oh No!</strong> Page # <?php echo $_REQUEST['page_id']; ?> has a user access level of <?php echo $_REQUEST['mul']; ?> and your user level is only <?php echo $_REQUEST['sul']; ?>. Please contact the administrator to change access settings.
+								<?php 
+								}
+								
+								if ($_REQUEST['error'] == 'no_id') { ?>
+									<!-- NO RECORD ID -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-exclamation fa-stack-1x"></i>
+									</span>
+									<strong>Oh No!</strong> You must select a record from the list below in order to view a single record page.
+								<?php 
+								} 
 								
 								if ($_REQUEST['error'] == 'no_po_id') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-exclamation fa-stack-1x"></i>
-								</span>
-
-								<strong>Oh No!</strong> You must select an existing Purchase Order to do that.
-
-
-								<?php }
+									<!-- NO PURCHASE ORDER ID -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-exclamation fa-stack-1x"></i>
+									</span>
+									<strong>Oh No!</strong> You must select an existing Purchase Order to do that.
+								<?php 
+								}
 								
-								?>
-								<!--  Login error -->
-								<?php if ($_REQUEST['error'] == 'invalid_login') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-exclamation fa-stack-1x"></i>
-								</span>
-
-								<h4>Invalid username or password.</h4>
-
-
-								<?php } ?>
+								if ($_REQUEST['error'] == 'invalid_login') { ?>
+									<!--  Login error -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-exclamation fa-stack-1x"></i>
+									</span>
+									<strong>Invalid username or password.</strong>
+								<?php 
+								}
+								
+								if ($_REQUEST['error'] == 'duplicate') { ?>
 									<!--  Duplicates -->
-								<?php if ($_REQUEST['error'] == 'duplicate') { ?>
-
-								<span class="fa-stack fa-3x">
-  									<i class="fa fa-circle-o fa-stack-2x"></i>
-  									<i class="fa fa-exclamation fa-stack-1x"></i>
-								</span>
-
-								<h4><?php echo $_REQUEST['field']?> already exists in the system.</h4>
-
-
-								<?php } 
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-exclamation fa-stack-1x"></i>
+									</span>
+									<?php if (isset($_REQUEST['field'])) { ?>
+										<strong>DUPLICATE FOUND:</strong> <?php echo $_REQUEST['field']?> already exists in the system.
+									<?php 
+											if ($_REQUEST['existing_part_ID']) { ?>
+												 <a href="part_view.php?id=<?php echo $_REQUEST['existing_part_ID']; ?>">VIEW PART PROFILE</a>
+											<?php }
+									} 
+									else {
+									?>
+										<strong>DUPLICATE FOUND:</strong> A duplicate record was found. Please try again.
+									<?php
+									}
+									?>
+								<?php 
+								} 
+								
 								?>
 							</div>
 						<?php
@@ -1972,6 +1986,7 @@ function supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID') {
 	?>
 	<!-- originally parsed SUP ID = <?php echo $this_sup_ID; ?> -->
 	<select data-plugin-selectTwo class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>" required>
+	  <?php if ($this_sup_ID == 0) { ?><option value="0" selected="selected" style="display:none">Select vendor:</option><?php } ?>
 		<?php
 		// get batch list
 		$order_by = " ORDER BY `record_status` DESC";
@@ -2005,7 +2020,7 @@ function supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID') {
 				$sup_email_2 = $row_get_sup_list['email_2'];
 
 				?>
-				<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $PO_supplier_ID) { ?> selected="selected"<?php } ?>>
+				<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $this_sup_ID) { ?> selected="selected"<?php } ?>>
 					<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
 				</option>
 				<?php
@@ -2526,9 +2541,16 @@ function location_drop_down($this_loc_ID, $form_element_name = 'loc_ID') {
 /* ****************************************************************** */
 /* ****************************************************************** */
 
-function form_buttons($cancel_url, $record_id) { ?>
-	<input type="hidden" value="<?php echo $record_id; ?>" name="id" />
-	<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php?id=<?php echo $record_id; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
+function form_buttons($cancel_url, $record_id) { 
+	if (($record_id!=0)&&($record_id!='')) { ?>
+		<input type="hidden" value="<?php echo $record_id; ?>" name="id" />
+		<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php?id=<?php echo $record_id; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
+	<?php } 
+	else {
+	?>
+		<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
+	<?php
+	}?>
 	<button type="reset" class="btn btn-warning"><i class="fa fa-refresh"></i> RESET</button>
 	<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> SAVE CHANGES</button>
 <?php }
@@ -2878,7 +2900,7 @@ function purchase_orders_drop_down($part_batch_po_id=0) {
 					$total_po_line_items = $count_po_line_items_row[0];
 
 			?>
-	<option value="<?php echo $PO_id; ?>"<?php if ($PO_id == $part_batch_po_id) { ?> selected=""<?php } ?>><?php echo $PO_number; 
+	<option value="<?php echo $PO_id; ?>"<?php if ($PO_id == $part_batch_po_id) { ?> selected="selected"<?php } ?>><?php echo $PO_number; 
 	if ($total_batches!=0) { // batches found!
 	
 		if ($total_batches>1) { $add_plural = 'es'; }
@@ -3024,16 +3046,16 @@ function part_rev($part_rev_id, $show_button = 1) {
 			
 			
 			
-				$close_link = '';
 	
 				if ($show_button == 1) { 
 	
-					$close_link = '</span>';
+					$close_link = '</a>';
 	
-					?><span class="btn btn-xs btn-<?php echo $button_style; ?>" title="Rev. #: <?php echo $part_rev_ID; ?> (Part #: <?php echo $part_rev_part_ID; ?>)"><?php 
+					?><a href="part_view.php?id=<?php echo $part_rev_part_ID; ?>&rev_id=<?php echo $part_rev_ID; ?>" class="btn btn-xs btn-<?php echo $button_style; ?>" title="Rev. #: <?php echo $part_rev_ID; ?> (Part #: <?php echo $part_rev_part_ID; ?>)"><?php 
 				} 
 				else { 
 					?>Rev. <?php
+					$close_link = '';
 				}
 	
 				echo $part_rev_revision_number; 
@@ -3367,4 +3389,103 @@ function record_status($record_status_ID, $show_button = 1) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
+
+function get_page_url(){
+
+	// Find out the URL of a PHP file
+
+	global $url;
+
+	$url = 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'];
+
+	if(isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != ''){
+		$url.= $_SERVER['REQUEST_URI'];
+	}
+	else{
+		$url.= $_SERVER['PATH_INFO'];
+	}
+
+	return $url;
+}// END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+		  
+function pagination($URL, $last, $sort, $current_page, $filter='filter=0') { ?>
+		<p><strong>Select page:</strong> <select onChange="document.location = this.value"><?php 
+	$this_page = 0;
+	
+	while ($this_page < $last) {
+		
+		$show_id = $this_page + 1;
+		
+		?>
+        
+		<option value="<?php echo $URL; ?>.php?<?php if ($sort!='') { ?>sort=<?php echo $sort; ?>&<?php } ?>page=<?php echo $show_id; ?>&<?php echo $filter; ?>"<?php if ($current_page == $show_id) { ?> selected="selected"<?php } ?>><?php echo $show_id; ?></option><?php 
+		
+		// now add a count to $this_page:
+		$this_page = $this_page + 1;
+	
+	} // end of pagination menu 
+	
+	
+	?> 
+    <option value="<?php echo $URL; ?>.php?<?php if ($sort!='') { ?>sort=<?php echo $sort; ?>&<?php } ?>page=all&<?php echo $filter; ?>"<?php if (($current_page == 'all')||($current_page == '')) { ?> selected="selected"<?php } ?>>ALL</option>
+    </select></p>
+    <?php 
+		
+} // end of pagination function
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+function material_drop_down($material_ID = 0, $required_field = 0) {
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+	?>
+	<select data-plugin-selectTwo class="form-control populate" name="material_ID"<?php if ($required_field == 1) { ?> required<?php } ?>>
+		<?php
+	
+		$get_mats_SQL = "SELECT * FROM  `material` WHERE `record_status` = '2' ORDER BY `name_EN` ASC";
+		// echo $get_mats_SQL;
+
+		$result_get_mats = mysqli_query ( $con, $get_mats_SQL );
+		// while loop
+		while ( $row_get_mats = mysqli_fetch_array ( $result_get_mats ) ) {	
+			$mat_ID = $row_get_mats['ID'];
+			$mat_name_EN = $row_get_mats['name_EN'];
+			$mat_name_CN = $row_get_mats['name_CN'];
+			$mat_description = $row_get_mats['description'];
+			$mat_record_status = $row_get_mats['record_status'];
+			$mat_wiki_URL = $row_get_mats['wiki_URL'];
+		
+			// now show the result!
+			?>
+			<option value="<?php echo $mat_ID; ?>"<?php if ($mat_ID == $material_ID) { ?> selected="selected"<?php } ?>><?php echo $mat_name_EN; 
+			
+			if (($mat_name_CN != '')&&($mat_name_CN != '中文名')){
+				echo " / " . $mat_name_CN;
+			}
+			
+			?></option>
+			<?php
+		}
+		?>
+	</select>
+	<?php
+} // end of material drop-down function
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
 ?>

@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //  now check the user is OK to view this page  //
-/*//////// require ('page_access.php'); /*//////*/
+/*//////*/ require ('page_access.php'); /*//////*/
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -25,7 +25,39 @@ if (!isset($_SESSION['username'])) {
 $page_id = 8;
 
 // pull the header and template stuff:
-pagehead($page_id); ?>
+pagehead($page_id); 
+
+
+// PAGINATION
+
+$table = 'update_log';
+$filter = "";
+$total_rows = 0;
+
+// This first query is just to get the total count of rows
+	
+$count_rows_SQL = "SELECT COUNT(ID) FROM `" . $table . "`";
+// echo "<h1>SQL: " . $count_rows_SQL . "</h1>";
+$count_rows_query = mysqli_query($con, $count_rows_SQL);
+$count_rows_row = mysqli_fetch_row($count_rows_query);
+// Here we have the total row count
+$total_rows = $count_rows_row[0];
+
+// debug:
+// echo "<h1>Total Rows: ".$total_rows."</h1>";
+
+$rpp = 50;
+// This tells us the page number of our last page
+$last = ceil($total_rows/$rpp);
+
+// debug:
+// echo "<h2>Last: ".$last." (total rows / rrp (".$rpp."))</h2>";
+
+// This makes sure $last cannot be less than 1
+if($last < 1){
+	$last = 1;
+}
+?>
 
 
 
@@ -104,9 +136,43 @@ pagehead($page_id); ?>
                                     else if (isset($_REQUEST['table_name'])) {
                                     	$where_SQL= " AND `table_name` = " . $_REQUEST['table_name'];
                                     }
+                                    
+									
+									// *********************  PAGINATION  *******************
+									// now check for pagination
+									
+									if (isset($_REQUEST['page'])) {
+										
+										if ($_REQUEST['page']=='all') {
+											// show ALL RESULTS IN ONE PAGE...
+											// no need to update the SQL query...
+										}
+										else {
+										
+											// page 1 (default) = 0, 30
+											// page 2 (2) = 30, 30
+											// page 3 (3) = 60, 30 ------  sooooo... it's page number - 1 * rpp :)
+											
+											$limit_val = (($_REQUEST['page'] - 1)*$rpp);
+											
+											$add_SQL .= " LIMIT ".$limit_val.", ".$rpp;	
+											
+											$show_from_to = "".$limit_val." - ".($limit_val+$rpp)."";
+											
+										} // end else show limited results....
+									}
+									else {
+									
+										// By default, let's show the first 30 rows (see $rpp above):
+										$add_SQL = $add_SQL." LIMIT 0, ".$rpp;	
+											
+										$show_from_to = "0 - ".$rpp."";
+									
+									}
+									// ____________________ END PAGINATION ___________________________________________
 
                                     // get general updates:
-									$get_general_updates_SQL = "SELECT * FROM `update_log` WHERE `update_type` = 'general'" . $where_SQL . " ORDER BY `update_date` DESC";
+									$get_general_updates_SQL = "SELECT * FROM `update_log` WHERE `update_type` = 'general'" . $where_SQL . " ORDER BY `update_date` DESC" . $add_SQL;
 									// DEBUG
 									// echo '<h4>SQL: ' . $get_general_updates_SQL . '</h4>';
 
@@ -194,6 +260,31 @@ pagehead($page_id); ?>
 										  <th colspan="4" class="text-left">
 										  	TOTAL RECORDS: <?php echo $update_count; ?>
 										  </th>
+										</tr>
+										
+										<tr>
+										  <td colspan="4" class="text-center">
+										  <?php 
+											if ($total_rows>$rpp) {
+												// run function in page_functions.php:
+												$URL = "update_log"; // updates
+												// $ last is specified above
+												if (isset($_REQUEST['sort'])) {
+													$sort = $_REQUEST['sort'];
+												}
+												else { $sort = ''; }
+												
+												if (isset($_REQUEST['page'])) {
+													$show_page = $_REQUEST['page']; 
+												}
+												else { 
+													$show_page = '1';
+												}
+											}
+											// now call the function!
+											pagination($URL, $last, $sort, $show_page, $filter);
+											?>
+										  </td>
 										</tr>
 									</tfoot>
 								</table>

@@ -66,7 +66,7 @@ if (mysqli_query($con, $edit_SQL)) {
 			// AWESOME! We added the change record to the database
 
 				// regular add
-            header("Location: part_revisions.php?msg=OK&action=edit");
+            header("Location: part_view.php?msg=OK&action=edit&id=" . $part_ID . "&rev_id=" . $id . "");
 
 			exit();
 

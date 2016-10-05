@@ -105,7 +105,7 @@ pagehead($page_id);
                         <div class="form-group">
                             <label class="col-md-3 control-label">Part:</label>
                             <div class="col-md-5">
-                                <?php part_drop_down($record_id); ?>
+                                <?php part_drop_down($rev_part_ID); ?>
                             </div>
 
 							<div class="col-md-1">
@@ -315,7 +315,7 @@ pagehead($page_id);
                     </div>
 
                     <footer class="panel-footer">
-                        <?php form_buttons('part_revisions.php', $record_id); ?>
+                        <?php form_buttons('part_revisions', $record_id); ?>
                     </footer>
                 </section>
                 <!-- now close the form -->

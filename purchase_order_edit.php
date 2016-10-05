@@ -21,11 +21,6 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$page_id = 99;
-
-// pull the header and template stuff:
-pagehead($page_id);
-
 $record_id = 0;
 
 if (isset($_REQUEST['id'])) {
@@ -35,6 +30,11 @@ else {
 	header("Location: purchase_orders.php?msg=NG&action=view&error=no_id");
 	exit();
 }
+
+$page_id = 99;
+
+// pull the header and template stuff:
+pagehead($page_id);
 
 if ($record_id != 0) {
 	$get_PO_SQL = "SELECT *  FROM  `purchase_orders` WHERE `ID` = " . $record_id;

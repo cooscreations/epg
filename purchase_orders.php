@@ -61,7 +61,7 @@ if (isset($_REQUEST['year'])) {
 
 <!-- START MAIN PAGE BODY : -->
 
-				<section role="main" class="content-body">
+				<section role="main" class="content-body content-footer-body">
 					<header class="page-header">
 						<h2>Purchase Orders (<?php echo $display_year; ?>)</h2>
 
@@ -124,12 +124,12 @@ if (isset($_REQUEST['year'])) {
 
 
 					 <?php
-					 add_button('0', 'purchase_order_add.php');
+					 add_button('0', 'purchase_order_add');
 					 ?>
 
 				<div class="col-md-12">
 
-    <div class="table-responsive">
+    			  <div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
 						 <tr>
@@ -168,7 +168,7 @@ if (isset($_REQUEST['year'])) {
 					  		$add_SQL = " AND `created_date` >  '" . date("Y") . "-01-01 00:00:00' AND `created_date` <  '" . (date("Y") + 1) . "-01-01 00:00:00'";
 					  }
 
-					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE `record_status` =2" . $add_SQL . $order_by;
+					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE `record_status` ='2'" . $add_SQL . $order_by;
 					  // echo $get_mats_SQL;
 
 					  $PO_count = 0;
@@ -439,9 +439,12 @@ if (isset($_REQUEST['year'])) {
 
 					 </table>
 
-					 </div>
+					 </div><!-- end of responsive table -->	
+					 
+					 </div> <!-- end of row -->	
+					 
 					 <?php
-					 add_button('0', 'purchase_order_add.php');
+					 add_button('0', 'purchase_order_add');
 					 ?>
 
 					<!-- end: page -->

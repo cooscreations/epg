@@ -21,63 +21,23 @@ if (!isset($_SESSION['username'])) {
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$page_id = 18;
-
-if (isset($_REQUEST['id'])) {
-	$record_id = $_REQUEST['id'];
-}
-else { // no id = nothing to see here!
-	header("Location: parts.php?msg=NG&action=view&error=no_id");
-	exit();
-}
-
-// now get the part info:
-$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $record_id;
-// echo $get_part_SQL;
-
-$result_get_part = mysqli_query($con,$get_part_SQL);
-
-// while loop
-while($row_get_part = mysqli_fetch_array($result_get_part)) {
-	$part_ID 					= $row_get_part['ID'];
-	$part_code 					= $row_get_part['part_code'];
-	$name_EN 					= $row_get_part['name_EN'];
-	$name_CN 					= $row_get_part['name_CN'];
-	$description 				= $row_get_part['description'];
-	$type_ID 					= $row_get_part['type_ID'];
-	$classification_ID 			= $row_get_part['classification_ID'];
-	$part_default_suppler_ID 	= $row_get_part['default_suppler_ID'];
-	$part_record_status 		= $row_get_part['record_status'];
-	$part_product_type_ID 		= $row_get_part['product_type_ID'];
-	$part_creator_ID 			= $row_get_part['created_by'];
-	$is_finished_product		= $row_get_part['is_finished_product'];
-
-
-	// GET PART CLASSIFICATION:
-
-	$get_part_class_SQL = "SELECT * FROM  `part_classification` WHERE `ID` ='" . $row_get_part['classification_ID'] . "'";
-	// echo $get_part_class_SQL;
-
-	$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
-	// while loop
-	while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
-		$part_class_EN 				= $row_get_part_class['name_EN'];
-		$part_class_CN 				= $row_get_part_class['name_CN'];
-		$part_class_description 	= $row_get_part_class['description'];
-		$part_class_color 			= $row_get_part_class['color'];
-	}
-
-	// check for revisions. If there are none, we will create one!
-    $count_revs_sql 	= "SELECT COUNT( ID ) FROM  `part_revisions` WHERE  `part_ID` = " . $record_id;
-    $count_revs_query 	= mysqli_query($con, $count_revs_sql);
-    $count_revs_row 	= mysqli_fetch_row($count_revs_query);
-    $total_revs 		= $count_revs_row[0];
-
-} // end get part info WHILE loop
-
+$page_id = 99;
 
 // pull the header and template stuff:
 pagehead($page_id);
+
+// SPECIFY DEFAULTS - these may be over-written during validation
+
+if (isset($_REQUEST['name_EN'])) { 				$part_name_EN 				= $_REQUEST['name_EN']; 				} else { $part_name_EN 				= ''; }
+if (isset($_REQUEST['name_CN'])) { 				$part_name_CN 				= $_REQUEST['name_CN']; 				} else { $part_name_CN 				= '中文名'; }
+if (isset($_REQUEST['part_desc'])) { 			$part_description 			= $_REQUEST['part_desc']; 				} else { $part_description 			= 'Please help to update this record.'; }
+if (isset($_REQUEST['part_type_ID'])) { 		$type_ID 					= $_REQUEST['part_type_ID']; 			} else { $type_ID 					= 0; }
+if (isset($_REQUEST['classification_ID'])) { 	$classification_ID 			= $_REQUEST['classification_ID']; 		} else { $classification_ID 			= '0'; }
+if (isset($_REQUEST['product_type_ID'])) { 		$part_product_type_ID 		= $_REQUEST['product_type_ID']; 		} else { $part_product_type_ID 		= '0'; }
+if (isset($_REQUEST['is_finished_product'])) { 	$is_finished_product 		= $_REQUEST['is_finished_product']; 	} else { $is_finished_product 		= '0'; }
+if (isset($_REQUEST['sup_ID'])) { 				$part_default_suppler_ID 	= $_REQUEST['sup_ID']; 					} else { $part_default_suppler_ID 	= '0'; }
+if (isset($_REQUEST['created_by'])) { 			$part_creator_ID 			= $_REQUEST['created_by']; 				} else { $part_creator_ID 			= $_SESSION['user_ID']; }
+if (isset($_REQUEST['record_status'])) { 		$part_record_status 		= $_REQUEST['record_status']; 			} else { $part_record_status 			= '2'; }
 
 ?>
 
@@ -87,7 +47,7 @@ pagehead($page_id);
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Edit Part Profile - <?php echo $part_code; ?> - <?php echo $name_EN; if (($name_CN!='')&&($name_CN!='中文名')) { ?> / <?php echo $name_CN; } ?></h2>
+						<h2>Add A New Part</h2>
 
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -97,8 +57,7 @@ pagehead($page_id);
 									</a>
 								</li>
 								<li><a href="parts.php">All Parts</a></li>
-								<li><a href="part_view.php?id=<?php echo $record_id; ?>">Part Profile</a></li>
-								<li><span>Edit Part</span></li>
+								<li><span>Add New Part</span></li>
 							</ol>
 
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
@@ -106,11 +65,27 @@ pagehead($page_id);
 					</header>
 
 					<!-- start: page -->
+					
+					<?php
+
+					// run notifications function:
+					$msg = 0;
+					if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
+					$action = 0;
+					if (isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
+					$change_record_id = 0;
+					if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
+					$page_record_id = 0;
+					if (isset($record_id)) { $page_record_id = $record_id; }
+
+					// now run the function:
+					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
+					?>
 
 					<div class="row">
 						<div class="col-md-12">
 						 <!-- START THE FORM! -->
-            			  <form class="form-horizontal form-bordered" action="part_edit_do.php" method="post">
+            			  <form class="form-horizontal form-bordered" action="part_add_do.php" method="post">
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -118,18 +93,18 @@ pagehead($page_id);
 										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
 									</div>
 
-									<h2 class="panel-title">Global Part Record</h2>
+									<h2 class="panel-title">Create a New Part Record</h2>
 
 									<p class="panel-subtitle">
-										This information affects ALL part revisions
+										This information affects ALL part revisions (which you can create next...)
 									</p>
 								</header>
 								<div class="panel-body">
 									
 								<div class="form-group">
-									<label class="col-md-3 control-label">Name (EN):</label>
+									<label class="col-md-3 control-label">Name (EN):<span class="required">*</span></label>
 									<div class="col-md-5">
-										<input type="text" name="name_EN" class="form-control" value="<?php echo $name_EN; ?>">
+										<input type="text" name="name_EN" class="form-control" value="<?php echo $part_name_EN; ?>" required>
 									</div>
 
 									<div class="col-md-1">
@@ -141,7 +116,7 @@ pagehead($page_id);
 								<div class="form-group">
 									<label class="col-md-3 control-label">Name (中文):</label>
 									<div class="col-md-5">
-										<input type="text" name="name_CN" class="form-control" value="<?php echo $name_CN; ?>" placeholder="中文名">
+										<input type="text" name="name_CN" class="form-control" value="<?php echo $part_name_CN; ?>" placeholder="中文名">
 									</div>
 
 									<div class="col-md-1">
@@ -150,21 +125,9 @@ pagehead($page_id);
 								</div>
 									
 								<div class="form-group">
-									<label class="col-md-3 control-label">Part Number:</label>
+									<label class="col-md-3 control-label">Part Number:<span class="required">*</span></label>
 									<div class="col-md-5">
-										<input type="text" name="part_code" class="form-control" value="<?php echo $part_code; ?>">
-									</div>
-
-									<div class="col-md-1">
-										<a href="#existing_part_codes_popup" class="mb-xs mt-xs mr-xs btn btn-info pull-right"><i class="fa fa-question"></i></a>
-									</div>
-								</div>
-								
-								
-								<div class="form-group">
-									<label class="col-md-3 control-label">Description:</label>
-									<div class="col-md-5">
-										<textarea name="part_desc" class="form-control populate"><?php echo $description; ?></textarea>
+										<input type="text" name="part_code" class="form-control" value="" required>
 									</div>
 
 									<div class="col-md-1">
@@ -174,9 +137,34 @@ pagehead($page_id);
 								
 								
 								<div class="form-group">
-									<label class="col-md-3 control-label">Type:</label>
+									<label class="col-md-3 control-label"><em class="text-muted">Existing Parts (for reference only):</em></label>
+									<div class="col-md-5">
+										<?php part_rev_drop_down(); ?>
+									</div>
+
+									<div class="col-md-1">
+										&nbsp;
+									</div>
+								</div>
+								
+								
+								<div class="form-group">
+									<label class="col-md-3 control-label">Description:</label>
+									<div class="col-md-5">
+										<textarea name="part_desc" class="form-control populate"><?php echo $part_description; ?></textarea>
+									</div>
+
+									<div class="col-md-1">
+										&nbsp;
+									</div>
+								</div>
+								
+								
+								<div class="form-group">
+									<label class="col-md-3 control-label">Type:<span class="required">*</span></label>
 									<div class="col-md-5">
 										<select class="form-control populate" name="part_type_ID" id="part_type_ID">
+											<option value="0" selected="selected" style="display:none">Select part type:</option>
 											<?php
 											// GET PART TYPE:
 											$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE `record_status` = 2";
@@ -205,9 +193,10 @@ pagehead($page_id);
 								</div>
 									
 								<div class="form-group">
-									<label class="col-md-3 control-label">Classification:</label>
+									<label class="col-md-3 control-label">Classification:<span class="required">*</span></label>
 									<div class="col-md-5">
 										<select class="form-control populate" name="classificiation_ID" id="classificiation_ID">
+											<option value="0" selected="selected" style="display:none">Select part classification:</option>
 											<?php
 
 											$get_part_classification_SQL = "SELECT * FROM `part_classification` where `record_status` = 2 ORDER BY `name_EN` ASC";
@@ -246,9 +235,10 @@ pagehead($page_id);
 								
 								
 								<div class="form-group">
-									<label class="col-md-3 control-label">Product Type:</label>
+									<label class="col-md-3 control-label">Product Type:<span class="required">*</span></label>
 									<div class="col-md-5">
 										<select class="form-control populate" name="product_type_ID" id="product_type_ID">
+											<option value="0" selected="selected" style="display:none">Select product type:</option>
 											<?php
 
 											$get_product_types_SQL = "SELECT * FROM `product_type` where `record_status` = 2 ORDER BY `product_type`.`product_type_code` ASC";
@@ -309,7 +299,7 @@ pagehead($page_id);
 								</div>
 									
 								<div class="form-group">
-									<label class="col-md-3 control-label">Created By:</label>
+									<label class="col-md-3 control-label">Created By:<span class="required">*</span></label>
 									<div class="col-md-5">
 										<?php creator_drop_down($part_creator_ID); ?>
 									</div>
@@ -321,7 +311,7 @@ pagehead($page_id);
 								
 								
 								<div class="form-group">
-									<label class="col-md-3 control-label">Record Status:</label>
+									<label class="col-md-3 control-label">Record Status:<span class="required">*</span></label>
 									<div class="col-md-5">
 										<?php record_status_drop_down($part_record_status); ?>
 									</div>
@@ -336,7 +326,7 @@ pagehead($page_id);
 								</div>
 								<footer class="panel-footer">
 									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
-									<?php form_buttons('part_view', $record_id); ?>
+									<?php form_buttons('parts'); ?>
 								</footer>
 							</section>
 

@@ -24,7 +24,6 @@ if (!isset($_SESSION['username'])) {
 $page_id = 31;
 
 if (isset($_REQUEST['id'])) {
-	// echo "id=".$_REQUEST['id'];
 	$record_id = $_REQUEST['id'];
 }
 else { // no id = nothing to see here!
@@ -34,11 +33,10 @@ else { // no id = nothing to see here!
 
 // pull the header and template stuff:
 pagehead($page_id);
+
 // now get the user info:
 $get_user_SQL = "SELECT * FROM `users` WHERE `ID` = " . $record_id;
-
 $result_get_user = mysqli_query($con,$get_user_SQL);
-
 // while loop
 while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	$user_ID = $row_get_user['ID'];
@@ -47,7 +45,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	$user_ln = $row_get_user['last_name'];
 	$user_name_cn = $row_get_user['name_CN'];
 	$user_email = $row_get_user['email'];
-	//$user_pwd = _base64_decrypt($row_get_user['password']); May not need this. Why woud we display the password plain text ?
+	//$user_pwd = _base64_decrypt($row_get_user['password']); May not need this. Why would we display the password plain text ?
 	$user_level = $row_get_user['user_level'];
 	$user_position = $row_get_user['position'];
 	$user_last_login_date = $row_get_user['last_login_date'];
@@ -56,12 +54,25 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 	$user_twitter = $row_get_user['twitter_profile'];
 	$user_wechat = $row_get_user['wechat_profile'];
 	$user_skype = $row_get_user['skype_profile'];
+	
+	// now get the last update time:
+	
+	$get_last_update_SQL = "SELECT * FROM `update_log` WHERE `user_ID` = '" . $user_ID . "' ORDER BY `update_date` DESC LIMIT 0,1";
+	$result_get_last_update = mysqli_query($con,$get_last_update_SQL);
+	// while loop
+	while($row_get_last_update = mysqli_fetch_array($result_get_last_update)) {
+		$last_update_ID 		= $row_get_last_update['ID'];
+		$last_update_table_name = $row_get_last_update['table_name'];
+		$last_update_update_ID 	= $row_get_last_update['update_ID'];
+		$last_update_ID 		= $row_get_last_update['user_ID'];					// same as record ID!
+		$last_update_notes 		= $row_get_last_update['notes'];
+		$last_update_date 		= $row_get_last_update['update_date'];
+		$last_update_type 		= $row_get_last_update['update_type'];
+		$last_update_action 	= $row_get_last_update['update_action'];
+		
+	} // end of get last update
 
 } // end get user info WHILE loop
-
-
-
-
 ?>
 
 <!-- START MAIN PAGE BODY : -->
@@ -138,34 +149,15 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 
         <div class="row">
             <header class="panel-heading">
-            <!-- ACTIONS DON'T WORK, SO LET'S COMMENT THEM OUT:
-                <div class="panel-actions">
-                    <a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-                    <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-                </div>
-			-->
-
-			<!-- ADMIN BAR -->
-			<div class="panel-actions">
-				<div class="btn-group">
-					<a class="panel-action" title="DELETE THIS RECORD" href="record_delete_do.php?table_name=users&src_page=user_view.php&id=<?php echo $record_id; ?>"><i class="fa fa-trash"></i></a>
-
-					<a class="panel-action" title="EDIT THIS RECORD" href="user_edit.php?id=<?php echo $record_id; ?>"><i class="fa fa-pencil"></i></a>
-
-					<a class="panel-action" title="ADD A NEW RECORD" href="user_add.php"><i class="fa fa-plus"></i></a>
-
-					<a class="panel-action" title="UPDATE LOG" href="update_log.php?table_name=users&src_page=users.php&id=<?php echo $record_id; ?>"><i class="fa fa-question-circle"></i></a>
-				</div>
-			</div>
-			<!-- END ADMIN BAR -->
-
-
                 <h2 class="panel-title">User Details:</h2>
             </header>
             <div class="col-md-4 col-lg-3">
 
                 <section class="panel">
 					<div class="panel-body">
+					
+					
+					
 						<div class="thumb-info mb-md">
 							<img src="assets/images/users/user_<?php echo $user_ID; ?>.png" title="<?php echo $user_fn; echo ' ' . $user_mn; echo ' ' . $user_ln; if (($user_name_cn!='中文名')&&($user_name_cn!='')) { echo ' / ' . $user_name_cn; } ?>" class="rounded img-responsive" alt="<?php echo $user_fn; echo ' ' . $user_mn; echo ' ' . $user_ln; if (($user_name_cn!='中文名')&&($user_name_cn!='')) { echo ' / ' . $user_name_cn; } ?>">
 							<div class="thumb-info-title">
@@ -174,7 +166,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 							</div>
 						</div>
 
-						<hr class="dotted short">
+						<hr class="dotted short" />
 
 						<div class="social-icons-list">
 						<?php if ($user_facebook != '') { ?>
@@ -197,6 +189,12 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 							<a rel="tooltip" data-placement="bottom" href="<?php echo $user_wechat; ?>" data-original-title="WeChat: <?php echo $user_wechat; ?>"><i class="fa fa-wechat"></i><span>WeChat/ 微信</span></a>
 						<?php } ?>
 						</div>
+						
+						<hr class="dotted short" />
+						
+						<?php
+							admin_bar('user');
+						?>
 
 					</div>
 				</section>
@@ -207,38 +205,47 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-hover table-condensed mb-none">
                         <tr>
-                            <th>First Name:</th>
+                            <th class="text-right">First Name:</th>
                             <td><?php echo $user_fn; ?></td>
                         </tr>
                         <tr>
-                            <th>Middle Name:</th>
+                            <th class="text-right">Middle Name:</th>
                             <td><?php echo $user_mn; ?></td>
                         </tr>
                         <tr>
-                            <th>Last Name:</th>
+                            <th class="text-right">Last Name:</th>
                             <td><?php echo $user_ln; ?></td>
                         </tr>
                         <tr>
-                            <th>名字:</th>
+                            <th class="text-right">名字:</th>
                             <td><?php if (($user_name_cn!='中文名')&&($user_name_cn!='')) { echo $user_name_cn; } else { echo "NOT SET"; } ?></td>
                         </tr>
                         <tr>
-                            <th>E-mail:</th>
-                            <td><?php echo $user_email; ?></td>
+                            <th class="text-right">E-mail:</th>
+                            <td><a href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a></td>
                         </tr>
                         <tr>
-                            <th>Level:</th>
+                            <th class="text-right">Level:</th>
                             <td><?php echo $user_level; ?></td>
                         </tr>
                         <tr>
-                            <th>Position:</th>
+                            <th class="text-right">Position:</th>
                             <td><?php echo $user_position; ?></td>
                         </tr>
                         <tr>
-                            <th>Last Log In:</th>
+                            <th class="text-right">Last Log In:</th>
                             <td><?php
                             if ($user_last_login_date != '0000-00-00 00:00:00') {
                             	echo $user_last_login_date;
+                            	
+                            	
+                            	$now = time(); // or your date as well
+								$your_date = strtotime($user_last_login_date);
+								$datediff = $now - $your_date;
+								$datediffdays = floor($datediff / (60 * 60 * 24));
+
+								echo ' <span class="text-muted">(' . $datediffdays . ' days ago)</span>';
+                            	
                             }
                             else {
                             	echo '<span class="text-danger">NEVER</span>';
@@ -246,7 +253,28 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
                             ?></td>
                         </tr>
                         <tr>
-                          <th># Updates This Year</th>
+                            <th class="text-right">Last Action:</th>
+                            <td><?php
+                            if (($last_update_date != '0000-00-00 00:00:00')&&($last_update_date != '')) {
+                            	echo $last_update_date;
+                            	
+                            	
+                            	$now_1 = time(); // or your date as well
+								$your_date_1 = strtotime($last_update_date);
+								$datediff_1 = $now_1 - $your_date_1;
+								$datediffdays_1 = floor($datediff_1 / (60 * 60 * 24));
+
+								echo ' <span class="text-muted">(' . $datediffdays_1 . ' days ago)</span>';
+                            	
+                            	
+                            }
+                            else {
+                            	echo '<span class="text-danger">NEVER</span>';
+                            }
+                            ?></td>
+                        </tr>
+                        <tr>
+                          <th class="text-right"># Updates This Year</th>
                           <td>
                           		<?php
 								// count variants for this purchase order
@@ -254,7 +282,7 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 								$count_updates_query = mysqli_query($con, $count_updates_sql);
 								$count_updates_row = mysqli_fetch_row($count_updates_query);
 								$total_updates = $count_updates_row[0];
-                          		echo $total_updates;
+                          		echo number_format($total_updates);
                           		?>
 
                           		 <a href="update_log.php?user_id=<?php echo $record_id; ?>">(View All)</a>

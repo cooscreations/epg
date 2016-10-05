@@ -136,8 +136,30 @@ if ($record_id != 0) {
                         <div class="form-group">
                             <label class="col-md-3 control-label">名字:</label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" name="cn_text" />
+                                <input type="text" class="form-control" name="cn_text" value="中文名" />
                             </div>
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Level:</label>
+                            <div class="col-md-5">
+                            	<select data-plugin-selectTwo class="form-control populate" name="level_text">
+									<option value="10" selected="selected">10</option>
+									<option value="20">20</option>
+									<option value="30">30</option>
+									<option value="40">40</option>
+									<option value="50">50</option>
+									<option value="60">60</option>
+									<option value="70">70</option>
+									<option value="80">80</option>
+								</select>
+                            </div>
+
 
                             <div class="col-md-1">
                                 &nbsp;
@@ -145,28 +167,77 @@ if ($record_id != 0) {
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">E-mail:<span class="required">*</span></label>
+                            <label class="col-md-3 control-label">Position:</label>
                             <div class="col-md-5">
-                                <input type="email" class="form-control" name="email_text" required />
+                                <input type="text" class="form-control" name="pos_text" />
                             </div>
 
                             <div class="col-md-1">
                                 &nbsp;
                             </div>
                         </div>
+                        
+                        
+                        
+                        <div class="form-group">
+							<label class="col-md-3 control-label">E-mail:<span class="required">*</span></label>
+							<div class="col-md-5">
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-envelope"></i>
+									</span>
+									<input type="email" class="form-control" name="email_text" required />
+								</div>
+							</div>
+							
+							
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+						</div>
+                        
+                        <div class="form-group">
+							<label class="col-md-3 control-label">Password:<span class="required">*</span></label>
+							<div class="col-md-5">
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-key"></i>
+									</span>
+									<input type="password" class="form-control" name="pwd_text" required />
+								</div>
+							</div>
+							
+							
+
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+						</div>
+
+
+
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Password:<span class="required">*</span></label>
-                            <div class="col-md-5">
-                                <input type="password" class="form-control" name="pwd_text" required />
-                            </div>
+							<label class="col-md-3 control-label">Mobile Phone #:</label>
+							<div class="col-md-5">
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-phone"></i>
+									</span>
+									<input type="text" class="form-control" placeholder="+8612312312312" name="mobile_number" />
+								</div>
+							</div>
+							
+							
 
                             <div class="col-md-1">
                                 &nbsp;
                             </div>
-                        </div>
+						</div>
 
-											<div class="form-group">
+
+											<!-- <div class="form-group">
 												<label class="col-md-3 control-label">Mobile Number:</label>
 												<div class="col-md-5">
 													<div class="input-group">
@@ -174,8 +245,8 @@ if ($record_id != 0) {
 														<input id="mobile_number" type="hidden" name="mobile_number"/>
 													</div>
 
-													<label id="error-msg" class="hide">Invalid number</label>
-												</div>
+												<label id="error-msg" class="hide">Invalid number</label>
+											</div>
 
 											</div>
 											<script src="assets/vendor/intl-tel-input/js/intlTelInput.min.js"></script>
@@ -221,114 +292,98 @@ if ($record_id != 0) {
 													// on keyup / change flag: reset
 													telInput.on("keyup change", reset);
 											</script>
+											
+											-->
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Level:</label>
-                            <div class="col-md-5">
-                            	<select data-plugin-selectTwo class="form-control populate" name="level_text">
-									<option value="10">10</option>
-									<option value="20">20</option>
-									<option value="30">30</option>
-									<option value="40">40</option>
-									<option value="50">50</option>
-									<option value="60">60</option>
-									<option value="70">70</option>
-									<option value="80">80</option>
-								</select>
-                            </div>
-
-
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Position:</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="pos_text" />
-                            </div>
-
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
-                        
-                        
                         <!-- SOCIAL INFO (optional) -->
                         
                         
-
+                        
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Facebook:</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="facebook" />
-                            </div>
+							<label class="col-md-3 control-label">SOCIAL ACCOUNTS</label>
+							<div class="col-md-5">
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-facebook"></i>
+									</span>
+									<input type="text" class="form-control" placeholder="http://www.facebook.com/..." name="facebook" />
+								</div>
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-twitter"></i>
+									</span>
+									<input type="text" class="form-control" placeholder="http://www.twitter.com/..." name="twitter" />
+								</div>
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-linkedin"></i>
+									</span>
+									<input type="text" class="form-control" placeholder="http://www.linkedin.com/..." name="linkedin" />
+								</div>
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-weixin"></i>
+									</span>
+									<input type="text" class="form-control" placeholder="WeChat Phone / Username" name="wechat" />
+								</div>
+								<div class="input-group mb-md">
+									<span class="input-group-addon">
+										<i class="fa fa-skype"></i>
+									</span>
+									<input type="text" class="form-control" placeholder="Skype Username" name="skype" />
+								</div>
+							</div>
+							
+							
 
                             <div class="col-md-1">
                                 &nbsp;
                             </div>
-                        </div>
-                        
-                        
-
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Twitter:</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="twitter" />
-                            </div>
-
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
-                        
-                        
-
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">LinkedIn:</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="linkedin" />
-                            </div>
-
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
-                        
-                        
-
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">WeChat:</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="wechat" />
-                            </div>
-
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
-                        
-                        
-
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Skype:</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" name="skype" />
-                            </div>
-
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
+						</div>
                         
                         
                         
                     </div>
                     <footer class="panel-footer">
-                        <button type="submit" class="btn btn-success">Submit </button>
-                        <button type="reset" class="btn btn-default">Reset</button>
-                    </footer>
+                    
+                    <div class="row">
+                    
+						<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+					  <div class="col-md-5 text-left">	
+						<?php form_buttons('user_view'); ?>
+					  </div>
+					  
+					  
+					   <!-- NEXT STEP SELECTION -->
+							
+							<?php 
+							if ($_REQUEST['next_step'] == 'add') {
+								$next_step_selected = 'add';
+							}
+							else {
+								$next_step_selected = 'view';
+							}
+							?>
+							
+							<label class="col-md-1 control-label text-right">...and then...</label>
+							
+							<div class="col-md-6 text-left">
+								<div class="radio-custom radio-success">
+									<input type="radio" id="next_step" name="next_step" value="view_record"<?php if ($next_step_selected == 'view') { ?> checked="checked"<?php } ?>>
+									<label for="radioExample9">View User Profile</label>
+								</div>
+
+								<div class="radio-custom radio-warning">
+									<input type="radio" id="next_step" name="next_step" value="add_record"<?php if ($next_step_selected == 'add') { ?> checked="checked"<?php } ?>>
+									<label for="radioExample10">Add Another User</label>
+								</div>
+							</div>
+							
+							<!-- END OF NEXT STEP SELECTION -->
+					  
+					    </div><!-- close row -->
+					  
+					</footer>
                 </section>
                 <!-- now close the form -->
             </form>

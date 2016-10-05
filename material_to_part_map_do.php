@@ -24,7 +24,10 @@ if (!isset($_SESSION['username'])) {
 
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
+NOTE: This is for the multi-dimensional mapping of multiple materials to multiple part revisions!!!
+
 */
+
 
 if (!isset($_REQUEST['user_id'])){
 	header("Location: users.php?msg=NG&action=view&error=no_id");

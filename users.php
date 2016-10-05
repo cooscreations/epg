@@ -244,7 +244,7 @@ pagehead($page_id); ?>
 										  <td>
 											<a href="<?php 
 												echo $add_URL; 
-												echo '?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+												echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
 											?>" class="mb-xs mt-xs mr-xs btn btn-success">
 												<i class="fa fa-plus" stlye="color: #999"></i>
 											</a>

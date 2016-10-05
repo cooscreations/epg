@@ -52,6 +52,23 @@ pagehead($page_id); ?>
 					</header>
 
 					<!-- start: page -->
+					
+					<?php
+
+					// run notifications function:
+					$msg = 0;
+					if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
+					$action = 0;
+					if (isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
+					$change_record_id = 0;
+					if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
+					$page_record_id = 0;
+					if (isset($record_id)) { $page_record_id = $record_id; }
+
+					// now run the function:
+					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
+					?>
+					
 					<h1>Welcome</h1>
 					<div class="alert alert-success">
 						<strong>UPDATE:</strong> This is now being dynamically generated in order to enable page authentication / permission access.

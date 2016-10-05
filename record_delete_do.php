@@ -32,6 +32,10 @@ $update_note = "Marking record as deleted in the system.";
 $add_URL_vars = '';
 if ($src_page == 'purchase_order_view.php') {
 	$add_URL_vars = "&id=" . $_REQUEST['PO_ID'];
+	if ($_REQUEST['table_name'] == 'purchase_orders'){
+		$src_page = 'purchase_orders.php';
+		$add_URL_vars = "&id=" . $id;
+	}
 }
 else if ($src_page == 'batch_view.php') {
 	$add_URL_vars = "&id=" . $_REQUEST['batch_id'];
@@ -56,7 +60,6 @@ if (mysqli_query($con, $delete_SQL)) {
 
 				// regular add - send them to the revisions list for that part
             header("Location: ".$src_page."?msg=OK&action=delete" . $add_URL_vars);
-
 			exit();
 
 		}

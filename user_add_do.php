@@ -52,11 +52,11 @@ else{
 
 $update_note = "Adding a new user to the system.";
 
-$add_user_SQL = "INSERT INTO `users`(`ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `last_login_date`, `facebook_profile`, `twitter_profile`, `linkedin_profile`, `skype_profile`, `wechat_profile`, `record_status`, `mobile_number`) VALUES (NULL,'".$user_fn."','".$user_mn."','".$user_ln."','".$user_cn."','".$user_email."','".$user_pwd."','".$user_level."','".$user_pos."','0000-00-00 00:00:00','" . $user_facebook . "','" . $user_twitter . "','" . $user_linkedin . "','" . $user_skype . "','" . $user_wechat . "','2','" . $user_mobile_number . "')";
+$add_record_SQL = "INSERT INTO `users`(`ID`, `first_name`, `middle_name`, `last_name`, `name_CN`, `email`, `password`, `user_level`, `position`, `last_login_date`, `facebook_profile`, `twitter_profile`, `linkedin_profile`, `skype_profile`, `wechat_profile`, `record_status`, `mobile_number`) VALUES (NULL,'".$user_fn."','".$user_mn."','".$user_ln."','".$user_cn."','".$user_email."','".$user_pwd."','".$user_level."','".$user_pos."','0000-00-00 00:00:00','" . $user_facebook . "','" . $user_twitter . "','" . $user_linkedin . "','" . $user_skype . "','" . $user_wechat . "','2','" . $user_mobile_number . "')";
 
 // echo $add_movement_SQL;
 
-if (mysqli_query($con, $add_user_SQL)) {
+if (mysqli_query($con, $add_record_SQL)) {
 
 	$record_id = mysqli_insert_id($con);
 
@@ -68,11 +68,17 @@ if (mysqli_query($con, $add_user_SQL)) {
 
 		if (mysqli_query($con, $record_edit_SQL)) {
 			// AWESOME! We added the change record to the database
-
-				// regular add
-				header("Location: users.php?msg=OK&action=add&new_record_id=".$record_id."");
-
-			exit();
+				
+				if ($_REQUEST['next_step'] == 'add_record') {
+					// regular add - send them to the revisions list for that part
+					header("Location: user_add.php?msg=OK&action=add&id=" . $record_id . "&next_step=add");
+					exit();
+				}
+				else {
+					// regular add - send them to the revisions list for that part
+					header("Location: user_view.php?msg=OK&action=add&id=".$record_id."");
+					exit();
+				}
 
 		}
 		else {
@@ -81,7 +87,7 @@ if (mysqli_query($con, $add_user_SQL)) {
 
 }
 else {
-	echo "<h4>Failed to update existing user with SQL: <br />" . $add_user_SQL . "</h4>";
+	echo "<h4>Failed to update existing user with SQL: <br />" . $add_record_SQL . "</h4>";
 }
 
 

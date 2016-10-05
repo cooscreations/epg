@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //  now check the user is OK to view this page  //
-/*//////// require ('page_access.php'); /*//////*/
+/*//////*/ require ('page_access.php'); /*//////*/
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -25,11 +25,35 @@ $page_id = 18;
 
 if (isset($_REQUEST['id'])) {
 	$record_id = $_REQUEST['id'];
+	
+	// now check to make sure the part exists:
+
+	// check for revisions. If there are none, we will create one!
+	$count_parts_sql 	= "SELECT COUNT( ID ) FROM  `parts` WHERE  `ID` = " . $record_id;
+	// echo $count_parts_sql;
+	$count_parts_query 	= mysqli_query($con, $count_parts_sql);
+	$count_parts_row 	= mysqli_fetch_row($count_parts_query);
+	$total_parts 		= $count_parts_row[0];
+
+	if ($total_parts == 0) {
+		// no id = nothing to see here!
+		// echo '<h1>exception triggered!</h1>';
+		header("Location: parts.php?msg=NG&action=view&error=no_id&exception=part_not_found&id=" . $record_id . "");
+		exit();
+	}
 }
 else { // no id = nothing to see here!
 	header("Location: parts.php?msg=NG&action=view&error=no_id");
 	exit();
 }
+
+
+
+if (isset($_REQUEST['rev_id'])) {
+	// DEFAULT REVISION IS SPECIFIED - show this one!
+	$rev_to_show = $_REQUEST['rev_id'];
+}
+else { $rev_to_show = 0; }
 
 // now get the part info:
 $get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $record_id;
@@ -84,7 +108,7 @@ while($row_get_part = mysqli_fetch_array($result_get_part)) {
     $total_revs 		= $count_revs_row[0];
 
 	if ($total_revs == 0) {
-		$add_rev_SQL = "INSERT INTO `part_revisions`(`ID`, `part_ID`, `revision_number`, `remarks`, `date_approved`, `user_ID`, `price_USD`) VALUES (NULL,'".$record_id."','A','No revisions found, so we auto-generated Revision A','" . date("Y-m-d H:i:s") . "','2','0.0000')";
+		$add_rev_SQL = "INSERT INTO `part_revisions`(`ID`, `part_ID`, `revision_number`, `remarks`, `date_approved`, `user_ID`, `price_USD`, `weight_g`, `status_ID`, `material_ID`, `treatment_ID`, `treatment_notes`, `record_status`) VALUES (NULL,'".$record_id."','A','No revisions found, so we auto-generated Revision A','" . date("Y-m-d H:i:s") . "','2','0.0100','0.0100','1','0','0','No treatment notes','2')";
 
 		if (mysqli_query($con, $add_rev_SQL)) {
 
@@ -105,7 +129,7 @@ while($row_get_part = mysqli_fetch_array($result_get_part)) {
 			}
 		}
 		else {
-			echo "<h4>Failed to update existing user with SQL: <br />" . $add_rev_SQL . "</h4>";
+			echo "<h4>Failed to update existing part revision record with SQL: <br />" . $add_rev_SQL . "</h4>";
 		}
 	}
 
@@ -166,7 +190,7 @@ pagehead($page_id);
                               <option value="parts.php">View All / 看全部</option>
                               <?php
 
-							$get_j_parts_SQL = "SELECT * FROM `parts`";
+							$get_j_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = '2'";
 					  		// echo $get_parts_SQL;
 
 					  		$result_get_j_parts = mysqli_query($con,$get_j_parts_SQL);
@@ -230,7 +254,7 @@ pagehead($page_id);
 
 									?>
 
-							<li class="<?php if ($loop_count == 1) { ?>active<?php } ?>">
+							<li class="<?php if ((($loop_count == 1)&&($rev_to_show == 0))||($rev_to_show == $rev_id)) { ?>active<?php } ?>">
 								<a href="#rev_<?php echo $rev_id; ?>" data-toggle="tab" aria-expanded="true" title="Rev. #: <?php echo $rev_id; ?>"><i class="fa fa-star<?php if ($loop_count != 1) { ?>-o<?php } ?>"></i> Rev. <?php echo $rev_number; ?></a>
 							</li>
 
@@ -239,7 +263,7 @@ pagehead($page_id);
 								?>
 								
 							<li>
-								<a href="part_revision_add.php?part_ID=<?php echo $part_ID; ?>" class="text-success" title="Add a New Revision"><i class="fa fa-plus"></i> NEW</a>
+								<a href="part_revision_add.php?part_ID=<?php echo $part_ID; ?>" class="text-success" title="Add a New Revision"><i class="fa fa-plus"></i> NEW REV.</a>
 							</li>
 
 						</ul>
@@ -327,8 +351,8 @@ pagehead($page_id);
 									?>
 
 
-							<div id="rev_<?php echo $rev_body_id; ?>" class="tab-pane <?php if ($loop_body_count == 1) { ?>active<?php } ?>">
-
+							<div id="rev_<?php echo $rev_body_id; ?>" class="tab-pane <?php if ((($loop_body_count == 1)&&($rev_to_show == 0))||($rev_to_show == $rev_body_id)) { ?>active<?php } ?>">
+																
 
 								<div class="row">
 
@@ -355,8 +379,6 @@ pagehead($page_id);
 									</ul>
 									
 									<hr />
-									
-									<h4>ADMIN OPTIONS</h4>
 
 									<!-- ********************************************************* -->
 									<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
@@ -379,13 +401,14 @@ pagehead($page_id);
 									$add_VAR 			= 'part_ID=' . $record_id; 			// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
 			
 									?>
-	 
+									<div class="row text-center">
 										<a class="modal-with-form btn btn-default tet-center" href="#modalForm_<?php 
 				
 											echo $add_to_form_name; 
 											echo $form_ID; 
 				
 										?>"><i class="fa fa-gear"></i> ADMIN OPTIONS</a>
+									</div>
 
 										<!-- Modal Form -->
 										<div id="modalForm_<?php 
@@ -720,29 +743,31 @@ pagehead($page_id);
 													<span class="title"><?php echo $material_name_to_show; ?></span>
 													<span class="message truncate"><a href="material_view.php?id=<?php echo $material_ID; ?>">View Material Record</a></span>
 												</li>
-											<?php
+												<?php
 										  		} // end get material info loop
 											} // end of RECORDS FOUND
+											
+											
 											else { // NO RECORDS FOUND!
-											?>
-											<li>
-												<figure class="image rounded">
-												  <span class="fa-stack fa-lg">
-													<i class="fa fa-circle fa-stack-2x text-danger"></i>
-													<i class="fa fa-exclamation-triangle fa-stack-1x fa-inverse"></i>
-												  </span>
-												</figure>
-												<span class="title text-danger">NO MATERIAL SET</span>
-												<span class="message truncate"><a href="part_to_material_patch.php">Add Now</a></span>
-											</li>
-											<?php
+												?>
+												<li>
+													<figure class="image rounded">
+													  <span class="fa-stack fa-lg">
+														<i class="fa fa-circle fa-stack-2x text-danger"></i>
+														<i class="fa fa-exclamation-triangle fa-stack-1x fa-inverse"></i>
+													  </span>
+													</figure>
+													<span class="title text-danger">NO MATERIAL SET</span>
+													<span class="message truncate"><a href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" class="btn btn-xs btn-success">Add Now</a></span>
+												</li>
+												<?php
 											} // end of no records found 'total_part_to_mat_maps' = 0
 										  ?>
 										</ul>
 									</div>
 								  <div class="panel-footer">
 									<div class="text-right">
-											<a class="text-uppercase text-muted" href="part_material_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" title="Click here to view all materials">(View All)</a>
+											<a class="text-uppercase text-muted" href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" title="Click here to view all materials">(View All)</a>
 										</div>
 								  </div>
 								</div>
@@ -1231,7 +1256,7 @@ pagehead($page_id);
 					 			 $get_components_SQL = "SELECT * FROM  `product_BOM_items` WHERE  `product_BOM_ID` = " . $find_BOM . " AND  `record_status` = '2' ORDER BY `entry_order` ASC";
 
 					 			 // DEBUG:
-					 			 echo $get_components_SQL;
+					 			 // echo $get_components_SQL;
 
 					 			 $result_get_components = mysqli_query($con,$get_components_SQL);
 								 // while loop

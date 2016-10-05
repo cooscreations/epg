@@ -103,7 +103,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
                               <option value="parts.php?show=products">View Finished Products</option>
                               <?php
 
-							$get_part_types_SQL = "SELECT * FROM  `part_type`";
+							$get_part_types_SQL = "SELECT * FROM `part_type` WHERE `record_status` = '2'";
 					  		// echo $get_part_types_SQL;
 
 					  		$result_get_part_types = mysqli_query($con,$get_part_types_SQL);
@@ -236,12 +236,19 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 
 									// now print each record:
-									$rev_id = $row_get_part_rev['ID'];
-									$rev_part_id = $row_get_part_rev['part_ID'];
-									$rev_number = $row_get_part_rev['revision_number'];
-									$rev_remarks = $row_get_part_rev['remarks'];
-									$rev_date = $row_get_part_rev['date_approved'];
-									$rev_user = $row_get_part_rev['user_ID'];
+									$rev_id 				= $row_get_part_rev['ID'];
+									$rev_part_id 			= $row_get_part_rev['part_ID'];
+									$rev_number 			= $row_get_part_rev['revision_number'];
+									$rev_remarks 			= $row_get_part_rev['remarks'];
+									$rev_date 				= $row_get_part_rev['date_approved'];
+									$rev_user 				= $row_get_part_rev['user_ID'];
+									$rev_price_USD 			= $row_get_part_rev['price_USD'];					
+									$rev_weight_g 			= $row_get_part_rev['weight_g'];				
+									$rev_status_ID 			= $row_get_part_rev['status_ID'];			
+									$rev_material_ID 		= $row_get_part_rev['material_ID'];			
+									$rev_treatment_ID 		= $row_get_part_rev['treatment_ID'];			
+									$rev_treatment_notes 	= $row_get_part_rev['treatment_notes'];
+									$rev_record_status 		= $row_get_part_rev['record_status'];		
 
 								}
 
@@ -411,7 +418,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 												<hr noshade="noshade" />
 
 												<h4>
-													<a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a>
+													<a href="part_type_view.php?id=<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a>
 												</h4>
 
 												<hr noshade="noshade" />
@@ -469,7 +476,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 													<li>
 														<STRONG>LATEST REVISION:</STRONG>
 														<?php
-														if ($total_part_revs != 0) { echo $rev_number; }
+														if ($total_part_revs != 0) { part_rev($rev_id); }
 														else { ?>
 															<span class="text-danger">0</span>
 														<?php } ?>
@@ -478,26 +485,22 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 											</div>
 										</div>
-
-
+										
+										<br />
+										<br />
 
 										<div class="row mb-lg">
 											<div class="col-sm-9 col-sm-offset-3">
-												<a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-primary">
+												<a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-success">
+													<i class="fa fa-eye"></i>
 													VIEW
 												</a>
 
 
-												<a href="part_view.php?id=<?php echo $part_ID; ?>" class="btn btn-warning">
+												<a href="part_edit.php?id=<?php echo $part_ID; ?>" class="btn btn-warning">
+													<i class="fa fa-edit"></i>
 													EDIT
 												</a>
-
-
-
-												<a href="#delete_option_here" class="btn btn-danger">
-													DELETE
-												</a>
-
 											</div>
 										</div>
 
@@ -515,7 +518,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 							else { ?>
 								<span class="btn btn-danger">0</span>
 							<?php } ?></td>
-					    <td><a href="part_type_view.php?id="<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
+					    <td><a href="part_type_view.php?id=<?php echo $part_type_ID; ?>"><?php echo $part_type_EN; if (($part_type_CN != '') && ($part_type_CN != '中文名')) { echo ' / ' . $part_type_CN; } ?></a></td>
 					    <?php
 
 					    if ($show_classification_column == 1) { // don't show this column for product view or assembly-only view:

@@ -387,7 +387,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 						<div class="panel-body">
 		
  					<?php
-					 add_button($record_id, 'purchase_order_add.php', 'supplier_ID', 'Click here to add a new purchase order to this vendor record');
+					 add_button($record_id, 'purchase_order_add', 'sup_ID', 'Click here to add a new purchase order to this vendor record');
 					 ?>
 
 				<div class="col-md-12">
@@ -639,7 +639,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 					 </div>
 					 </div>
 					 <?php
-					 add_button($record_id, 'purchase_order_add.php', 'supplier_ID', 'Click here to add a new purchase order to this vendor record');
+					 add_button($record_id, 'purchase_order_add', 'sup_ID', 'Click here to add a new purchase order to this vendor record');
 					 ?>
 					 
 
