@@ -2,13 +2,11 @@
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
-/* ////// */
-session_start (); /* ////// */
+/* ////// */     session_start ();     /* ////// */
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
-// now check the user is OK to view this page //
-/* //////// require ('page_access.php'); / */
-// ///*/
+//   now check the user is OK to view this page  //
+/* /////// require ('page_access.php');  /*/////*/
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
@@ -35,13 +33,12 @@ pagehead ( $page_id );
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Countries</h2>
+        <h2>Inspection Methods</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
-                <li><a href="index.php"><i class="fa fa-home"></i>
-                </a></li>
-                <li><span>Countries</span></li>
+                <li><a href="index.php"><i class="fa fa-home"></i></a></li>
+                <li><span>Inspection Methods</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i
@@ -50,69 +47,63 @@ pagehead ( $page_id );
     </header>
     <?php
 
-							// run notifications function:
-							$msg = 0;
-							if (isset ( $_REQUEST ['msg'] )) {
-								$msg = $_REQUEST ['msg'];
-							}
-							$action = 0;
-							if (isset ( $_REQUEST ['action'] )) {
-								$action = $_REQUEST ['action'];
-							}
-							$change_record_id = 0;
-							if (isset ( $_REQUEST ['new_record_id'] )) {
-								$change_record_id = $_REQUEST ['new_record_id'];
-							}
-							$page_record_id = 0;
-							if (isset ( $record_id )) {
-								$page_record_id = $record_id;
-							}
+			// run notifications function:
+			$msg = 0;
+			if (isset ( $_REQUEST ['msg'] )) {
+				$msg = $_REQUEST ['msg'];
+			}
+			$action = 0;
+			if (isset ( $_REQUEST ['action'] )) {
+				$action = $_REQUEST ['action'];
+			}
+			$change_record_id = 0;
+			if (isset ( $_REQUEST ['new_record_id'] )) {
+				$change_record_id = $_REQUEST ['new_record_id'];
+			}
+			$page_record_id = 0;
+			if (isset ( $record_id )) {
+				$page_record_id = $record_id;
+			}
 
-							// now run the function:
-							notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
-							?>
+			// now run the function:
+			notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
+	?>
 
     <!-- start: page -->
     
     
-    <?php add_button(0, 'country_add'); ?>
+    <?php add_button(0, 'inspection_method_add'); ?>
     
     <div class="table-responsive">
         <table
             class="table table-bordered table-striped table-condensed mb-none">
             <tr>
             	<th class="text-center"><i class="fa fa-gear btn btn-default"></i></th>
-                <th class="text-center">Flag</th>
                 <th class="text-center">Name</th>
                 <th class="text-center">名字</th>
-                <th class="text-center">Alpha 2</th>
-                <th class="text-center">Alpha 3</th>
-                <th class="text-center">ISO Code</th>
-                <th class="text-center"># Suppliers</th>
+                <th class="text-center">Desc.</th>
+                <th class="text-center">Status</th>
             </tr>
 
             <?php
-                          $get_con_SQL = "SELECT * FROM  `countries` WHERE `record_status` = '2' ORDER BY `countries`.`name_EN` ASC";
-                          // echo $get_con_SQL;
+			  $get_methods_SQL = "SELECT * FROM  `inspection_method` ORDER BY `name_EN` ASC";
+			  // echo $get_methods_SQL;
 
-								$con_count = 0;
+					$method_count = 0;
 
-								$result_get_cons = mysqli_query ( $con, $get_con_SQL );
-								// while loop
-								while ( $row_get_cons = mysqli_fetch_array ( $result_get_cons ) ) {
-								
-									$country_ID 			= $row_get_cons['ID'];
-									$country_name_EN 		= $row_get_cons['name_EN'];
-									$country_name_CN 		= $row_get_cons['name_CN'];
-									$country_code 			= $row_get_cons['code'];
-									$country_record_status 	= $row_get_cons['record_status'];
-									$country_alpha_3 		= $row_get_cons['alpha_3'];
-									$country_ISO_code		= $row_get_cons['ISO_code'];
+					$result_get_methods = mysqli_query ( $con, $get_methods_SQL );
+					// while loop
+					while ( $row_get_methods = mysqli_fetch_array ( $result_get_methods ) ) {
+					
+						$method_ID 				= $row_get_methods['ID'];
+						$method_name_EN 		= $row_get_methods['name_EN'];
+						$method_name_CN 		= $row_get_methods['name_CN'];
+						$method_description 	= $row_get_methods['description'];
+						$method_record_status 	= $row_get_methods['record_status'];
 
-									?>
+						?>
 
             <tr>
-            
             <td class="text-center">
                     
 					<!-- ********************************************************* -->
@@ -123,10 +114,10 @@ pagehead ( $page_id );
 			
 					// VARS YOU NEED TO WATCH / CHANGE:
 					$add_to_form_name 	= '';						// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
-					$form_ID 			= $country_ID;				// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
-					$edit_URL 			= 'country_edit'; 			// REQUIRED - specify edit page URL
-					$add_URL 			= 'country_add'; 			// REQURED - specify add page URL
-					$table_name 		= 'countries';				// REQUIRED - which table are we updating?
+					$form_ID 			= $method_ID;				// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+					$edit_URL 			= 'inspection_method_edit'; // REQUIRED - specify edit page URL
+					$add_URL 			= 'inspection_method_add'; 	// REQURED - specify add page URL
+					$table_name 		= 'inspection_method';		// REQUIRED - which table are we updating?
 					$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
 					$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
 			
@@ -228,53 +219,12 @@ pagehead ( $page_id );
 					<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
 					<!-- ********************************************************* -->
                 </td>
-            
-            	<td class="text-center"><?php 
-            	
-            		$find_file = "assets/images/flags/" . strtolower($country_code) . ".png";
-            	
-            		if (file_exists($find_file)) {
-    					?><img src="<?php echo $find_file; ?>" title="<?php 
-            		echo $country_name_EN; 
-            		if (($country_name_CN!='')&&($country_name_CN!='中文名')) { 
-            			echo $country_name_CN . '的国旗'; 
-            		} ?> Flag" /><?php
-					} 
-					else { 
-						?><span class="btn btn-xs btn-warning" title="FAILED TO LOCATE THE FOLLOWING FILE: <?php echo $find_file; ?>"><i class="fa fa-info"></i></span><?
-					} ?></td>
                 <td><a
-					href="country_view.php?id=<?php echo $country_ID; ?>"><?php echo $country_name_EN; ?></a></td>
+					href="inspection_method_edit.php?id=<?php echo $method_ID; ?>"><?php echo $method_name_EN; ?></a></td>
                 <td><a
-					href="country_view.php?id=<?php echo $country_ID; ?>"><?php if (($country_name_CN!='')&&($country_name_CN!='中文名')) { echo $country_name_CN; } else { echo '<span class="text-danger">没有中文名</span>'; } ?></a></td>
-                <td class="text-center"><?php echo $country_code; ?></td>
-                <td class="text-center"><?php echo $country_alpha_3; ?></td>
-                <td class="text-center"><?php echo $country_ISO_code; ?></td>
-                <td class="text-center"><?php
-                
-                // count suppliers for this country:
-				$count_sup_sql 		= "SELECT COUNT( ID ) FROM  `suppliers` WHERE  `country_ID` = " . $country_ID;
-				$count_sup_query 	= mysqli_query($con, $count_sup_sql);
-				$count_sup_row 		= mysqli_fetch_row($count_sup_query);
-				$total_suppliers 			= $count_sup_row[0];
-                
-                // make a 0 red!
-                $start_span = '<span class="text-success">';
-                $end_span = '</span>';
-                if ($total_suppliers == 0) {
-                	$start_span = '<span class="text-danger">';
-                	$end_span = '</span>';
-                }
-                
-                echo $start_span;
-                // now show the number!
-                echo $total_suppliers;
-                echo $end_span;
-                
-                // reset:
-                $total_suppliers = 0;
-                
-                ?></td>
+					href="inspection_method_edit.php?id=<?php echo $method_ID; ?>"><?php if (($method_name_CN!='')&&($method_name_CN!='中文名')) { echo $method_name_CN; } else { echo '<span class="text-danger">没有中文名</span>'; } ?></a></td>
+                <td class="text-center"><?php echo $method_description; ?></td>
+                <td class="text-center"><?php echo $method_record_status; ?></td>
             </tr>
 
             <?php
@@ -284,12 +234,12 @@ pagehead ( $page_id );
 								?>
 
             <tr>
-                <th colspan="8">TOTAL: <?php echo $con_count; ?></th>
+                <th colspan="5">TOTAL: <?php echo $method_count; ?></th>
             </tr>
         </table>
     </div>
     
-    <?php add_button(0, 'country_add'); ?>
+    <?php add_button(0, 'inspection_method_add'); ?>
     
     <!-- end: page -->
 </section>

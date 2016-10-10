@@ -315,7 +315,7 @@ pagehead($page_id);
                     </div>
 
                     <footer class="panel-footer">
-                        <?php form_buttons('part_revisions', $record_id); ?>
+                        <?php form_buttons('part_view_rev_jump', $record_id, 'part_id=' . $rev_part_ID . ''); ?>
                     </footer>
                 </section>
                 <!-- now close the form -->

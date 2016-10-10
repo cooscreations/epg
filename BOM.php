@@ -128,55 +128,13 @@ pagehead($page_id); ?>
 
 					  	// GET BOM LIST:
 
-					  	$BOM_ID = $row_get_BOM_list['ID'];
-					  	$BOM_part_rev_ID = $row_get_BOM_list['part_rev_ID']; // use this to look up
-					  	$BOM_date_entered = $row_get_BOM_list['date_entered'];
-					  	$BOM_record_status = $row_get_BOM_list['record_status'];
-					  	$BOM_created_by = $row_get_BOM_list['created_by'];
-					  	$BOM_type = $row_get_BOM_list['BOM_type'];
-					  	$BOM_parent_BOM_ID = $row_get_BOM_list['parent_BOM_ID'];
-
-
-					  	/* JOIN PLANNING:
-					  	PARTS:
-
-					  	`parts`.`ID` AS `part_ID`,
-					  	`parts`.`part_code`,
-					  	`parts`.`name_EN`,
-					  	`parts`.`name_CN`,
-					  	`parts`.`description`,
-					  	`parts`.`type_ID`,
-					  	`parts`.`classification_ID`,
-					  	`parts`.`record_status`,
-					  	`parts`.`product_type_ID`
-
-					  	PART REVISIONS:
-
-					  	`part_revisions`.`ID` AS `rev_revision_ID`,
-					  	`part_revisions`.`part_ID`,
-					  	`part_revisions`.`revision_number`,
-					  	`part_revisions`.`remarks`,
-					  	`part_revisions`.`date_approved`,
-					  	`part_revisions`.`user_ID`,
-					  	`part_revisions`.`price_USD`,
-					  	`part_revisions`.`weight_g`,
-					  	`part_revisions`.`status_ID`,
-					  	`part_revisions`.`material_ID`,
-					  	`part_revisions`.`treatment_ID`,
-					  	`part_revisions`.`treatment_notes`,
-					  	`part_revisions`.`record_status`
-
-					  	SO WE NEED:
-
-					  	`parts`.`part_code`,
-					  	`parts`.`name_EN`,
-					  	`parts`.`name_CN`,
-					  	`parts`.`type_ID`,
-					  	`part_revisions`.`revision_number`,
-					  	`part_revisions`.`part_ID`,
-					  	`part_revisions`.`part_ID`
-
-					  	*/
+					  	$BOM_ID 			= $row_get_BOM_list['ID'];
+					  	$BOM_part_rev_ID 	= $row_get_BOM_list['part_rev_ID']; // use this to look up
+					  	$BOM_date_entered 	= $row_get_BOM_list['date_entered'];
+					  	$BOM_record_status 	= $row_get_BOM_list['record_status'];
+					  	$BOM_created_by 	= $row_get_BOM_list['created_by'];
+					  	$BOM_type 			= $row_get_BOM_list['BOM_type'];
+					  	$BOM_parent_BOM_ID 	= $row_get_BOM_list['parent_BOM_ID'];
 
 					  	$combine_part_and_rev_SQL = "SELECT `parts`.`part_code`, `parts`.`name_EN`, `parts`.`name_CN`, `parts`.`type_ID`, `part_revisions`.`revision_number`, `part_revisions`.`part_ID` FROM  `part_revisions` LEFT JOIN  `parts` ON  `part_revisions`.`part_ID` =  `parts`.`ID` WHERE `part_revisions`.`ID` =" . $BOM_part_rev_ID . " AND `part_revisions`.`record_status` = 2 AND `parts`.`record_status` = 2";
 
@@ -186,87 +144,29 @@ pagehead($page_id); ?>
 
 					  		// GET BOM LIST:
 
-					  		$rev_part_join_part_code = $row_get_rev_part_join['part_code'];
-							$rev_part_join_name_EN = $row_get_rev_part_join['name_EN'];
-							$rev_part_join_name_CN = $row_get_rev_part_join['name_CN'];
-							$rev_part_join_type_ID = $row_get_rev_part_join['type_ID'];
-							$rev_part_join_rev_num = $row_get_rev_part_join['revision_number'];
-							$rev_part_join_part_ID = $row_get_rev_part_join['part_ID'];
+					  		$rev_part_join_part_code 	= $row_get_rev_part_join['part_code'];
+							$rev_part_join_name_EN 		= $row_get_rev_part_join['name_EN'];
+							$rev_part_join_name_CN 		= $row_get_rev_part_join['name_CN'];
+							$rev_part_join_type_ID 		= $row_get_rev_part_join['type_ID'];
+							$rev_part_join_rev_num 		= $row_get_rev_part_join['revision_number'];
+							$rev_part_join_part_ID 		= $row_get_rev_part_join['part_ID'];
 
 							} // end get BOM part / part rev data
 
-								$num_rev_photos_found = 0;
-								$rev_photo_location = "assets/images/no_image_found.jpg";
-
-								$get_part_rev_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $BOM_part_rev_ID;
-								// echo "<h1>".$get_part_rev_photo_SQL."</h1>";
-								$result_get_part_rev_photo = mysqli_query($con,$get_part_rev_photo_SQL);
-								// while loop
-								while($row_get_part_rev_photo = mysqli_fetch_array($result_get_part_rev_photo)) {
-
-									$num_rev_photos_found = $num_rev_photos_found + 1;
-
-									// now print each record:
-									$rev_photo_id = $row_get_part_rev_photo['ID'];
-									$rev_photo_name_EN = $row_get_part_rev_photo['name_EN'];
-									$rev_photo_name_CN = $row_get_part_rev_photo['name_CN'];
-									$rev_photo_filename = $row_get_part_rev_photo['filename'];
-									$rev_photo_filetype_ID = $row_get_part_rev_photo['filetype_ID'];
-									$rev_photo_location = $row_get_part_rev_photo['file_location'];
-									$rev_photo_lookup_table = $row_get_part_rev_photo['lookup_table'];
-									$rev_photo_lookup_id = $row_get_part_rev_photo['lookup_ID'];
-									$rev_photo_document_category = $row_get_part_rev_photo['document_category'];
-									$rev_photo_record_status = $row_get_part_rev_photo['record_status'];
-									$rev_photo_created_by = $row_get_part_rev_photo['created_by'];
-									$rev_photo_date_created = $row_get_part_rev_photo['date_created'];
-									$rev_photo_filesize_bytes = $row_get_part_rev_photo['filesize_bytes'];
-									$rev_photo_document_icon = $row_get_part_rev_photo['document_icon'];
-									$rev_photo_document_remarks = $row_get_part_rev_photo['document_remarks'];
-									$rev_photo_doc_revision = $row_get_part_rev_photo['doc_revision'];
-
-									if ($rev_photo_filename!='') {
-										// now apply filename
-										$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
-									}
-									else {
-										$rev_photo_location = "assets/images/no_image_found.jpg";
-									}
-
-								}
-
-								// echo "<h1>Revs Found: " . $num_rev_photos_found . "</h1>";
+							// echo "<h1>Revs Found: " . $num_rev_photos_found . "</h1>";
 					  ?>
 
 					  <tr>
-					    <td>
+					    <td class="text-center">
 					      <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>">
-					        <img src="<?php
-					    		echo $rev_photo_location;
-					    	?>" class="rounded img-responsive" alt="<?php
-					    		echo $rev_part_join_part_code;
-					    	?> - <?php
-					    		echo $rev_part_join_name_EN;
-
-					    		if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) {
-					    			echo " / " . $rev_part_join_name_CN;
-					    		}
-					    	?>" style="width:100px;" />
+					      	<?php part_img($BOM_part_rev_ID,0); ?>
 					      </a>
 					    </td>
 					    <td>
-					      <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>">
-					        <?php echo $rev_part_join_part_code; ?> - <?php echo $rev_part_join_name_EN; if (($rev_part_join_name_CN!='')&&($rev_part_join_name_CN!='中文名')) { echo " / " . $rev_part_join_name_CN; }?>
-					      </a>
-					      <br />
-
-					      <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-primary"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a>
-					      <a href="" class="btn btn-info"><i class="fa fa-info-circle"></i> PART #<?php echo $rev_part_join_part_code; ?></a>
-
+					      <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-primary btn-xs"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a> - <?php part_num($rev_part_join_part_ID); ?> - <?php part_name($rev_part_join_part_ID); ?>
 					    </td>
 					    <td>
-					      <a href="part_view.php?id=<?php echo $rev_part_join_part_ID; ?>" class="btn btn-warning">
-					    	<?php echo $rev_part_join_rev_num; ?>
-					      </a>
+					      <?php part_rev($BOM_part_rev_ID); ?>
 					    </td>
 					    <td><?php echo date("Y-m-d", strtotime($BOM_date_entered)); ?></td>
 					    <td><?php echo $BOM_type; ?></td>

@@ -42,6 +42,21 @@ if (isset($_REQUEST['id'])) {
 		exit();
 	}
 }
+else if (isset($_REQUEST['rev_id'])) { 
+	// for whatever reason, we have a REVISION ID but no part ID - we can get the part ID from the revision ID!
+	$find_rev_part_ID_SQL = "SELECT `part_ID` FROM `part_revisions` WHERE `ID` = '" . $_REQUEST['rev_id'] . "'";
+	// echo "<h1>SQL: " . $find_rev_part_ID_SQL . "</h1>";
+	$result_find_rev_part_ID = mysqli_query($con,$find_rev_part_ID_SQL);
+
+	// while loop
+	while($row_find_rev_part_ID = mysqli_fetch_array($result_find_rev_part_ID)) {
+		$rev_part_ID = $row_find_rev_part_ID['part_ID'];
+	}
+	// echo "<h1>REDIRECTING TO part_view.php?id=" . $rev_part_ID . "&rev_id=" . $_REQUEST['rev_id'] ."</h1>";
+	// now re-load the page:
+	header("Location: part_view.php?id=" . $rev_part_ID . "&rev_id=" . $_REQUEST['rev_id'] ."");
+	exit();
+}
 else { // no id = nothing to see here!
 	header("Location: parts.php?msg=NG&action=view&error=no_id");
 	exit();
@@ -642,9 +657,22 @@ pagehead($page_id);
 								</div>
 								  <div class="panel-footer">
 									<div class="text-right">
+									
+									<?php 
+									if ( ( $part_default_supplier_ID != 0 ) && ( $part_default_supplier_ID != '' ) ) {
+									?>
 											<a href="supplier_view.php?id=<?php echo $sup_ID; ?>" title="Click to view this vendor profile" class="text-uppercase text-muted">
 												(View Details)
 											</a>
+									<?php 
+									}
+									else {
+									?>
+											<a href="part_edit.php?id=<?php echo $record_id; ?>" title="Click to add a default vendor to this part profile now" class="text-uppercase text-danger">(EDIT PART)</a>
+									<?php
+									}
+									
+									?>
 										</div>
 								  </div>
 								</div>
@@ -654,125 +682,151 @@ pagehead($page_id);
 							<!-- END DEFAULT SUPPLIER PANEL -->
 
 
+
+							<?php
+							
+										// COUNT FOR '0 RECORDS' EXCEPTION, AS WELL AS FOR ICON MARKER
+
+										// get the part_to_mat_maps count:
+										$count_part_to_mat_maps_SQL = "SELECT COUNT('ID') FROM `part_to_material_map` WHERE `part_rev_ID` = '" . $rev_body_id . "' AND `record_status` = '2'"; // maps for this part revision
+										// echo "<br />" . $count_part_to_mat_maps_SQL . "<br />";
+										$count_part_to_mat_maps_query = mysqli_query($con, $count_part_to_mat_maps_SQL);
+										$count_part_to_mat_maps_row = mysqli_fetch_row($count_part_to_mat_maps_query);
+										// Here we have the total row count
+										$total_part_to_mat_maps = $count_part_to_mat_maps_row[0];
+
+										if ($total_part_to_mat_maps == 0) {
+											$mat_count_label = 'label-danger';
+										}
+										else {
+											$mat_count_label = 'label-primary';
+										}
+
+										?>
+										<section class="panel">
+											<header class="panel-heading">
+												<div class="panel-actions">
+													<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+													<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+												</div>
+
+												<h2 class="panel-title">
+													<span class="label <?php echo $mat_count_label; ?> label-sm text-normal va-middle mr-sm"><?php echo $total_part_to_mat_maps; ?></span>
+													<span class="va-middle">Material<?php if ($total_part_to_mat_maps > 1) { echo 's'; } ?></span>
+												</h2>
+											</header>
+											<div class="panel-body">
+												<div class="content">
+												  <ul class="simple-user-list">
+													<?php
+
+													if ($total_part_to_mat_maps > 0) {
+
+													// get the materials from the part_to_material_map table, as some parts may contain 2 or more materials:
+													$get_part_to_material_map_SQL = "SELECT * FROM `part_to_material_map` WHERE `part_rev_ID` = '" . $rev_body_id . "' AND `record_status` = 2";
+													// echo '<br />' . $get_part_to_material_map_SQL . '<br />';
+
+														$result_get_part_to_material_map = mysqli_query($con,$get_part_to_material_map_SQL);
+														// while loop
+														while($row_get_part_to_material_map = mysqli_fetch_array($result_get_part_to_material_map)) {
+
+															$part_to_material_map_ID 			= $row_get_part_to_material_map['ID'];
+															$part_to_material_map_part_rev_ID 	= $row_get_part_to_material_map['part_rev_ID']; // should match 'rev_body_id'
+															$part_to_material_map_material_ID 	= $row_get_part_to_material_map['material_ID']; // look this up!
+															$part_to_material_map_variant_ID 	= $row_get_part_to_material_map['variant_ID'];
+															$part_to_material_map_record_status = $row_get_part_to_material_map['record_status']; // should be 2 (active / published) only
+
+															// look up material:
+
+															$get_material_SQL = "SELECT * FROM `material` WHERE `ID` = '" . $part_to_material_map_material_ID . "' AND `record_status` = 2";
+															// echo $get_material_SQL;
+															$result_get_material = mysqli_query($con,$get_material_SQL);
+															// while loop
+															while($row_get_material = mysqli_fetch_array($result_get_material)) {
+																$material_ID 			= $row_get_material['ID'];
+																$material_name_EN 		= $row_get_material['name_EN'];
+																$material_name_CN 		= $row_get_material['name_CN'];
+																$material_description 	= $row_get_material['description'];
+																$material_record_status = $row_get_material['record_status']; // should be 2 (published / active)
+
+																$material_name_to_show = $material_name_EN;
+																if (($material_name_CN!='')&&($material_name_CN!='中文名')) {
+																	$material_name_to_show .= " / " . $material_name_CN;
+																}
+
+															} // end get material info loop
+
+															// NOW OUTPUT!
+															?>
+															<li>
+																<figure class="image rounded">
+																  <span class="fa-stack fa-lg">
+																	<i class="fa fa-circle fa-stack-2x text-info"></i>
+																	<i class="fa fa-question fa-stack-1x fa-inverse"></i>
+																  </span>
+																</figure>
+																<span class="title"><?php echo $material_name_to_show; ?></span>
+																<span class="message truncate"><a href="material_view.php?id=<?php echo $material_ID; ?>&rev_id=<?php echo $rev_body_id; ?>&part_id=<?php echo $record_id; ?>">View Material Record</a></span>
+															</li>
+															<?php
+															} // end get material info loop
+														} // end of RECORDS FOUND
+											
+											
+														else { // NO RECORDS FOUND!
+															?>
+															<li>
+																<figure class="image rounded">
+																  <span class="fa-stack fa-lg">
+																	<i class="fa fa-circle fa-stack-2x text-danger"></i>
+																	<i class="fa fa-exclamation-triangle fa-stack-1x fa-inverse"></i>
+																  </span>
+																</figure>
+																<span class="title text-danger">NO MATERIAL SET</span>
+																<span class="message truncate"><a href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" class="btn btn-xs btn-success">Add Now</a></span>
+															</li>
+															<?php
+														} // end of no records found 'total_part_to_mat_maps' = 0
+													  ?>
+													</ul>
+												</div>
+											  <div class="panel-footer">
+												<div class="text-right">
+														<a class="text-uppercase text-muted" href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" title="Click here to view all materials">(View All)</a>
+													</div>
+											  </div>
+											</div>
+										</section>
+
 							<?php
 							} // end of check for if 'type_ID' != 10
-							?>
-
-							<?php
-
-							// COUNT FOR '0 RECORDS' EXCEPTION, AS WELL AS FOR ICON MARKER
-
-							// get the part_to_mat_maps count:
-							$count_part_to_mat_maps_SQL = "SELECT COUNT('ID') FROM `part_to_material_map` WHERE `part_rev_ID` = '" . $rev_body_id . "' AND `record_status` = '2'"; // maps for this part revision
-							// echo "<br />" . $count_part_to_mat_maps_SQL . "<br />";
-							$count_part_to_mat_maps_query = mysqli_query($con, $count_part_to_mat_maps_SQL);
-							$count_part_to_mat_maps_row = mysqli_fetch_row($count_part_to_mat_maps_query);
-							// Here we have the total row count
-							$total_part_to_mat_maps = $count_part_to_mat_maps_row[0];
-
-							if ($total_part_to_mat_maps == 0) {
-								$mat_count_label = 'label-danger';
-							}
 							else {
-								$mat_count_label = 'label-primary';
+								?>
+								<section class="panel">
+											<header class="panel-heading">
+												<div class="panel-actions">
+													<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+													<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+												</div>
+
+												<h2 class="panel-title">
+													<span class="va-middle">Supplier / Material Note</span>
+												</h2>
+											</header>
+											<div class="panel-body">
+												<div class="content">
+													<p class="text-danger">For supplier & material info, please refer to each individual component.</p>
+												</div>
+											  <div class="panel-footer">
+												<div class="text-right">
+														->
+													</div>
+											  </div>
+											</div>
+										</section>
+								<?php
 							}
-
 							?>
-							<section class="panel">
-								<header class="panel-heading">
-									<div class="panel-actions">
-										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-									</div>
-
-									<h2 class="panel-title">
-										<span class="label <?php echo $mat_count_label; ?> label-sm text-normal va-middle mr-sm"><?php echo $total_part_to_mat_maps; ?></span>
-										<span class="va-middle">Material(s)</span>
-									</h2>
-								</header>
-								<div class="panel-body">
-									<div class="content">
-									  <ul class="simple-user-list">
-										<?php
-
-										if ($total_part_to_mat_maps > 0) {
-
-										// get the materials from the part_to_material_map table, as some parts may contain 2 or more materials:
-										$get_part_to_material_map_SQL = "SELECT * FROM `part_to_material_map` WHERE `part_rev_ID` = '" . $rev_body_id . "' AND `record_status` = 2";
-										// echo '<br />' . $get_part_to_material_map_SQL . '<br />';
-
-											$result_get_part_to_material_map = mysqli_query($con,$get_part_to_material_map_SQL);
-											// while loop
-											while($row_get_part_to_material_map = mysqli_fetch_array($result_get_part_to_material_map)) {
-
-												$part_to_material_map_ID 			= $row_get_part_to_material_map['ID'];
-												$part_to_material_map_part_rev_ID 	= $row_get_part_to_material_map['part_rev_ID']; // should match 'rev_body_id'
-												$part_to_material_map_material_ID 	= $row_get_part_to_material_map['material_ID']; // look this up!
-												$part_to_material_map_variant_ID 	= $row_get_part_to_material_map['variant_ID'];
-												$part_to_material_map_record_status = $row_get_part_to_material_map['record_status']; // should be 2 (active / published) only
-
-												// look up material:
-
-												$get_material_SQL = "SELECT * FROM `material` WHERE `ID` = '" . $part_to_material_map_material_ID . "' AND `record_status` = 2";
-												// echo $get_material_SQL;
-												$result_get_material = mysqli_query($con,$get_material_SQL);
-												// while loop
-												while($row_get_material = mysqli_fetch_array($result_get_material)) {
-													$material_ID 			= $row_get_material['ID'];
-													$material_name_EN 		= $row_get_material['name_EN'];
-													$material_name_CN 		= $row_get_material['name_CN'];
-													$material_description 	= $row_get_material['description'];
-													$material_record_status = $row_get_material['record_status']; // should be 2 (published / active)
-
-													$material_name_to_show = $material_name_EN;
-													if (($material_name_CN!='')&&($material_name_CN!='中文名')) {
-														$material_name_to_show .= " / " . $material_name_CN;
-													}
-
-												} // end get material info loop
-
-												// NOW OUTPUT!
-												?>
-												<li>
-													<figure class="image rounded">
-													  <span class="fa-stack fa-lg">
-														<i class="fa fa-circle fa-stack-2x text-info"></i>
-														<i class="fa fa-question fa-stack-1x fa-inverse"></i>
-													  </span>
-													</figure>
-													<span class="title"><?php echo $material_name_to_show; ?></span>
-													<span class="message truncate"><a href="material_view.php?id=<?php echo $material_ID; ?>">View Material Record</a></span>
-												</li>
-												<?php
-										  		} // end get material info loop
-											} // end of RECORDS FOUND
-											
-											
-											else { // NO RECORDS FOUND!
-												?>
-												<li>
-													<figure class="image rounded">
-													  <span class="fa-stack fa-lg">
-														<i class="fa fa-circle fa-stack-2x text-danger"></i>
-														<i class="fa fa-exclamation-triangle fa-stack-1x fa-inverse"></i>
-													  </span>
-													</figure>
-													<span class="title text-danger">NO MATERIAL SET</span>
-													<span class="message truncate"><a href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" class="btn btn-xs btn-success">Add Now</a></span>
-												</li>
-												<?php
-											} // end of no records found 'total_part_to_mat_maps' = 0
-										  ?>
-										</ul>
-									</div>
-								  <div class="panel-footer">
-									<div class="text-right">
-											<a class="text-uppercase text-muted" href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" title="Click here to view all materials">(View All)</a>
-										</div>
-								  </div>
-								</div>
-							</section>
-
 									<!-- END OF LEFT COLUMN: -->
 									</div>
 
@@ -1624,7 +1678,7 @@ pagehead($page_id);
 
 
 												// now count the total batches for ALL revisions:
-												$count_j_batches_sql 	= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $part_ID;
+												$count_j_batches_sql 	= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $part_ID . " AND `record_status` = '2'";
 												$count_j_batches_query 	= mysqli_query($con, $count_j_batches_sql);
 												$count_j_batches_row 	= mysqli_fetch_row($count_j_batches_query);
 												$total_j_batches 		= $count_j_batches_row[0];

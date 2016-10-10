@@ -63,7 +63,7 @@ pagehead($page_id);
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Material Record</h2>
+						<h2>Material Record - <?php echo $Material_name_en;  if (($Material_name_cn!='')&&($Material_name_cn!='中文名')) { echo $Material_name_cn;  } ?></h2>
 
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -99,8 +99,28 @@ pagehead($page_id);
 					// now run the function:
 					notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
 					?>
+					
+					
+					
 					<div class="row">
-						<div class="col-md-12">
+										
+					<?php
+					if (isset($_REQUEST['part_id'])) {
+					
+						$jumper_space = 8;
+					
+						?>
+						<div class="col-md-4">
+							<a class="btn btn-sm btn-success text-center pull-left" href="part_view.php?id=<?php echo $_REQUEST['part_id']; ?>&rev_id=<?php echo $_REQUEST['rev_id']; ?>"><< Back to <?php part_name($_REQUEST['part_id'], 0); ?> Part Profile</a>
+						</div>
+					<?php
+					}
+					else {
+						$jumper_space = 12;
+					}
+					
+					?>
+						<div class="col-md-<?php echo $jumper_space; ?>">
 						<!-- MAT JUMPER -->
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
                               <option value="#" selected="selected">JUMP TO ANOTHER MATERIAL / 看别的材料:</option>
@@ -120,6 +140,21 @@ pagehead($page_id);
 								$j_mat_description 		= $row_get_j_mats['description'];
 								$j_mat_record_status 	= $row_get_j_mats['record_status'];
 								$j_mat_wiki_URL 		= $row_get_j_mats['wiki_URL'];
+								
+								// now count the total parts this material is mapped to:
+								$merge_j_map_and_rev_SQL = 	"SELECT COUNT(DISTINCT (`part_revisions`.`part_ID`)) FROM `part_revisions` 
+															JOIN `part_to_material_map`
+															ON `part_revisions`.`ID` = `part_to_material_map`.`part_rev_ID`
+															WHERE `part_to_material_map`.`material_ID` = '" . $j_mat_ID . "' 
+															AND `part_to_material_map`.`record_status` = '2'
+															AND `part_revisions`.`record_status` = '2'";
+															
+								
+															
+								$count_j_maps_query = mysqli_query($con, $merge_j_map_and_rev_SQL);
+        						$count_j_maps_row = mysqli_fetch_row($count_j_maps_query);
+        						$total_j_maps = $count_j_maps_row[0];
+								
 
 							   ?>
                               <option value="material_view.php?id=<?php echo $j_mat_ID; ?>"><?php 
@@ -127,6 +162,15 @@ pagehead($page_id);
                               	if (($j_mat_name_CN!='')&&($j_mat_name_CN!='中文名')) {
                               		echo ' / ' . $j_mat_name_CN;
                               	}
+                              	
+                              	if ($total_j_maps != 0) {
+                              		echo ' -- [ ' . $total_j_maps . ' part';
+                              		if ($total_j_maps != 1) {
+                              			echo 's'; // plural!
+                              		}
+                              		echo ' found ]';
+                              	}
+                              	
                               ?></option>
                               <?php
 							  } // end get part list
@@ -136,7 +180,6 @@ pagehead($page_id);
                             <!-- / MAT JUMPER -->
 						</div>
 					</div>
-
 
 					<div class="clearfix">&nbsp;</div>
 					<div class="row">
@@ -258,7 +301,7 @@ pagehead($page_id);
 						  <tr<?php if ($material_variant_id == $change_record_id) { ?> class="success"<?php } ?>>
 							<td><a href="material_variant_type_view.php?id=<?php echo $material_variant_type_id; ?>"><?php echo $material_variant_type_name_en; ?></a></td>
 							<td><a href="material_variant_view.php?id=<?php echo $material_variant_id; ?>"><?php echo $material_variant_name_en; ?></a></td>
-							<td><a href="material_variant_view.php?id=<?php echo $material_variant_id; ?>"><?php echo $material_variant_name_cn; ?></a></td>
+							<td><a href="material_variant_view.php?id=<?php echo $material_variant_id; ?>"><?php if (($material_variant_name_cn!='')&&($material_variant_name_cn!='中文名')) { echo $material_variant_name_cn; } ?></a></td>
 							<td><?php echo $material_variant_description; ?></td>
 							<td><?php echo $material_variant_color_code; ?></td>
 							<td class="text-center">
@@ -330,8 +373,6 @@ pagehead($page_id);
 									<th class="text-center">Code</th>
 									<th class="text-center">Name / 名字</th>
 									<th class="text-center">Rev. #</th>
-									<th class="text-center">Type</th>
-									<th class="text-center">Classification</th>
 								  </tr>
 							  </thead>
 							  <tbody>
@@ -365,9 +406,9 @@ pagehead($page_id);
 										?>
 										
 										<tr>
-										  <td class="text-center"><?php part_img($this_mat_to_rev_map_part_rev_ID, 0); ?></td>
+										  <td class="text-center"><?php part_img($this_mat_to_rev_map_part_rev_ID, 1); ?></td>
 										  <td class="text-center"><?php part_num($this_mat_to_rev_map_part_ID); ?></td>
-										  <td class="text-center"><?php part_name($this_mat_to_rev_map_part_ID, 0); ; ?></td>
+										  <td class="text-center"><?php part_name($this_mat_to_rev_map_part_ID, 1); ?></td>
 										  <td class="text-center"><?php 
 										  
 										  // now let's check for ALL revisions for this part made of this material:
@@ -407,8 +448,6 @@ pagehead($page_id);
 										  } // end get other revisions for this part
 										  
 										  ?></td>
-										  <td class="text-center">?</td>
-										  <td class="text-center">?</td>
 										</tr>
 										
 										<?php
@@ -420,7 +459,7 @@ pagehead($page_id);
 
 							  <tfoot>
 								  <tr>
-									<td colspan="6">&nbsp;</td>
+									<td colspan="4">&nbsp;</td>
 								  </tr>
 							  </tfoot>
 						 </table>

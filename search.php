@@ -467,6 +467,22 @@ if (isset($_REQUEST['query'])) {
 							$display_type = 'Document / 文件';
 						}
 
+						else if ($type == 'bug_report') {
+							// lookup record
+							$name_EN = $row_get_details['title'];
+							$link_to = 'feedback_view';
+							$display_type = 'Feedback Report';
+							$description_text = '"<em>' . $row_get_details['body'] . '</em>"';
+						}
+
+						else if ($type == 'part_batch') {
+							// lookup record
+							$name_EN = $row_get_details['batch_number'];
+							$link_to = 'batch_view';
+							$display_type = 'Part Batch Record';
+							$description_text = 'Click here to view this part batch record information';
+						}
+
 						else if ($type == 'purchase_orders') {
 							// lookup record
 							$name_EN = $row_get_details['PO_number'];
@@ -474,6 +490,7 @@ if (isset($_REQUEST['query'])) {
 							$display_type = 'Purchase Order';
 							$description_text = 'Purchase Order Record';
 						}
+						
 						else if ($type == 'categories') {
 							// lookup record
 							$name_EN = $row_get_details['Name_EN'];
@@ -483,6 +500,7 @@ if (isset($_REQUEST['query'])) {
 							$pic_link = 'images/categories/cat_' . $result_ID . '.jpg';
 							$display_type = 'Category';
 						}
+						
 						else if ($type == 'clients') {
 							// lookup record
 							$link_to = 'view_client_profile';

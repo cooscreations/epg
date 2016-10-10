@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //  now check the user is OK to view this page  //
-/*//////// require ('page_access.php'); /*//////*/
+/*//////*/ require ('page_access.php'); /*//////*/
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -31,7 +31,7 @@ else {
 	exit();
 }
 
-$page_id = 99;
+$page_id = 73;
 
 // pull the header and template stuff:
 pagehead($page_id);
@@ -88,7 +88,7 @@ while($row_get_rev = mysqli_fetch_array($result_get_rev)) {
 										<a href="parts.php">All Parts</a>
 									</li>
 									<li>
-										<a href="part_view.php?id=<?php echo $part_ID; ?>">Part Profile</a>
+										<a href="part_view.php?id=<?php echo $part_ID; ?>&rev_id=<?php echo $rev_ID; ?>">Part Profile</a>
 									</li>
 								<li><span>Part Materials</span></li>
 							</ol>
@@ -241,7 +241,7 @@ while($row_get_rev = mysqli_fetch_array($result_get_rev)) {
 													</td>
 													<td class="text-center">
 													  <!-- <input type="checkbox" id="mat_<?php echo $this_mat_id; ?>_rev_all" class="all_revs_<?php echo $this_mat_id; ?>" /> -->
-													  <input type="checkbox" class="parent" data-group=".group<?php echo $this_mat_id; ?>" />
+													  <input type="checkbox" class="parent" data-group=".group<?php echo $this_mat_id; ?>" name="all_<?php echo $this_mat_id; ?>" value="1" />
 													</td>
 													<?php 
 									  
@@ -275,7 +275,7 @@ while($row_get_rev = mysqli_fetch_array($result_get_rev)) {
 															<!-- now output the result of array: -->							  
 															<td class="text-center">
 																<!-- <input type="checkbox" id="mat_<?php echo $this_mat_id; ?>_rev_<?php echo $rev_ID_key; ?>" class="rev_options_mat_ID_<?php echo $this_mat_id; ?>_rev_<?php echo $rev_ID_key; ?>" />-->
-																<input type="checkbox" id="mat_<?php echo $this_mat_id; ?>_rev_<?php echo $rev_ID_key; ?>" class="group<?php echo $this_mat_id; ?>" name="check[]"<?php if ($existing_map_count > 0) { ?> checked="checked"<?php } ?> />
+																<input type="checkbox" id="mat_<?php echo $this_mat_id; ?>_rev_<?php echo $rev_ID_key; ?>" class="group<?php echo $this_mat_id; ?>" name="mat_<?php echo $this_mat_id; ?>_rev_<?php echo $rev_ID_key; ?>"<?php if ($existing_map_count > 0) { ?> checked="checked"<?php } ?> value="1" />
 															</td>
 															<!-- end result output from array -->
 															<?php
@@ -321,7 +321,8 @@ while($row_get_rev = mysqli_fetch_array($result_get_rev)) {
 								
 									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
 								  <div class="col-md-5 text-left">	
-									<?php form_buttons('purchase_order_view', $record_id); ?>
+								  	<input type="hidden" value="<?php echo $part_ID; ?>" name="part_id" />
+									<?php form_buttons('part_view', $record_id); ?>
 								  </div>
 								  
 								  
@@ -341,12 +342,12 @@ while($row_get_rev = mysqli_fetch_array($result_get_rev)) {
 										<div class="col-md-6 text-left">
 											<div class="radio-custom radio-success">
 												<input type="radio" id="next_step" name="next_step" value="view_record"<?php if ($next_step_selected == 'view') { ?> checked="checked"<?php } ?>>
-												<label for="radioExample9">View P.O.</label>
+												<label for="radioExample9">View Part Record</label>
 											</div>
 
 											<div class="radio-custom radio-warning">
-												<input type="radio" id="next_step" name="next_step" value="view_list"<?php if ($next_step_selected == 'add') { ?> checked="checked"<?php } ?>>
-												<label for="radioExample10">View ALL P.O.s</label>
+												<input type="radio" id="next_step" name="next_step" value="view_list"<?php if ($next_step_selected == 'list') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample10">View ALL Parts</label>
 											</div>
 										</div>
 										

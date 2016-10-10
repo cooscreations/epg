@@ -33,7 +33,6 @@ if (!isset($_SESSION['username'])) {
 $page_id = 10;
 
 // THIS IS A LOOK-UP RECORD PAGE - GET THE RECORD INFO FIRST:
-
 if (isset($_REQUEST['id'])) {
 	$record_id = $_REQUEST['id'];
 }

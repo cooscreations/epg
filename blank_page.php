@@ -2,13 +2,11 @@
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
-/* ////// */
-session_start (); /* ////// */
+/* ////// */     session_start ();     /* ////// */
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
-// now check the user is OK to view this page //
-/* //////// require ('page_access.php'); / */
-// ///*/
+//   now check the user is OK to view this page  //
+/* /////// require ('page_access.php');  /*/////*/
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
@@ -35,13 +33,13 @@ pagehead ( $page_id );
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Countries</h2>
+        <h2>Blank Page</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
-                <li><a href="index.php"><i class="fa fa-home"></i>
-                </a></li>
-                <li><span>Countries</span></li>
+                <li><a href="index.php"><i class="fa fa-home"></i></a></li>
+                <li><a href="#">Blank Page</a></li>
+                <li><span>This Page</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i
@@ -50,27 +48,27 @@ pagehead ( $page_id );
     </header>
     <?php
 
-							// run notifications function:
-							$msg = 0;
-							if (isset ( $_REQUEST ['msg'] )) {
-								$msg = $_REQUEST ['msg'];
-							}
-							$action = 0;
-							if (isset ( $_REQUEST ['action'] )) {
-								$action = $_REQUEST ['action'];
-							}
-							$change_record_id = 0;
-							if (isset ( $_REQUEST ['new_record_id'] )) {
-								$change_record_id = $_REQUEST ['new_record_id'];
-							}
-							$page_record_id = 0;
-							if (isset ( $record_id )) {
-								$page_record_id = $record_id;
-							}
+			// run notifications function:
+			$msg = 0;
+			if (isset ( $_REQUEST ['msg'] )) {
+				$msg = $_REQUEST ['msg'];
+			}
+			$action = 0;
+			if (isset ( $_REQUEST ['action'] )) {
+				$action = $_REQUEST ['action'];
+			}
+			$change_record_id = 0;
+			if (isset ( $_REQUEST ['new_record_id'] )) {
+				$change_record_id = $_REQUEST ['new_record_id'];
+			}
+			$page_record_id = 0;
+			if (isset ( $record_id )) {
+				$page_record_id = $record_id;
+			}
 
-							// now run the function:
-							notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
-							?>
+			// now run the function:
+			notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
+	?>
 
     <!-- start: page -->
     
@@ -81,7 +79,6 @@ pagehead ( $page_id );
         <table
             class="table table-bordered table-striped table-condensed mb-none">
             <tr>
-            	<th class="text-center"><i class="fa fa-gear btn btn-default"></i></th>
                 <th class="text-center">Flag</th>
                 <th class="text-center">Name</th>
                 <th class="text-center">名字</th>
@@ -89,6 +86,7 @@ pagehead ( $page_id );
                 <th class="text-center">Alpha 3</th>
                 <th class="text-center">ISO Code</th>
                 <th class="text-center"># Suppliers</th>
+                <th class="text-center">Actions</th>
             </tr>
 
             <?php
@@ -112,123 +110,6 @@ pagehead ( $page_id );
 									?>
 
             <tr>
-            
-            <td class="text-center">
-                    
-					<!-- ********************************************************* -->
-					<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
-					<!-- ********************************************************* -->
-			
-					<?php 
-			
-					// VARS YOU NEED TO WATCH / CHANGE:
-					$add_to_form_name 	= '';						// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
-					$form_ID 			= $country_ID;				// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
-					$edit_URL 			= 'country_edit'; 			// REQUIRED - specify edit page URL
-					$add_URL 			= 'country_add'; 			// REQURED - specify add page URL
-					$table_name 		= 'countries';				// REQUIRED - which table are we updating?
-					$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
-					$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
-			
-					?>
-	 
-						<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
-				
-							echo $add_to_form_name; 
-							echo $form_ID; 
-				
-						?>"><i class="fa fa-gear"></i></a>
-
-						<!-- Modal Form -->
-						<div id="modalForm_<?php 
-				
-							echo $add_to_form_name; 
-							echo $form_ID; 
-					
-						?>" class="modal-block modal-block-primary mfp-hide">
-							<section class="panel">
-								<header class="panel-heading">
-									<h2 class="panel-title">Admin Options</h2>
-								</header>
-								<div class="panel-body">
-				
-									<div class="table-responsive">
-									 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
-									 <thead>
-										<tr>
-											<th class="text-left" colspan="2">Action</th>
-											<th>Decsription</th>
-										</tr>
-									  </thead>
-									  <tbody>
-										<tr>
-										  <td>EDIT</td>
-										  <td>
-											<a href="<?php 
-												echo $edit_URL; 
-											?>.php?id=<?php 
-												echo $form_ID; 
-											?>" class="mb-xs mt-xs mr-xs btn btn-warning">
-												<i class="fa fa-pencil" stlye="color: #999"></i>
-											</a>
-										  </td>
-										  <td>Edit this record</td>
-										</tr>
-										<tr>
-										  <td>DELETE</td>
-										  <td>
-											<a href="record_delete_do.php?table_name=<?php 
-												echo $table_name; 
-											?>&src_page=<?php 
-												echo $src_page; 
-											?>&id=<?php 
-												echo $form_ID;
-												echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
-											?>" class="mb-xs mt-xs mr-xs btn btn-danger">
-												<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
-											</a>
-										  </td>
-										  <td>Delete this record</td>
-										</tr>
-										<tr>
-										  <td>ADD</td>
-										  <td>
-											<a href="<?php 
-												echo $add_URL; 
-												echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
-											?>" class="mb-xs mt-xs mr-xs btn btn-success">
-												<i class="fa fa-plus" stlye="color: #999"></i>
-											</a>
-										  </td>
-										  <td>Add a similar item to this table</td>
-										</tr>
-									  </tbody>
-									  <tfoot>
-										<tr>
-										  <td>&nbsp;</td>
-										  <td>&nbsp;</td>
-										  <td>&nbsp;</td>
-										</tr>
-									  </tfoot>
-									  </table>
-									</div><!-- end of responsive table -->	
-				
-								</div><!-- end panel body -->
-								<footer class="panel-footer">
-									<div class="row">
-										<div class="col-md-12 text-left">
-											<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
-										</div>
-									</div>
-								</footer>
-							</section>
-						</div>
-		
-					<!-- ********************************************************* -->
-					<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
-					<!-- ********************************************************* -->
-                </td>
-            
             	<td class="text-center"><?php 
             	
             		$find_file = "assets/images/flags/" . strtolower($country_code) . ".png";
@@ -275,6 +156,12 @@ pagehead ( $page_id );
                 $total_suppliers = 0;
                 
                 ?></td>
+                <td class="text-center">
+                    <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
+                    <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
+                    <a href="country_edit.php?id=<?php echo $country_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a>
+                    <a href="record_delete_do.php?table_name=countries&src_page=countries.php&id=<?php echo $country_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
+                </td>
             </tr>
 
             <?php

@@ -26,14 +26,14 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 
 */
 
-$name_en 	= checkaddslashes($_REQUEST['name_en']);
-$name_cn 	= checkaddslashes($_REQUEST['name_cn']);
-$code 		= checkaddslashes($_REQUEST['code']);
+$part_rev_ID 	= checkaddslashes($_REQUEST['part_rev_ID']);
+$BOM_type 		= checkaddslashes($_REQUEST['BOM_type']);
+$parent_BOM_ID 	= checkaddslashes($_REQUEST['parent_BOM_ID']);
+$entry_order	= checkaddslashes($_REQUEST['entry_order']);
 
-$update_note = "Adding a new Country to the system.";
+$update_note = "Adding a new Bill of Materials to the system.";
 
-$add_SQL = "INSERT INTO `countries`(`ID`, `name_EN`, `name_CN`, `code`) VALUES (NULL,'".$name_en."','".$name_cn."','".$code."')";
-
+$add_SQL = "INSERT INTO `product_BOM`(`ID`, `part_rev_ID`, `date_entered`, `record_status`, `created_by`, `BOM_type`, `parent_BOM_ID`, `entry_order`) VALUES (NULL,'" . $part_rev_ID . "','" . date("Y-m-d H:i:s") . "','2','" . $_SESSION['user_ID'] . "','" . $BOM_type . "','" . $parent_BOM_ID . "','" . $entry_order . "')";
 
 // echo $add_SQL;
 
@@ -44,15 +44,14 @@ if (mysqli_query($con, $add_SQL)) {
 	// echo "INSERT # " . $record_id . " OK";
 
 	// AWESOME! We added the record
-    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'countries','" . $record_id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
+    $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'product_BOM','" . $record_id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'INSERT')";
 	// echo $record_edit_SQL;
 
 	if (mysqli_query($con, $record_edit_SQL)) {
 		// AWESOME! We added the change record to the database
 
-			// regular add
-		header("Location: countries.php?msg=OK&action=add&new_record_id=".$record_id."");
-
+		// regular add
+		header("Location: BOM_view.php?msg=OK&action=add&id=".$record_id."");
 		exit();
 
 	}

@@ -29,23 +29,24 @@ if (isset($_REQUEST['id'])) {
 	$record_id = $_REQUEST['id'];
 }
 else {
-	header("Location: countries.php?msg=NG&action=view&error=no_id");
+	header("Location: inspection_methods.php?msg=NG&action=view&error=no_id");
 	exit();
 }
 
 if ($record_id != 0) {
 	// now get the country info:
-    $get_country_SQL = "SELECT * FROM `countries` WHERE `ID` = " . $record_id;
+    $get_method_SQL = "SELECT * FROM `inspection_method` WHERE `ID` = " . $record_id;
     // echo $get_country_SQL;
 
-    $result_get_con = mysqli_query($con,$get_country_SQL);
+    $result_get_method = mysqli_query($con,$get_method_SQL);
 
     // while loop
-    while($row_get_con = mysqli_fetch_array($result_get_con)) {
-        $id = $row_get_con['ID'];
-        $name_EN = $row_get_con['name_EN'];
-        $name_CN = $row_get_con['name_CN'];
-        $code = $row_get_con['code'];
+    while($row_get_method = mysqli_fetch_array($result_get_method)) {
+        $record_id 			= $row_get_method['ID'];
+        $name_EN 			= $row_get_method['name_EN'];
+        $name_CN 			= $row_get_method['name_CN'];
+        $description 		= $row_get_method['description'];
+        $record_status		= $row_get_method['record_status'];
 
     } // end get info WHILE loop
 }
@@ -58,8 +59,7 @@ pagehead($page_id);
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Edit Country<?php if ($record_id != 0) { ?> : <? echo $id;
-                              } ?>
+        <h2>Edit Inspection Method: <?php echo $name_EN; if (($name_CN!='')&&($name_CN!='中文名')){ echo ' / ' . $name_CN; } ?>
         </h2>
 
         <div class="right-wrapper pull-right">
@@ -69,8 +69,8 @@ pagehead($page_id);
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
-                <li><a href="countries.php">All Countries</a></li>
-                <li><span>Edit Country</span></li>
+                <li><a href="inspection_methods.php">All Methods</a></li>
+                <li><span>Edit Method</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
@@ -83,7 +83,7 @@ pagehead($page_id);
         <div class="col-md-12">
 
             <!-- START THE FORM! -->
-            <form class="form-horizontal form-bordered" action="country_edit_do.php" method="post">
+            <form class="form-horizontal form-bordered" action="inspection_method_edit_do.php" method="post">
 
                 <section class="panel">
                     <header class="panel-heading">
@@ -92,7 +92,7 @@ pagehead($page_id);
                             <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                         </div>
 
-                        <h2 class="panel-title">Edit Country Details:</h2>
+                        <h2 class="panel-title">Edit Details:</h2>
                     </header>
                     <div class="panel-body">
                         <div class="form-group">
@@ -111,29 +111,33 @@ pagehead($page_id);
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Code:</label>
+                            <label class="col-md-3 control-label">Description:</label>
                             <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="code" value="<?php echo $code; ?>"/>
+                                <textarea class="form-control" rows="3" id="textareaDefault" name="description"><?php echo $description; ?></textarea>
                             </div>
-							<div class="col-md-1">
-								<a href="https://www.iso.org/obp/ui/#search" target="_blank" class="mb-xs mt-xs mr-xs btn btn-info pull-right"><i class="fa fa-question-circle"></i></a>
+                            <div class="col-md-1">
+                                &nbsp;
+                            </div>
+                        </div>
+								
+								
+						<div class="form-group">
+							<label class="col-md-3 control-label">Record Status:</label>
+							<div class="col-md-5">
+								<?php record_status_drop_down($record_status); ?>
 							</div>
 
-                        </div>
-
+							<div class="col-md-1">
+								&nbsp;
+							</div>
+						</div>
+                        
                     </div>
 
-                    <footer class="panel-footer">
-                        <?php
-										if (isset($_REQUEST['id'])) {
-											?>
-                        <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="id" />
-                        <?php
-										}
-										?>
-                        <button type="submit" class="btn btn-success">Submit </button>
-                        <button type="reset" class="btn btn-default">Reset</button>
-                    </footer>
+                   <footer class="panel-footer">
+						<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+						<?php form_buttons('inspection_methods', $record_id); ?>
+					</footer>
                 </section>
                 <!-- now close the form -->
             </form>

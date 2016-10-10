@@ -251,11 +251,11 @@ else {
 						while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
 
 								// now print each record:
-								$batch_id = $row_get_batch['ID'];
-								$PO_ID = $row_get_batch['PO_ID'];
-								$part_ID = $row_get_batch['part_ID'];
-								$batch_number = $row_get_batch['batch_number'];
-								$part_rev = $row_get_batch['part_rev'];
+								$batch_id 		= $row_get_batch['ID'];
+								$PO_ID 			= $row_get_batch['PO_ID'];
+								$part_ID 		= $row_get_batch['part_ID'];
+								$batch_number 	= $row_get_batch['batch_number'];
+								$part_rev 		= $row_get_batch['part_rev'];
 
 								// GET PART DETAILS:
 								$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
@@ -264,10 +264,10 @@ else {
 								while($row_get_part = mysqli_fetch_array($result_get_part)) {
 
 									// now print each result to a variable:
-									$part_id = $row_get_part['ID'];
-									$part_code = $row_get_part['part_code'];
-									$part_name_EN = $row_get_part['name_EN'];
-									$part_name_CN = $row_get_part['name_CN'];
+									$part_id 		= $row_get_part['ID'];
+									$part_code 		= $row_get_part['part_code'];
+									$part_name_EN 	= $row_get_part['name_EN'];
+									$part_name_CN 	= $row_get_part['name_CN'];
 
 								}
 
@@ -279,10 +279,10 @@ else {
 								while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 
 									// now print each record:
-									$PO_id = $row_get_PO['ID'];
-									$PO_number = $row_get_PO['PO_number'];
-									$PO_created_date = $row_get_PO['created_date'];
-									$PO_description = $row_get_PO['description'];
+									$PO_id 				= $row_get_PO['ID'];
+									$PO_number 			= $row_get_PO['PO_number'];
+									$PO_created_date	= $row_get_PO['created_date'];
+									$PO_description 	= $row_get_PO['description'];
 
 								} // end while loop
 
@@ -293,12 +293,12 @@ else {
 								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 
 									// now print each record:
-									$rev_id = $row_get_part_rev['ID'];
-									$rev_part_id = $row_get_part_rev['part_ID'];
-									$rev_number = $row_get_part_rev['revision_number'];
-									$rev_remarks = $row_get_part_rev['remarks'];
-									$rev_date = $row_get_part_rev['date_approved'];
-									$rev_user = $row_get_part_rev['user_ID'];
+									$rev_id 		= $row_get_part_rev['ID'];
+									$rev_part_id 	= $row_get_part_rev['part_ID'];
+									$rev_number 	= $row_get_part_rev['revision_number'];
+									$rev_remarks 	= $row_get_part_rev['remarks'];
+									$rev_date 		= $row_get_part_rev['date_approved'];
+									$rev_user 		= $row_get_part_rev['user_ID'];
 
 								}
 								

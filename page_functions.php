@@ -825,6 +825,12 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 											<span>Products / 产品</span>
 										</a>
 									</li>
+									<li>
+										<a href="documents.php">
+											<i class="fa fa-files-o" aria-hidden="true"></i>
+											<span>Documents / 文件</span>
+										</a>
+									</li>
 									<li class="nav-parent<?php if ($page_id == 2) { ?> nav-active<?php } ?>">
 										<a>
 											<i class="fa fa-users" aria-hidden="true"></i>
@@ -1462,6 +1468,16 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 									<strong>Thank you!</strong> Your feedback is sent.
 								<?php 
 								} 
+								
+								if ($_REQUEST['action'] == 'part_mat_map') { ?>
+									<!--  Material to Part Map Change Request Complete! -->
+									<span class="fa-stack fa-3x">
+											<i class="fa fa-circle-o fa-stack-2x"></i>
+											<i class="fa fa-check fa-stack-1x"></i>
+									</span>
+									<strong>Material Record Updated!</strong> The part record has now been updated. Thank you.
+								<?php 
+								}
 								?>
 							</div>
 						<?php
@@ -1930,6 +1946,7 @@ function creator_drop_down($this_user_ID, $form_element_name = 'created_by') {
 	?>
 	<!-- originally parsed USER ID = <?php echo $this_user_ID; ?> -->
 	<select class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>">
+		<option value="0">Select User</option>
 		<?php
 		// GET PART TYPE:
 		$get_user_list_SQL = "SELECT * FROM  `users` WHERE `record_status` = 2";
@@ -2057,55 +2074,6 @@ function record_status_drop_down($current_status) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
-/* -- UPDATE - I HAVE MADE A BETTER VERSION OF THIS FUNCTION BELOW!
-function record_status($current_status) {
-	// we will make this a small button and look awesome:
-
-	if ($current_status == 0) {
-		// DELETED / UNPUBLISHED
-		?>
-		<a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-danger">
-			<i class="fa fa-times"></i>
-			UNPUBLISHED
-			<i class="fa fa-times"></i>
-		</a>
-		<?php
-	}
-	else if ($current_status == 1) {
-		// PENDING
-		?>
-		<a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-warning">
-			<i class="fa fa-question-circle"></i>
-			PENDING
-			<i class="fa fa-question-circle"></i>
-		</a>
-		<?php
-	}
-	else if ($current_status == 2) {
-		// OK
-		?>
-		<a type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-success">
-			<i class="fa fa-check"></i>
-			PUBLISHED
-			<i class="fa fa-check"></i>
-		</a>
-		<?php
-	}
-	else {
-	// ?
-	}
-
-} // CLOSE FUNCTION
-*/
-/* ****************************************************************** */
-/* ****************************************************************** */
-/* ****************************************************************** */
-/* ****************************************************************** */
-/* ****************************************************************** */
-/* ****************************************************************** */
-/* ****************************************************************** */
-/* ****************************************************************** */
-
 
 function admin_bar($add_edit_file_name_append) {
 
@@ -2541,14 +2509,14 @@ function location_drop_down($this_loc_ID, $form_element_name = 'loc_ID') {
 /* ****************************************************************** */
 /* ****************************************************************** */
 
-function form_buttons($cancel_url, $record_id) { 
+function form_buttons($cancel_url, $record_id, $add_VARS = '') { 
 	if (($record_id!=0)&&($record_id!='')) { ?>
 		<input type="hidden" value="<?php echo $record_id; ?>" name="id" />
-		<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php?id=<?php echo $record_id; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
-	<?php } 
+		<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php?id=<?php echo $record_id;?>&<?php echo $add_VARS; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
+	<?php }
 	else {
 	?>
-		<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
+		<a class="btn btn-danger" href="<?php echo $cancel_url; ?>.php?<?php echo $add_VARS; ?>"><i class="fa fa-arrow-left"></i> CANCEL / BACK</a>
 	<?php
 	}?>
 	<button type="reset" class="btn btn-warning"><i class="fa fa-refresh"></i> RESET</button>
@@ -2766,7 +2734,7 @@ function part_drop_down($current_ID=0) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
-function part_rev_drop_down($current_ID=0) {
+function part_rev_drop_down($current_ID=0, $part_type_ID=0) {
 
 	// start the session:
 	session_start();
@@ -2778,8 +2746,16 @@ function part_rev_drop_down($current_ID=0) {
 <select data-plugin-selectTwo class="form-control populate" name="part_rev_ID" required>
 	<option value=""></option>
 	<?php
+	
+	if ($part_type_ID != 0){
+		$add_part_type_SQL = " AND `type_ID` = '" . $part_type_ID . "'";
+	}
+	else {
+		$add_part_type_SQL = '';
+	}
+	
 	// get parts list
-	$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = '2' ORDER BY `part_code` ASC";
+	$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = '2'" . $add_part_type_SQL . " ORDER BY `part_code` ASC";
 	// echo $get_parts_SQL;
 
 	$part_count = 0;
