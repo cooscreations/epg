@@ -44,6 +44,9 @@ $date_added 			= check_date_time($_REQUEST['date_added']);
 $created_by 			= checkaddslashes($_REQUEST['created_by']);
 $record_status 			= checkaddslashes($_REQUEST['record_status']);
 
+if ($price_USD == '') { $price_USD = '0.100'; }
+if ($weight_g == '') { $weight_g = '0.100'; }
+
 $update_note = "Adding a new part revision to the system.";
 
 // $add_revision_SQL = "INSERT INTO `part_revisions`(`ID`, `part_ID`, `revision_number`, `remarks`, `date_approved`, `user_ID`) VALUES (NULL,'".$part_ID."','".$rev_number."','".$remarks."','".$date_added."','".$user_ID."')";
@@ -69,8 +72,7 @@ $add_record_SQL = "INSERT INTO `part_revisions`(
 . $created_by . "','" 
 . $price_USD . "','" 
 . $weight_g . "','" 
-. $part_rev_status_ID . "','" 
-. $part_rev_material_ID . "','0','No treatment notes at this stage','" 
+. $part_rev_status_ID . "','0','0','No treatment notes at this stage','" 
 . $record_status . "')";
 
 // echo $add_movement_SQL;
@@ -93,10 +95,9 @@ if (mysqli_query($con, $add_record_SQL)) {
 				header("Location: part_batch_add.php?PO_ID=".$_REQUEST['PO_ID']."&part_id=".$part_ID."&msg=OK&action=add&new_record_id=".$record_id."");
 			}
 			else {
-				// regular add - send them to the revisions list for that part
-				header("Location: part_revisions.php?part_id=".$part_ID."&msg=OK&action=add&new_record_id=".$record_id."");
+				// now send them to set the material!
+				header("Location: material_to_part_map.php?part_id=".$part_ID."&msg=OK&action=add&rev_id=".$record_id."");
 			}
-
 			exit();
 
 		}
@@ -106,7 +107,7 @@ if (mysqli_query($con, $add_record_SQL)) {
 
 }
 else {
-	echo "<h4>Failed to update existing user with SQL: <br />" . $add_revision_SQL . "</h4>";
+	echo "<h4>Failed to add new record with SQL: <br />" . $add_record_SQL . "</h4>";
 }
 
 ?>

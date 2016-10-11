@@ -132,7 +132,7 @@ if ($record_id != 0) {
 										</div>
 										
 										<div class="col-md-1">
-											&nbsp;
+					 						<?php add_button(0, 'supplier_add'); ?>
 										</div>
 									</div>
 
@@ -186,9 +186,9 @@ if ($record_id != 0) {
 									</div>
 
 									<div class="form-group">
-										<label class="col-md-3 control-label">Description:<span class="required">*</span></label>
+										<label class="col-md-3 control-label">Description <em>(internal use only)</em>:</label>
 										<div class="col-md-5">
-											<textarea class="form-control" rows="3" id="textareaDefault" name="description" required><?php echo $PO_description; ?></textarea>
+											<textarea class="form-control" rows="3" id="textareaDefault" name="description"><?php echo $PO_description; ?></textarea>
 										</div>
 										<div class="col-md-1">
 											&nbsp;

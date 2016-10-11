@@ -139,7 +139,7 @@ if (isset($_REQUEST['record_status'])) { 		$part_record_status 		= $_REQUEST['re
 								<div class="form-group">
 									<label class="col-md-3 control-label"><em class="text-muted">Existing Parts (for reference only):</em></label>
 									<div class="col-md-5">
-										<?php part_rev_drop_down(); ?>
+										<?php part_rev_drop_down(0, 0, 'part_rev_ID_reference'); ?>
 									</div>
 
 									<div class="col-md-1">

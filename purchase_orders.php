@@ -133,13 +133,17 @@ if (isset($_REQUEST['year'])) {
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
 						 <tr>
+							<th class="text-center"><i class="fa fa-cog" title="Actions"></i></th>
 							<th class="text-center"><a href="purchase_orders.php?sort=PO_number&dir=ASC<?php echo $add_URL_vars_year; ?>">P.O. number</a></th>
 							<th class="text-center"><a href="purchase_orders.php?sort=supplier_ID&dir=ASC<?php echo $add_URL_vars_year; ?>">Supplier</a></th>
 							<th class="text-center"><a href="purchase_orders.php?sort=created_date&dir=DESC<?php echo $add_URL_vars_year; ?>">Created Date</a></th>
 							<th class="text-center"># Items</th>
 							<th class="text-center">Total QTY</th>
 							<th class="text-center"># Batches</th>
-							<th class="text-center">Actions</th>
+							<th class="text-center">Order Status</th>
+							<th class="text-center">Goods Received?</th>
+							<th class="text-center">Payment Status</th>
+							<th class="text-center">Currency</th>
 						</tr>
 					  </thead>
 					  <tbody>
@@ -168,7 +172,7 @@ if (isset($_REQUEST['year'])) {
 					  		$add_SQL = " AND `created_date` >  '" . date("Y") . "-01-01 00:00:00' AND `created_date` <  '" . (date("Y") + 1) . "-01-01 00:00:00'";
 					  }
 
-					  $get_POs_SQL = "SELECT * FROM  `purchase_orders` WHERE `record_status` ='2'" . $add_SQL . $order_by;
+					  $get_POs_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` ='2'" . $add_SQL . $order_by;
 					  // echo $get_mats_SQL;
 
 					  $PO_count = 0;
@@ -178,13 +182,56 @@ if (isset($_REQUEST['year'])) {
 					  while($row_get_POs = mysqli_fetch_array($result_get_POs)) {
 
 					  		// now assign the results to the vars
-							$PO_ID = $row_get_POs['ID'];
-							$PO_number = $row_get_POs['PO_number'];
-							$PO_created_date = $row_get_POs['created_date'];
-							$PO_description = $row_get_POs['description'];
-							$PO_record_status = $row_get_POs['record_status'];
-							$PO_supplier_ID = $row_get_POs['supplier_ID'];
-							$PO_created_by = $row_get_POs['created_by'];
+							$PO_ID 							= $row_get_POs['ID'];
+							$PO_number 						= $row_get_POs['PO_number'];
+							$PO_created_date 				= $row_get_POs['created_date'];
+							$PO_description 				= $row_get_POs['description'];
+							$PO_record_status 				= $row_get_POs['record_status'];
+							$PO_supplier_ID 				= $row_get_POs['supplier_ID'];
+							$PO_created_by 					= $row_get_POs['created_by'];
+							$PO_date_needed 				= $row_get_POs['date_needed'];
+							$PO_date_delivered 				= $row_get_POs['date_delivered'];
+							$PO_approval_status 			= $row_get_POs['approval_status'];
+							$PO_payment_status 				= $row_get_POs['payment_status'];
+							$PO_completion_status 			= $row_get_POs['completion_status'];
+			
+							// ADDING NEW VARIABLES AS WE EXPAND THIS PART OF THE SYSTEM:
+							$PO_remark 						= $row_get_POs['remark'];
+							$PO_approved_by 				= $row_get_POs['approved_by'];
+							$PO_approval_date 				= $row_get_POs['approval_date'];
+							$PO_include_CoC 				= $row_get_POs['include_CoC'];
+							$PO_date_confirmed 				= $row_get_POs['date_confirmed'];
+							$PO_ship_via 					= $row_get_POs['ship_via'];
+							$PO_special_reqs 				= $row_get_POs['special_reqs'];
+							$PO_related_standards 			= $row_get_POs['related_standards'];
+							$PO_special_contracts 			= $row_get_POs['special_contracts'];
+							$PO_qualification_personnel 	= $row_get_POs['qualification_personnel'];
+							$PO_QMS_reqs 					= $row_get_POs['QMS_reqs'];
+							$PO_local_location_ID 			= $row_get_POs['local_location_ID'];
+							$PO_HQ_location_ID 				= $row_get_POs['HQ_location_ID'];
+							$PO_ship_to_location_ID 		= $row_get_POs['ship_to_location_ID'];
+							$PO_default_currency 			= $row_get_POs['default_currency'];
+							$PO_default_currency_rate 		= $row_get_POs['default_currency_rate'];
+							$PO_order_status 				= $row_get_POs['order_status'];
+							
+							// now get the currency info
+							$get_PO_default_currency_SQL = "SELECT * FROM `currencies` WHERE `ID` ='" . $PO_default_currency . "'";
+							// debug:
+							// echo '<h3>'.$get_PO_default_currency_SQL.'<h3>';
+							$result_get_PO_default_currency = mysqli_query($con,$get_PO_default_currency_SQL);
+							// while loop
+							while($row_get_PO_default_currency = mysqli_fetch_array($result_get_PO_default_currency)) {
+
+								// now print each result to a variable:
+								$PO_default_currency_ID 			= $row_get_PO_default_currency['ID'];
+								$PO_default_currency_name_EN		= $row_get_PO_default_currency['name_EN'];
+								$PO_default_currency_name_CN		= $row_get_PO_default_currency['name_CN'];
+								$PO_default_currency_one_USD_value	= $row_get_PO_default_currency['one_USD_value'];
+								$PO_default_currency_symbol			= $row_get_PO_default_currency['symbol'];
+								$PO_default_currency_abbreviation	= $row_get_PO_default_currency['abbreviation'];
+								$PO_default_currency_record_status	= $row_get_PO_default_currency['record_status'];
+
+							}
 
 							/* ***************  GET SUPPLIER INFO ************************** */
 
@@ -258,6 +305,74 @@ if (isset($_REQUEST['year'])) {
 					  ?>
 
 					  <tr>
+						<td class="text-center">
+						
+						<!-- ********************************************************* -->
+						<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+						<!-- ********************************************************* -->
+						 
+						    <a class="modal-with-form btn btn-default" href="#modalForm_<?php echo $row_get_POs['ID']; ?>"><i class="fa fa-gear"></i></a>
+
+							<!-- Modal Form -->
+							<div id="modalForm_<?php echo $row_get_POs['ID']; ?>" class="modal-block modal-block-primary mfp-hide">
+								<section class="panel">
+									<header class="panel-heading">
+										<h2 class="panel-title">Admin Options</h2>
+									</header>
+									<div class="panel-body">
+									
+										<div class="table-responsive">
+										 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+										 <thead>
+											<tr>
+												<th class="text-left" colspan="2">Action</th>
+												<th>Decsription</th>
+											</tr>
+										  </thead>
+										  <tbody>
+											<tr>
+											  <td>EDIT</td>
+											  <td>
+											  <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
+											  <td>Edit this record</td>
+											</tr>
+											<tr>
+											  <td>DELETE</td>
+											  <td><a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a></td>
+											  <td>Delete this record</td>
+											</tr>
+											<tr>
+											  <td>ADD BATCH</td>
+											  <td><a href="part_batch_add.php?PO_ID=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus"></i></a></td>
+											  <td>Add a batch to P.O. # <?php echo $PO_number; ?></td>
+											</tr>
+										  </tbody>
+										  <tfoot>
+										  	<tr>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	  <td>&nbsp;</td>
+										  	</tr>
+										  </tfoot>
+										  </table>
+										</div><!-- end of responsive table -->	
+									
+									</div><!-- end panel body -->
+									<footer class="panel-footer">
+										<div class="row">
+											<div class="col-md-12 text-right">
+												<button class="btn btn-danger modal-dismiss"><i class="fa fa-times"></i> Cancel</button>
+											</div>
+										</div>
+									</footer>
+								</section>
+							</div>
+							
+						<!-- ********************************************************* -->
+						<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+						<!-- ********************************************************* -->
+								
+               			 </td>
 					    <td><a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>"><?php echo $PO_number; ?></a></td>
 					    <td>
 					    	<a href="supplier_view.php?id=<?php echo $sup_ID; ?>">
@@ -353,74 +468,48 @@ if (isset($_REQUEST['year'])) {
 					    ?>
 					    <!-- END COUNT BATCHES -->
 					    </td>
-						<td class="text-center">
-						
-						<!-- ********************************************************* -->
-						<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
-						<!-- ********************************************************* -->
-						 
-						    <a class="modal-with-form btn btn-default" href="#modalForm_<?php echo $row_get_POs['ID']; ?>"><i class="fa fa-gear"></i></a>
-
-							<!-- Modal Form -->
-							<div id="modalForm_<?php echo $row_get_POs['ID']; ?>" class="modal-block modal-block-primary mfp-hide">
-								<section class="panel">
-									<header class="panel-heading">
-										<h2 class="panel-title">Admin Options</h2>
-									</header>
-									<div class="panel-body">
-									
-										<div class="table-responsive">
-										 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
-										 <thead>
-											<tr>
-												<th class="text-left" colspan="2">Action</th>
-												<th>Decsription</th>
-											</tr>
-										  </thead>
-										  <tbody>
-											<tr>
-											  <td>EDIT</td>
-											  <td>
-											  <a href="purchase_order_edit.php?id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-warning"><i class="fa fa-pencil"></i></a></td>
-											  <td>Edit this record</td>
-											</tr>
-											<tr>
-											  <td>DELETE</td>
-											  <td><a href="record_delete_do.php?table_name=purchase_orders&src_page=purchase_orders.php&id=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a></td>
-											  <td>Delete this record</td>
-											</tr>
-											<tr>
-											  <td>ADD BATCH</td>
-											  <td><a href="part_batch_add.php?PO_ID=<?php echo $row_get_POs['ID']; ?>" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-plus"></i></a></td>
-											  <td>Add a batch to P.O. # <?php echo $PO_number; ?></td>
-											</tr>
-										  </tbody>
-										  <tfoot>
-										  	<tr>
-										  	  <td>&nbsp;</td>
-										  	  <td>&nbsp;</td>
-										  	  <td>&nbsp;</td>
-										  	</tr>
-										  </tfoot>
-										  </table>
-										</div><!-- end of responsive table -->	
-									
-									</div><!-- end panel body -->
-									<footer class="panel-footer">
-										<div class="row">
-											<div class="col-md-12 text-right">
-												<button class="btn btn-danger modal-dismiss"><i class="fa fa-times"></i> Cancel</button>
-											</div>
-										</div>
-									</footer>
-								</section>
-							</div>
-							
-						<!-- ********************************************************* -->
-						<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
-						<!-- ********************************************************* -->
-								
-               			 </td>
+					    <td class="text-center"><?php 
+					    
+					    	if ($PO_order_status == 0) {
+					    		// OBSOLETE
+					    		?>
+					    		<span class="btn btn-warning btn-xs">Obsolete</span>
+					    		<?php
+					    	}
+					    	else if ($PO_order_status == 1) {
+					    		// OPEN
+					    		?>
+					    		<span class="btn btn-warning btn-xs">Open</span>
+					    		<?php
+					    	}
+					    	else if ($PO_order_status == 2) {
+					    		// COMPLETE
+					    		?>
+					    		<span class="btn btn-success btn-xs">Complete</span>
+					    		<?php
+					    	}
+					    
+					    
+					    ?></td>
+					    <td class="text-center"><?php 
+					    if (($PO_date_delivered !='')&&($PO_date_delivered!="0000-00-00 00:00:00")) { 
+					    	?>
+					    	<span class="btn btn-success btn-xs"><i class="fa fa-check"></i> YES</span>
+					    	<?php
+					    } 
+					    else {
+					    	?>
+					    	<span class="btn btn-danger btn-xs"><i class="fa fa-times"></i> NO</span>
+					    	<?php
+					    }
+					    ?></td>
+					    <td class="text-center"><?php payment_status($PO_payment_status); ?></td>
+					    <td class="text-center"><?php 
+					    
+					    	echo $PO_default_currency_symbol;
+					    	echo $PO_default_currency_abbreviation; 
+					    	
+					    ?></td>
 					  </tr>
 
 					  <?php
@@ -433,7 +522,7 @@ if (isset($_REQUEST['year'])) {
 					  <tfoot>
 						<tr>
 							<th class="text-left">TOTAL: <?php echo $PO_count; ?></th>
-							<th colspan="6">&nbsp;</th>
+							<th colspan="10">&nbsp;</th>
 						</tr>
 					  </tfoot>
 

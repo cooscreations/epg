@@ -210,7 +210,7 @@ pagehead($page_id);
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-								<li><a href="BOM.php">All BOMs</a></li>
+								<li><a href="BOM.php">All BOM</a></li>
 								<li><span>BOM</span></li>
 							</ol>
 
@@ -390,7 +390,7 @@ pagehead($page_id);
 								<div class="panel-body">
 									<div class="content">
 
-							<?php add_button($record_id, 'BOM_item_add.php', $record_var = 'BOM_id', $add_title='Click here to add a new item to this BOM'); ?>
+							<?php add_button($record_id, 'BOM_item_add', $record_var = 'BOM_id', $add_title='Click here to add a new item to this BOM'); ?>
 
 
 							<div class="table-responsive">
@@ -1417,8 +1417,8 @@ pagehead($page_id);
 
 
 
-							<?php add_button($record_id, 'BOM_item_add.php', $record_var = 'BOM_id', $add_title='Click here to add a new item to this BOM'); ?>
-							
+							<?php add_button($record_id, 'BOM_item_add', $record_var = 'BOM_id', $add_title='Click here to add a new item to this BOM'); ?>
+							<br />
 							</div>
 								  <div class="panel-footer">
 									<div class="text-left">

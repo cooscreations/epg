@@ -92,12 +92,12 @@ pagehead($page_id); ?>
         <table class="table table-bordered table-striped table-hover table-condensed mb-none">
           <thead>
             <tr>
-                <th class="text-center">Actions</th>
-                <th class="text-center">Photo</th>
+                <th class="text-center"><i class="fa fa-cog" title="Actions"></i></th>
+                <th class="text-center">Photo<i class="fa fa-file-image-o" title="Photo / 照片"></i></th>
                 <th class="text-center">Name</th>
                 <th class="text-center">名字</th>
-                <th class="text-center">E-mail</th>
-                <th class="text-center">Phone</th>
+                <th class="text-center"><i class="fa fa-envelope-o" title="E-mail / 邮件地址"></i></th>
+                <th class="text-center"><i class="fa fa-phone" title="Phone / 电话"></i></th>
                 <th class="text-center">Position</th>
                 <th class="text-center">Last Log In</th>
                 <th class="text-center">Level</th>

@@ -97,11 +97,12 @@ pagehead($page_id); ?>
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					 <thead>
 					  <tr>
-					    <td>Image</td>
+                		<th class="text-center"><i class="fa fa-cog" title="Actions"></i></th>
+					    <td class="text-center"><i class="fa fa-file-image-o" title="Photo / 照片"></i></td>
 					    <th>Part #</th>
-					    <th>Revision</th>
-					    <th>Date Entered</th>
-					    <th>Type</th>
+					    <th class="text-center">Revision</th>
+					    <th class="text-center">Date Entered</th>
+					    <th class="text-center">Type</th>
 					  </tr>
 					  </thead>
 
@@ -157,6 +158,121 @@ pagehead($page_id); ?>
 					  ?>
 
 					  <tr>
+						<td class="text-center">
+					
+							<!-- ********************************************************* -->
+							<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+							<!-- ********************************************************* -->
+			
+							<?php 
+			
+							// VARS YOU NEED TO WATCH / CHANGE:
+							$add_to_form_name 	= 'BOM_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+							$form_ID 			= $BOM_ID;					// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+							$edit_URL 			= 'BOM_edit'; 				// REQUIRED - specify edit page URL
+							$add_URL 			= 'BOM_add'; 				// REQURED - specify add page URL
+							$table_name 		= 'product_BOM';					// REQUIRED - which table are we updating?
+							$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+							$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+			
+							?>
+	 
+								<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+				
+								?>"><i class="fa fa-gear"></i></a>
+
+								<!-- Modal Form -->
+								<div id="modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+					
+								?>" class="modal-block modal-block-primary mfp-hide">
+									<section class="panel">
+										<header class="panel-heading">
+											<h2 class="panel-title">Admin Options</h2>
+										</header>
+										<div class="panel-body">
+				
+											<div class="table-responsive">
+											 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+											 <thead>
+												<tr>
+													<th class="text-left" colspan="2">Action</th>
+													<th>Decsription</th>
+												</tr>
+											  </thead>
+											  <tbody>
+												<tr>
+												  <td>EDIT</td>
+												  <td>
+													<a href="<?php 
+														echo $edit_URL; 
+													?>.php?id=<?php 
+														echo $form_ID; 
+													?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+														<i class="fa fa-pencil" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Edit this record</td>
+												</tr>
+												<tr>
+												  <td>DELETE</td>
+												  <td>
+													<a href="record_delete_do.php?table_name=<?php 
+														echo $table_name; 
+													?>&src_page=<?php 
+														echo $src_page; 
+													?>&id=<?php 
+														echo $form_ID;
+														echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+													?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+														<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Delete this record</td>
+												</tr>
+												<tr>
+												  <td>ADD</td>
+												  <td>
+													<a href="<?php 
+														echo $add_URL; 
+														echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+													?>" class="mb-xs mt-xs mr-xs btn btn-success">
+														<i class="fa fa-plus" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Add a similar item to this table</td>
+												</tr>
+											  </tbody>
+											  <tfoot>
+												<tr>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												</tr>
+											  </tfoot>
+											  </table>
+											</div><!-- end of responsive table -->	
+				
+										</div><!-- end panel body -->
+										<footer class="panel-footer">
+											<div class="row">
+												<div class="col-md-12 text-left">
+													<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+												</div>
+											</div>
+										</footer>
+									</section>
+								</div>
+		
+							<!-- ********************************************************* -->
+							<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+							<!-- ********************************************************* -->
+						</td>
 					    <td class="text-center">
 					      <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>">
 					      	<?php part_img($BOM_part_rev_ID,0); ?>
@@ -165,11 +281,11 @@ pagehead($page_id); ?>
 					    <td>
 					      <a href="BOM_view.php?id=<?php echo $BOM_ID; ?>" class="btn btn-primary btn-xs"><i class="fa fa-gears"></i> BOM # <?php echo $BOM_ID; ?></a> - <?php part_num($rev_part_join_part_ID); ?> - <?php part_name($rev_part_join_part_ID); ?>
 					    </td>
-					    <td>
+					    <td class="text-center">
 					      <?php part_rev($BOM_part_rev_ID); ?>
 					    </td>
-					    <td><?php echo date("Y-m-d", strtotime($BOM_date_entered)); ?></td>
-					    <td><?php echo $BOM_type; ?></td>
+					    <td class="text-center"><?php echo date("Y-m-d", strtotime($BOM_date_entered)); ?></td>
+					    <td class="text-center"><?php echo $BOM_type; ?></td>
 					  </tr>
 					  <?php
 
@@ -181,12 +297,14 @@ pagehead($page_id); ?>
 
 					  <tfoot>
 					  <tr>
-					    <th colspan="5">TOTAL: <?php echo $BOM_count; ?></th>
+					    <th colspan="6">TOTAL: <?php echo $BOM_count; ?></th>
 					  </tr>
 					  </tfoot>
 
 					 </table>
 					</div>
+					
+					<br />
 
 					<?php
 					  // now run the function

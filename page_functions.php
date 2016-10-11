@@ -450,7 +450,7 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 		<link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="print" ><!-- printer-friendly? -->
 
 		<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 		<link rel="stylesheet" href="assets/vendor/magnific-popup/magnific-popup.css" />
 		<link rel="stylesheet" href="assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
 		<link rel="stylesheet" href="assets/vendor/intl-tel-input/css/intlTelInput.css" />
@@ -1440,6 +1440,16 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 								<?php 
 								}
 								
+								if ($_REQUEST['action'] == 'add_BOM_item') { ?>
+									<!-- ADD NEW LINE ITEM -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-check fa-stack-1x"></i>
+									</span>
+									<strong>Well done!</strong> You successfully added a new line item to this Bill of Materials.
+								<?php 
+								}
+								
 								if ($_REQUEST['action'] == 'edit') { ?>
 									<!--  UPDATE -->
 									<span class="fa-stack fa-3x">
@@ -2007,7 +2017,7 @@ function supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID') {
 		<?php
 		// get batch list
 		$order_by = " ORDER BY `record_status` DESC";
-		$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = 2 and `supplier_status` >= 4" . $order_by; // SHOWING APPROVED VENDORS ONLY!
+		$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = '2'" . $order_by; // SHOWING APPROVED VENDORS ONLY!
 		echo "<!-- DEBUG: " . $get_sup_list_SQL . " -->";
 		$result_get_sup_list = mysqli_query($con,$get_sup_list_SQL);
 		// while loop
@@ -2035,10 +2045,27 @@ function supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID') {
 				$sup_fax = $row_get_sup_list['fax'];
 				$sup_email_1 = $row_get_sup_list['email_1'];
 				$sup_email_2 = $row_get_sup_list['email_2'];
+				
+				// VENDOR CLASSIFICATION BY STATUS:
+
+				$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_record_status . "'";
+				// echo $get_vendor_status_SQL;
+
+				$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
+				// while loop
+				while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
+					$sup_status_ID = $row_get_sup_status['ID'];
+					$sup_status_name_EN = $row_get_sup_status['name_EN'];
+					$sup_status_name_CN = $row_get_sup_status['name_CN'];
+					$sup_status_level = $row_get_sup_status['status_level'];
+					$sup_status_description = $row_get_sup_status['status_description'];
+					$sup_status_color_code = $row_get_sup_status['color_code'];
+					$sup_status_icon = $row_get_sup_status['icon'];
+				}
 
 				?>
 				<option value="<?php echo $sup_id; ?>" <?php if ($sup_id == $this_sup_ID) { ?> selected="selected"<?php } ?>>
-					<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?>
+					<?php echo $sup_name_EN; if (($sup_name_CN!='')&&($sup_name_CN!='中文名')) { echo " / " . $sup_name_CN; } ?> (Status: <?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { echo ' / ' . $sup_status_name_CN; } ?>)
 				</option>
 				<?php
 			}
@@ -2734,18 +2761,12 @@ function part_drop_down($current_ID=0) {
 /* ****************************************************************** */
 /* ****************************************************************** */
 /* ****************************************************************** */
-function part_rev_drop_down($current_ID=0, $part_type_ID=0) {
+function part_rev_drop_down($current_ID=0, $part_type_ID=0, $option_name = 'part_rev_ID') {
 
 	// start the session:
 	session_start();
 	// enable the DB connection:
 	include 'db_conn.php';
-	
-?>
-<!-- starting part_rev_drop_down function: -->
-<select data-plugin-selectTwo class="form-control populate" name="part_rev_ID" required>
-	<option value=""></option>
-	<?php
 	
 	if ($part_type_ID != 0){
 		$add_part_type_SQL = " AND `type_ID` = '" . $part_type_ID . "'";
@@ -2753,6 +2774,19 @@ function part_rev_drop_down($current_ID=0, $part_type_ID=0) {
 	else {
 		$add_part_type_SQL = '';
 	}
+	
+	if (($option_name == 'parent_ID')||($option_name == 'part_rev_ID_reference')) {
+		$required = '';
+	}
+	else {
+		$required="required";
+	}
+	
+?>
+<!-- starting part_rev_drop_down function: -->
+<select data-plugin-selectTwo class="form-control populate" name="<?php echo $option_name; ?>" <?php echo $required; ?>>
+	<option value=""></option>
+	<?php
 	
 	// get parts list
 	$get_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = '2'" . $add_part_type_SQL . " ORDER BY `part_code` ASC";
@@ -3459,6 +3493,39 @@ function material_drop_down($material_ID = 0, $required_field = 0) {
 	</select>
 	<?php
 } // end of material drop-down function
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+
+								
+function payment_status($current_status, $print_view=0) {
+	if ($current_status == 0) {
+		?>
+			<span class="btn btn-danger btn-xs">
+				<i class="fa fa-times"></i>
+				NOT PAID
+			</span>
+		<?php
+	}
+	else if ($current_status == 1) {
+		?>
+			<span class="btn btn-warning btn-xs">
+				<i class="fa fa-exclamation-triangle"></i>
+				PENDING
+			</span>
+		<?php
+	}
+	else {
+		?>
+			<span class="btn btn-success btn-xs">
+				<i class="fa fa-check"></i>
+				PAID
+			</span>
+		<?php
+	}
+} // end of payment_status function
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////

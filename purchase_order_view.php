@@ -75,6 +75,7 @@ while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 		$PO_local_location_ID 		= $row_get_PO['local_location_ID'];			// use function: get_location($PO_local_location_ID,1);
 		$PO_HQ_location_ID 			= $row_get_PO['HQ_location_ID'];			// use function! get_location($PO_HQ_location_ID,1);
 		$PO_ship_to_location_ID		= $row_get_PO['ship_to_location_ID'];		// use function! get_location($PO_ship_to_location_ID,0); (show title ONLY)
+		$PO_order_status 			= $row_get_PO['order_status'];
 
 		// ADDING NEW VARIABLES - DEFAULT CURRENCY!
 		
@@ -518,41 +519,9 @@ if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
 							  <!-- **************************************** -->
 							  <tr>
 								<th style="text-align: right">P.O. Payment Status:</th>
-								<?php
-
-								if ($PO_payment_status == 0) {
-									?>
-									<td>
-										<span class="btn btn-danger">
-											<i class="fa fa-times"></i>
-											DELETED
-										</span>
-									</td>
-									<?php
-								}
-								else if ($PO_payment_status == 1) {
-									?>
-									<td>
-										<span class="btn btn-warning">
-											<i class="fa fa-exclamation-triangle"></i>
-											PENDING
-										</span>
-									</td>
-									<?php
-								}
-								else {
-									?>
-									<td>
-										<span class="btn btn-success">
-											<i class="fa fa-check"></i>
-											OK
-										</span>
-									</td>
-									<?php
-								}
-
-
-								?>
+								<td>
+									<?php payment_status($PO_payment_status); ?>
+								</td>
 							  </tr>
 							  <!-- **************************************** -->
 						  
@@ -699,10 +668,10 @@ else {
 ?>
 				<!-- PANEL CONTENT HERE -->
 				<ol>
-					<li>Please confirm the receipt of this order indicating the shipping date and address and quantity.</li>
-					<li>All goods will be inspected and quantities verified by the receiving organization.</li>
-					<li>Supplier agrees to notify European Pharma Group of any changes to the product or the process in order to give European Pharma Group the opportunity to determine whether the change may affect the Quality of the finished Medical Device.</li>
-					<li>Fax or e-mail the confirmation to European Pharma Group.</li>
+					<li><strong>Please confirm the receipt of this order indicating the shipping date and address and quantity.</strong></li>
+					<li><strong>All goods will be inspected and quantities verified by the receiving organization.</strong></li>
+					<li><strong>Supplier agrees to notify European Pharma Group of any changes to the product or the process in order to give European Pharma Group the opportunity to determine whether the change may affect the Quality of the finished Medical Device.</strong></li>
+					<li><strong>Fax or e-mail the confirmation to European Pharma Group.</strong></li>
 				</ol>
 <?php 
 if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
@@ -976,13 +945,18 @@ if ($print_view == 0) { // ONLY SHOW THIS ON SCREEN VERSION!
 						
 									</td>
                         	<?php } // END OF HIDE ADMIN ACTIONS BUTTON FOR PRINT VIEW! ?>
-                            <td class="text-center"><?php echo $po_line_number; ?></td>
+                            <td class="text-center">
+                              <strong>
+                            	<?php echo $po_line_number; ?>
+                              </strong>	
+                            </td>
                             <td>
+                            	<strong>
                             		<?php part_num($po_part_id, $display_button); ?> 
                             		
                             		- 
                             	
-                            	<?php part_name($po_part_id,0); ?>
+                            	<?php part_name($po_part_id, $print_function_var); ?>
                             	
                             		-
 								
@@ -990,18 +964,31 @@ if ($print_view == 0) { // ONLY SHOW THIS ON SCREEN VERSION!
                             	
 								<br />
                             	<?php echo nl2br($po_item_item_notes); ?>
+                              </strong>
                             </td>
-                            <td class="text-right"><?php echo number_format($po_item_part_qty); ?></td>
-                            <td class="text-right"><?php 
+                            <td class="text-right">
+                            	<strong>
+                            		<?php echo number_format($po_item_part_qty); ?>
+                            	</strong>
+                            </td>
+                            <td class="text-right">
+                              <strong>
+                        		<?php 
                             	echo $PO_default_currency_symbol;	// NOTE: We are using the default PO currency symbol
-                            	echo number_format($po_item_unit_price_currency, 2); ?></td>
-                            <td class="text-right"><?php
+                            	echo number_format($po_item_unit_price_currency, 2); 
+                            	?>
+                              </strong>	
+                            </td>
+                            <td class="text-right">
+                              <strong>
+                            	<?php
                             	echo $PO_default_currency_symbol;
                             	
                             	// LINE TOTALS!
-                            	echo number_format($line_total, 2);
-                            		
-                            ?></td>
+                            	echo number_format($line_total, 2); 
+                            	?>
+                              </strong>
+                            </td>
                         </tr>
                         <?php 
                         
@@ -1099,11 +1086,6 @@ else {
 						</strong> 
 						<?php echo $PO_QMS_reqs; ?>
 					</li>
-					<li>
-						<strong>
-							Fax or e-mail the confirmation to European Pharma Group.
-						</strong>	
-					</li>
 				</ol>
 <?php 		
 	if ($print_view == 0) { // UPDATE: Hide this for print view!
@@ -1172,7 +1154,7 @@ else {
 								}
 								else { // NO!
 									?>
-									YES <big>☐</big> NO <big>☐</big>
+									YES <big>☐</big> NO <big>☑</big>
 									<?php
 								}
 						}
@@ -1206,6 +1188,9 @@ else {
 					<?php 
 						if ($print_view == 1) {
 						
+									echo '<strong>Approved By:</strong>'; // SPACE TO SIGN WITH ADOBE!
+						
+									/*
 									if ($PO_approved_by == 0) {
 										echo '<strong>Approved By:</strong> _______________________________________________'; // SPACE TO SIGN!
 									}
@@ -1214,9 +1199,11 @@ else {
 							<strong>Approved By:</strong> <?php get_creator($PO_approved_by, $display_button); ?>
 										<?php
 									}
+									*/
 						
 									// now let's but a big of space in here... 
 									echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+						
 						}
 						else {
 							?>
@@ -1224,18 +1211,20 @@ else {
 							<?php
 						}
 					?>
-					<strong>Date:</strong> <?php 
+					 <?php 
 					
 					if ($print_view == 1) {
+						/* -- DELETING THIS BECAUSE ADOBE SIGN WILL HANDLE IT
 						if ($PO_approval_date == '0000-00-00 00:00:00') {
-							echo '2 0 __ __ - __ __ - __ __ <em>(YYYY-MM-DD)</em>';
+							echo '<strong>Date:</strong> 2 0 __ __ - __ __ - __ __ <em>(YYYY-MM-DD)</em>';
 						}
 						else {
-							echo substr($PO_approval_date, 0, 10);
+							echo '<strong>Date:</strong> ' . substr($PO_approval_date, 0, 10);
 						}
+						*/
 					}
 					else {
-						echo substr($PO_approval_date, 0, 10); 
+						echo '<strong>Date:</strong> ' . substr($PO_approval_date, 0, 10); 
 					} ?>
 				
 				<br />

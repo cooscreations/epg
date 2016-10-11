@@ -45,10 +45,28 @@ if ($record_id != 0) {
 
     // while loop
     while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
-        $sup_ID = $row_get_sup['ID'];
-        $sup_en = $row_get_sup['name_EN'];
-        $sup_cn = $row_get_sup['name_CN'];
-        $sup_web = $row_get_sup['website'];
+        $sup_ID 						= $row_get_sup['ID'];
+        $sup_en 						= $row_get_sup['name_EN'];
+        $sup_cn 						= $row_get_sup['name_CN'];
+        $sup_web 						= $row_get_sup['website'];
+		$sup_epg_supplier_ID 			= $row_get_sup['epg_supplier_ID'];
+        $sup_supplier_status 			= $row_get_sup['supplier_status'];
+        $sup_part_classification 		= $row_get_sup['part_classification'];
+        $sup_items_supplied 			= $row_get_sup['items_supplied'];
+        $sup_part_type_ID 				= $row_get_sup['part_type_ID'];
+        $sup_certifications 			= $row_get_sup['certifications'];
+        $sup_certification_expiry_date 	= $row_get_sup['certification_expiry_date'];
+        $sup_evaluation_date 			= $row_get_sup['evaluation_date'];
+        $sup_address_EN 				= $row_get_sup['address_EN'];
+        $sup_address_CN 				= $row_get_sup['address_CN'];
+        $sup_country_ID 				= $row_get_sup['country_ID'];
+        $sup_contact_person 			= $row_get_sup['contact_person'];
+        $sup_mobile_phone 				= $row_get_sup['mobile_phone'];
+        $sup_telephone 					= $row_get_sup['telephone'];
+        $sup_fax 						= $row_get_sup['fax'];
+        $sup_email_1 					= $row_get_sup['email_1'];
+        $sup_email_2 					= $row_get_sup['email_2'];
+        $sup_record_status 				= $row_get_sup['record_status'];
 
     } // end get supplier info WHILE loop
 }
@@ -124,17 +142,30 @@ if ($record_id != 0) {
                                 &nbsp;
                             </div>
                         </div>
+                            
+                            
+                            
+                            <div class="form-group">
+								<label class="col-md-3 control-label">Record Status:</label>
+								<div class="col-md-5">
+									<?php echo record_status_drop_down($sup_record_status); ?>
+								</div>
+							
+								<div class="col-md-1">
+									&nbsp;
+								</div>
+							</div>
 
                     </div>
 
                     <footer class="panel-footer">
                         <?php
-										if (isset($_REQUEST['id'])) {
-											?>
+						if (isset($_REQUEST['id'])) {
+							?>
                         <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="sup_id" />
                         <?php
-										}
-										?>
+						}
+						?>
                         <button type="submit" class="btn btn-success">Submit </button>
                         <button type="reset" class="btn btn-default">Reset</button>
                     </footer>

@@ -143,7 +143,7 @@ if ($record_id != 0) {
 							</div>
                         </div>
 						
-						
+						<!--
 						<div class="form-group">
 							<label class="col-md-3 control-label">Material:</label>
 							<div class="col-md-5">
@@ -184,7 +184,7 @@ if ($record_id != 0) {
 								<a href="material_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
 							</div>
 						</div>
-
+						-->
 
 						<div class="form-group">
 							<label class="col-md-3 control-label">Part Treatment:</label>

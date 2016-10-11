@@ -95,6 +95,9 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 					<div class="row">
 						
+						<div class="col-md-1 text-right">
+							PART TYPE:
+						</div>
 						<div class="col-md-11">
 						<!-- PART TYPE JUMPER -->
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
@@ -122,10 +125,51 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
                              </select>
                             <!-- / PART TYPE JUMPER -->
 						</div>
-						
-						<?php add_button(0, 'part_add'); ?>
 
 					</div>
+					
+					<div class="row">
+							
+						<div class="col-md-1 text-right">
+							PARTS:
+						</div>
+						<div class="col-md-10">
+						<!-- PART JUMPER -->
+                            <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+                              <option value="#" selected="selected">JUMP TO ANOTHER PART / 看别的:</option>
+                              <option value="parts.php">View All / 看全部</option>
+                              <?php
+
+							$get_j_parts_SQL = "SELECT * FROM `parts` WHERE `record_status` = '2'";
+					  		// echo $get_parts_SQL;
+
+					  		$result_get_j_parts = mysqli_query($con,$get_j_parts_SQL);
+					  		// while loop
+					  		while($row_get_j_parts = mysqli_fetch_array($result_get_j_parts)) {
+
+								$j_part_ID 					= $row_get_j_parts['ID'];
+								$j_part_code 				= $row_get_j_parts['part_code'];
+								$j_part_name_EN 			= $row_get_j_parts['name_EN'];
+								$j_part_name_CN 			= $row_get_j_parts['name_CN'];
+								$j_part_description 		= $row_get_j_parts['description'];
+								$j_part_type_ID 			= $row_get_j_parts['type_ID'];
+								$j_part_classification_ID 	= $row_get_j_parts['classification_ID'];
+
+							   ?>
+                              <option value="part_view.php?id=<?php echo $j_part_ID; ?>"><?php echo $j_part_code; ?> - <?php echo $j_part_name_EN; if (($j_part_name_CN != '')&&($j_part_name_CN != '中文名')) { ?> / <?php echo $j_part_name_CN; } ?></option>
+                              <?php
+							  } // end get part list
+							  ?>
+                              <option value="parts.php">View All / 看全部</option>
+                             </select>
+                            <!-- / PART JUMPER -->
+						</div>
+						
+						<?php add_button(0, 'part_add'); ?>
+						
+					</div>
+					<br />
+					<br />
 
 
 
@@ -138,8 +182,9 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					/* if ($show_classification_column == 1) { ?>7<?php } else { ?>6<?php } */
 					?>
 
+					<thead>
 					  <tr>
-					    <th>Photo</th>
+					    <th class="text-center"><i class="fa fa-file-image-o" title="Photo / 照片"></i></th>
 					    <th><a href="parts.php?sort=part_code">Code</a></th>
 					    <th><a href="parts.php?sort=name_EN">Name</a></th>
 					    <th><a href="parts.php?sort=name_CN">名字</a></th>
@@ -156,6 +201,8 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 					    ?>
 					  </tr>
+					</thead>
+					<tbody>
 
 					  <?php
 
@@ -555,13 +602,14 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					  } // end while loop
 					  ?>
 
+					</tbody>
+					<tfoot>
 					  <tr>
 					    <th colspan="<?php if ($show_classification_column == 1) { ?>7<?php } else { ?>6<?php } ?>">TOTAL: <?php echo $part_count; ?></th>
 					  </tr>
-
-
-					 </table>
-					</div>
+					</tfoot>
+				 </table>
+				</div>
 					 
 					 <?php add_button(0, 'part_add'); ?>
 

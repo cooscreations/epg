@@ -862,13 +862,14 @@ pagehead($page_id);
 
 										<div class="table-responsive">
 										 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+										   <thead>
 											<tr>
 												<th>Type</th>
 												<th>Name</th>
 												<th>Rev.</th>
 											 </tr>
-
-
+											</thead>
+											<tbody>
 											<tr>
 											  <td><i class="fa fa-file-excel-o"></i></td>
 											  <td><a href="#">ICQ Form</a></td>
@@ -907,7 +908,7 @@ pagehead($page_id);
 											<tr>
 											  <th colspan="3">TOTAL DOCUMENTS: 5</th>
 											</tr>
-
+										  </tbody>
 										</table>
 									   </div>
 

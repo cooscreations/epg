@@ -73,6 +73,7 @@ $po_completion_status			= checkaddslashes($_REQUEST['completion_status']);				//
 $po_default_currency_rate 		= checkaddslashes($_REQUEST['po_default_currency_rate']);		//				
 $po_currency_id					= checkaddslashes($_REQUEST['currency_id']);					//
 
+if ($po_include_CoC == '') { $po_include_CoC = 0; }
 
 
 $edit_purchaseorder_SQL = "UPDATE `purchase_orders` SET 

@@ -334,6 +334,7 @@ if ($PO_id != 0) {
 
 
 								<footer class="panel-footer">
+								 <div class="row">
 									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
 								  <div class="col-md-5 text-left">	
 									<?php form_buttons('purchase_order_view', $record_id); ?>
@@ -367,7 +368,7 @@ if ($PO_id != 0) {
 										
 										<!-- END OF NEXT STEP SELECTION -->
 								  
-								  
+								  </div>
 								</footer>
 							</section>
 										<!-- now close the form -->
