@@ -35,6 +35,7 @@ $record_id 				= checkaddslashes($_REQUEST['user_id']);
 $user_fn 				= checkaddslashes($_REQUEST['fn_text']);
 $user_mn 				= checkaddslashes($_REQUEST['mn_text']);
 $user_ln 				= checkaddslashes($_REQUEST['ln_text']);
+$user_cn 				= checkaddslashes($_REQUEST['cn_text']);
 $user_email 			= checkaddslashes($_REQUEST['email_text']);
 $user_pwd 				= md5($_REQUEST['pwd_text']);
 $user_existing_pwd		= $_REQUEST['existing_password'];

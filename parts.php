@@ -136,7 +136,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 						<div class="col-md-10">
 						<!-- PART JUMPER -->
                             <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
-                              <option value="#" selected="selected">JUMP TO ANOTHER PART / 看别的:</option>
+                              <option value="#" selected="selected">JUMP TO PART RECORD / 选择产品:</option>
                               <option value="parts.php">View All / 看全部</option>
                               <?php
 
@@ -184,18 +184,47 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 					<thead>
 					  <tr>
+					  	<th class="text-center"><i class="fa fa-cog" title="Action"></i></th>
 					    <th class="text-center"><i class="fa fa-file-image-o" title="Photo / 照片"></i></th>
-					    <th><a href="parts.php?sort=part_code">Code</a></th>
-					    <th><a href="parts.php?sort=name_EN">Name</a></th>
-					    <th><a href="parts.php?sort=name_CN">名字</a></th>
-					    <th>Rev #</th>
-					    <th><a href="parts.php?sort=type_ID">Type</a></th>
+					    <th class="text-center"><a href="parts.php?sort=part_code">Code</a></th>
+					    <th class="text-center"><a href="parts.php?sort=name_EN">Name</a></th>
+					    <th class="text-center"><a href="parts.php?sort=name_CN">名字</a></th>
+					    <th class="text-center">Rev #</th>
+					    <th class="text-center">
+					    	<a href="parts.php?sort=type_ID">Type</a>
+					    	<br />
+					    	<!-- PART TYPE JUMPER -->
+                            <select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+                              <option value="#" selected="selected">Filter:</option>
+                              <option value="parts.php">View All / 看全部</option>
+                              <option value="parts.php?show=products">View Finished Products</option>
+                              <?php
+
+							$get_part_types_SQL = "SELECT * FROM `part_type` WHERE `record_status` = '2'";
+					  		// echo $get_part_types_SQL;
+
+					  		$result_get_part_types = mysqli_query($con,$get_part_types_SQL);
+					  		// while loop
+					  		while($row_get_part_types = mysqli_fetch_array($result_get_part_types)) {
+					  			$part_types_ID = $row_get_part_types['ID'];
+					  			$part_types_EN = $row_get_part_types['name_EN'];
+					  			$part_types_CN = $row_get_part_types['name_CN'];
+
+							   ?>
+                              <option value="parts.php?type_id=<?php echo $part_types_ID; ?>"><?php echo $part_types_EN; if (($part_types_CN!='')&&($part_types_CN!='中文名')) { ?> / <?php echo $part_types_CN; } ?></option>
+                              <?php
+							  } // end get part list
+							  ?>
+                              <option value="parts.php">View All / 看全部</option>
+                             </select>
+                            <!-- / PART TYPE JUMPER -->	
+					    </th>
 					    <?php
 
 					    // don't show this column for products or if the user is ONLY viewing assemblies...
 					    if ($show_classification_column == 1) {
 					    	?>
-					    	<th><a href="parts.php?sort=classification_ID">Classification</a></th>
+					    	<th class="text-center"><a href="parts.php?sort=classification_ID">Classification</a></th>
 					    	<?php
 					    }
 
@@ -419,14 +448,124 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					  ?>
 
 					  <tr>
+					  	<td class="text-center">
+                    
+							<!-- ********************************************************* -->
+							<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+							<!-- ********************************************************* -->
+			
+							<?php 
+			
+							// VARS YOU NEED TO WATCH / CHANGE:
+							$add_to_form_name 	= 'part_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+							$form_ID 			= $part_ID;					// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+							$edit_URL 			= 'part_edit'; 				// REQUIRED - specify edit page URL
+							$add_URL 			= 'part_add'; 				// REQURED - specify add page URL
+							$table_name 		= 'parts';					// REQUIRED - which table are we updating?
+							$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+							$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+			
+							?>
+	 
+								<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+				
+								?>"><i class="fa fa-gear"></i></a>
+
+								<!-- Modal Form -->
+								<div id="modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+					
+								?>" class="modal-block modal-block-primary mfp-hide">
+									<section class="panel">
+										<header class="panel-heading">
+											<h2 class="panel-title">Admin Options</h2>
+										</header>
+										<div class="panel-body">
+				
+											<div class="table-responsive">
+											 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+											 <thead>
+												<tr>
+													<th class="text-left" colspan="2">Action</th>
+													<th>Decsription</th>
+												</tr>
+											  </thead>
+											  <tbody>
+												<tr>
+												  <td>EDIT</td>
+												  <td>
+													<a href="<?php 
+														echo $edit_URL; 
+													?>.php?id=<?php 
+														echo $form_ID; 
+													?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+														<i class="fa fa-pencil" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Edit this record</td>
+												</tr>
+												<tr>
+												  <td>DELETE</td>
+												  <td>
+													<a href="record_delete_do.php?table_name=<?php 
+														echo $table_name; 
+													?>&src_page=<?php 
+														echo $src_page; 
+													?>&id=<?php 
+														echo $form_ID;
+														echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+													?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+														<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Delete this record</td>
+												</tr>
+												<tr>
+												  <td>ADD</td>
+												  <td>
+													<a href="<?php 
+														echo $add_URL; 
+														echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+													?>" class="mb-xs mt-xs mr-xs btn btn-success">
+														<i class="fa fa-plus" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Add a similar item to this table</td>
+												</tr>
+											  </tbody>
+											  <tfoot>
+												<tr>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												</tr>
+											  </tfoot>
+											  </table>
+											</div><!-- end of responsive table -->	
+				
+										</div><!-- end panel body -->
+										<footer class="panel-footer">
+											<div class="row">
+												<div class="col-md-12 text-left">
+													<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+												</div>
+											</div>
+										</footer>
+									</section>
+								</div>
+		
+							<!-- ********************************************************* -->
+							<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+							<!-- ********************************************************* -->
+						</td>
 					    <td class="text-center">
-
 					    	<a class="mt-xs mb-xs mr-xs popup-with-zoom-anim" href="#small-dialog_<?php echo $part_ID; ?>">
-
-					    	
-					    	<?php part_img($rev_id, 0); ?>
-					    	
-					    	
+					    		<?php part_img($rev_id, 0); ?>
 					    	</a>
 
 
@@ -605,7 +744,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 					</tbody>
 					<tfoot>
 					  <tr>
-					    <th colspan="<?php if ($show_classification_column == 1) { ?>7<?php } else { ?>6<?php } ?>">TOTAL: <?php echo $part_count; ?></th>
+					    <th colspan="<?php if ($show_classification_column == 1) { ?>8<?php } else { ?>7<?php } ?>">TOTAL: <?php echo $part_count; ?></th>
 					  </tr>
 					</tfoot>
 				 </table>

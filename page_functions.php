@@ -88,6 +88,10 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 	
 	// CHECK DATES!!!!
 	function check_date_time($date_to_check) {
+	
+		if ($date_to_check == '') {
+			$date_to_check = '0000-00-00 00:00:00';
+		}
 
 		if (substr($date_to_check, -3, 1) == ':') { 
 			$date_to_return = $date_to_check; // THIS HAS MINUTES AND HOURS ALREADY!
@@ -1449,6 +1453,17 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 									<strong>Well done!</strong> You successfully added a new line item to this Bill of Materials.
 								<?php 
 								}
+								
+								if ($_REQUEST['action'] == 'add_batch') { ?>
+									<!-- ADD NEW LINE ITEM -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-check fa-stack-1x"></i>
+									</span>
+									<strong>Well done!</strong> You successfully added a new batch to this product record.
+								<?php 
+								}
+								
 								
 								if ($_REQUEST['action'] == 'edit') { ?>
 									<!--  UPDATE -->
@@ -3144,6 +3159,90 @@ function part_name($part_id, $show_button = 1){ // default is to show a default 
 /* ****************************************************************** */
 /* ****************************************************************** */
 
+function part_name_from_rev($part_rev_id, $show_button = 1) {
+
+	// this function returns the part revision orange button with the part_rev_ID as a mouse-over title to help with development
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	if ($part_rev_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO REVISION FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+			$get_part_rev_SQL = "SELECT `part_ID` FROM `part_revisions` WHERE `ID` = '" . $part_rev_id . "'";
+			// debug:
+			// echo $get_part_rev_SQL;
+			$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+
+				// while loop
+				while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+					$part_rev_part_ID 			= $row_get_part_rev['part_ID'];
+					// now call another function?
+					part_name($part_rev_part_ID, $show_button);
+				} // end of while results loop
+				
+		} // end else 0 results flag
+
+ } // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
+function part_num_from_rev($part_rev_id, $show_button = 1) {
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+
+	if ($part_rev_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO REVISION FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+			$get_part_rev_SQL = "SELECT `part_ID` FROM `part_revisions` WHERE `ID` = '" . $part_rev_id . "'";
+			// debug:
+			// echo $get_part_rev_SQL;
+			$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+
+				// while loop
+				while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+					$part_rev_part_ID 			= $row_get_part_rev['part_ID'];
+					// now call another function:
+					part_num($part_rev_part_ID, $show_button);
+				} // end of while results loop
+				
+		} // end else 0 results flag
+
+ } // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+
 function part_img($part_rev_id, $profile_link = 1, $img_width_px = 100){ // default is to show a default button. Print view requires '0' to remove button styling and link
 
 	// start the session:
@@ -3504,24 +3603,21 @@ function payment_status($current_status, $print_view=0) {
 	if ($current_status == 0) {
 		?>
 			<span class="btn btn-danger btn-xs">
-				<i class="fa fa-times"></i>
-				NOT PAID
+				<i class="fa fa-times" title="NOT PAID"></i>
 			</span>
 		<?php
 	}
 	else if ($current_status == 1) {
 		?>
 			<span class="btn btn-warning btn-xs">
-				<i class="fa fa-exclamation-triangle"></i>
-				PENDING
+				<i class="fa fa-exclamation-triangle" title="PENDING"></i>
 			</span>
 		<?php
 	}
 	else {
 		?>
 			<span class="btn btn-success btn-xs">
-				<i class="fa fa-check"></i>
-				PAID
+				<i class="fa fa-check" title="PAID"></i>
 			</span>
 		<?php
 	}

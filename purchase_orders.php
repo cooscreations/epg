@@ -23,39 +23,131 @@ if (!isset($_SESSION['username'])) {
 
 $page_id = 9;
 
+// USED FOR YEAR JUMPER AND FILTERING:
+$start_year = 2010;
+
 // pull the header and template stuff:
 pagehead($page_id); ?>
 
 <?php
 
+$add_SQL = '';
 $add_URL_vars_sort = '';
 $add_URL_vars_dir = '';
+$add_URL_sup_ID = '';
 $add_URL_vars_year = "&year=" . date("Y");
+$add_URL_vars_month = '';
+$add_URL_vars_order_status = '';
+$add_URL_vars_rec = '';
+$add_URL_vars_payment_status = '';
+$sup_add_SQL = '';
+$end_date_filter_year = (date("Y") + 1);
 $display_year = date("Y");
+$time_search_SQL = '';
 
 if (isset($_REQUEST['sort'])) {
-
 	$add_URL_vars_sort = '&sort=' . $_REQUEST['sort'];
+	$order_by = " ORDER BY `" . $_REQUEST['sort'] . "` " . $_REQUEST['dir'] . "";
+}
+else {
+	$order_by = " ORDER BY  `purchase_orders`.`PO_number` DESC";
 }
 
 if (isset($_REQUEST['dir'])) {
-
 	$add_URL_vars_dir = '&dir=' . $_REQUEST['dir'];
+}
+
+if (isset($_REQUEST['sup_id'])) {
+	$add_URL_sup_ID = '&sup_id=' . $_REQUEST['sup_id'];
+	$add_SQL .= " AND `supplier_ID` = '" . $_REQUEST['sup_id'] . "'";
 }
 
 if (isset($_REQUEST['year'])) {
 	if ($_REQUEST['year']!='all') {
 		$add_URL_vars_year = '&year=' . $_REQUEST['year'];
-		$display_year = 'all';
+		$display_year = $_REQUEST['year'];
+		$sup_add_SQL = " AND `created_date` >  '" . $_REQUEST['year'] . "-01-01 00:00:00' AND `created_date` <  '" . ($_REQUEST['year'] + 1) . "-01-01 00:00:00'";
+		$add_SQL .= $sup_add_SQL;
+		$end_date_filter_year = ($_REQUEST['year'] + 1);
 	}
 	else {
 		$add_URL_vars_year = '';
-		$display_year = $_REQUEST['year'];
+		$display_year = 'all';
+		$sup_add_SQL = '';
+		$add_SQL .= ''; // SHOW ALL YEARS aka DO NOT ADD TIME DATA HERE! (may be specified above in other condition, so use the '.')
 	}
+}
+else {
+	if (!isset($_REQUEST['month'])){
+		// by default, we will just show this year!
+		$sup_add_SQL = " AND `created_date` >  '" . date("Y") . "-01-01 00:00:00' AND `created_date` <  '" . (date("Y") + 1) . "-01-01 00:00:00'";
+		$add_SQL .= $sup_add_SQL;
+	}
+	else { /* MONTH var will handle this */ }
+}
+
+if (isset($_REQUEST['order_status'])) {
+	$add_SQL .= " AND `order_status` = '" . $_REQUEST['order_status'] . "'";
+	$add_URL_vars_order_status = '&order_status=' . $_REQUEST['order_status'];
+}
+
+if (isset($_REQUEST['month'])) {
+	// first let's set up the full date info:
+	
+	// EXAMPLE: 2016-01
+	
+	$year_to_filter = substr($_REQUEST['month'],0,4);
+	// echo '<h3>Year To Filter: ' . $year_to_filter . '</h3>';
+	
+	$month_to_filter = substr($_REQUEST['month'],5,2);
+	// echo '<h3>Month To Filter: ' . $month_to_filter . '</h3>';
+	
+	// now establish the start and end dates:
+	
+	$start_year = $year_to_filter;
+	$start_month = $month_to_filter;
+	
+	$end_year = $year_to_filter;
+	$end_month = $month_to_filter + 1;
+	
+	if ($end_month == 13) { 
+		$end_month = '01';
+		$end_year = $year_to_filter + 1;
+	}
+	
+	if ($end_month <= 9) {
+		$end_month = '0' . $end_month; // add leading zero
+	}
+	$sup_add_SQL = " AND `created_date` >  '" . $start_year . "-" . $start_month . "-01 00:00:00' AND `created_date` <  '" . $end_year . "-" . $end_month . "-01 00:00:00'";
+	$add_SQL .= $sup_add_SQL;
+	$order_by = ' ORDER BY `created_date` ASC';
+	$add_URL_vars_month = '&month=' . $_REQUEST['month'] . '';
+	$add_URL_vars_year = ''; // THIS CAN BE REMOVED AS THE ONE ABOVE NEGATES IT
+}
+
+if (isset($_REQUEST['rec'])) {
+	$add_URL_vars_rec = '&rec=' . $_REQUEST['rec'];
+	
+	if ($_REQUEST['rec'] == 0) {
+		// not received:
+		$add_SQL .= " AND `date_delivered` = '0000-00-00 00:00:00'";
+		$sup_add_SQL .= " AND `date_delivered` = '0000-00-00 00:00:00'";
+	}
+	else {
+		// received:
+		$add_SQL .= " AND `date_delivered` != '0000-00-00 00:00:00'";
+		$sup_add_SQL .= " AND `date_delivered` != '0000-00-00 00:00:00'";
+	}
+	
+}
+
+if (isset($_REQUEST['payment_status'])) {
+	$add_SQL .= " AND `payment_status` = '" . $_REQUEST['payment_status'] . "'";
+	$add_URL_vars_payment_status = "&payment_status=" . $_REQUEST['payment_status'];
 }
 
 // now run it like this:
-// echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year;
+// echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID;
 
 ?>
 
@@ -82,25 +174,28 @@ if (isset($_REQUEST['year'])) {
 					<!-- start: page -->
 
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-md-1">
+							<a class="btn btn-primary" href="purchase_orders.php"><i class="fa fa-refresh" title="RESET PAGE"></i></a>
+						</div>
+						<div class="col-md-11">
 							<!-- YEAR JUMPER -->
 
 							<select onchange="document.location = this.value" data-plugin-selecttwo class="form-control populate">
 								<option value="#" selected="selected">SELECT A YEAR / 选一年:</option>
-								<option value="purchase_orders.php?year=all<?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>">View All / 看全部</option>
+								<option value="purchase_orders.php?year=all<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">View All / 看全部</option>
 
 								<?php
-									$start_year = 2010;
+									// $start_year = 2010; THIS IS NOW SPECIFIED ABOVE AS IT'S ALSO USED FOR FILTERING
 									$loop_year = $start_year;
 
 									while ($loop_year <= date("Y")) {
 										?>
-								<option value="purchase_orders.php?year=<?php echo $loop_year; ?><?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>"<?php if ($loop_year == $_REQUEST['year']) { ?> selected="selected"<?php } ?>>SHOW POs FOR <?php echo $loop_year; ?> 的订单</option>
+								<option value="purchase_orders.php?year=<?php echo $loop_year; ?><?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>"<?php if ($loop_year == $_REQUEST['year']) { ?> selected="selected"<?php } ?>>SHOW POs FOR <?php echo $loop_year; ?> 的订单</option>
 										<?
 										$loop_year = $loop_year + 1;
 									}
 								?>
-								<option value="purchase_orders.php?year=all<?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>">View All / 看全部</option>
+								<option value="purchase_orders.php?year=all<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">View All / 看全部</option>
 							</select>
 							<!-- / YEAR JUMPER -->
 						</div>
@@ -134,46 +229,309 @@ if (isset($_REQUEST['year'])) {
 					 <thead>
 						 <tr>
 							<th class="text-center"><i class="fa fa-cog" title="Actions"></i></th>
-							<th class="text-center"><a href="purchase_orders.php?sort=PO_number&dir=ASC<?php echo $add_URL_vars_year; ?>">P.O. number</a></th>
-							<th class="text-center"><a href="purchase_orders.php?sort=supplier_ID&dir=ASC<?php echo $add_URL_vars_year; ?>">Supplier</a></th>
-							<th class="text-center"><a href="purchase_orders.php?sort=created_date&dir=DESC<?php echo $add_URL_vars_year; ?>">Created Date</a></th>
-							<th class="text-center"># Items</th>
-							<th class="text-center">Total QTY</th>
-							<th class="text-center"># Batches</th>
-							<th class="text-center">Order Status</th>
-							<th class="text-center">Goods Received?</th>
-							<th class="text-center">Payment Status</th>
-							<th class="text-center">Currency</th>
+							<th class="text-center">
+								<a href="purchase_orders.php?sort=PO_number&dir=ASC<?php echo $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">
+								  P.O. number
+								</a>
+								<br />
+								<!-- PURCHASE ORDER JUMPER -->
+								<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+								  <option value="#" selected="selected">Filter:</option>
+								  <option value="purchase_orders.php">View All / 看全部</option>
+								  <?php
+
+								$get_j_POs_SQL = "SELECT `ID`, `PO_number` FROM `purchase_orders` WHERE `record_status` = '2'";
+								// echo $get_j_POs_SQL;
+
+								$result_get_j_POs = mysqli_query($con,$get_j_POs_SQL);
+								// while loop
+								while($row_get_j_POs = mysqli_fetch_array($result_get_j_POs)) {
+									$j_PO_ID = $row_get_j_POs['ID'];
+									$j_PO_number = $row_get_j_POs['PO_number'];
+
+								   ?>
+								  <option value="purchase_order_view.php?id=<?php echo $j_PO_ID; ?>"><?php echo $j_PO_number; ?></option>
+								  <?php
+								  } // end get part list
+								  ?>
+								  <option value="purchase_orders.php">View All / 看全部</option>
+								 </select>
+								<!-- / PURCHASE ORDER JUMPER -->	
+							</th>
+							<th class="text-center">
+								<a href="purchase_orders.php?sort=created_date&dir=DESC<?php echo $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">Created Date</a>
+								<br />
+								<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+									<option value="#" selected="selected">Filter:</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">Clear This Filter</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_year; ?>">Clear All Filters</option>
+										<?php 
+										
+										if ( ( $display_year!='' ) && ( $display_year!='all' ) ) {
+											$filter_year = $display_year;
+										}
+										else {
+											$filter_year = $start_year; // this is specified above for the entire document
+										}
+										
+										while ( $filter_year <= $end_date_filter_year ) {
+											// now set the month:
+											$filter_month = 1;
+										
+											while ($filter_month <= 12) {
+										
+												if ($filter_month <= 9) {
+													$display_filter_month = '0' . $filter_month;
+												}
+												else {
+													$display_filter_month = $filter_month;
+												}
+										
+												?>
+												<option value="purchase_orders.php?month=<?php echo $filter_year; ?>-<?php echo $display_filter_month; ?><?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>"<?php if ( $_REQUEST['month'] == $filter_year . '-' .$display_filter_month ) { ?> selected="selected"<?php } ?>><?php echo $filter_year; ?>-<?php echo $display_filter_month ; ?></option>
+												<?php
+												// loop through the months
+												$filter_month = $filter_month + 1;
+											} 
+											// loop through the years
+											$filter_year = $filter_year + 1;
+										}
+									
+										/*
+									
+									
+										// REVERSE THE DISPLAY ORDER, just for fun:
+									
+										$filter_year = date("Y"); // this is specified above for the entire document
+										while ($filter_year >= $start_year) {
+											// now set the month:
+											$filter_month = 12;
+										
+											while ($filter_month >= 1) {
+										
+												if ($filter_month <= 9) {
+													$display_filter_month = '0' . $filter_month;
+												}
+												else {
+													$display_filter_month = $filter_month;
+												}
+										
+												?>
+												<option value="purchase_orders.php?month=<?php echo $filter_year; ?>-<?php echo $display_filter_month; ?><?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_sup_ID . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>"<?php if ( $_REQUEST['month'] == $filter_year . '-' .$display_filter_month ) { ?> selected="selected"<?php } ?>><?php echo $filter_year; ?>-<?php echo $display_filter_month ; ?></option>
+												<?php
+												// loop through the months
+												$filter_month = $filter_month - 1;
+											} 
+											// loop through the years
+											$filter_year = $filter_year - 1;
+										}
+										*/
+										?>
+									</select>
+							</th>
+							<th class="text-center">
+								Description
+							</th>
+							<th class="text-center">
+								<a href="purchase_orders.php?sort=supplier_ID&dir=ASC<?php echo $add_URL_vars_year . $add_URL_vars_month . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">Supplier</a><br />
+								<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+									<option value="#" selected="selected">Filter:</option>
+									<option value="purchase_orders.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_vars_order_status . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">Clear This Filter</option>
+									<option value="purchase_orders.php?1<?php echo $add_URL_vars_year; ?>">Clear All Filters</option>
+									<?php 
+									$get_sup_list_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = '2'";
+									$result_sup_list = mysqli_query($con,$get_sup_list_SQL);
+									// while loop
+									while($row_sup_list = mysqli_fetch_array($result_sup_list)) {
+
+											// now print each record:
+											$sup_list_id 				= $row_sup_list['ID'];
+											$sup_list_epg_supplier_ID 	= $row_sup_list['epg_supplier_ID'];
+											$sup_list_name_EN 			= $row_sup_list['name_EN'];
+											$sup_list_name_CN 			= $row_sup_list['name_CN'];
+											$sup_list_supplier_status 	= $row_sup_list['supplier_status'];
+
+							
+											// now count POs for this vendor:
+											
+											$total_j_sup_POs = 0;
+							
+											// count POs for this vendor:
+											$count_j_sup_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `supplier_ID` = '" . $sup_list_id . "'" . $sup_add_SQL;
+											echo "<h1>SQL here: " . $count_j_sup_POs_sql . "</h1>";
+											$count_j_sup_POs_query = mysqli_query($con, $count_j_sup_POs_sql);
+											$count_j_sup_POs_row = mysqli_fetch_row($count_j_sup_POs_query);
+											$total_j_sup_POs = $count_j_sup_POs_row[0];
+											
+											$total_j_sup_GT_POs = 0;
+											
+											// if there is a filter on this count, let's also grab the grand totals:
+											if ($add_SQL!='') {
+												// count POs GRAND TOTAL (GT) for this vendor:
+												$count_j_sup_GT_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `supplier_ID` = '" . $sup_list_id . "'";
+												$count_j_sup_GT_POs_query = mysqli_query($con, $count_j_sup_GT_POs_sql);
+												$count_j_sup_GT_POs_row = mysqli_fetch_row($count_j_sup_GT_POs_query);
+												$total_j_sup_GT_POs = $count_j_sup_GT_POs_row[0];
+											}
+											
+											// UPDATE - I'm not even going to bother showing records with 0 value:
+											
+											if ( ( $total_j_sup_GT_POs != 0 ) && ( $add_SQL!='' ) ) {
+												?>
+												<option value="purchase_orders.php?sup_id=<?php echo $sup_list_id; echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_vars_order_status . $add_URL_vars_rec; ?>"<?php if ($_REQUEST['sup_id'] == $sup_list_id) { ?> selected="selected"<?php } ?>><?php 
+					
+													echo $sup_list_name_EN; 
+													
+													if (($sup_list_name_CN!='')&&($sup_list_name_CN!='中文名')) { 
+														echo ' / ' . $sup_list_name_CN;
+													}
+													
+													echo '&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&nbsp;';
+													
+													if ( ( $total_j_sup_GT_POs != 0 ) && ( $total_j_sup_GT_POs!= $total_j_sup_POs ) ) { 
+														echo $display_year . ': ' . $total_j_sup_POs . ']&nbsp;&nbsp;&nbsp;[Total: ' . $total_j_sup_GT_POs . ' order';
+														if ($total_j_sup_GT_POs!=1) { echo 's'; }
+													} 
+													else {
+														echo $total_j_sup_POs . ' order';
+														if ($total_j_sup_POs != 1) { echo 's'; }
+													}
+													
+													echo '&nbsp;&nbsp;]';
+													
+													?>
+												</option>
+												<?php
+											} // end of show > 0 results only
+									} // end of while loop
+									?>
+								</select>
+								</th>
+								<th class="text-center"># Items</th>
+								<th class="text-center">Total QTY</th>
+								<th class="text-center"># Batches</th>
+								<th class="text-center">
+									Order Status
+									<br />
+									<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+										<option value="#" selected="selected">Filter:</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>">Clear This Filter</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_year; ?>">Clear All Filters</option>
+										<?php 
+										
+										
+										// now count POs by status:
+										
+										$total_status_0_POs = 0; // OBSOLETE
+										$total_status_1_POs = 0; // OPEN
+										$total_status_2_POs = 0; // COMPLETE
+										
+										$count_status_0_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `order_status` = '0'" . $sup_add_SQL;
+										// echo "<h1>SQL here: " . $count_status_0_POs_sql . "</h1>";
+										$count_status_0_POs_query = mysqli_query($con, $count_status_0_POs_sql);
+										$count_status_0_POs_row = mysqli_fetch_row($count_status_0_POs_query);
+										$total_status_0_POs = $count_status_0_POs_row[0];
+										
+										$count_status_1_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `order_status` = '1'" . $sup_add_SQL;
+										// echo "<h1>SQL here: " . $count_status_1_POs_sql . "</h1>";
+										$count_status_1_POs_query = mysqli_query($con, $count_status_1_POs_sql);
+										$count_status_1_POs_row = mysqli_fetch_row($count_status_1_POs_query);
+										$total_status_1_POs = $count_status_1_POs_row[0];
+										
+										$count_status_2_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `order_status` = '2'" . $sup_add_SQL;
+										// echo "<h1>SQL here: " . $count_status_2_POs_sql . "</h1>";
+										$count_status_2_POs_query = mysqli_query($con, $count_status_2_POs_sql);
+										$count_status_2_POs_row = mysqli_fetch_row($count_status_2_POs_query);
+										$total_status_2_POs = $count_status_2_POs_row[0];
+										
+										?>
+										<option value="purchase_orders.php?order_status=0<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>"<?php if ( $_REQUEST['order_status'] == 0 ) { ?> selected="selected"<?php } ?>>OBSOLETE (<?php echo $total_status_0_POs; ?>)</option>
+										<option value="purchase_orders.php?order_status=1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>"<?php if ( $_REQUEST['order_status'] == 1 ) { ?> selected="selected"<?php } ?>>OPEN (<?php echo $total_status_1_POs; ?>)</option>
+										<option value="purchase_orders.php?order_status=2<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec . $add_URL_vars_payment_status; ?>"<?php if ( $_REQUEST['order_status'] == 2 ) { ?> selected="selected"<?php } ?>>COMPLETE (<?php echo $total_status_2_POs; ?>)</option>
+									</select>
+								</th>
+								<th class="text-center">
+									Goods Received?
+									<br />
+									<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+										<option value="#" selected="selected">Filter:</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_payment_status; ?>">Clear This Filter</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_year; ?>">Clear All Filters</option>
+										<?php 
+										
+										
+										// now count POs by status:
+										
+										$total_rec_0_POs = 0; // NOT RECEIVED
+										$total_rec_1_POs = 0; // RECEIVED
+										
+										$count_rec_0_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `date_delivered` = '0000-00-00 00:00:00'" . $sup_add_SQL;
+										// echo "<h1>SQL here: " . $count_rec_0_POs_sql . "</h1>";
+										$count_rec_0_POs_query = mysqli_query($con, $count_rec_0_POs_sql);
+										$count_rec_0_POs_row = mysqli_fetch_row($count_rec_0_POs_query);
+										$total_rec_0_POs = $count_rec_0_POs_row[0];
+										
+										$count_rec_1_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `date_delivered` != '0000-00-00 00:00:00'" . $sup_add_SQL;
+										// echo "<h1>SQL here: " . $count_rec_1_POs_sql . "</h1>";
+										$count_rec_1_POs_query = mysqli_query($con, $count_rec_1_POs_sql);
+										$count_rec_1_POs_row = mysqli_fetch_row($count_rec_1_POs_query);
+										$total_rec_1_POs = $count_rec_1_POs_row[0];
+										
+										?>
+										<option value="purchase_orders.php?rec=0<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_payment_status; ?>"<?php if ( $_REQUEST['rec'] == 0 ) { ?> selected="selected"<?php } ?>>Not Received (<?php echo $total_rec_0_POs; ?>)</option>
+										<option value="purchase_orders.php?rec=1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_payment_status; ?>"<?php if ( $_REQUEST['rec'] == 1 ) { ?> selected="selected"<?php } ?>>Received (<?php echo $total_rec_1_POs; ?>)</option>
+									</select>
+								</th>
+								<th class="text-center">
+									Payment Status
+									<br />
+									<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+										<option value="#" selected="selected">Filter:</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec; ?>">Clear This Filter</option>
+										<option value="purchase_orders.php?1<?php echo $add_URL_vars_year; ?>">Clear All Filters</option>
+										<?php 
+										
+										
+										// now count POs by status:
+										
+										$total_payment_status_0_POs = 0; // NOT PAID
+										$total_payment_status_1_POs = 0; // PENDING
+										$total_payment_status_2_POs = 0; // PAID
+										
+										$count_payment_status_0_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `payment_status` = '0'" . $add_SQL;
+										// echo "<h1>SQL here: " . $count_payment_status_0_POs_sql . "</h1>";
+										$count_payment_status_0_POs_query = mysqli_query($con, $count_payment_status_0_POs_sql);
+										$count_payment_status_0_POs_row = mysqli_fetch_row($count_payment_status_0_POs_query);
+										$total_payment_status_0_POs = $count_payment_status_0_POs_row[0];
+										
+										$count_payment_status_1_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `payment_status` = '1'" . $add_SQL;
+										// echo "<h1>SQL here: " . $count_payment_status_1_POs_sql . "</h1>";
+										$count_payment_status_1_POs_query = mysqli_query($con, $count_payment_status_1_POs_sql);
+										$count_payment_status_1_POs_row = mysqli_fetch_row($count_payment_status_1_POs_query);
+										$total_payment_status_1_POs = $count_payment_status_1_POs_row[0];
+										
+										$count_payment_status_2_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `payment_status` = '2'" . $add_SQL;
+										// echo "<h1>SQL here: " . $count_payment_status_2_POs_sql . "</h1>";
+										$count_payment_status_2_POs_query = mysqli_query($con, $count_payment_status_2_POs_sql);
+										$count_payment_status_2_POs_row = mysqli_fetch_row($count_payment_status_2_POs_query);
+										$total_payment_status_2_POs = $count_payment_status_2_POs_row[0];
+										
+										?>
+										<option value="purchase_orders.php?payment_status=0<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec; ?>"<?php if ( $_REQUEST['payment_status'] == 0 ) { ?> selected="selected"<?php } ?>>NOT PAID (<?php echo $total_payment_status_0_POs; ?>)</option>
+										<option value="purchase_orders.php?payment_status=1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec; ?>"<?php if ( $_REQUEST['payment_status'] == 1 ) { ?> selected="selected"<?php } ?>>PENDING (<?php echo $total_payment_status_1_POs; ?>)</option>
+										<option value="purchase_orders.php?payment_status=2<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_year . $add_URL_vars_month . $add_URL_sup_ID . $add_URL_vars_rec; ?>"<?php if ( $_REQUEST['payment_status'] == 2 ) { ?> selected="selected"<?php } ?>>PAID (<?php echo $total_payment_status_2_POs; ?>)</option>
+									</select></th>
+								<th class="text-center">Currency</th>
 						</tr>
 					  </thead>
 					  <tbody>
 
 					  <?php
-					  if (isset($_REQUEST['sort'])) {
-					  	$order_by = " ORDER BY `" . $_REQUEST['sort'] . "` " . $_REQUEST['dir'] . "";
-					  }
-					  else {
-					  	$order_by = " ORDER BY  `purchase_orders`.`PO_number` DESC";
-					  }
-
-					  $add_SQL = "";
-
-					  if (isset($_REQUEST['year'])) {
-
-					  	if ($_REQUEST['year'] == 'all') {
-					  		$add_SQL = ""; // SHOW ALL YEARS!
-					  	}
-					  	else {
-					  		$add_SQL = " AND `created_date` >  '" . $_REQUEST['year'] . "-01-01 00:00:00' AND `created_date` <  '" . ($_REQUEST['year'] + 1) . "-01-01 00:00:00'";
-					  	}
-					  }
-					  else {
-					  		// by default, we will just show this year!
-					  		$add_SQL = " AND `created_date` >  '" . date("Y") . "-01-01 00:00:00' AND `created_date` <  '" . (date("Y") + 1) . "-01-01 00:00:00'";
-					  }
+					  
+					  // VARIABLES ARE NOW SPECIFIED RIGHT AT THE TOP OF THIS PAGE! ^_^
 
 					  $get_POs_SQL = "SELECT * FROM `purchase_orders` WHERE `record_status` ='2'" . $add_SQL . $order_by;
-					  // echo $get_mats_SQL;
+					  echo '<!-- MASTER LIST SQL IS ' . $get_POs_SQL . '-->';
 
 					  $PO_count = 0;
 
@@ -374,14 +732,17 @@ if (isset($_REQUEST['year'])) {
 								
                			 </td>
 					    <td><a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>"><?php echo $PO_number; ?></a></td>
-					    <td>
-					    	<a href="supplier_view.php?id=<?php echo $sup_ID; ?>">
-					    		<?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?>
-					    	</a>
-					    </td>
 					    <td class="text-center">
 					    	<a href="purchase_order_view.php?id=<?php echo $row_get_POs['ID']; ?>">
 					    		<?php echo date("Y-m-d", strtotime($PO_created_date)); ?>
+					    	</a>
+					    </td>
+					    <td>
+					    	<?php echo $PO_description; ?>
+					    </td>
+					    <td>
+					    	<a href="supplier_view.php?id=<?php echo $sup_ID; ?>">
+					    		<?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { echo '<br />' . $sup_cn; } ?>
 					    	</a>
 					    </td>
 					    <td class="text-center"><?php 
@@ -473,19 +834,19 @@ if (isset($_REQUEST['year'])) {
 					    	if ($PO_order_status == 0) {
 					    		// OBSOLETE
 					    		?>
-					    		<span class="btn btn-warning btn-xs">Obsolete</span>
+					    		<span class="btn btn-warning btn-xs"><i class="fa fa-times" title="OBSOLETE"></i></span>
 					    		<?php
 					    	}
 					    	else if ($PO_order_status == 1) {
 					    		// OPEN
 					    		?>
-					    		<span class="btn btn-warning btn-xs">Open</span>
+					    		<span class="btn btn-warning btn-xs"><i class="fa fa-question" title="OPEN"></i></span>
 					    		<?php
 					    	}
 					    	else if ($PO_order_status == 2) {
 					    		// COMPLETE
 					    		?>
-					    		<span class="btn btn-success btn-xs">Complete</span>
+					    		<span class="btn btn-success btn-xs"><i class="fa fa-check" title="COMPLETE"></i></span>
 					    		<?php
 					    	}
 					    
@@ -494,12 +855,12 @@ if (isset($_REQUEST['year'])) {
 					    <td class="text-center"><?php 
 					    if (($PO_date_delivered !='')&&($PO_date_delivered!="0000-00-00 00:00:00")) { 
 					    	?>
-					    	<span class="btn btn-success btn-xs"><i class="fa fa-check"></i> YES</span>
+					    	<span class="btn btn-success btn-xs"><i class="fa fa-check" title="YES"></i></span>
 					    	<?php
 					    } 
 					    else {
 					    	?>
-					    	<span class="btn btn-danger btn-xs"><i class="fa fa-times"></i> NO</span>
+					    	<span class="btn btn-danger btn-xs"><i class="fa fa-times" title="NO"></i></span>
 					    	<?php
 					    }
 					    ?></td>
@@ -521,8 +882,7 @@ if (isset($_REQUEST['year'])) {
 					  </tbody>
 					  <tfoot>
 						<tr>
-							<th class="text-left">TOTAL: <?php echo $PO_count; ?></th>
-							<th colspan="10">&nbsp;</th>
+							<th colspan="12" class="text-left">TOTAL: <?php echo $PO_count; ?></th>
 						</tr>
 					  </tfoot>
 

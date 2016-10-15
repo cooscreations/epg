@@ -25,30 +25,30 @@ if (!isset($_SESSION['username'])) {
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
 */
-$sup_epg_supplier_ID = $_REQUEST['epg_supplier_ID'];
-$sup_en = $_REQUEST['name_en'];
+$sup_epg_supplier_ID 			= checkaddslashes($_REQUEST['epg_supplier_ID']);
+$sup_en 						= checkaddslashes($_REQUEST['name_en']);
 if($_REQUEST['name_cn'] == ''){
-	$sup_cn = '中文名';
+	$sup_cn 					= '中文名';
 }else{
-	$sup_cn = $_REQUEST['name_cn'];
+	$sup_cn				 		= checkaddslashes($_REQUEST['name_cn']);
 }
-$sup_web = $_REQUEST['sup_website'];
-$sup_supplier_status = $_REQUEST['supplier_status'];
-$sup_part_classification = $_REQUEST['part_classification'];
-$sup_items_supplied = $_REQUEST['items_supplied'];
-$sup_part_type_ID = $_REQUEST['part_type_ID'];
-$sup_certifications = $_REQUEST['certifications'];
-$sup_certification_expiry_date = $_REQUEST['certification_expiry_date'];
-$sup_evaluation_date = $_REQUEST['evaluation_date'];
-$sup_address_EN = $_REQUEST['address_EN'];
-$sup_address_CN = $_REQUEST['address_CN'];
-$sup_country_ID = $_REQUEST['country_ID'];
-$sup_contact_person = $_REQUEST['contact_person'];
-$sup_mobile_phone = $_REQUEST['mobile_phone'];
-$sup_telephone = $_REQUEST['telephone'];
-$sup_fax = $_REQUEST['fax'];
-$sup_email_1 = $_REQUEST['email_1'];
-$sup_email_2 = $_REQUEST['email_2'];
+$sup_web 						= checkaddslashes($_REQUEST['sup_website']);
+$sup_supplier_status 			= checkaddslashes($_REQUEST['supplier_status']);
+$sup_part_classification 		= checkaddslashes($_REQUEST['part_classification']);
+$sup_items_supplied 			= checkaddslashes($_REQUEST['items_supplied']);
+$sup_part_type_ID 				= checkaddslashes($_REQUEST['part_type_ID']);
+$sup_certifications 			= checkaddslashes($_REQUEST['certifications']);
+$sup_certification_expiry_date 	= check_date_time($_REQUEST['certification_expiry_date']);
+$sup_evaluation_date 			= check_date_time($_REQUEST['evaluation_date']);
+$sup_address_EN 				= checkaddslashes($_REQUEST['address_EN']);
+$sup_address_CN 				= checkaddslashes($_REQUEST['address_CN']);
+$sup_country_ID 				= checkaddslashes($_REQUEST['country_ID']);
+$sup_contact_person 			= checkaddslashes($_REQUEST['contact_person']);
+$sup_mobile_phone 				= checkaddslashes($_REQUEST['mobile_phone']);
+$sup_telephone 					= checkaddslashes($_REQUEST['telephone']);
+$sup_fax 						= checkaddslashes($_REQUEST['fax']);
+$sup_email_1 					= checkaddslashes($_REQUEST['email_1']);
+$sup_email_2 					= checkaddslashes($_REQUEST['email_2']);
 
 
 $update_note = "Adding a new supplier to the system.";
@@ -70,11 +70,20 @@ if (mysqli_query($con, $add_supplier_SQL)) {
 
 		if (mysqli_query($con, $record_edit_SQL)) {
 			// AWESOME! We added the change record to the database
-
-				// regular add - send them to the revisions list for that part
+			
+			if ($_REQUEST['next_step'] == 'view_record') {
+				// view record!
+				// regular add - send them to the record page
 				header("Location: suppliers.php?msg=OK&action=add&new_record_id=".$record_id."");
+				exit();
+			}
+			else {
+				// add record
+				// send them to the add form
+				header("Location: supplier_add.php?msg=OK&action=add&new_record_id=".$record_id."");
+				exit();
+			}
 
-			exit();
 
 		}
 		else {

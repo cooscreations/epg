@@ -28,7 +28,7 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 $id 					= checkaddslashes($_REQUEST['id']);
 $part_ID 				= checkaddslashes($_REQUEST['part_ID']);
 $revision_number 		= checkaddslashes($_REQUEST['revision_number']);
-$part_rev_material_ID 	= checkaddslashes($_REQUEST['part_rev_material_ID']);
+$part_rev_material_ID 	= 0;
 $price_USD 				= checkaddslashes($_REQUEST['price_USD']);
 $weight_g 				= checkaddslashes($_REQUEST['weight_g']);
 $part_rev_status_ID 	= checkaddslashes($_REQUEST['part_rev_status_ID']);

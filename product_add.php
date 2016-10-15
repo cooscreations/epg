@@ -121,7 +121,7 @@ pagehead ( $page_id );
 											<option value="<?php echo $list_product_type_id; ?>"><?php echo $list_product_type_code; ?> - <?php echo $list_product_type_name_EN; ?> / <?php echo $list_product_type_name_CN; ?></option>
 
 											<?php
-											} // END WHILE LOOP
+											} // END WHILE LOOP 
 
 											?>
 									</select>
@@ -136,8 +136,8 @@ pagehead ( $page_id );
 
 					</div>
 					<footer class="panel-footer">
-						<button type="submit" class="btn btn-success">Submit</button>
-						<button type="reset" class="btn btn-default">Reset</button>
+						<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+						<?php form_buttons('products'); ?>
 					</footer>
 				</section>
 				<!-- now close the form -->

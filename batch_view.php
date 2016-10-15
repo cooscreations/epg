@@ -20,6 +20,7 @@ include ('qrcode-generator/index_2.php');
 if (!isset($_SESSION['username'])) {
 	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
+	exit();
 }
 
 $page_id = 11;
@@ -34,107 +35,120 @@ else {
 	exit();
 }
 
-		$get_batch_SQL = "SELECT * FROM  `part_batch` WHERE `ID` = " . $record_id;
-		$result_get_batch = mysqli_query($con,$get_batch_SQL);
-		// while loop
-		while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
+$get_batch_SQL = "SELECT * FROM  `part_batch` WHERE `ID` = " . $record_id;
+$result_get_batch = mysqli_query($con,$get_batch_SQL);
+// while loop
+while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
+
+	// now print each record:
+	$batch_id 				= $row_get_batch['ID'];
+	$PO_ID 					= $row_get_batch['PO_ID'];
+	$part_ID 				= $row_get_batch['part_ID'];
+	$batch_number 			= $row_get_batch['batch_number'];
+	$part_rev 				= $row_get_batch['part_rev'];
+	$batch_supplier_ID 		= $row_get_batch['supplier_ID'];
+	$batch_record_status 	= $row_get_batch['record_status'];
+
+	// GET PART DETAILS:
+	$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
+	$result_get_part = mysqli_query($con,$get_part_SQL);
+	// while loop
+	while($row_get_part = mysqli_fetch_array($result_get_part)) {
+
+		// now print each result to a variable:
+		$part_id 		= $row_get_part['ID'];
+		$part_code 		= $row_get_part['part_code'];
+		$part_name_EN 	= $row_get_part['name_EN'];
+		$part_name_CN 	= $row_get_part['name_CN'];
+
+	}
+
+
+
+			// get part revision info:
+			$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
+			$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+			// while loop
+			while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 
 				// now print each record:
-				$batch_id 				= $row_get_batch['ID'];
-				$PO_ID 					= $row_get_batch['PO_ID'];
-				$part_ID 				= $row_get_batch['part_ID'];
-				$batch_number 			= $row_get_batch['batch_number'];
-				$part_rev 				= $row_get_batch['part_rev'];
-				$batch_supplier_ID 		= $row_get_batch['supplier_ID'];
-				$batch_record_status 	= $row_get_batch['record_status'];
+				$rev_id 		= $row_get_part_rev['ID'];
+				$rev_part_id 	= $row_get_part_rev['part_ID'];
+				$rev_number 	= $row_get_part_rev['revision_number'];
+				$rev_remarks 	= $row_get_part_rev['remarks'];
+				$rev_date 		= $row_get_part_rev['date_approved'];
+				$rev_user 		= $row_get_part_rev['user_ID'];
 
-				// GET PART DETAILS:
-				$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
-				$result_get_part = mysqli_query($con,$get_part_SQL);
-				// while loop
-				while($row_get_part = mysqli_fetch_array($result_get_part)) {
-
-					// now print each result to a variable:
-					$part_id 		= $row_get_part['ID'];
-					$part_code 		= $row_get_part['part_code'];
-					$part_name_EN 	= $row_get_part['name_EN'];
-					$part_name_CN 	= $row_get_part['name_CN'];
-
-				}
-
-
-
-						// get part revision info:
-						$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
-						$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
-						// while loop
-						while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
-
-							// now print each record:
-							$rev_id 		= $row_get_part_rev['ID'];
-							$rev_part_id 	= $row_get_part_rev['part_ID'];
-							$rev_number 	= $row_get_part_rev['revision_number'];
-							$rev_remarks 	= $row_get_part_rev['remarks'];
-							$rev_date 		= $row_get_part_rev['date_approved'];
-							$rev_user 		= $row_get_part_rev['user_ID'];
-
-						}
-
-
-				// GET P.O. DETAILS:
-				$get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $PO_ID;
-				$result_get_PO = mysqli_query($con,$get_PO_SQL);
-				// while loop
-				while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
-
-					// now print each record:
-					$PO_id 					= $row_get_PO['ID'];
-					$PO_number 				= $row_get_PO['PO_number'];
-					$PO_created_date 		= $row_get_PO['created_date'];
-					$PO_description 		= $row_get_PO['description'];
-					$PO_record_status 		= $row_get_PO['record_status'];
-					$PO_supplier_ID 		= $row_get_PO['supplier_ID'];  // LOOK THIS UP!
-					$PO_created_by 			= $row_get_PO['created_by']; // use get_creator($PO_created_by);
-					$PO_date_needed 		= $row_get_PO['date_needed'];
-					$PO_date_delivered 		= $row_get_PO['date_delivered'];
-					$PO_approval_status 	= $row_get_PO['approval_status']; // look this up?
-					$PO_payment_status 		= $row_get_PO['payment_status']; // look this up?
-					$PO_completion_status 	= $row_get_PO['completion_status'];
-
-				} // end while loop
-
-		// count variants for this purchase order
-        $count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_id;
-        $count_batches_query 	= mysqli_query($con, $count_batches_sql);
-        $count_batches_row 		= mysqli_fetch_row($count_batches_query);
-        $total_batches 			= $count_batches_row[0];
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		// IF THE BATCH SUPPLIER IS NOT SET, BUT P.O. VENDOR IS SET, WE WILL NOW UPDATE THE BATCH RECORD AUTOMATICALLY:
-		// THIS IS POTENTIALLY DOUBLING-UP ON DATA!?!?!?
-		
-		if ($PO_supplier_ID != $batch_supplier_ID) {
-			$quick_update_batch_SQL = "UPDATE  `part_batch` SET  `supplier_ID` =  '" . $PO_supplier_ID . "' WHERE  `part_batch`.`ID` ='" . $batch_id . "';";
-			if (mysqli_query($con, $quick_update_batch_SQL)) {
-				$batch_supplier_ID = $PO_supplier_ID;
 			}
-			else {
-				echo "<h4>Failed to update existing part_batch record with SQL: <br />" . $quick_update_batch_SQL . "</h4>";
-			}
+
+
+	// GET P.O. DETAILS:
+	$get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $PO_ID;
+	$result_get_PO = mysqli_query($con,$get_PO_SQL);
+	// while loop
+	while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
+
+		// now print each record:
+		$PO_id 					= $row_get_PO['ID'];
+		$PO_number 				= $row_get_PO['PO_number'];
+		$PO_created_date 		= $row_get_PO['created_date'];
+		$PO_description 		= $row_get_PO['description'];
+		$PO_record_status 		= $row_get_PO['record_status'];
+		$PO_supplier_ID 		= $row_get_PO['supplier_ID'];  // LOOK THIS UP!
+		$PO_created_by 			= $row_get_PO['created_by']; // use get_creator($PO_created_by);
+		$PO_date_needed 		= $row_get_PO['date_needed'];
+		$PO_date_delivered 		= $row_get_PO['date_delivered'];
+		$PO_approval_status 	= $row_get_PO['approval_status']; // look this up?
+		$PO_payment_status 		= $row_get_PO['payment_status']; // look this up?
+		$PO_completion_status 	= $row_get_PO['completion_status'];
+
+	} // end while loop
+
+	// count variants for this purchase order
+	$count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE  `PO_ID` = " . $PO_id;
+	$count_batches_query 	= mysqli_query($con, $count_batches_sql);
+	$count_batches_row 		= mysqli_fetch_row($count_batches_query);
+	$total_batches 			= $count_batches_row[0];
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// IF THE BATCH SUPPLIER IS NOT SET, BUT P.O. VENDOR IS SET, WE WILL NOW UPDATE THE BATCH RECORD AUTOMATICALLY:
+	// THIS IS POTENTIALLY DOUBLING-UP ON DATA!?!?!?
+
+	if ($PO_supplier_ID != $batch_supplier_ID) {
+		$quick_update_batch_SQL = "UPDATE  `part_batch` SET  `supplier_ID` =  '" . $PO_supplier_ID . "' WHERE  `part_batch`.`ID` ='" . $batch_id . "';";
+		if (mysqli_query($con, $quick_update_batch_SQL)) {
+			$batch_supplier_ID = $PO_supplier_ID;
 		}
-		
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else {
+			echo "<h4>Failed to update existing part_batch record with SQL: <br />" . $quick_update_batch_SQL . "</h4>";
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } // end while loop
+
+if ($batch_id == '') { // we found an ID but it returned no results from the database?!
+	// no batch found - check for a PO to redirect them to!
+	if (isset($_REQUEST['PO_ID'])) {
+		header("Location: purchase_order_view.php?id=" . $_REQUEST['PO_ID'] . "&msg=NG&action=view&error=no_id");
+		exit();
+	}
+	else {
+		// otherwise just redirect to the batch log list
+		header("Location: batch_log.php?msg=NG&action=view&error=no_id");
+		exit();
+	}
+}
 
 // pull the header and template stuff:
 pagehead($page_id);
@@ -460,6 +474,8 @@ pagehead($page_id);
 								$mvmnt_status_icon 		= $row_get_mvmnt_status['icon'];
 								$mvmnt_status_color 	= $row_get_mvmnt_status['color'];
 						}
+						
+						
 
 					// NOW LET'S DO THIS!
 

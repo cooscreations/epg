@@ -24,7 +24,50 @@ if (!isset($_SESSION['username'])) {
 $page_id = 7;
 
 // pull the header and template stuff:
-pagehead($page_id); ?>
+pagehead($page_id); 
+
+// FILTER INFO:
+
+$add_SQL = " WHERE `record_status` = '2'";
+$add_URL_vars_sup_status = '';
+$add_URL_vars_sort = '';
+$add_URL_vars_dir = '';
+$add_URL_vars_dir_opp = '';
+$sort_SQL = " ORDER BY `record_status` DESC , `part_classification` ASC, `epg_supplier_ID` ASC"; // default sort
+$dir_SQL = '';
+
+if (isset($_REQUEST['sort'])) {
+	$sort_SQL = " ORDER BY `" . $_REQUEST['sort'] . "`";
+	$add_URL_vars_sort = "&sort=". $_REQUEST['sort'];
+	if (isset($_REQUEST['dir'])) {
+		$sort_SQL .= " " . $_REQUEST['dir'];
+		$add_URL_vars_dir = "&dir=" . $_REQUEST['dir'];
+	}
+	else {
+		$sort_SQL .= " ASC";
+		$add_URL_vars_dir = "&dir=ASC";
+	}
+	
+	if ($_REQUEST['dir'] == 'ASC') {
+		$add_URL_vars_dir_opp = 'DESC';
+		$alfa_sort_icon = "fa fa-sort-alpha-desc";
+	}
+	else {
+		$add_URL_vars_dir_opp = 'ASC';
+		$alfa_sort_icon = "fa fa-sort-alpha-asc";
+	}
+	
+}
+
+if (isset($_REQUEST['sup_status_id'])) {
+	$add_SQL .= " AND `supplier_status` = '" . $_REQUEST['sup_status_id'] . "'";
+	$add_URL_vars_sup_status = "&sup_status_id=" . $_REQUEST['sup_status_id'];
+}
+
+// OUTPUT VAR COMBO:
+// $add_URL_vars_sup_status . 
+
+?>
 
 
 
@@ -72,23 +115,70 @@ pagehead($page_id); ?>
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-condensed mb-none">
+          <thead>
             <tr>
+            	<th class="text-center"><i class="fa fa-cog" title="Action"></i></th>
                 <th><abbr title="(EPG Supplier ID, NOT Database Unique ID!)">ID</abbr></ht>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Type</th>
-                <th>Product Type</th>
-                <th>Cert.</th>
-                <th>Expires</th>
-                <th><i class="fa fa-globe"></i></th>
-                <th class="text-center">Actions</th>
+                <th class="text-center">
+                  <a href="suppliers.php?sort=name_EN<?php echo $add_URL_vars_sup_status; ?>&dir=<?php echo $add_URL_vars_dir_opp; ?>">
+                	Name / 名字 <i class="<?php echo $alfa_sort_icon; ?> pull-right"></i>
+                  </a>
+                </th>
+                <th class="text-center">
+                	Status<br />
+                	<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+						<option value="#" selected="selected">Filter:</option>
+							<option value="suppliers.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>">Clear This Filter</option>
+							<option value="suppliers.php">Clear All Filters</option>
+							<?php
+							$get_j_sup_status_SQL = "SELECT * FROM `supplier_status`";
+							$result_j_get_sup_status = mysqli_query($con,$get_j_sup_status_SQL);
+							// while loop
+							while($row_j_get_sup_status = mysqli_fetch_array($result_j_get_sup_status)) {
+
+									// now print each record:
+									$j_sup_status_id 					= $row_j_get_sup_status['ID'];
+									$j_sup_status_name_EN 				= $row_j_get_sup_status['name_EN'];
+									$j_sup_status_name_CN 				= $row_j_get_sup_status['name_CN'];
+									$j_sup_status_status_level 			= $row_j_get_sup_status['status_level'];
+									$j_sup_status_status_description 	= $row_j_get_sup_status['status_description'];
+									$j_sup_status_color_code 			= $row_j_get_sup_status['color_code'];
+									$j_sup_status_icon 					= $row_j_get_sup_status['icon'];
+
+						
+									// count docs in this category:
+									$count_j_sup_status_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `supplier_status` = '" . $j_sup_status_id . "'";
+									$count_j_sup_status_query = mysqli_query($con, $count_j_sup_status_sql);
+									$count_j_sup_status_row = mysqli_fetch_row($count_j_sup_status_query);
+									$total_j_sup_status = $count_j_sup_status_row[0];
+
+									?>
+									<option value="suppliers.php?sup_status_id=<?php echo $j_sup_status_id . $add_URL_vars_sort . $add_URL_vars_dir; ?>"<?php if ($_REQUEST['sup_status_id'] == $j_sup_status_id) { ?> selected="selected"<?php } ?>><?php 
+					
+										echo $j_sup_status_name_EN; 
+										if (($j_sup_status_name_CN!='')&&($j_sup_status_name_CN!='中文名')) { 
+											echo ' / ' . $j_sup_status_name_CN;
+										}	
+									?> (<?php echo $total_j_sup_status; ?>)</option>
+									<?php
+							}
+							?>
+					</select>
+				</th>
+                <th class="text-center">Type</th>
+                <th class="text-center">Product Type</th>
+                <th class="text-center">More Info</th>
+                <th class="text-center">Cert.</th>
+                <th class="text-center">Expires</th>
+                <th class="text-center"><i class="fa fa-globe"></i></th>
             </tr>
+          </thead>
+          <tbody>
 
             <?php
-            		  $order_by = " ORDER BY  `record_status` DESC ,  `part_classification` ASC, `epg_supplier_ID` ASC";
 
-					  $get_sups_SQL = "SELECT * FROM  `suppliers`" . $order_by;
-					  // echo $get_sups_SQL;
+					  $get_sups_SQL = "SELECT * FROM `suppliers`" . $add_SQL . $sort_SQL;
+					  // echo '<h1>' . $get_sups_SQL . '</h1>';
 
 					  $sup_count = 0;
 
@@ -156,7 +246,124 @@ pagehead($page_id); ?>
 					  ?>
 
             <tr>
-            	<td><?php 
+            	<td class="text-center">
+						
+				<!-- ********************************************************* -->
+				<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+				<!-- ********************************************************* -->
+
+				<?php 
+
+				// VARS YOU NEED TO WATCH / CHANGE:
+				$add_to_form_name 	= 'sup_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+				$form_ID 			= $sup_ID;					// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+				$edit_URL 			= 'supplier_edit'; 	// REQUIRED - specify edit page URL
+				$add_URL 			= 'supplier_add'; 	// REQURED - specify add page URL
+				$table_name 		= 'suppliers';		// REQUIRED - which table are we updating?
+				$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+				$add_VAR 			= ''; 	// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+
+				?>
+
+					<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+
+						echo $add_to_form_name; 
+						echo $form_ID; 
+
+					?>"><i class="fa fa-gear"></i></a>
+
+					<!-- Modal Form -->
+					<div id="modalForm_<?php 
+
+						echo $add_to_form_name; 
+						echo $form_ID; 
+
+					?>" class="modal-block modal-block-primary mfp-hide">
+						<section class="panel">
+							<header class="panel-heading">
+								<h2 class="panel-title">Admin Options</h2>
+							</header>
+							<div class="panel-body">
+
+								<div class="table-responsive">
+								 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+								 <thead>
+									<tr>
+										<th class="text-left" colspan="2">Action</th>
+										<th>Decsription</th>
+									</tr>
+								  </thead>
+								  <tbody>
+									<tr>
+									  <td>EDIT</td>
+									  <td>
+										<a href="<?php 
+											echo $edit_URL; 
+										?>.php?id=<?php 
+											echo $form_ID; 
+										?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+											<i class="fa fa-pencil" stlye="color: #999"></i>
+										</a>
+									  </td>
+									  <td>Edit this record</td>
+									</tr>
+									<tr>
+									  <td>DELETE</td>
+									  <td>
+										<a href="record_delete_do.php?table_name=<?php 
+											echo $table_name; 
+										?>&src_page=<?php 
+											echo $src_page; 
+										?>&id=<?php 
+											echo $form_ID;
+											echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+										?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+											<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+										</a>
+									  </td>
+									  <td>Delete this record</td>
+									</tr>
+									<tr>
+									  <td>ADD</td>
+									  <td>
+										<a href="<?php 
+											echo $add_URL; 
+											echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+										?>" class="mb-xs mt-xs mr-xs btn btn-success">
+											<i class="fa fa-plus" stlye="color: #999"></i>
+										</a>
+									  </td>
+									  <td>Add a similar item to this table</td>
+									</tr>
+								  </tbody>
+								  <tfoot>
+									<tr>
+									  <td>&nbsp;</td>
+									  <td>&nbsp;</td>
+									  <td>&nbsp;</td>
+									</tr>
+								  </tfoot>
+								  </table>
+								</div><!-- end of responsive table -->	
+
+							</div><!-- end panel body -->
+							<footer class="panel-footer">
+								<div class="row">
+									<div class="col-md-12 text-left">
+										<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+									</div>
+								</div>
+							</footer>
+						</section>
+					</div>
+
+				<!-- ********************************************************* -->
+				<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+				<!-- ********************************************************* -->
+				
+				 </td>
+            	<td class="text-right">
+            	  <?php 
             	
             		echo '<span';
             		if ($sup_internal_ID == 0) { echo ' class="text-danger" title="Internal ID number not entered. Please update this record!"'; }
@@ -164,24 +371,68 @@ pagehead($page_id); ?>
             		echo $sup_internal_ID; 
             		echo '</span>';
             		
-            	?></td>
-                <td><a href="supplier_view.php?id=<?php echo $sup_ID; ?>"><?php echo $sup_en; if (($sup_cn!='')&&($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></a></td>
-                <!-- <td class="<?php echo $sup_status_color_code; ?>"> -->
+            	  ?>
+            	</td>
                 <td>
-                <button type="button" class="btn btn-xs btn-<?php echo $sup_status_color_code; ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { ?> 
-                / <?php echo $sup_status_name_CN; }?>"><i class="fa <?php echo $sup_status_icon; ?>"></i> </button>
-                
-                
+                  <?php get_supplier($sup_ID); ?>
                 </td>
-                <td><?php
+                <!-- <td class="<?php echo $sup_status_color_code; ?>"> -->
+                <td class="text-center">
+                  <button type="button" class="btn btn-xs btn-<?php echo $sup_status_color_code; ?>" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { echo ' / ' . $sup_status_name_CN; } ?>">
+                  	<i class="fa <?php echo $sup_status_icon; ?>"></i>
+                  </button>
+                </td>
+                <td class="text-center"><?php
                   if ($sup_part_classification == 1) {
-                	?><span class="text-danger">CRITICAL</span><?php
+                	?><span class="text-danger"><i class="fa fa-exclamation-triangle" title="CRITICAL"></i></span><?php
                   }
                   else {
-                	?><span class="text-success">NON-CRITICAL</span><?php
+                	?><span class="text-success"><i class="fa fa-check" title="NON-CRITICAL"></i></span><?php
                   }?></td>
-                <td><?php echo $sup_part_type_ID; ?> / <?php echo $sup_item_supplied; ?></td>
-                <td><?php echo $sup_certs; ?></td>
+                <td><?php 
+                
+                	// get the part type info:
+                	
+                	$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $sup_part_type_ID . "'";
+					// echo $get_part_type_SQL;
+
+					$result_get_part_type = mysqli_query($con,$get_part_type_SQL);
+					// while loop
+					while($row_get_part_type = mysqli_fetch_array($result_get_part_type)) {
+						$part_type_EN = $row_get_part_type['name_EN'];
+						$part_type_CN = $row_get_part_type['name_CN'];
+						
+						?>
+						<a href="parts.php?type_id=<?php echo $sup_part_type_ID; ?>" title="View all parts of this type">
+						  <?php 
+							echo $part_type_EN;
+							if (($part_type_CN!='')&&($part_type_CN!='中文名')) {
+								echo $part_type_CN;
+							}
+						  ?>
+						</a>
+						<?php
+						
+					}
+                
+                ?>
+                </td>
+                <td>
+                	<?php 
+                	if ($sup_item_supplied!='') {
+                		echo $sup_item_supplied; 
+                	}
+                	else { echo '&nbsp;'; }
+                	?>
+                </td>
+                <td>
+                	<?php 
+                	  if ($sup_certs!='') {
+                		echo $sup_certs; 
+                	  }
+                	  else { echo '&nbsp;'; }
+                	?>
+                </td>
                 <td><?php
                   if ($sup_cert_exp_date != '0000-00-00') {
 
@@ -206,13 +457,6 @@ pagehead($page_id); ?>
                 	<?php
                 }
                 ?></td>
-                <td class="text-center" width="20%">
-                    <a href="#" class="hidden on-editing save-row"><i class="fa fa-save"></i></a>
-                    <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
-                    <a href="supplier_view.php?id=<?php echo $sup_ID; ?>" type="button" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i></a>
-                    <a href="supplier_edit.php?id=<?php echo $sup_ID; ?>" type="button" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></a>
-					<a href="record_delete_do.php?table_name=suppliers&src_page=suppliers.php&id=<?php echo $sup_ID; ?>" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
-                </td>
             </tr>
 
             <?php
@@ -222,9 +466,12 @@ pagehead($page_id); ?>
 					  } // end while loop
 					  ?>
 
+          </tbody>
+          <tfoot>
             <tr>
-                <th colspan="9" class="text-left">TOTAL: <?php echo $sup_count; ?></th>
+                <th colspan="10" class="text-left">TOTAL: <?php echo $sup_count; ?></th>
             </tr>
+          </tfoot>
         </table>
     </div>
     

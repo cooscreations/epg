@@ -123,7 +123,16 @@ while($row_get_part = mysqli_fetch_array($result_get_part)) {
     $total_revs 		= $count_revs_row[0];
 
 	if ($total_revs == 0) {
-		$add_rev_SQL = "INSERT INTO `part_revisions`(`ID`, `part_ID`, `revision_number`, `remarks`, `date_approved`, `user_ID`, `price_USD`, `weight_g`, `status_ID`, `material_ID`, `treatment_ID`, `treatment_notes`, `record_status`) VALUES (NULL,'".$record_id."','A','No revisions found, so we auto-generated Revision A','" . date("Y-m-d H:i:s") . "','2','0.0100','0.0100','1','0','0','No treatment notes','2')";
+	
+		if (isset($_REQUEST['first_rev_number'])) {
+			$first_rev_number = checkaddslashes($_REQUEST['first_rev_number']);
+		}
+		else {
+			$first_rev_number = "A";
+		}
+	
+	
+		$add_rev_SQL = "INSERT INTO `part_revisions`(`ID`, `part_ID`, `revision_number`, `remarks`, `date_approved`, `user_ID`, `price_USD`, `weight_g`, `status_ID`, `material_ID`, `treatment_ID`, `treatment_notes`, `record_status`) VALUES (NULL,'".$record_id."','" . $first_rev_number . "','No revisions found, so we auto-generated Revision A','" . date("Y-m-d H:i:s") . "','2','0.0100','0.0100','1','0','0','No treatment notes','2')";
 
 		if (mysqli_query($con, $add_rev_SQL)) {
 
@@ -668,7 +677,7 @@ pagehead($page_id);
 									}
 									else {
 									?>
-											<a href="part_edit.php?id=<?php echo $record_id; ?>" title="Click to add a default vendor to this part profile now" class="text-uppercase text-danger">(EDIT PART)</a>
+											<a href="part_edit.php?id=<?php echo $record_id; ?>" title="Click to add a default vendor to this part profile now" class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i></a>
 									<?php
 									}
 									
@@ -783,7 +792,7 @@ pagehead($page_id);
 																  </span>
 																</figure>
 																<span class="title text-danger">NO MATERIAL SET</span>
-																<span class="message truncate"><a href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" class="btn btn-xs btn-success">Add Now</a></span>
+																<span class="message truncate"><a href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" class="btn btn-xs btn-success"><iclass="fa fa-plus-square"></i> Add Now</a></span>
 															</li>
 															<?php
 														} // end of no records found 'total_part_to_mat_maps' = 0
@@ -792,7 +801,7 @@ pagehead($page_id);
 												</div>
 											  <div class="panel-footer">
 												<div class="text-right">
-														<a class="text-uppercase text-muted" href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" title="Click here to view all materials">(View All)</a>
+														<a class="btn btn-warning btn-xs" href="material_to_part_map.php?part_id=<?php echo $record_id; ?>&rev_id=<?php echo $rev_body_id; ?>" title="Click here to view / edit all materials"><i class="fa fa-pencil" title="EDIT / 改变"></i></a>
 													</div>
 											  </div>
 											</div>
@@ -1284,6 +1293,7 @@ pagehead($page_id);
 							 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					  		  <thead>
 					  			<tr>
+					  				<th class="text-center"><i class="fa fa-cog" title="Actions"></i></th>
 					    			<th>Photo</th>
 					    			<th>Code</th>
 					    			<th>Name / 名字</th>
@@ -1414,6 +1424,121 @@ pagehead($page_id);
 					 			 ?>
 
 					 			<tr>
+					 			  							<td class="text-center">
+					
+										<!-- ********************************************************* -->
+										<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+										<!-- ********************************************************* -->
+		
+										<?php 
+		
+										// VARS YOU NEED TO WATCH / CHANGE:
+										$add_to_form_name 	= 'part_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+										$form_ID 			= $rev_part_join_part_ID;	// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+										$edit_URL 			= 'part_edit'; 				// REQUIRED - specify edit page URL
+										$add_URL 			= 'part_add'; 				// REQURED - specify add page URL
+										$table_name 		= 'parts';					// REQUIRED - which table are we updating?
+										$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+										$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+		
+										?>
+ 
+											<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+			
+												echo $add_to_form_name; 
+												echo $form_ID; 
+			
+											?>"><i class="fa fa-gear"></i></a>
+
+											<!-- Modal Form -->
+											<div id="modalForm_<?php 
+			
+												echo $add_to_form_name; 
+												echo $form_ID; 
+				
+											?>" class="modal-block modal-block-primary mfp-hide">
+												<section class="panel">
+													<header class="panel-heading">
+														<h2 class="panel-title">Admin Options</h2>
+													</header>
+													<div class="panel-body">
+			
+														<div class="table-responsive">
+														 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+														 <thead>
+															<tr>
+																<th class="text-left" colspan="2">Action</th>
+																<th>Decsription</th>
+															</tr>
+														  </thead>
+														  <tbody>
+															<tr>
+															  <td>EDIT</td>
+															  <td>
+																<a href="<?php 
+																	echo $edit_URL; 
+																?>.php?id=<?php 
+																	echo $form_ID; 
+																?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+																	<i class="fa fa-pencil" stlye="color: #999"></i>
+																</a>
+															  </td>
+															  <td>Edit this record</td>
+															</tr>
+															<tr>
+															  <td>DELETE</td>
+															  <td>
+																<a href="record_delete_do.php?table_name=<?php 
+																	echo $table_name; 
+																?>&src_page=<?php 
+																	echo $src_page; 
+																?>&id=<?php 
+																	echo $form_ID;
+																	echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+																?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+																	<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+																</a>
+															  </td>
+															  <td>Delete this record</td>
+															</tr>
+															<tr>
+															  <td>ADD</td>
+															  <td>
+																<a href="<?php 
+																	echo $add_URL; 
+																	echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+																?>" class="mb-xs mt-xs mr-xs btn btn-success">
+																	<i class="fa fa-plus" stlye="color: #999"></i>
+																</a>
+															  </td>
+															  <td>Add a similar item to this table</td>
+															</tr>
+														  </tbody>
+														  <tfoot>
+															<tr>
+															  <td>&nbsp;</td>
+															  <td>&nbsp;</td>
+															  <td>&nbsp;</td>
+															</tr>
+														  </tfoot>
+														  </table>
+														</div><!-- end of responsive table -->	
+			
+													</div><!-- end panel body -->
+													<footer class="panel-footer">
+														<div class="row">
+															<div class="col-md-12 text-left">
+																<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+															</div>
+														</div>
+													</footer>
+												</section>
+											</div>
+	
+										<!-- ********************************************************* -->
+										<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+										<!-- ********************************************************* -->
+									</td>
 					 			  <td class="text-center">
 								  <?php part_img($components_part_rev_ID); ?>
 								  </td>
@@ -1475,7 +1600,7 @@ pagehead($page_id);
 
 					 		  <tfoot>
 					 			<tr>
-					 			  <th colspan="5">
+					 			  <th colspan="6">
 					 			  	TOTAL COMPONENTS: <?php echo $total_components; ?><br />
 					 			  	TOTAL SUB-ASSEMBLIES: <?php echo $total_assemblies; ?><br />
 					 			  	TOTAL ITEMS: <?php echo $grand_total_components; ?>
@@ -1514,6 +1639,7 @@ pagehead($page_id);
 
 									<h2 class="panel-title">
 										<span class="va-middle">Batch History</span>
+										<a name="batch_history_<?php echo $rev_body_id; ?>"></a>
 									</h2>
 								</header>
 								<div class="panel-body">
@@ -1542,12 +1668,15 @@ pagehead($page_id);
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					   <thead>
 						  <tr>
+						  	<th class="text-center"><i class="fa fa-cog"></i></th>
 							<th class="text-center">Batch #</th>
 							<th class="text-center">P.O. #</th>
 							<th class="text-center">P.O. Date</th>
 							<th class="text-center">QTY In</th>
 							<th class="text-center">QTY Out</th>
 							<th class="text-center">Batch Balance</th>
+							<th class="text-center">Status</th>
+							<th class="text-center">Remarks</th>
 						  </tr>
 					  </thead>
 					  <tbody>
@@ -1586,6 +1715,41 @@ pagehead($page_id);
 								$part_ID 		= $row_get_batch['part_ID'];
 								$batch_number 	= $row_get_batch['batch_number'];
 								$part_rev 		= $row_get_batch['part_rev'];
+								
+								// get first INCOMING Batch amount & status:
+								$get_first_movement_SQL = "SELECT * FROM `part_batch_movement` WHERE `part_batch_ID` = '" . $batch_id . "' AND `amount_in` > 0 ORDER BY `date` ASC LIMIT 0,1";
+								$result_get_first_movement = mysqli_query($con,$get_first_movement_SQL);
+								// while loop
+								while($row_get_first_movement = mysqli_fetch_array($result_get_first_movement)) {
+
+										// now print each record:
+										$first_movement_batch_movement_id 		= $row_get_first_movement['ID'];
+										$first_movement_amount_in 				= $row_get_first_movement['amount_in'];
+										$first_movement_amount_out 				= $row_get_first_movement['amount_out'];
+										$first_movement_part_batch_status_ID 	= $row_get_first_movement['part_batch_status_ID'];
+										$first_movement_remarks 				= $row_get_first_movement['remarks'];
+										$first_movement_user_ID 				= $row_get_first_movement['user_ID'];
+										$first_movement_date 					= $row_get_first_movement['date'];
+										$first_movement_record_status 			= $row_get_first_movement['record_status'];
+										
+										// now get the movement status
+
+										$get_mvmnt_status_SQL = "SELECT * FROM  `part_batch_status` WHERE  `ID` =" . $first_movement_part_batch_status_ID;
+
+										$result_get_mvmnt_status = mysqli_query($con,$get_mvmnt_status_SQL);
+										// while loop
+										while($row_get_mvmnt_status = mysqli_fetch_array($result_get_mvmnt_status)) {
+
+												// now print each record:
+												$mvmnt_status_name_EN 	= $row_get_mvmnt_status['name_EN'];
+												$mvmnt_status_name_CN 	= $row_get_mvmnt_status['name_CN'];
+												$mvmnt_status_desc 		= $row_get_mvmnt_status['desc'];
+												$mvmnt_status_icon 		= $row_get_mvmnt_status['icon'];
+												$mvmnt_status_color 	= $row_get_mvmnt_status['color'];
+										}
+								
+								} // end get first batch movement
+								
 
 								// GET PART DETAILS:
 								$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
@@ -1652,12 +1816,129 @@ pagehead($page_id);
 
 					  ?>
 					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
+							<td class="text-center">
+					
+							<!-- ********************************************************* -->
+							<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+							<!-- ********************************************************* -->
+			
+							<?php 
+			
+							// VARS YOU NEED TO WATCH / CHANGE:
+							$add_to_form_name 	= 'batch_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+							$form_ID 			= $batch_id;				// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+							$edit_URL 			= 'part_batch_edit'; 			// REQUIRED - specify edit page URL
+							$add_URL 			= 'part_batch_add'; 				// REQURED - specify add page URL
+							$table_name 		= 'part_batch';				// REQUIRED - which table are we updating?
+							$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+							$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+			
+							?>
+	 
+								<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+				
+								?>"><i class="fa fa-gear"></i></a>
+
+								<!-- Modal Form -->
+								<div id="modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+					
+								?>" class="modal-block modal-block-primary mfp-hide">
+									<section class="panel">
+										<header class="panel-heading">
+											<h2 class="panel-title">Admin Options</h2>
+										</header>
+										<div class="panel-body">
+				
+											<div class="table-responsive">
+											 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+											 <thead>
+												<tr>
+													<th class="text-left" colspan="2">Action</th>
+													<th>Decsription</th>
+												</tr>
+											  </thead>
+											  <tbody>
+												<tr>
+												  <td>EDIT</td>
+												  <td>
+													<a href="<?php 
+														echo $edit_URL; 
+													?>.php?id=<?php 
+														echo $form_ID; 
+													?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+														<i class="fa fa-pencil" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Edit this record</td>
+												</tr>
+												<tr>
+												  <td>DELETE</td>
+												  <td>
+													<a href="record_delete_do.php?table_name=<?php 
+														echo $table_name; 
+													?>&src_page=<?php 
+														echo $src_page; 
+													?>&id=<?php 
+														echo $form_ID;
+														echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+													?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+														<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Delete this record</td>
+												</tr>
+												<tr>
+												  <td>ADD</td>
+												  <td>
+													<a href="<?php 
+														echo $add_URL; 
+														echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+													?>" class="mb-xs mt-xs mr-xs btn btn-success">
+														<i class="fa fa-plus" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Add a similar item to this table</td>
+												</tr>
+											  </tbody>
+											  <tfoot>
+												<tr>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												</tr>
+											  </tfoot>
+											  </table>
+											</div><!-- end of responsive table -->	
+				
+										</div><!-- end panel body -->
+										<footer class="panel-footer">
+											<div class="row">
+												<div class="col-md-12 text-left">
+													<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+												</div>
+											</div>
+										</footer>
+									</section>
+								</div>
+		
+							<!-- ********************************************************* -->
+							<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+							<!-- ********************************************************* -->
+						</td>
 					    <td class="text-center"><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
 					    <td class="text-center"><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
 					    <td class="text-center"><?php echo date("Y-m-d", strtotime($PO_created_date)); ?></td>
-					    <td class="text-center"><?php echo number_format($total_qty_in); ?></td>
-					    <td class="text-center"><?php echo number_format($total_qty_out); ?></td>
-					    <td class="text-center"><?php echo number_format($qty_remaining); ?></td>
+					    <td class="text-right"><?php echo number_format($total_qty_in); ?></td>
+					    <td class="text-right"><?php echo number_format($total_qty_out); ?></td>
+					    <td class="text-right"><?php echo number_format($qty_remaining); ?></td>
+					    <td><span class="button btn-xs btn-<?php echo $mvmnt_status_color; ?>"><i class="fa <?php echo $mvmnt_status_icon; ?>"></i> <?php echo $mvmnt_status_name_EN; ?> / <?php echo $mvmnt_status_name_CN; ?></span></td>
+					    <td><?php echo $first_movement_remarks; ?></td>
 					  </tr>
 					  <?php
 					  
@@ -1675,7 +1956,7 @@ pagehead($page_id);
 
 					  <tfoot>
 						  <tr>
-							<th colspan="3">Total batches for rev. <?php echo $rev_number; ?>: <?php echo $total_batches ;
+							<th colspan="4">Total batches for rev. <?php echo $rev_number; ?>: <?php echo $total_batches ;
 
 
 												// now count the total batches for ALL revisions:
@@ -1691,9 +1972,11 @@ pagehead($page_id);
 												 } ?>
 
 							</th>
-							<th class="text-center"><?php echo number_format($grand_total_in); ?></th>
-							<th class="text-center"><?php echo number_format($grand_total_out); ?></th>
-							<th class="text-center"><?php echo number_format($grand_total_remaining); ?></th>
+							<th class="text-right"><?php echo number_format($grand_total_in); ?></th>
+							<th class="text-right"><?php echo number_format($grand_total_out); ?></th>
+							<th class="text-right"><?php echo number_format($grand_total_remaining); ?></th>
+					    	<th>&nbsp;</th>
+					    	<th>&nbsp;</th>
 						  </tr>
 					  </tfoot>
 

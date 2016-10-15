@@ -26,11 +26,9 @@ THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO
 
 */
 
-$PO_ID = $_REQUEST['PO_ID'];
-$part_rev_ID = $_REQUEST['part_rev_ID']; // use this to find the part #
-$batch_number = $_REQUEST['batch_number'];
-$user_ID = $_REQUEST['user_ID'];
-$date_added = $_REQUEST['date_added'] . " 00:00:00";
+$PO_ID 			= checkaddslashes($_REQUEST['PO_ID']);
+$part_rev_ID 	= checkaddslashes($_REQUEST['part_rev_ID']); // use this to find the part #
+$batch_number 	= checkaddslashes($_REQUEST['batch_number']);
 
 // get part revision info:
 $get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev_ID;
@@ -39,12 +37,11 @@ $result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
 while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
 
 	// now print each record:
-	$rev_id = $row_get_part_rev['ID'];
-	$rev_part_id = $row_get_part_rev['part_ID'];
-	$rev_number = $row_get_part_rev['revision_number'];
-	$rev_remarks = $row_get_part_rev['remarks'];
-	$rev_date = $row_get_part_rev['date_approved'];
-	$rev_user = $row_get_part_rev['user_ID'];
+	$rev_id 		= $row_get_part_rev['ID'];
+	$rev_part_id 	= $row_get_part_rev['part_ID'];
+	$rev_number 	= $row_get_part_rev['revision_number'];
+	$rev_remarks 	= $row_get_part_rev['remarks'];
+	$rev_date 		= $row_get_part_rev['date_approved'];
 
 }
 
@@ -66,8 +63,20 @@ if (mysqli_query($con, $add_batch_SQL)) {
 
 		if (mysqli_query($con, $record_edit_SQL)) {
 			// AWESOME! We added the change record to the database
-			header("Location: purchase_order_view.php?id=".$PO_ID."&msg=OK&action=add&new_record_id=".$record_id."");
-			exit();
+			
+			if ($_REQUEST['next_step'] == 'view_PO') {
+				header("Location: purchase_order_view.php?id=" . $PO_ID . "&batch_id=".$record_id."&msg=OK&action=add_batch#batches");
+				exit();
+			}
+			else if ($_REQUEST['next_step'] == 'view_batch') {
+				header("Location: batch_view.php?id=".$record_id."&msg=OK&action=add");
+				exit();
+			}
+			else {
+				header("Location: part_view.php?rev_id=" . $part_rev_ID . "&new_batch_id=".$record_id."&msg=OK&action=add_batch#batch_history_" . $part_rev_ID . "");
+				exit();
+			}
+			
 
 		}
 		else {

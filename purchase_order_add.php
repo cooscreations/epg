@@ -54,7 +54,7 @@ $record_id = 0;
 			$PO_completion_status 		= 5;
 			
 			// ADDING NEW VARIABLES AS WE EXPAND THIS PART OF THE SYSTEM:
-			$PO_remark 					= 'One line title';
+			$PO_remark 					= '';
 			$PO_approved_by 			= 0; 
 			$PO_approval_date 			= '0000-00-00 00:00:00'; 
 			$PO_include_CoC 			= 1;
@@ -421,6 +421,32 @@ END OF DEFAULT ADD PURCHASE ORDER VARIABLES
 										
 									</div>
 									
+									<div class="form-group">
+										<label class="col-md-3 control-label">TAX Rate:</label>
+										<div class="col-md-5">
+											<select class="form-control populate" name="tax_pre_decimal" id="tax_pre_decimal">
+											<?php 
+											
+											$start_tax_loop = 0;
+											$end_tax_loop = 100;
+											
+											while ( $start_tax_loop <= $end_tax_loop ) {
+											
+											?>
+											  <option value="<?php echo $start_tax_loop; ?>"><?php echo $start_tax_loop; ?></option>
+											<?php 
+												$start_tax_loop = $start_tax_loop + 1;
+											
+											}
+											
+											?>
+											</select>
+										</div>
+										
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
 									
 									
 								  </div>	

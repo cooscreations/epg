@@ -30,6 +30,8 @@ $table_name = $_REQUEST['table_name'];
 $src_page = $_REQUEST['src_page'];
 $update_note = "Marking record as deleted in the system.";
 $add_URL_vars = '';
+
+
 if ($src_page == 'purchase_order_view.php') {
 	$add_URL_vars = "&id=" . $_REQUEST['PO_ID'];
 	if ($_REQUEST['table_name'] == 'purchase_orders'){
@@ -38,7 +40,18 @@ if ($src_page == 'purchase_order_view.php') {
 	}
 }
 else if ($src_page == 'batch_view.php') {
-	$add_URL_vars = "&id=" . $_REQUEST['batch_id'];
+	
+	  $PO_ID = 0; // default
+	  // now get the PO details and send them to that page?
+	  $get_this_batch_PO_SQL = "SELECT `PO_ID` FROM `part_batch` WHERE `ID` = '" . $_REQUEST['batch_id'] . "'";
+	  $result_get_this_batch_PO = mysqli_query($con,$get_this_batch_PO_SQL);
+	  // while loop
+	  while($row_get_this_batch_PO = mysqli_fetch_array($result_get_this_batch_PO)) {
+	  	$PO_ID 					= $row_get_this_batch_PO['PO_ID'];
+	  }
+	  
+	  $add_URL_vars = "&id=" . $_REQUEST['batch_id'] . "&PO_ID=" . $PO_ID . "";
+	  
 }
 else if ($table_name == 'part_revisions') {
 	$add_URL_vars = "&id=" . $_REQUEST['part_id'];
@@ -57,9 +70,7 @@ if (mysqli_query($con, $delete_SQL)) {
 
 		if (mysqli_query($con, $record_delete_SQL)) {
 			// AWESOME! We added the change record to the database
-
-				// regular add - send them to the revisions list for that part
-            header("Location: ".$src_page."?msg=OK&action=delete" . $add_URL_vars);
+			header("Location: ".$src_page."?msg=OK&action=delete" . $add_URL_vars);
 			exit();
 
 		}

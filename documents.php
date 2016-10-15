@@ -97,7 +97,6 @@ if (isset($_REQUEST['table_name'])){
                 <th class="text-center">ID</th>
                 <th class="text-center">Name / 名字</th>
                 <th class="text-center">Category<br />
-                  <small>
                 	<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
 						<option value="#" selected="selected">Filter:</option>
 							<option value="documents.php?1<?php echo $add_table_VARS; echo $add_type_VARS; ?>">Clear This Filter</option>
@@ -133,7 +132,6 @@ if (isset($_REQUEST['table_name'])){
 						}
 						?>
 					</select>
-				  </small>
                 </th>
                 <th class="text-center">Type<br />
 					<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">

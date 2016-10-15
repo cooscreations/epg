@@ -147,6 +147,18 @@ if (isset($_REQUEST['record_status'])) { 		$part_record_status 		= $_REQUEST['re
 									</div>
 								</div>
 								
+									
+								<div class="form-group">
+									<label class="col-md-3 control-label">First Revision Number:</label>
+									<div class="col-md-5">
+										<input type="text" name="part_rev_number" class="form-control" value="A">
+									</div>
+
+									<div class="col-md-1">
+										&nbsp;
+									</div>
+								</div>
+								
 								
 								<div class="form-group">
 									<label class="col-md-3 control-label">Description:</label>

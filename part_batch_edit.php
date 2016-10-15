@@ -37,8 +37,9 @@ else {
 }
 
 if ($record_id != 0) {
-	$get_po_SQL = "SELECT *  FROM  `part_batch` WHERE `ID` = " . $record_id;
-	$result_get_part_batch = mysqli_query($con,$get_po_SQL);
+	$get_part_batch_SQL = "SELECT *  FROM  `part_batch` WHERE `ID` = " . $record_id;
+	// echo '<h1>SQL: ' . $get_part_batch_SQL . '</h1>';
+	$result_get_part_batch = mysqli_query($con,$get_part_batch_SQL);
 	// while loop
 	while($row_get_part_batch = mysqli_fetch_array($result_get_part_batch)) {
 
@@ -49,7 +50,7 @@ if ($record_id != 0) {
 			$part_batch_batch_number 	= $row_get_part_batch['batch_number'];
 			$part_batch_part_rev_id 	= $row_get_part_batch['part_rev'];
 			$part_batch_supplier_id 	= $row_get_part_batch['supplier_ID'];
-			$part_batch_record_status 	= $row_get_batch['record_status'];
+			$part_batch_record_status 	= $row_get_part_batch['record_status'];
 
 	} // end while loop
 }
@@ -59,7 +60,7 @@ if ($record_id != 0) {
 
 				<section role="main" class="content-body">
 					<header class="page-header">
-						<h2>Edit Purchase Order<?php if ($record_id != 0) { ?> : <? echo $po_number; } ?></h2>
+						<h2>Edit Part Batch: <? echo $part_batch_batch_number; ?></h2>
 
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
@@ -129,63 +130,81 @@ if ($record_id != 0) {
 									</div>
 
 									<div class="form-group">
-													<label class="col-md-3 control-label">User:<span class="required">*</label>
-													<div class="col-md-5">
-														<?php creator_drop_down($session_user_id); ?>
-													</div>
+										<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
+										<div class="col-md-5">
+											<?php supplier_drop_down($part_batch_supplier_id); ?>
+										</div>
 
-													<div class="col-md-1">
-														<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
-													</div>
+										<div class="col-md-1">
+											<a href="supplier_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+										</div>
+									</div>
 
-												</div>
+									<div class="form-group">
+										<label class="col-md-3 control-label">Record Status:</label>
+										<div class="col-md-5">
+											<?php record_status_drop_down($part_batch_record_status); ?>
+										</div>
 
-
-												<div class="form-group">
-													<label class="col-md-3 control-label">Date:<span class="required">*</span></label>
-													<div class="col-md-5">
-														<div class="input-group">
-															<span class="input-group-addon">
-																<i class="fa fa-calendar"></i>
-															</span>
-															<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" required>
-														</div>
-													</div>
-
-													<div class="col-md-1">
-														&nbsp;
-													</div>
-												</div>
-
-												<div class="form-group">
-													<label class="col-md-3 control-label">Supplier:<span class="required">*</span></label>
-													<div class="col-md-5">
-														<?php supplier_drop_down($part_batch_supplier_id); ?>
-													</div>
-
-												<div class="form-group">
-													<label class="col-md-3 control-label">Record Status:</label>
-													<div class="col-md-5">
-														<?php record_status_drop_down($part_batch_record_status); ?>
-													</div>
-
-
-
-
-
-													<div class="col-md-1">
-														&nbsp;
-													</div>
-												</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
 
 								</div>
 
 
 								<footer class="panel-footer">
-										<input type="hidden" value="<?php echo $part_batch_id; ?>" name="part_batch_id" />
-										<button type="submit" class="btn btn-success">Submit </button>
-										<button type="reset" class="btn btn-default">Reset</button>
-									</footer>
+								
+								<div class="row">
+								
+									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+								  <div class="col-md-5 text-left">	
+									<?php form_buttons($form_cancel_URL, $record_id); ?>
+								  </div>
+								  
+								  
+								   <!-- NEXT STEP SELECTION -->
+									    
+									    <?php 
+									    if ($_REQUEST['next_step'] == 'view_PO') {
+									    	$next_step_selected = 'PO';
+									    }
+									    else if ($_REQUEST['next_step'] == 'view_batch') {
+									    	$next_step_selected = 'batch';
+									    }
+									    else {
+									    	$next_step_selected = 'part';
+									    }
+									    ?>
+									    
+										<label class="col-md-1 control-label text-right">...and then...</label>
+										
+										<div class="col-md-6 text-left">
+											<div class="radio-custom radio-success">
+												<input type="radio" id="next_step" name="next_step" value="view_part"<?php if ($next_step_selected == 'part') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample9">View Part</label>
+											</div>
+
+											<div class="radio-custom radio-warning">
+												<input type="radio" id="next_step" name="next_step" value="view_batch"<?php if ($next_step_selected == 'batch') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample10">View Batch</label>
+											</div>
+
+											<div class="radio-custom radio-info">
+												<input type="radio" id="next_step" name="next_step" value="view_PO"<?php if ($next_step_selected == 'PO') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample11">View P.O.</label>
+											</div>
+										</div>
+										
+										<!-- END OF NEXT STEP SELECTION -->
+								  </div><!-- end row div -->
+								  
+								</footer>
+									
+									
+									
+									
 							</section>
 										<!-- now close the form -->
 										</form>

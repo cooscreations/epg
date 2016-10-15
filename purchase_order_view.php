@@ -235,7 +235,7 @@ else {
 <!-- START MAIN PAGE BODY : -->
 
 				<?php 
-				if ($print_view == 0) { // ONLY SHOW THIS ON PRINT VERSION!
+				if ($print_view == 0) { // ONLY SHOW THIS ON SCREEN VERSION!
 				?>
 				
 				
@@ -296,6 +296,36 @@ else {
 	// Fix for bug#39 and 37 - main table os part_batch
 	if ($print_view == 0) { // HIDE ADMIN BAR ON PRINT VIEW
 	?>
+	
+	<div class="row">
+		<div class="col-md-12">
+			<!-- PURCHASE ORDER JUMPER -->
+			<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+			  <option value="#" selected="selected">JUMP TO A DIFFERENT P.O. / 选别的:</option>
+			  <option value="purchase_orders.php">View All / 看全部</option>
+			  <?php
+
+			$get_j_POs_SQL = "SELECT `ID`, `PO_number` FROM `purchase_orders` WHERE `record_status` = '2'";
+			// echo $get_j_POs_SQL;
+
+			$result_get_j_POs = mysqli_query($con,$get_j_POs_SQL);
+			// while loop
+			while($row_get_j_POs = mysqli_fetch_array($result_get_j_POs)) {
+				$j_PO_ID = $row_get_j_POs['ID'];
+				$j_PO_number = $row_get_j_POs['PO_number'];
+
+			   ?>
+			  <option value="purchase_order_view.php?id=<?php echo $j_PO_ID; ?>"><?php echo $j_PO_number; ?></option>
+			  <?php
+			  } // end get part list
+			  ?>
+			  <option value="purchase_orders.php">View All / 看全部</option>
+			 </select>
+			<!-- / PURCHASE ORDER JUMPER -->
+			</div>
+		</div>
+		
+		<br />
 
 		<div class="col-md-4">
 			<?php
@@ -1456,6 +1486,7 @@ if ($print_view == 0) {
 									</div>
 
 									<h2 class="panel-title">Batches In This Purchase Order:</h2>
+									<a name="batches"></a>
 								</header>
 								<div class="panel-body">
 					 
@@ -1465,12 +1496,12 @@ if ($print_view == 0) {
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
 					 <thead>
 						  <tr>
-							<th>Batch Number</th>
-							<th>Part Code</th>
-							<th>Rev.</th>
-							<th>Name</th>
-							<th>名字</th>
-							<th>QTY Rec.</th>
+						    <th class="text-center"><i class="fa fa-cog" title="Actions"></i></th>
+							<th class="text-center">Batch Number</th>
+							<th class="text-center">Part Code</th>
+							<th class="text-center">Rev.</th>
+							<th class="text-center">Name / 名字</th>
+							<th class="text-center">QTY Rec.</th>
 						  </tr>
 					  </thead>
 					  <tbody>
@@ -1480,7 +1511,7 @@ if ($print_view == 0) {
 					  $movement_in_total = 0;
 
 					  // GET BATCHES:
-						$get_batches_SQL = "SELECT * FROM `part_batch` WHERE `PO_ID` = " . $_REQUEST['id'];
+						$get_batches_SQL = "SELECT * FROM `part_batch` WHERE `PO_ID` = '" . $_REQUEST['id'] . "' AND `record_status` = '2'";
 						$result_get_batches = mysqli_query($con,$get_batches_SQL);
 						// while loop
 						while($row_get_batches = mysqli_fetch_array($result_get_batches)) {
@@ -1525,23 +1556,132 @@ if ($print_view == 0) {
 					  ?>
 
 					  <tr<?php if ($batch_id == $change_record_id) { ?> class="success"<?php } ?>>
-					    <td><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
-					    <td>
-					    	<a href="part_view.php?id=<?php echo $batch_part_ID; ?>" class="btn btn-info btn-xs" title="View Part Profile"><?php echo $part_code; ?></a>
+					    <td class="text-center">
+                    
+							<!-- ********************************************************* -->
+							<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+							<!-- ********************************************************* -->
+			
+							<?php 
+			
+							// VARS YOU NEED TO WATCH / CHANGE:
+							$add_to_form_name 	= 'part_batch';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+							$form_ID 			= $batch_id;					// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+							$edit_URL 			= 'part_batch_edit'; 				// REQUIRED - specify edit page URL
+							$add_URL 			= 'part_batch_add'; 				// REQURED - specify add page URL
+							$table_name 		= 'part_batch';					// REQUIRED - which table are we updating?
+							$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+							$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+			
+							?>
+	 
+								<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+				
+								?>"><i class="fa fa-gear"></i></a>
+
+								<!-- Modal Form -->
+								<div id="modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+					
+								?>" class="modal-block modal-block-primary mfp-hide">
+									<section class="panel">
+										<header class="panel-heading">
+											<h2 class="panel-title">Admin Options</h2>
+										</header>
+										<div class="panel-body">
+				
+											<div class="table-responsive">
+											 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+											 <thead>
+												<tr>
+													<th class="text-left" colspan="2">Action</th>
+													<th>Decsription</th>
+												</tr>
+											  </thead>
+											  <tbody>
+												<tr>
+												  <td>EDIT</td>
+												  <td>
+													<a href="<?php 
+														echo $edit_URL; 
+													?>.php?id=<?php 
+														echo $form_ID; 
+													?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+														<i class="fa fa-pencil" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Edit this record</td>
+												</tr>
+												<tr>
+												  <td>DELETE</td>
+												  <td>
+													<a href="record_delete_do.php?table_name=<?php 
+														echo $table_name; 
+													?>&src_page=<?php 
+														echo $src_page; 
+													?>&id=<?php 
+														echo $form_ID;
+														echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+													?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+														<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Delete this record</td>
+												</tr>
+												<tr>
+												  <td>ADD</td>
+												  <td>
+													<a href="<?php 
+														echo $add_URL; 
+														echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+													?>" class="mb-xs mt-xs mr-xs btn btn-success">
+														<i class="fa fa-plus" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Add a similar item to this table</td>
+												</tr>
+											  </tbody>
+											  <tfoot>
+												<tr>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												</tr>
+											  </tfoot>
+											  </table>
+											</div><!-- end of responsive table -->	
+				
+										</div><!-- end panel body -->
+										<footer class="panel-footer">
+											<div class="row">
+												<div class="col-md-12 text-left">
+													<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+												</div>
+											</div>
+										</footer>
+									</section>
+								</div>
+		
+							<!-- ********************************************************* -->
+							<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+							<!-- ********************************************************* -->
+						</td>
+					    <td class="text-center"><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
+					    <td class="text-center">
+					    	<?php part_num($part_id); ?>
+					    </td>
+					    <td class="text-center">
+					    	<?php part_rev($rev_id); ?>
 					    </td>
 					    <td>
-					    	<span class="btn btn-warning btn-xs" title="Rev. ID#: <?php echo $rev_id; ?>">
-					    		<?php echo $rev_number; ?>
-					    	</span>
+					    	<?php part_name($part_id); ?>
 					    </td>
-					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td><a href="part_view.php?id=<?php echo $batch_part_ID; ?>"><?php 
-					    if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
-					    	echo $part_name_CN; 
-					    }
-					    
-					    ?></a></td>
-					    <td>
+					    <td class="text-right">
 					    <!-- get first batch count: -->
 					    <?php
 					    // now use earliest record in the DB to find the QTY
@@ -1582,7 +1722,7 @@ if ($print_view == 0) {
 					  <tfoot>
 						  <tr>
 							<th colspan="5">TOTAL: <?php echo $batch_count; ?></th>
-							<th><?php echo number_format($movement_in_total); ?></th>
+							<th class="text-right"><?php echo number_format($movement_in_total); ?></th>
 						  </tr>
 					  </tfoot>
 

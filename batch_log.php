@@ -144,13 +144,13 @@ else {
 
 
 								// count variants for this purchase order
-        						$count_j_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $j_part_ID;
+        						$count_j_batches_sql = "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = '" . $j_part_ID . "' AND `record_status` = '2'";
         						$count_j_batches_query = mysqli_query($con, $count_j_batches_sql);
         						$count_j_batches_row = mysqli_fetch_row($count_j_batches_query);
         						$total_j_batches = $count_j_batches_row[0];
 
 							   ?>
-                              <option value="batch_log.php?part_id=<?php echo $j_part_ID; ?>"><?php echo $j_part_code; ?> - <?php echo $j_part_name_EN; if (($j_part_name_CN != '')&&($j_part_name_CN != '中文名')) { ?> / <?php echo $j_part_name_CN; } ?> (<?php echo $total_j_batches; ?> batche<?php if ($total_j_batches != 1) { ?>s<?php } ?>)</option>
+                              <option value="batch_log.php?part_id=<?php echo $j_part_ID; ?>"><?php echo $j_part_code; ?> - <?php echo $j_part_name_EN; if (($j_part_name_CN != '')&&($j_part_name_CN != '中文名')) { ?> / <?php echo $j_part_name_CN; } ?> (<?php echo $total_j_batches; ?> batch<?php if ($total_j_batches != 1) { ?>es<?php } ?>)</option>
                               <?php
 							  } // end get part list
 							  ?>
@@ -166,7 +166,9 @@ else {
 
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					   <thead>
 					  <tr>
+					  	<th class="text-center"><i class="fa fa-cog" title="ACTION"></i></th>
 					    <th class="text-center">
 					    	Batch #
 					    	<span class="col_sort pull-right"><?php
@@ -205,6 +207,8 @@ else {
 						<th class="text-center">QTY Out</th>
 						<th class="text-center">Batch Balance</th>
 					  </tr>
+					  </thead>
+					  <tbody>
 
 					  <!-- START DATASET -->
 					  <?php
@@ -270,7 +274,13 @@ else {
 									$part_name_CN 	= $row_get_part['name_CN'];
 
 								}
-
+								
+								// GET FIRST MOVEMENT DATE (BATCH CREATION DATE)
+								
+								
+								// NOW GET LATEST MOVEMENT DATE
+								
+								
 
 								// GET P.O. DETAILS:
 								$get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $PO_ID;
@@ -414,6 +424,121 @@ else {
 
 					  ?>
 					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
+							<td class="text-center">
+					
+							<!-- ********************************************************* -->
+							<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+							<!-- ********************************************************* -->
+			
+							<?php 
+			
+							// VARS YOU NEED TO WATCH / CHANGE:
+							$add_to_form_name 	= 'batch_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+							$form_ID 			= $batch_id;				// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+							$edit_URL 			= 'part_batch_edit'; 			// REQUIRED - specify edit page URL
+							$add_URL 			= 'part_batch_add'; 				// REQURED - specify add page URL
+							$table_name 		= 'part_batch';				// REQUIRED - which table are we updating?
+							$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+							$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+			
+							?>
+	 
+								<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+				
+								?>"><i class="fa fa-gear"></i></a>
+
+								<!-- Modal Form -->
+								<div id="modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+					
+								?>" class="modal-block modal-block-primary mfp-hide">
+									<section class="panel">
+										<header class="panel-heading">
+											<h2 class="panel-title">Admin Options</h2>
+										</header>
+										<div class="panel-body">
+				
+											<div class="table-responsive">
+											 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+											 <thead>
+												<tr>
+													<th class="text-left" colspan="2">Action</th>
+													<th>Decsription</th>
+												</tr>
+											  </thead>
+											  <tbody>
+												<tr>
+												  <td>EDIT</td>
+												  <td>
+													<a href="<?php 
+														echo $edit_URL; 
+													?>.php?id=<?php 
+														echo $form_ID; 
+													?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+														<i class="fa fa-pencil" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Edit this record</td>
+												</tr>
+												<tr>
+												  <td>DELETE</td>
+												  <td>
+													<a href="record_delete_do.php?table_name=<?php 
+														echo $table_name; 
+													?>&src_page=<?php 
+														echo $src_page; 
+													?>&id=<?php 
+														echo $form_ID;
+														echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+													?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+														<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Delete this record</td>
+												</tr>
+												<tr>
+												  <td>ADD</td>
+												  <td>
+													<a href="<?php 
+														echo $add_URL; 
+														echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+													?>" class="mb-xs mt-xs mr-xs btn btn-success">
+														<i class="fa fa-plus" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Add a similar item to this table</td>
+												</tr>
+											  </tbody>
+											  <tfoot>
+												<tr>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												</tr>
+											  </tfoot>
+											  </table>
+											</div><!-- end of responsive table -->	
+				
+										</div><!-- end panel body -->
+										<footer class="panel-footer">
+											<div class="row">
+												<div class="col-md-12 text-left">
+													<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+												</div>
+											</div>
+										</footer>
+									</section>
+								</div>
+		
+							<!-- ********************************************************* -->
+							<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+							<!-- ********************************************************* -->
+						</td>
 					    <td class="text-center"><a href="batch_view.php?id=<?php echo $batch_id; ?>" title="Database Record ID = <?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
 					    <td class="text-center"><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
 					    <td class="text-center"><?php echo substr($PO_created_date, 0, 10); ?></td>
@@ -433,15 +558,12 @@ else {
 
 					    ?></a></td>
 					    <td class="text-center"><?php part_rev($rev_id); ?></td>
-					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
-					    	echo $part_name_EN;
-					    	if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
-					    		echo " / " . $part_name_CN;
-					    	}
-					    ?></a></td>
-					    <td class="text-center"><?php echo number_format($total_qty_in); ?></td>
-					    <td class="text-center"><?php echo number_format($total_qty_out); ?></td>
-					    <td class="text-center"><?php echo number_format($qty_remaining); ?></td>
+					    <td class="text-left">
+					      <?php part_name($part_ID); ?>
+					    </td>
+					    <td class="text-right"><?php echo number_format($total_qty_in); ?></td>
+					    <td class="text-right"><?php echo number_format($total_qty_out); ?></td>
+					    <td class="text-right"><?php echo number_format($qty_remaining); ?></td>
 					  </tr>
 					  <?php
 					  
@@ -454,15 +576,15 @@ else {
 
 					  ?>
 					  <!-- END DATASET -->
-
+					</tbody>
+					<tfoot>
 					  <tr>
-					    <th colspan="6">TOTAL ENTRIES: <?php echo $total_batches ;?></th>
-					    <th class="text-center"><?php echo number_format($grand_total_in); ?></th>
-						<th class="text-center"><?php echo number_format($grand_total_out); ?></th>
-						<th class="text-center"><?php echo number_format($grand_total_remaining); ?></th>
+					    <th colspan="7">TOTAL ENTRIES: <?php echo $total_batches ;?></th>
+					    <th class="text-right"><?php echo number_format($grand_total_in); ?></th>
+						<th class="text-right"><?php echo number_format($grand_total_out); ?></th>
+						<th class="text-right"><?php echo number_format($grand_total_remaining); ?></th>
 					  </tr>
-
-
+					  </tfoot>
 					 </table>
 					 
 					 
@@ -491,45 +613,94 @@ else {
 					<div class="row">
 					  <div class="col-md-12">
 					 	<a href="part_batch_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-left"><i class="fa fa-plus-square"></i></a>
+					  </div>
 					</div>
-					 </div>
+		
 					
-					<h1>BATCH SUMMARY BY PART REVISION:</h1>
+					
+	<div class="row">
+
+			<section class="panel">
+				<header class="panel-heading">
+					<div class="panel-actions">
+						<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+						<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+					</div>
+
+					<h2 class="panel-title">
+						<span class="va-middle">Batch Summary by Part Revision</span>
+						<a name="batch_summary"></a>
+					</h2>
+				</header>
+				<div class="panel-body">
+					<div class="content">
 					
 					<div class="table-responsive">
 					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 					 <thead>
 					  <tr>
-					    <th class="text-center">Rev. #</th>
+					    <th class="text-center">Part #</th>
+					    <th class="text-center">Part Rev.</th>
+					    <th class="text-center">Name</th>
 					    <th class="text-center">TOTAL IN</th>
 					    <th class="text-center">TOTAL OUT</th>
 					    <th class="text-center">TOTAL BALANCE</th>
 					  </tr>
 					 </thead>
 					 <tbody>
-					 <?php foreach($array_total_in_by_rev as $in => $in_value) {
+					 <?php 
+					 
+					 $total_in_by_rev = 0;
+					 $total_out_by_rev = 0;
+					 $total_rev_balance = 0;
+					 
+					 foreach($array_total_in_by_rev as $in => $in_value) {
 					 
 					 ?>
 					 	<tr>
+					 	  <td class="text-center"><?php part_num_from_rev($in); ?></td>
 					 	  <td class="text-center"><?php part_rev($in); ?></td>
+					 	  <td class="text-left"><?php part_name_from_rev($in); ?></td>
 					 	  <td class="text-right"><?php echo number_format($in_value); ?></td>
 					 	  <td class="text-right"><?php echo number_format($array_total_out_by_rev[$in]); ?></td>
 					 	  <td class="text-right"><?php 
 					 	  	echo number_format(($in_value - $array_total_out_by_rev[$in]));
 					 	  ?></td>
 					 	</tr>
-					 <?php } ?>
+					 <?php 
+					 		// now append grand totals:
+					 		$total_in_by_rev = $total_in_by_rev + $in_value;
+					 		$total_out_by_rev = $total_out_by_rev + $array_total_out_by_rev[$in];
+					 		
+					 } // end of FOREACH loop 
+					 
+					 		$total_rev_balance = $total_in_by_rev - $total_out_by_rev;
+					 
+					 ?>
 					 </tbody>
 					 <tfoot>
 					 	<tr>
-					 	  <td>&nbsp;</td>
-					 	  <td>&nbsp;</td>
-					 	  <td>&nbsp;</td>
-					 	  <td>&nbsp;</td>
+					 	  <th colspan="3" class="text-right">TOTALS</td>
+					 	  <th class="text-right"><?php echo number_format($total_in_by_rev); ?></th>
+					 	  <th class="text-right"><?php echo number_format($total_out_by_rev); ?></th>
+					 	  <th class="text-right"><?php echo number_format($total_rev_balance); ?></th>
 					 	</tr>
 					 </tfoot>
 				    </table>
 				  </div>
+				  
+				  </div>
+			  <div class="panel-footer">
+				<div class="text-left">
+						<span class="btn btn-default"><i class="fa fa-home"></i></span>
+					</div>
+			  </div>
+			</div>
+		</section>
+
+	</div>
+						
+						
 
 								<!-- now close the panel -->
 								</div>

@@ -58,8 +58,13 @@ if ($record_id != 0) {
 	   	 	$count_batches_query = mysqli_query($con, $count_batches_sql);
 	   	 	$count_batches_row = mysqli_fetch_row($count_batches_query);
 	   	 	$total_batches = $count_batches_row[0];
+	   	 	
+	   	 	$form_cancel_URL = "purchase_order_view.php?id=" . $PO_id;
 
-} // end while loop
+	} // end while loop
+}
+else {
+	$form_cancel_URL = "batch_log.php";
 }
 
 ?>
@@ -76,17 +81,25 @@ if ($record_id != 0) {
 										<i class="fa fa-home"></i>
 									</a>
 								</li>
-									<li>
-										<a href="purchase_orders.php">All P.O.s</a>
-									</li>
 								<?php
 								if ($record_id != 0) {
 									?>
 									<li>
+										<a href="purchase_orders.php">All P.O.s</a>
+									</li>
+									<li>
 										<a href="purchase_order_view.php?id=<?php echo $record_id; ?>">P.O. Record</a>
 									</li>
 									<?php
-								} ?>
+								} 
+								else {
+									?>
+									<li>
+										<a href="batch_log.php">Batch Log</a>
+									</li>
+									<?php
+								}
+								?>
 								<li><span>Add New Batch Record</span></li>
 							</ol>
 
@@ -164,45 +177,57 @@ if ($record_id != 0) {
 									</div>
 								</div>
 
-								<div class="form-group">
-												<label class="col-md-3 control-label">User:<span class="required">*</label>
-												<div class="col-md-5">
-													<?php creator_drop_down($session_user_id); ?>
-												</div>
-
-												<div class="col-md-1">
-													<a href="user_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
-												</div>
-
-											</div>
-
-
-											<div class="form-group">
-												<label class="col-md-3 control-label">Date:<span class="required">*</span></label>
-												<div class="col-md-5">
-													<div class="input-group">
-														<span class="input-group-addon">
-															<i class="fa fa-calendar"></i>
-														</span>
-														<input type="text" data-plugin-datepicker data-plugin-options='{"todayHighlight": "true"}' class="form-control" placeholder="YYYY-MM-DD" name="date_added" required>
-													</div>
-												</div>
-
-
-												<div class="col-md-1">
-													&nbsp;
-												</div>
-											</div>
-
-
 
 								</div>
 
 
 								<footer class="panel-footer">
-										<button type="submit" class="btn btn-success">Submit </button>
-										<button type="reset" class="btn btn-default">Reset</button>
-									</footer>
+								
+								<div class="row">
+								
+									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+								  <div class="col-md-5 text-left">	
+									<?php form_buttons($form_cancel_URL, $record_id); ?>
+								  </div>
+								  
+								  
+								   <!-- NEXT STEP SELECTION -->
+									    
+									    <?php 
+									    if ($_REQUEST['next_step'] == 'view_PO') {
+									    	$next_step_selected = 'PO';
+									    }
+									    else if ($_REQUEST['next_step'] == 'view_batch') {
+									    	$next_step_selected = 'batch';
+									    }
+									    else {
+									    	$next_step_selected = 'part';
+									    }
+									    ?>
+									    
+										<label class="col-md-1 control-label text-right">...and then...</label>
+										
+										<div class="col-md-6 text-left">
+											<div class="radio-custom radio-success">
+												<input type="radio" id="next_step" name="next_step" value="view_part"<?php if ($next_step_selected == 'part') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample9">View Part</label>
+											</div>
+
+											<div class="radio-custom radio-warning">
+												<input type="radio" id="next_step" name="next_step" value="view_batch"<?php if ($next_step_selected == 'batch') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample10">View Batch</label>
+											</div>
+
+											<div class="radio-custom radio-info">
+												<input type="radio" id="next_step" name="next_step" value="view_PO"<?php if ($next_step_selected == 'PO') { ?> checked="checked"<?php } ?>>
+												<label for="radioExample11">View P.O.</label>
+											</div>
+										</div>
+										
+										<!-- END OF NEXT STEP SELECTION -->
+								  </div><!-- end row div -->
+								  
+								</footer>
 							</section>
 										<!-- now close the form -->
 										</form>

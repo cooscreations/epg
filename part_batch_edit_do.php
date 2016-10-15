@@ -25,14 +25,12 @@ if (!isset($_SESSION['username'])) {
 THIS IS AN INVISIBLE PAGE THAT CHECKS / VALIDATES THE FORM DATA, ENTERS IT IN TO THE DATABASE AND THEN REDIRECTS TO SOMEWHERE ELSE
 
 */
-$part_batch_id = $_REQUEST['part_batch_id'];
-$PO_ID = $_REQUEST['PO_ID'];
-$part_rev_ID = $_REQUEST['part_rev_ID']; // use this to find the part #
-$batch_number = $_REQUEST['batch_number'];
-$user_ID = $_REQUEST['user_ID'];
-$date_added = $_REQUEST['date_added'] . " 00:00:00";
-$sup_ID = $_REQUEST['sup_ID'];
-$record_status = $_REQUEST['record_status'];
+$part_batch_id 	= checkaddslashes($_REQUEST['id']);
+$PO_ID 			= checkaddslashes($_REQUEST['PO_ID']);
+$part_rev_ID 	= checkaddslashes($_REQUEST['part_rev_ID']); // use this to find the part #
+$batch_number 	= checkaddslashes($_REQUEST['batch_number']);
+$sup_ID 		= checkaddslashes($_REQUEST['sup_ID']);
+$record_status 	= checkaddslashes($_REQUEST['record_status']);
 
 $update_note = "Updating a part batch in the system.";
 
@@ -43,10 +41,19 @@ if (mysqli_query($con, $edit_part_batch_SQL)) {
     $record_edit_SQL = "INSERT INTO `update_log`(`ID`, `table_name`, `update_ID`, `user_ID`, `notes`, `update_date`, `update_type`, `update_action`) VALUES (NULL,'part_batch','" . $part_batch_id . "','" . $_SESSION['user_ID'] . "','" . $update_note . "','" . date("Y-m-d H:i:s") . "', 'general', 'UPDATE')";
 
 		if (mysqli_query($con, $record_edit_SQL)) {
-
-				header("Location: batch_log.php?msg=OK&action=edit");
-
-			exit();
+		
+			if ($_REQUEST['next_step'] == 'view_PO') {
+				header("Location: purchase_order_view.php?id=" . $PO_ID . "&batch_id=" . $part_batch_id . "&msg=OK&action=add_batch#batches");
+				exit();
+			}
+			else if ($_REQUEST['next_step'] == 'view_batch') {
+				header("Location: batch_view.php?id=".$part_batch_id."&msg=OK&action=add");
+				exit();
+			}
+			else {
+				header("Location: part_view.php?rev_id=" . $part_rev_ID . "&new_batch_id=" . $part_batch_id . "&msg=OK&action=add_batch#batch_history_" . $part_rev_ID . "");
+				exit();
+			}
 
 		}
 		else {

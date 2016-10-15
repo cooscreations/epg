@@ -31,38 +31,16 @@ $record_id = 0;
 if (isset($_REQUEST['id'])) {
 	$record_id = $_REQUEST['id'];
 }
-
-if ($record_id != 0) {
-    $get_sups_SQL = "SELECT * FROM `suppliers` WHERE `ID` = " . $record_id;
-    // echo $get_sups_SQL;
-
-    $result_get_sups = mysqli_query($con,$get_sups_SQL);
-
-    // while loop
-    while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
-        $sup_ID = $row_get_sup['ID'];
-        $sup_en = $row_get_sup['name_EN'];
-        $sup_cn = $row_get_sup['name_CN'];
-        $sup_web = $row_get_sup['website'];
-
-    } // end get supplier info WHILE loop
-}
-
 ?>
 <!-- START MAIN PAGE BODY : -->
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Add A New Supplier<?php if ($record_id != 0) { ?> Supplier ID: <? echo $sup_ID;
-                                    } ?></h2>
+        <h2>Add A New Supplier</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
-                <li>
-                    <a href="index.php">
-                        <i class="fa fa-home"></i>
-                    </a>
-                </li>
+                <li><a href="index.php"><i class="fa fa-home"></i></a></li>
                 <li><a href="suppliers.php">All Suppliers</a></li>
                 <li><span>Add New Supplier</span></li>
             </ol>
@@ -72,6 +50,22 @@ if ($record_id != 0) {
     </header>
 
     <!-- start: page -->
+
+	<?php
+
+	// run notifications function:
+	$msg = 0;
+	if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
+	$action = 0;
+	if (isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
+	$change_record_id = 0;
+	if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
+	$page_record_id = 0;
+	if (isset($record_id)) { $page_record_id = $record_id; }
+
+	// now run the function:
+	notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
+	?>
 
     <div class="row">
         <div class="col-md-12">
@@ -90,153 +84,153 @@ if ($record_id != 0) {
                     </header>
                     <div class="panel-body">
 
-											<div class="form-group">
-													<label class="col-md-3 control-label">EPG Supplier ID:<span class="required">*</span></label>
-													<div class="col-md-5">
-															<input type="text" class="form-control" id="inputDefault" name="epg_supplier_ID" required />
-													</div>
+						<div class="form-group">
+								<label class="col-md-3 control-label">EPG Supplier ID:<span class="required">*</span></label>
+								<div class="col-md-5">
+										<input type="text" class="form-control" id="inputDefault" name="epg_supplier_ID" required />
+								</div>
 
-													<div class="col-md-1">
-															&nbsp;
-													</div>
-											</div>
+								<div class="col-md-1">
+										&nbsp;
+								</div>
+						</div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Name:<span class="required">*</span></label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="name_en" required />
-                            </div>
+						<div class="form-group">
+							<label class="col-md-3 control-label">Name:<span class="required">*</span></label>
+							<div class="col-md-5">
+								<input type="text" class="form-control" id="inputDefault" name="name_en" required />
+							</div>
 
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
+							<div class="col-md-1">
+								&nbsp;
+							</div>
+						</div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">名字:</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="name_cn" />
-                            </div>
+						<div class="form-group">
+							<label class="col-md-3 control-label">名字:</label>
+							<div class="col-md-5">
+								<input type="text" class="form-control" id="inputDefault" name="name_cn" />
+							</div>
 
 
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
+							<div class="col-md-1">
+								&nbsp;
+							</div>
+						</div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Website:<span class="required">*</span></label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control" id="inputDefault" name="sup_website" required />
-                            </div>
+						<div class="form-group">
+							<label class="col-md-3 control-label">Website:</label>
+							<div class="col-md-5">
+								<input type="text" class="form-control" id="inputDefault" name="sup_website" />
+							</div>
 
-                            <div class="col-md-1">
-                                &nbsp;
-                            </div>
-                        </div>
+							<div class="col-md-1">
+								&nbsp;
+							</div>
+						</div>
 
-												<div class="form-group">
-													<label class="col-md-3 control-label">Supplier Status:<span class="required">*</span></label>
-													<div class="col-md-5">
-														<select data-plugin-selectTwo class="form-control populate" name="supplier_status" required>
+						<div class="form-group">
+							<label class="col-md-3 control-label">Supplier Status:<span class="required">*</span></label>
+							<div class="col-md-5">
+								<select data-plugin-selectTwo class="form-control populate" name="supplier_status" required>
 
-																<?php
-																		$get_sup_status_SQL = "SELECT * FROM `supplier_status` ";
-																		// echo $get_vendor_status_SQL;
+										<?php
+												$get_sup_status_SQL = "SELECT * FROM `supplier_status` ";
+												// echo $get_vendor_status_SQL;
 
-																		$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
-																		// while loop
-																		while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
-																			$sup_status_ID = 			$row_get_sup_status['ID'];
-																			$sup_status_name_EN = 		$row_get_sup_status['name_EN'];
-																			$sup_status_name_CN = 		$row_get_sup_status['name_CN'];
-																			$sup_status_level = 		$row_get_sup_status['status_level'];
-																			$sup_status_description = 	$row_get_sup_status['status_description'];
-																			$sup_status_color_code = 	$row_get_sup_status['color_code'];
-																			$sup_status_icon = 			$row_get_sup_status['icon'];
-																		?>
-																	<option value="<?php echo $sup_status_ID; ?>" <?php if ($sup_status_ID == 4) { ?> selected="selected"<?php } ?>>
-																		<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { echo " / " . $sup_status_name_CN; } ?>
-																	</option>
-																<?php
-															}
-															?>
-														</select>
-													</div>
+												$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
+												// while loop
+												while($row_get_sup_status = mysqli_fetch_array($result_get_sup_status)) {
+													$sup_status_ID = 			$row_get_sup_status['ID'];
+													$sup_status_name_EN = 		$row_get_sup_status['name_EN'];
+													$sup_status_name_CN = 		$row_get_sup_status['name_CN'];
+													$sup_status_level = 		$row_get_sup_status['status_level'];
+													$sup_status_description = 	$row_get_sup_status['status_description'];
+													$sup_status_color_code = 	$row_get_sup_status['color_code'];
+													$sup_status_icon = 			$row_get_sup_status['icon'];
+												?>
+											<option value="<?php echo $sup_status_ID; ?>" <?php if ($sup_status_ID == 4) { ?> selected="selected"<?php } ?>>
+												<?php echo $sup_status_name_EN; if (($sup_status_name_CN!='')&&($sup_status_name_CN!='中文名')) { echo " / " . $sup_status_name_CN; } ?>
+											</option>
+										<?php
+									}
+									?>
+								</select>
+							</div>
 
-													<div class="col-md-1">
-														&nbsp;
-													</div>
-												</div>
+							<div class="col-md-1">
+								&nbsp;
+							</div>
+						</div>
 
-												<div class="form-group">
-													<label class="col-md-3 control-label">Part Classification:<span class="required">*</span></label>
-													<div class="col-md-5">
-														<select data-plugin-selectTwo class="form-control populate" name="part_classification" required>
-															<option value=""></option>
-															<?php
+						<div class="form-group">
+							<label class="col-md-3 control-label">Part Classification:<span class="required">*</span></label>
+							<div class="col-md-5">
+								<select data-plugin-selectTwo class="form-control populate" name="part_classification" required>
+									<option value=""></option>
+									<?php
 
-																	// GET PART CLASSIFICATION:
-																	$get_part_class_SQL = "SELECT * FROM  `part_classification` ";
-																	// echo $get_part_class_SQL;
+											// GET PART CLASSIFICATION:
+											$get_part_class_SQL = "SELECT * FROM  `part_classification` ";
+											// echo $get_part_class_SQL;
 
-																	$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
-																	// while loop
-																	while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
-																		$part_class_ID = $row_get_part_class['ID'];
-																		$part_class_EN = $row_get_part_class['name_EN'];
-																		$part_class_CN = $row_get_part_class['name_CN'];
-																		$part_class_description = $row_get_part_class['description'];
-																		$part_class_color = $row_get_part_class['color'];
-																	?>
-																	<option value="<?php echo $part_class_ID; ?>" >
-																		<?php echo $part_class_EN; if (($part_class_CN!='')&&($part_class_CN!='中文名')) { echo " / " . $part_class_CN; } ?>
-																	</option>
-																<?php
-															}
-															?>
-														</select>
-													</div>
+											$result_get_part_class = mysqli_query($con,$get_part_class_SQL);
+											// while loop
+											while($row_get_part_class = mysqli_fetch_array($result_get_part_class)) {
+												$part_class_ID = $row_get_part_class['ID'];
+												$part_class_EN = $row_get_part_class['name_EN'];
+												$part_class_CN = $row_get_part_class['name_CN'];
+												$part_class_description = $row_get_part_class['description'];
+												$part_class_color = $row_get_part_class['color'];
+											?>
+											<option value="<?php echo $part_class_ID; ?>" >
+												<?php echo $part_class_EN; if (($part_class_CN!='')&&($part_class_CN!='中文名')) { echo " / " . $part_class_CN; } ?>
+											</option>
+										<?php
+									}
+									?>
+								</select>
+							</div>
 
-													<div class="col-md-1">
-														&nbsp;
-													</div>
-												</div>
+							<div class="col-md-1">
+								&nbsp;
+							</div>
+						</div>
 
-												<div class="form-group">
-													<label class="col-md-3 control-label">Part Type:<span class="required">*</span></label>
-													<div class="col-md-5">
-														<select data-plugin-selectTwo class="form-control populate" name="part_type_ID" required>
-															<option value=""></option>
-															<?php
+						<div class="form-group">
+							<label class="col-md-3 control-label">Part Type:<span class="required">*</span></label>
+							<div class="col-md-5">
+								<select data-plugin-selectTwo class="form-control populate" name="part_type_ID" required>
+									<option value=""></option>
+									<?php
 
-																	// GET PART TYPE:
-																	$list_part_types_SQL = "SELECT * FROM  `part_type` WHERE `record_status` = 2";
-																	// echo $get_part_type_SQL;
+											// GET PART TYPE:
+											$list_part_types_SQL = "SELECT * FROM  `part_type` WHERE `record_status` = 2";
+											// echo $get_part_type_SQL;
 
-																	$result_list_part_types = mysqli_query($con,$list_part_types_SQL);
-																	// while loop
-																	while($row_list_part_types = mysqli_fetch_array($result_list_part_types)) {
-																		$list_part_type_ID = $row_list_part_types['ID'];
-																		$list_part_type_EN = $row_list_part_types['name_EN'];
-																		$list_part_type_CN = $row_list_part_types['name_CN'];
+											$result_list_part_types = mysqli_query($con,$list_part_types_SQL);
+											// while loop
+											while($row_list_part_types = mysqli_fetch_array($result_list_part_types)) {
+												$list_part_type_ID = $row_list_part_types['ID'];
+												$list_part_type_EN = $row_list_part_types['name_EN'];
+												$list_part_type_CN = $row_list_part_types['name_CN'];
 
-																	?>
-																	<option value="<?php echo $list_part_type_ID; ?>" >
-																		<?php echo $list_part_type_EN; if (($list_part_type_CN!='')&&($list_part_type_CN!='中文名')) { echo " / " . $list_part_type_CN; } ?>
-																	</option>
-																<?php
-															}
-															?>
-														</select>
-													</div>
+											?>
+											<option value="<?php echo $list_part_type_ID; ?>" >
+												<?php echo $list_part_type_EN; if (($list_part_type_CN!='')&&($list_part_type_CN!='中文名')) { echo " / " . $list_part_type_CN; } ?>
+											</option>
+										<?php
+									}
+									?>
+								</select>
+							</div>
 
-													<div class="col-md-1">
-														&nbsp;
-													</div>
-												</div>
+							<div class="col-md-1">
+								&nbsp;
+							</div>
+						</div>
 
-												<div class="form-group">
+						<div class="form-group">
                             <label class="col-md-3 control-label">Items Supplied:</label>
                             <div class="col-md-5">
                                 <input type="text" class="form-control" id="inputDefault" name="items_supplied" />
@@ -360,7 +354,7 @@ if ($record_id != 0) {
 															<span class="input-group-addon">
 																<i class="fa fa-phone"></i>
 															</span>
-															<input id="inputDefault" name="mobile_phone" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control"  />
+															<input type="text" class="form-control" id="inputDefault" name="mobile_phone" placeholder="+86xxxxxxxxxxx" />
 														</div>
 													</div>
 												</div>
@@ -372,7 +366,7 @@ if ($record_id != 0) {
 															<span class="input-group-addon">
 																<i class="fa fa-phone"></i>
 															</span>
-															<input id="inputDefault" name="telephone" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control"  />
+															<input type="text" class="form-control" id="inputDefault" name="telephone" placeholder="+86xxxxxxxxxxx" />
 														</div>
 													</div>
 												</div>
@@ -384,7 +378,7 @@ if ($record_id != 0) {
 															<span class="input-group-addon">
 																<i class="fa fa-phone"></i>
 															</span>
-															<input id="inputDefault" name="fax" data-plugin-masked-input data-input-mask="(999) 999-9999" placeholder="(123) 123-1234" class="form-control"  />
+															<input type="text" class="form-control" id="inputDefault" name="fax" placeholder="+86xxxxxxxxxxx" />
 														</div>
 													</div>
 												</div>
@@ -415,17 +409,47 @@ if ($record_id != 0) {
 
 
                     </div>
+                    
                     <footer class="panel-footer">
-                        <?php
-										if (isset($_REQUEST['id'])) {
-											?>
-                        <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="sup_ID" />
-                        <?php
-										}
-										?>
-                        <button type="submit" class="btn btn-success">Submit </button>
-                        <button type="reset" class="btn btn-default">Reset</button>
-                    </footer>
+								
+						<div class="row">
+						
+							<!-- ADD ANY OTHER HIDDEN VARS HERE -->
+						  <div class="col-md-5 text-left">	
+							<?php form_buttons('suppliers'); ?>
+						  </div>
+						  
+						  
+						   <!-- NEXT STEP SELECTION -->
+								
+								<?php 
+								if ($_REQUEST['next_step'] == 'add') {
+									$next_step_selected = 'add';
+								}
+								else {
+									$next_step_selected = 'view';
+								}
+								?>
+								
+								<label class="col-md-1 control-label text-right">...and then...</label>
+								
+								<div class="col-md-6 text-left">
+									<div class="radio-custom radio-success">
+										<input type="radio" id="next_step" name="next_step" value="view_record"<?php if ($next_step_selected == 'view') { ?> checked="checked"<?php } ?>>
+										<label for="radioExample9">View Supplier</label>
+									</div>
+
+									<div class="radio-custom radio-warning">
+										<input type="radio" id="next_step" name="next_step" value="add_record"<?php if ($next_step_selected == 'add') { ?> checked="checked"<?php } ?>>
+										<label for="radioExample10">Add Another Supplier</label>
+									</div>
+								</div>
+								
+								<!-- END OF NEXT STEP SELECTION -->
+						  </div><!-- end row div -->
+						  
+						</footer>
+                    
                 </section>
                 <!-- now close the form -->
             </form>

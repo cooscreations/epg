@@ -309,7 +309,7 @@ pagehead ( $page_id );
 									$end_qty = 100;
 									while ($start_qty < $end_qty) {
 										?>
-								        <option value="<?php echo $start_qty; ?>"><?php echo $start_qty; ?></option>
+								        <option value="<?php echo $start_qty; ?>"<?php if ($start_qty == 1) { ?> selected="selected"<?php } ?>><?php echo $start_qty; ?></option>
 										<?
 										$start_qty = $start_qty + 1;
 									}

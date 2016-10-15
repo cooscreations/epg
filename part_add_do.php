@@ -42,6 +42,8 @@ $sup_ID 				= checkaddslashes($_REQUEST['sup_ID']);
 $created_by 			= checkaddslashes($_REQUEST['created_by']);
 $record_status 			= checkaddslashes($_REQUEST['record_status']);
 
+$first_rev_number		= checkaddslashes($_REQUEST['part_rev_number']);
+
 // VALIDATION
 
 $validation_result = 0;
@@ -132,7 +134,7 @@ else {	// VALIDATION PASSED
 				// AWESOME! We added the change record to the database
 
 					// regular add
-				header("Location: part_view.php?msg=OK&action=add&id=".$record_id."");
+				header("Location: part_view.php?msg=OK&action=add&id=".$record_id."&first_rev_number=" . $first_rev_number);
 
 				exit();
 
