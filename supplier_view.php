@@ -64,6 +64,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 	$sup_email_1 				= $row_get_sup['email_1'];
 	$sup_email_2 				= $row_get_sup['email_2'];
 	$sup_record_status			= $row_get_sup['record_status'];
+	$sup_controlled				= $row_get_sup['controlled'];
 
 			// VENDOR CLASSIFICATION BY STATUS:
 
@@ -218,6 +219,24 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
 									<h3><?php echo $part_class_EN; ?> / <?php echo $part_class_CN; ?></h3>
 									<p>Vendor Classification</p>
 								</li>
+								<?php 
+								if ($sup_controlled == 1) {
+									?>
+									<li class="danger">
+										<h3>Controlled</h3>
+										<p>Highest Requirements</p>
+									</li>
+								<?php
+								}
+								else {
+									?>
+									<li class="success">
+										<h3>Not Controlled</h3>
+										<p>Lower Requirements</p>
+									</li>
+								<?php
+								}
+								?>
 								<li class="warning">
 									<h3><?php echo $sup_evaluation_date; ?></h3>
 									<p>Next Evaluation</p>

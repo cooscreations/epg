@@ -67,6 +67,7 @@ if ($record_id != 0) {
         $sup_email_1 					= $row_get_sup['email_1'];
         $sup_email_2 					= $row_get_sup['email_2'];
         $sup_record_status 				= $row_get_sup['record_status'];
+        $sup_controlled 				= $row_get_sup['controlled'];
 
     } // end get supplier info WHILE loop
 }
@@ -191,6 +192,17 @@ if ($record_id != 0) {
 							</div>
 						</div>
 
+									<div class="form-group">
+										<label class="col-md-3 control-label">Controlled Supplier?:</label>
+										<div class="col-md-5">
+											<div class="switch switch-lg switch-danger">
+												<input type="checkbox" name="controlled" id="controlled" data-plugin-ios-switch<?php echo $sup_controlled == '1' ? ' checked="checked"' : '' ?> value="1" />
+											</div>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
 												<div class="form-group">
 													<label class="col-md-3 control-label">Part Classification:<span class="required">*</span></label>
 													<div class="col-md-5">

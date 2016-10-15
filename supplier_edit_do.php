@@ -53,6 +53,7 @@ $sup_fax 						= checkaddslashes($_REQUEST['fax']);
 $sup_email_1 					= checkaddslashes($_REQUEST['email_1']);
 $sup_email_2 					= checkaddslashes($_REQUEST['email_2']);
 $record_status					= checkaddslashes($_REQUEST['record_status']);
+$sup_controlled					= checkaddslashes($_REQUEST['controlled']);
 
 $update_note = "Editing a supplier in the system.";
 $update_table = 'suppliers';
@@ -80,7 +81,8 @@ $edit_record_SQL = "UPDATE `" . $update_table . "` SET
 `fax`='" . $sup_fax . "',
 `email_1`='" . $sup_email_1 . "',
 `email_2`='" . $sup_email_2 . "',
-`record_status`='" . $record_status . "' 
+`record_status`='" . $record_status . "',
+`controlled`='" . $sup_controlled . "' 
 WHERE `ID` = '" . $record_id . "'";
 
 // echo $edit_supplier_SQL;

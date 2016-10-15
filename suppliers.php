@@ -33,6 +33,7 @@ $add_URL_vars_sup_status = '';
 $add_URL_vars_sort = '';
 $add_URL_vars_dir = '';
 $add_URL_vars_dir_opp = '';
+$add_URL_vars_controlled = '';
 $sort_SQL = " ORDER BY `record_status` DESC , `part_classification` ASC, `epg_supplier_ID` ASC"; // default sort
 $dir_SQL = '';
 
@@ -60,12 +61,19 @@ if (isset($_REQUEST['sort'])) {
 }
 
 if (isset($_REQUEST['sup_status_id'])) {
-	$add_SQL .= " AND `supplier_status` = '" . $_REQUEST['sup_status_id'] . "'";
+	$sup_status_id_add_SQL = " AND `supplier_status` = '" . $_REQUEST['sup_status_id'] . "'";
+	$add_SQL .= $sup_status_id_add_SQL;
 	$add_URL_vars_sup_status = "&sup_status_id=" . $_REQUEST['sup_status_id'];
 }
 
+if (isset($_REQUEST['controlled'])) {
+	$add_URL_vars_controlled = '&controlled=' . $_REQUEST['controlled'];
+	$controlled_add_SQL .= " AND `controlled` = '" . $_REQUEST['controlled'] . "'";
+	$add_SQL .= $controlled_add_SQL;
+}
+
 // OUTPUT VAR COMBO:
-// $add_URL_vars_sup_status . 
+// $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp . $add_URL_vars_controlled;
 
 ?>
 
@@ -125,10 +133,11 @@ if (isset($_REQUEST['sup_status_id'])) {
                   </a>
                 </th>
                 <th class="text-center">
-                	Status<br />
+                	Status
+                	<br />
                 	<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
 						<option value="#" selected="selected">Filter:</option>
-							<option value="suppliers.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir; ?>">Clear This Filter</option>
+							<option value="suppliers.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp . $add_URL_vars_controlled; ?>">Clear This Filter</option>
 							<option value="suppliers.php">Clear All Filters</option>
 							<?php
 							$get_j_sup_status_SQL = "SELECT * FROM `supplier_status`";
@@ -147,13 +156,13 @@ if (isset($_REQUEST['sup_status_id'])) {
 
 						
 									// count docs in this category:
-									$count_j_sup_status_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `supplier_status` = '" . $j_sup_status_id . "'";
+									$count_j_sup_status_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `supplier_status` = '" . $j_sup_status_id . "'" . $add_URL_vars_controlled;
 									$count_j_sup_status_query = mysqli_query($con, $count_j_sup_status_sql);
 									$count_j_sup_status_row = mysqli_fetch_row($count_j_sup_status_query);
 									$total_j_sup_status = $count_j_sup_status_row[0];
 
 									?>
-									<option value="suppliers.php?sup_status_id=<?php echo $j_sup_status_id . $add_URL_vars_sort . $add_URL_vars_dir; ?>"<?php if ($_REQUEST['sup_status_id'] == $j_sup_status_id) { ?> selected="selected"<?php } ?>><?php 
+									<option value="suppliers.php?sup_status_id=<?php echo $j_sup_status_id . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp . $add_URL_vars_controlled; ?>"<?php if ($_REQUEST['sup_status_id'] == $j_sup_status_id) { ?> selected="selected"<?php } ?>><?php 
 					
 										echo $j_sup_status_name_EN; 
 										if (($j_sup_status_name_CN!='')&&($j_sup_status_name_CN!='中文名')) { 
@@ -163,6 +172,38 @@ if (isset($_REQUEST['sup_status_id'])) {
 									<?php
 							}
 							?>
+					</select>
+				</th>
+                <th class="text-center">
+                	Controlled
+					<br />
+					<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+						<option value="#" selected="selected">Filter:</option>
+						<option value="suppliers.php?1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp; ?>">Clear This Filter</option>
+						<option value="suppliers.php">Clear All Filters</option>
+						<?php 
+						
+						
+						// now count POs by status:
+						
+						$total_not_controlled 	= 0; // NOT CONTROLLED
+						$total_controlled 		= 0; // CONTROLLED
+						
+						$count_not_con_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `controlled` = '0'" . $sup_status_id_add_SQL;
+						// echo "<h1>SQL here: " . $count_not_con_sql . "</h1>";
+						$count_not_con_query = mysqli_query($con, $count_not_con_sql);
+						$count_not_con_row = mysqli_fetch_row($count_not_con_query);
+						$total_not_con = $count_not_con_row[0];
+						
+						$count_con_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `controlled` = '1'" . $sup_status_id_add_SQL;
+						// echo "<h1>SQL here: " . $count_con_sql . "</h1>";
+						$count_con_query = mysqli_query($con, $count_con_sql);
+						$count_con_row = mysqli_fetch_row($count_con_query);
+						$total_con = $count_con_row[0];
+						
+						?>
+						<option value="suppliers.php?controlled=0<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp; ?>"<?php if ( $_REQUEST['controlled'] == 0 ) { ?> selected="selected"<?php } ?>>NO (<?php echo $total_not_con; ?>)</option>
+						<option value="suppliers.php?controlled=1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp; ?>"<?php if ( $_REQUEST['controlled'] == 1 ) { ?> selected="selected"<?php } ?>>YES (<?php echo $total_con; ?>)</option>
 					</select>
 				</th>
                 <th class="text-center">Type</th>
@@ -208,6 +249,7 @@ if (isset($_REQUEST['sup_status_id'])) {
 						$sup_email_1 = $row_get_sups['email_1'];
 						$sup_email_2 = $row_get_sups['email_2'];
 						$sup_record_status = $row_get_sups['record_status'];
+						$sup_controlled = $row_get_sups['controlled'];
 
 
 
@@ -383,6 +425,13 @@ if (isset($_REQUEST['sup_status_id'])) {
                   </button>
                 </td>
                 <td class="text-center"><?php
+                  if ($sup_controlled == 1) {
+                	?><span class="text-danger"><i class="fa fa-exclamation-triangle" title="CONTROLLED"></i></span><?php
+                  }
+                  else {
+                	?><span class="text-success"><i class="fa fa-check" title="NOT CONTROLLED"></i></span><?php
+                  }?></td>
+                <td class="text-center"><?php
                   if ($sup_part_classification == 1) {
                 	?><span class="text-danger"><i class="fa fa-exclamation-triangle" title="CRITICAL"></i></span><?php
                   }
@@ -469,7 +518,7 @@ if (isset($_REQUEST['sup_status_id'])) {
           </tbody>
           <tfoot>
             <tr>
-                <th colspan="10" class="text-left">TOTAL: <?php echo $sup_count; ?></th>
+                <th colspan="11" class="text-left">TOTAL: <?php echo $sup_count; ?></th>
             </tr>
           </tfoot>
         </table>

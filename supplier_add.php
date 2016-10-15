@@ -163,6 +163,18 @@ if (isset($_REQUEST['id'])) {
 							</div>
 						</div>
 
+									<div class="form-group">
+										<label class="col-md-3 control-label">Controlled Supplier?:</label>
+										<div class="col-md-5">
+											<div class="switch switch-lg switch-danger">
+												<input type="checkbox" name="controlled" id="controlled" data-plugin-ios-switch value="1" />
+											</div>
+										</div>
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
+
 						<div class="form-group">
 							<label class="col-md-3 control-label">Part Classification:<span class="required">*</span></label>
 							<div class="col-md-5">

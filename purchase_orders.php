@@ -71,7 +71,7 @@ if (isset($_REQUEST['year'])) {
 		$end_date_filter_year = ($_REQUEST['year'] + 1);
 	}
 	else {
-		$add_URL_vars_year = '';
+		$add_URL_vars_year = '&year=all';
 		$display_year = 'all';
 		$sup_add_SQL = '';
 		$add_SQL .= ''; // SHOW ALL YEARS aka DO NOT ADD TIME DATA HERE! (may be specified above in other condition, so use the '.')
@@ -465,13 +465,13 @@ if (isset($_REQUEST['payment_status'])) {
 										$total_rec_0_POs = 0; // NOT RECEIVED
 										$total_rec_1_POs = 0; // RECEIVED
 										
-										$count_rec_0_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `date_delivered` = '0000-00-00 00:00:00'" . $sup_add_SQL;
+										$count_rec_0_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `date_delivered` = '0000-00-00 00:00:00'" . $add_SQL;
 										// echo "<h1>SQL here: " . $count_rec_0_POs_sql . "</h1>";
 										$count_rec_0_POs_query = mysqli_query($con, $count_rec_0_POs_sql);
 										$count_rec_0_POs_row = mysqli_fetch_row($count_rec_0_POs_query);
 										$total_rec_0_POs = $count_rec_0_POs_row[0];
 										
-										$count_rec_1_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `date_delivered` != '0000-00-00 00:00:00'" . $sup_add_SQL;
+										$count_rec_1_POs_sql = "SELECT COUNT( ID ) FROM  `purchase_orders` WHERE `record_status` = '2' AND `date_delivered` != '0000-00-00 00:00:00'" . $add_SQL;
 										// echo "<h1>SQL here: " . $count_rec_1_POs_sql . "</h1>";
 										$count_rec_1_POs_query = mysqli_query($con, $count_rec_1_POs_sql);
 										$count_rec_1_POs_row = mysqli_fetch_row($count_rec_1_POs_query);

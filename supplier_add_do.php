@@ -49,11 +49,12 @@ $sup_telephone 					= checkaddslashes($_REQUEST['telephone']);
 $sup_fax 						= checkaddslashes($_REQUEST['fax']);
 $sup_email_1 					= checkaddslashes($_REQUEST['email_1']);
 $sup_email_2 					= checkaddslashes($_REQUEST['email_2']);
+$sup_controlled 				= checkaddslashes($_REQUEST['controlled']);
 
 
 $update_note = "Adding a new supplier to the system.";
 
-$add_supplier_SQL = "INSERT INTO `suppliers`(`ID`, `epg_supplier_ID`, `name_EN`, `name_CN`, `website`, `supplier_status`, `part_classification`, `items_supplied`, `part_type_ID`, `certifications`, `certification_expiry_date`, `evaluation_date`, `address_EN`, `address_CN`, `country_ID`, `contact_person`, `mobile_phone`, `telephone`, `fax`, `email_1`, `email_2`) VALUES (NULL,'".$sup_epg_supplier_ID."', '".$sup_en."','".$sup_cn."','".$sup_web."', '".$sup_supplier_status."', '".$sup_part_classification."', '".$sup_items_supplied."', '".$sup_part_type_ID."', '".$sup_certifications."', '".$sup_certification_expiry_date."', '".$sup_evaluation_date."', '".$sup_address_EN."', '".$sup_address_CN."', '".$sup_country_ID."', '".$sup_contact_person."', '".$sup_mobile_phone."', '".$sup_telephone."', '".$sup_fax."', '".$sup_email_1."', '".$sup_email_2."')";
+$add_supplier_SQL = "INSERT INTO `suppliers`(`ID`, `epg_supplier_ID`, `name_EN`, `name_CN`, `website`, `supplier_status`, `part_classification`, `items_supplied`, `part_type_ID`, `certifications`, `certification_expiry_date`, `evaluation_date`, `address_EN`, `address_CN`, `country_ID`, `contact_person`, `mobile_phone`, `telephone`, `fax`, `email_1`, `email_2`, `record_status`, `controlled`) VALUES (NULL,'".$sup_epg_supplier_ID."', '".$sup_en."','".$sup_cn."','".$sup_web."', '".$sup_supplier_status."', '".$sup_part_classification."', '".$sup_items_supplied."', '".$sup_part_type_ID."', '".$sup_certifications."', '".$sup_certification_expiry_date."', '".$sup_evaluation_date."', '".$sup_address_EN."', '".$sup_address_CN."', '".$sup_country_ID."', '".$sup_contact_person."', '".$sup_mobile_phone."', '".$sup_telephone."', '".$sup_fax."', '".$sup_email_1."', '".$sup_email_2."','2','" . $sup_controlled . "')";
 
 
 // echo $add_supplier_SQL;
