@@ -109,7 +109,7 @@ if (isset($_REQUEST['id'])) {
 						<div class="form-group">
 							<label class="col-md-3 control-label">名字:</label>
 							<div class="col-md-5">
-								<input type="text" class="form-control" id="inputDefault" name="name_cn" />
+								<input type="text" class="form-control" id="inputDefault" name="name_cn" value="中文名" />
 							</div>
 
 
@@ -295,9 +295,9 @@ if (isset($_REQUEST['id'])) {
 												</div>
 
 												<div class="form-group">
-													<label class="col-md-3 control-label">Address:<span class="required">*</span></label>
+													<label class="col-md-3 control-label">Address:</label>
 													<div class="col-md-5">
-														<textarea class="form-control" rows="3" id="textareaDefault" name="address_EN" required></textarea>
+														<textarea class="form-control" rows="3" id="textareaDefault" name="address_EN">Address</textarea>
 													</div>
 													<div class="col-md-1">&nbsp;</div>
 												</div>
@@ -305,7 +305,7 @@ if (isset($_REQUEST['id'])) {
 												<div class="form-group">
 													<label class="col-md-3 control-label">Address CN:</label>
 													<div class="col-md-5">
-														<textarea class="form-control" rows="3" id="textareaDefault" name="address_CN" ></textarea>
+														<textarea class="form-control" rows="3" id="textareaDefault" name="address_CN" >地址</textarea>
 													</div>
 													<div class="col-md-1">&nbsp;</div>
 												</div>

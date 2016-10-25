@@ -87,7 +87,7 @@ if (isset($_REQUEST['table_name'])){
     <!-- start: page -->
     
     
-    <?php add_button(0, 'document_add'); ?>
+    <?php add_button(0, 'upload_file'); ?>
    
     <div class="table-responsive">
         <table
@@ -251,14 +251,14 @@ if (isset($_REQUEST['table_name'])){
 		
 									if ($doc_document_category == 5) {
 										// this is a part photo -  let's link to it
-										$file_path = 'assets/images';
+										$file_path = 'assets/images/';
 									}
 									else {
 										// DEFAULT?
-										$file_path = 'assets/files';
+										$file_path = 'upload/';
 									}
 									// now build the link:
-									$full_file_path = 'http://120.24.71.207/' . $file_path . '/' .  $doc_file_location . '/' . $doc_filename;
+									$full_file_path = 'http://120.24.71.207/' .  $doc_file_location . '/' . $doc_filename;
 									// echo '<h4>Path: ' . $full_file_path . '</h4>';
 		
 									// GET DOC CATEGORY
@@ -454,7 +454,24 @@ if (isset($_REQUEST['table_name'])){
 						}
 					?>
 				</td> 
-            	<td class="text-center"><?php echo $doc_lookup_table; ?> (ID. #: <?php echo $doc_lookup_ID; ?>)
+            	<td class="text-center"><?php 
+            	
+            	$start_lookup_link = '';
+            	$end_lookup_link = '';
+            	
+            	if ($doc_lookup_table == 'users') {
+            		$start_lookup_link = '<a href="user_view.php?id=' . $doc_lookup_ID . '" title="View User Profile">';
+            		$end_lookup_link = '</a>';
+            	}
+            	
+            	
+            	echo $doc_lookup_table; 
+            	
+            	?> (ID. #: <?php 
+            		echo $start_lookup_link;
+            		echo $doc_lookup_ID;
+            		echo $end_lookup_link;
+            		 ?>)
             	<?php 
             	
             	if ($doc_lookup_table == 'part_revisions') {
@@ -493,7 +510,7 @@ if (isset($_REQUEST['table_name'])){
         </table>
     </div>
     
-    <?php add_button(0, 'document_add'); ?>
+    <?php add_button(0, 'upload_file'); ?>
     
     <!-- end: page -->
 </section>

@@ -1,4 +1,4 @@
-<meta content="text/html; charset=utf-8" http-equiv="content-type" /><?php
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -154,7 +154,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
                 <option value="suppliers.php">View All / 看全部</option>
                 <?php
 
-                $get_j_sups_SQL = "SELECT * FROM `suppliers`";
+                $get_j_sups_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = '2'";
                 // echo $get_j_sups_SQL;
 
                 $result_get_j_sups = mysqli_query($con,$get_j_sups_SQL);

@@ -54,6 +54,7 @@ $po_record_status 				= checkaddslashes($_REQUEST['record_status']);					//
 $po_completion_status			= checkaddslashes($_REQUEST['completion_status']);				//
 $po_default_currency_rate 		= checkaddslashes($_REQUEST['po_default_currency_rate']);		//				
 $po_currency_id					= checkaddslashes($_REQUEST['currency_id']);					//
+$po_tax_rate					= checkaddslashes($_REQUEST['tax_rate']);						//
 
 if ($po_include_CoC == '') { $po_include_CoC = 0; }
 
@@ -101,7 +102,8 @@ $add_record_SQL = "INSERT INTO `purchase_orders`(
 	`HQ_location_ID`, 
 	`ship_to_location_ID`, 
 	`default_currency`, 
-	`default_currency_rate`) VALUES (
+	`default_currency_rate`,
+	`tax_rate`) VALUES (
 	NULL,
 	'" . $po_number . "',
 	'" . $po_date_added . "',
@@ -129,7 +131,8 @@ $add_record_SQL = "INSERT INTO `purchase_orders`(
 	'" . $po_HQ_location_ID . "',
 	'" . $po_ship_to_location_ID . "',
 	'" . $po_currency_id . "',
-	'" . $po_default_currency_rate . "')";
+	'" . $po_default_currency_rate . "',
+	'" . $po_tax_rate . "')";
 
 // echo $add_record_SQL;
 

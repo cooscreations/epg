@@ -54,6 +54,7 @@ $sup_email_1 					= checkaddslashes($_REQUEST['email_1']);
 $sup_email_2 					= checkaddslashes($_REQUEST['email_2']);
 $record_status					= checkaddslashes($_REQUEST['record_status']);
 $sup_controlled					= checkaddslashes($_REQUEST['controlled']);
+if ($sup_controlled == '') { $sup_controlled = 0; }
 
 $update_note = "Editing a supplier in the system.";
 $update_table = 'suppliers';

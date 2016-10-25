@@ -79,7 +79,12 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>User Profile - <?php echo $user_fn; ?> <?php echo $user_mn; ?> <?php echo $user_ln; ?> / <?php echo $user_name_cn; ?></h2>
+        <h2>User Profile - <?php echo $user_fn; ?> <?php echo $user_mn; ?> <?php echo $user_ln; 
+        	
+        	if (($user_name_cn!='')&&($user_name_cn!='中文名')){
+        		echo ' / ' . $user_name_cn; 
+        	}	
+        	?></h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
@@ -95,7 +100,21 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
         </div>
     </header>
+	<?php
 
+    // run notifications function:
+    $msg = 0;
+    if (isset($_REQUEST['msg'])) { $msg = $_REQUEST['msg']; }
+    $action = 0;
+    if (isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
+    $change_record_id = 0;
+    if (isset($_REQUEST['new_record_id'])) { $change_record_id = $_REQUEST['new_record_id']; }
+    $page_record_id = 0;
+    if (isset($record_id)) { $page_record_id = $record_id; }
+
+    // now run the function:
+    notify_me($page_id, $msg, $action, $change_record_id, $page_record_id);
+    ?>
     <!-- start: page -->
 
     <div class="row">
@@ -159,7 +178,8 @@ while($row_get_user = mysqli_fetch_array($result_get_user)) {
 					
 					
 						<div class="thumb-info mb-md">
-							<img src="assets/images/users/user_<?php echo $user_ID; ?>.png" title="<?php echo $user_fn; echo ' ' . $user_mn; echo ' ' . $user_ln; if (($user_name_cn!='中文名')&&($user_name_cn!='')) { echo ' / ' . $user_name_cn; } ?>" class="rounded img-responsive" alt="<?php echo $user_fn; echo ' ' . $user_mn; echo ' ' . $user_ln; if (($user_name_cn!='中文名')&&($user_name_cn!='')) { echo ' / ' . $user_name_cn; } ?>">
+							
+							<?php get_img('users', $user_ID, 1, 250); ?>
 							<div class="thumb-info-title">
 								<span class="thumb-info-inner"><?php echo $user_fn;  if (($user_name_cn!='中文名')&&($user_name_cn!='')) { echo ' / ' . $user_name_cn; } ?></span>
 								<span class="thumb-info-type"><?php echo $user_position; ?></span>

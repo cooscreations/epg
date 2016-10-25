@@ -26,13 +26,13 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 18	  MC		get_location($loc_id, $display_type = 0, $profile_link = 1)
 19	  MC		location_drop_down($this_loc_ID, $form_element_name = 'loc_ID')
 20	  MC		form_buttons($cancel_url, $record_id)
-21	  MC		function add_button($record_id, $add_page_url, $record_var = 'id', $add_title='Click here to add a new record to this table', $add_url = '')
+21	  MC		add_button($record_id, $add_page_url, $record_var = 'id', $add_title='Click here to add a new record to this table', $add_url = '')
 22	  MC		part_num_button($part_id)
-23	  MC		function part_drop_down($current_ID=0)
+23	  MC		part_drop_down($current_ID=0)
 24	  MC		part_rev_drop_down($current_ID=0)
-25	  MC		function purchase_orders_drop_down($part_batch_po_id=0)
+25	  MC		purchase_orders_drop_down($part_batch_po_id=0)
 26	  MC		part_num($part_id, $show_button = 1)
-27	  MC		function part_rev($part_rev_id, $show_button = 1)
+27	  MC		part_rev($part_rev_id, $show_button = 1)
 28	  MC		part_name($part_id, $show_button = 1)
 29 	  MC		part_img($part_rev_id, $profile_link = 1, $img_width_px = 100)
 30 	  MC		batch_num_dropdown($record_id = 0)
@@ -251,6 +251,12 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 	session_start();
 	// enable the DB connection:
 	include 'db_conn.php';
+	
+	$page_load_time_now = microtime();
+	$page_load_time_now = explode(' ', $page_load_time_now);
+	$page_load_time_now = $page_load_time_now[1] + $page_load_time_now[0];
+	$page_load_start_time = $page_load_time_now;
+	$GLOBALS['page_load_start_time'] = $page_load_start_time;
 
 	// use this to get the current (active) page info:
 
@@ -451,7 +457,7 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 
 		<!-- Vendor CSS -->
 		<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.css" />
-		<link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="print" ><!-- printer-friendly? -->
+		<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css" type="text/css" media="print" ><!-- printer-friendly? -->
 
 		<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
@@ -468,7 +474,10 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 			<?php
 		}
 		?>
-
+		
+		<!-- Specific Page Vendor CSS - BASIC FORMS -->		
+		<link rel="stylesheet" href="assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css" />
+		
 		<!-- Specific Page Vendor CSS - ADVANCED FORMS-->
 		<link rel="stylesheet" href="assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
 		<link rel="stylesheet" href="assets/vendor/select2/select2.css" />
@@ -718,7 +727,7 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 					?>
 						<a href="#" data-toggle="dropdown">
 							<figure class="profile-picture">
-								<img src="assets/images/users/user_<?php echo $result_row['ID']; ?>.png" alt="<?php echo $result_row['first_name']; echo ' ' . $result_row['middle_name']; echo ' ' . $result_row['last_name']; ?>" class="img-circle" data-lock-picture="assets/images/!logged-user.jpg" />
+								<?php get_img('users', $result_row['ID'], 0, 'header'); ?>
 							</figure>
 							<div class="profile-info" data-lock-name="<?php echo $result_row['first_name']; echo ' ' . $result_row['last_name']; ?>" data-lock-email="<?php echo $result_row['email']; ?>">
 								<span class="name"><?php echo $result_row['first_name']; echo ' ' . $result_row['middle_name']; echo ' ' . $result_row['last_name']; ?></span>
@@ -768,6 +777,8 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 					<div class="nano">
 						<div class="nano-content">
 							<nav id="menu" class="nav-main" role="navigation">
+								<?php main_menu(1); ?>
+								<!-- 
 								<ul class="nav nav-main">
 									<li<?php if ($page_id == 1) { ?> nav-active<?php } ?>>
 										<a href="index.php">
@@ -829,11 +840,23 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 											<span>Products / 产品</span>
 										</a>
 									</li>
-									<li>
-										<a href="documents.php">
-											<i class="fa fa-files-o" aria-hidden="true"></i>
+									<li class="nav-parent">
+										<a>
+											<i class="fa fa-table" aria-hidden="true"></i>
 											<span>Documents / 文件</span>
 										</a>
+										<ul class="nav nav-children">
+											<li>
+												<a href="documents.php">
+													 View All / 查看全部
+												</a>
+											</li>
+											<li>
+												<a href="upload_file.php">
+													 Upload New Doc.
+												</a>
+											</li>
+										</ul>
 									</li>
 									<li class="nav-parent<?php if ($page_id == 2) { ?> nav-active<?php } ?>">
 										<a>
@@ -877,6 +900,7 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 										</a>
 									</li>
 								</ul>
+								-->
 							</nav>
 
 							<hr class="separator" />
@@ -1352,6 +1376,11 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 
 <!-- Examples -->
 		<script src="assets/javascripts/ui-elements/examples.modals.js"></script>
+		
+		
+		
+		<!-- Specific Page Vendor JS - BASIC FORMS-->
+		<script src="assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js"></script>
 
 		<!-- Specific Page Vendor - ADVANCED FORMS -->
 		<script src="assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
@@ -1393,6 +1422,22 @@ ID	AUTHOR		NAME / VARS																PURPOSE											NOTES
 			<script src="assets/vendor/jquery-validation/jquery.validate.js"></script>
 			<script src="assets/javascripts/forms/examples.validation.js"></script>
 
+		<?php 
+		
+		$page_load_end_time = $page_load_time_now;
+		
+		$page_load_end_time = microtime();
+		$page_load_end_time = explode(' ', $page_load_end_time);
+		$page_load_end_time = $page_load_end_time[1] + $page_load_end_time[0];
+		$finish_load_time = $page_load_end_time;
+		$total_page_load_time = round(($page_load_end_time - $GLOBALS['page_load_start_time']), 4);
+		$GLOBALS['page_load_end_time'] = $page_load_end_time;
+		?>
+		
+		<div class="row text-center">
+			<small class="text-center">Page generated in <?php echo $total_page_load_time; ?> seconds.</small>
+		</div>
+		
 		</section>
 	</body>
 </html>
@@ -1508,6 +1553,7 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 						<?php
 						} // END OF SUCCESS MESSAGES
 						else if ($_REQUEST['msg'] == 'NG') {
+						
 						?>
 							<div class="alert alert-warning">
 								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -1540,6 +1586,16 @@ function notify_me($page_id, $msg, $action, $change_record_id, $page_record_id){
 										<i class="fa fa-exclamation fa-stack-1x"></i>
 									</span>
 									<strong>Oh No!</strong> You must select an existing Purchase Order to do that.
+								<?php 
+								}
+								
+								if ($_REQUEST['error'] == 'exists') { ?>
+									<!-- NO PURCHASE ORDER ID -->
+									<span class="fa-stack fa-3x">
+										<i class="fa fa-circle-o fa-stack-2x"></i>
+										<i class="fa fa-exclamation fa-stack-1x"></i>
+									</span>
+									<strong>FILE FOUND!</strong> That file is already in the system. Please rename the new file or edit the existing one.
 								<?php 
 								}
 								
@@ -1970,7 +2026,7 @@ function creator_drop_down($this_user_ID, $form_element_name = 'created_by') {
 
 	?>
 	<!-- originally parsed USER ID = <?php echo $this_user_ID; ?> -->
-	<select class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>">
+	<select class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>" data-plugin-selectTwo>
 		<option value="0">Select User</option>
 		<?php
 		// GET PART TYPE:
@@ -2027,7 +2083,7 @@ function supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID') {
 
 	?>
 	<!-- originally parsed SUP ID = <?php echo $this_sup_ID; ?> -->
-	<select data-plugin-selectTwo class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>" required>
+	<select data-plugin-selectTwo class="form-control populate" name="<?php echo $form_element_name; ?>" id="<?php echo $form_element_name; ?>" required data-plugin-selectTwo>
 	  <?php if ($this_sup_ID == 0) { ?><option value="0" selected="selected" style="display:none">Select vendor:</option><?php } ?>
 		<?php
 		// get batch list
@@ -2101,7 +2157,7 @@ function supplier_drop_down($this_sup_ID, $form_element_name = 'sup_ID') {
 function record_status_drop_down($current_status) {
 // now output the result:
 ?>
-<select class="form-control populate" name="record_status" id="record_status">
+<select class="form-control populate" name="record_status" id="record_status" data-plugin-selectTwo>
   <option value="0"<?php if ($current_status == 0) { ?> selected="selected"<?php } ?>>✘ DELETED ✘</option>
   <option value="1"<?php if ($current_status == 1) { ?> selected="selected"<?php } ?>>? PENDING ?</option>
   <option value="2"<?php if ($current_status == 2) { ?> selected="selected"<?php } ?>>✔ PUBLISHED ✔</option>
@@ -3266,7 +3322,7 @@ function part_img($part_rev_id, $profile_link = 1, $img_width_px = 100){ // defa
 		$num_component_photos_found = 0;
 		$component_photo_location = "assets/images/no_image_found.jpg";
 
-		$get_part_component_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $part_rev_id;
+		$get_part_component_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $part_rev_id . " AND `filetype_ID` = '5'";
 		// echo "<h1>".$get_part_component_photo_SQL."</h1>";
 		$result_get_part_component_photo = mysqli_query($con,$get_part_component_photo_SQL);
 		// while loop
@@ -3294,7 +3350,7 @@ function part_img($part_rev_id, $profile_link = 1, $img_width_px = 100){ // defa
 
 			if ($component_photo_filename!='') {
 				// now apply filename
-				$component_photo_location = "assets/images/" . $component_photo_location . "/" . $component_photo_filename;
+				$component_photo_location = "" . $component_photo_location . "/" . $component_photo_filename;
 			}
 			else {
 				$component_photo_location = "assets/images/no_image_found.jpg";
@@ -3346,9 +3402,21 @@ function part_img($part_rev_id, $profile_link = 1, $img_width_px = 100){ // defa
 			if ($profile_link == 1) { 
 	
 				$close_link = '</a>';
-	
-				?><a href="part_view.php?id=<?php echo $part_id; ?>" title="View <?php echo $part_name_EN; 
-				if (($part_name_CN!='')&&($part_name_CN!='中文名')) { echo ' / ' . $part_name_CN; } ?> Part Profile"><?php 
+				
+				if ($photo_location == "assets/images/no_image_found.jpg"){
+					?><a href="upload_file.php?table=part_revisions&lookup_ID=<?php echo $part_rev_id; ?>" title="Upload a new image"><?php 
+				}
+				else {
+					?><a href="part_view.php?id=<?php 
+						echo $part_id; 
+					?>" title="View <?php 
+						echo $part_name_EN; 
+						if (($part_name_CN!='')&&($part_name_CN!='中文名')) { 
+							echo ' / ' . $part_name_CN; 
+						} 
+					?> Part Profile"><?php
+				}
+				 
 			} 
 			
 			?>
@@ -3622,6 +3690,384 @@ function payment_status($current_status, $print_view=0) {
 		<?php
 	}
 } // end of payment_status function
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+function get_img($lookup_table, $record_id, $doc_link = 0, $img_width_px = 100){ 
+
+	// start the session:
+	session_start();
+	// enable the DB connection:
+	include 'db_conn.php';
+	
+	if ($record_id == 0) {
+		?>
+		<span class="btn btn-danger">
+			<i class="fa fa-exclamation-triangle"></i>
+			NO RECORD FOUND!
+			<i class="fa fa-exclamation-triangle"></i>
+		</span>
+		<?php
+	}
+	else {
+	
+	
+		// now get the photo!
+		$num_photos_found = 0;
+		$photo_location = "assets/images/no_image_found.jpg";
+
+		$get_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  '" . $lookup_table . "' AND  `lookup_ID` =" . $record_id . " AND `filetype_ID` = '5' AND `record_status` = '2'"; // FILETYPE 5 = PHOTO!
+		// echo "<h1>" . $get_photo_SQL . "</h1>";
+		$result_get_photo = mysqli_query($con,$get_photo_SQL);
+		// while loop
+		while($row_get_photo = mysqli_fetch_array($result_get_photo)) {
+
+			$num_photos_found = $num_photos_found + 1;
+
+			// now print each record:
+			$photo_id 					= $row_get_photo['ID'];
+			$photo_name_EN 				= $row_get_photo['name_EN'];
+			$photo_name_CN 				= $row_get_photo['name_CN'];
+			$photo_filename 			= $row_get_photo['filename'];
+			$photo_filetype_ID 			= $row_get_photo['filetype_ID'];
+			$photo_location 			= $row_get_photo['file_location'];
+			$photo_lookup_table 		= $row_get_photo['lookup_table'];
+			$photo_lookup_id 			= $row_get_photo['lookup_ID'];
+			$photo_document_category 	= $row_get_photo['document_category'];
+			$photo_record_status 		= $row_get_photo['record_status'];
+			$photo_created_by 			= $row_get_photo['created_by'];
+			$photo_date_created 		= $row_get_photo['date_created'];
+			$photo_filesize_bytes 		= $row_get_photo['filesize_bytes'];
+			$photo_document_icon 		= $row_get_photo['document_icon'];
+			$photo_document_remarks 	= $row_get_photo['document_remarks'];
+			$photo_doc_revision 		= $row_get_photo['doc_revision'];
+
+			if ($photo_filename!='') {
+				// now apply filename
+				$photo_location = $photo_location . "/" . $photo_filename;
+			}
+			else {
+				$photo_location = "assets/images/no_image_found.jpg";
+			}
+
+		} // end get photo
+	
+		
+	
+			$close_link = '';
+	
+			if ($doc_link == 1) { 
+	
+				$close_link = '</a>';
+				if ($photo_location == "assets/images/no_image_found.jpg"){
+					?><a href="upload_file.php?table=<?php echo $lookup_table; ?>&lookup_ID=<?php echo $record_id; ?>" title="Upload a new document"><?php 
+				}
+				else {
+					?><a href="document_view.php?id=<?php echo $photo_id; ?>" title="View Document Details"><?php 
+				}
+			} 
+			
+			if ($img_width_px == 'header') {
+			 	$img_class="img-circle";
+			}
+			else {
+				$img_class="rounded img-responsive";
+			}
+			
+			?>
+				<img src="<?php 
+					echo $photo_location; 
+				?>" class="<?php 
+					echo $img_class; 
+				?>" alt="Photo" style="width:<?php 
+					echo $img_width_px; 
+				?>px; border:0;" />
+			<?php
+			
+			echo $close_link;
+			
+	}
+
+} // END OF FUNCTION
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+/* ****************************************************************** */
+function main_menu($menu_id) {
+	session_start();
+	include 'db_conn.php';
+	
+	// use this to get the current (active) page info:
+	
+	$public_path = pathinfo($_SERVER['SCRIPT_NAME']);
+	$this_file = $public_path['basename'];
+	
+	// DEFAULT
+	$add_SQL = '';
+	if (isset($_SESSION["user_level"])) {
+		// there is a live session - show them things like the log out button, instead of the log in button etc.
+		
+		// ONLY SHOW MENU ITEMS THEIR USER LEVEL ALLOWS
+		$add_SQL = " AND `min_user_level` <= " . $_SESSION["user_level"] . "";
+	}
+	else {
+		// not logged in - show public pages ONLY
+		$add_SQL = " AND `privacy` = 'PUBLIC'";
+	}
+	
+	if ($menu_id == 1) {
+		$count_pages_1_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = 0" . $add_SQL . "";
+		$get_menu_1_SQL = "SELECT * FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = 0" . $add_SQL . " ORDER BY `order` ASC";
+	}
+	else if ($menu_id == 2) {
+		$count_pages_1_sql = "SELECT COUNT(ID) FROM `pages` WHERE `footer_menu` = 1 AND `record_status` = 2 AND `parent_ID` = 0" . $add_SQL . "";
+		$get_menu_1_SQL = "SELECT * FROM `pages` WHERE `footer_menu` = 1 AND `record_status` = 2 AND `parent_ID` = 0" . $add_SQL . " ORDER BY `order` ASC";
+	}
+	else {
+		echo "<h4>Something strange happened to level 1...?!</h4>";
+	}
+	
+	// echo "<h3>COUNT: ".$count_pages_1_sql."</h3>";
+	// echo "<h3>SQL: ".$get_menu_1_SQL."</h3>";
+	
+	// first, let's check to make sure we have menu items:			
+	$count_pages_1_query = mysqli_query($con, $count_pages_1_sql);
+	
+	$count_pages_1_row = mysqli_fetch_row($count_pages_1_query);
+	// Here we have the total row count
+	$total_pages_1 = $count_pages_1_row[0];
+	
+	if ($total_pages_1 > 0) {
+	
+	?>
+    <!-- START MENU ID <?php echo $menu_id; ?> -->
+    <ul class="nav nav-main"><?	
+	
+	$result_get_menu_1 = mysqli_query($con,$get_menu_1_SQL);
+	// while loop
+	while($row_get_menu_1 = mysqli_fetch_array($result_get_menu_1)) {
+		
+			// set vars:  
+			$page_1_id = $row_get_menu_1['ID'];
+			$page_1_name_EN = $row_get_menu_1['name_EN'];
+			$page_1_name_CN = $row_get_menu_1['name_CN'];
+			$page_1_parent_ID = $row_get_menu_1['parent_ID'];
+			$page_1_dept_ID = $row_get_menu_1['dept_ID'];
+			$page_1_filename = $row_get_menu_1['filename'];
+			$page_1_icon = $row_get_menu_1['icon'];
+			$page_1_privacy = $row_get_menu_1['privacy'];
+			$page_1_og_type = $row_get_menu_1['og_type'];
+			
+			// count sub-items:	
+			if ($menu_id == 1) {
+				$count_sub_pages_1_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ". $page_1_id ."" . $add_SQL . "";
+			}
+			else if ($menu_id == 2) {
+				$count_sub_pages_1_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 2 AND `record_status` = 2 AND `parent_ID` = ". $page_1_id ."" . $add_SQL . "";
+			}		
+			$count_sub_pages_1_query = mysqli_query($con, $count_sub_pages_1_sql);
+			$count_sub_pages_1_row = mysqli_fetch_row($count_sub_pages_1_query);
+			// Here we have the total row count
+			$total_sub_pages_1 = $count_sub_pages_1_row[0];
+	?>
+    
+    <li class="<?php if ($total_sub_pages_1 > 0) { ?>nav-parent<?php } if ($this_file == $page_1_filename) { ?> nav-active<?php } ?>"><a href="<?php echo $page_1_filename; ?>" title="<?php echo $page_1_name_EN; if (($page_1_name_CN!='')&&($page_1_name_CN!='中文名')) { ?> / <?php echo $page_1_name_CN; } ?>">
+    	<?php if ($page_1_og_type == 'inbox') { 
+						
+		// get TOTAL mail count
+		$count_total_mail_SQL = "SELECT COUNT( ID ) FROM  `message_log` WHERE `type` =  'cosmosysmail' AND `to_ID` = '" . $_SESSION['user_id'] . "' AND  `status` =  '2' OR `type` = 'cosmosysmail' AND `to_ID` = '" . $_SESSION['user_id'] . "' AND  `status` =  '3'";
+		
+		$count_total_mail_query = mysqli_query($con, $count_total_mail_SQL);
+		$count_total_mail_row = mysqli_fetch_row($count_total_mail_query);
+		// Here we have the total row count
+		$count_total_mail = $count_total_mail_row[0];
+		
+		?>
+		<span class="pull-right label label-primary"><?php echo $count_total_mail; ?></span>
+        <?php } ?>
+        <i class="fa <?php echo $page_1_icon; ?>" aria-hidden="true"></i> 
+		<span><?php echo $page_1_name_EN; ?></span></a><?php
+    ////////////////////////////////////////////////////
+	//           START LEVEL 2 CODE: 
+    ////////////////////////////////////////////////////
+	if ($menu_id == 1) {
+		$count_pages_2_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_1_id."" . $add_SQL . " ORDER BY `order` ASC";
+		$get_menu_2_SQL = "SELECT * FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_1_id."" . $add_SQL . " ORDER BY `order` ASC";
+	}
+	else if ($menu_id == 2) {
+		$count_pages_2_sql = "SELECT COUNT(ID) FROM `pages` WHERE `footer_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_1_id."" . $add_SQL . " ORDER BY `order` ASC";
+		$get_menu_2_SQL = "SELECT * FROM `pages` WHERE `footer_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_1_id."" . $add_SQL . " ORDER BY `order` ASC";
+	}
+	else {
+		echo "<h4>Something strange happened to level 2...?!</h4>";
+	}
+	
+	// echo "<h3>".$count_pages_2_sql."</h3>";
+	// echo "<h3>".$get_menu_2_SQL."</h3>";
+	
+	// first, let's check to make sure we have menu items:
+	$count_pages_2_query = mysqli_query($con, $count_pages_2_sql);
+	
+	$count_pages_2_row = mysqli_fetch_row($count_pages_2_query);
+	// Here we have the total row count
+	$total_pages_2 = $count_pages_2_row[0];
+	
+	if ($total_pages_2 > 0) {
+	
+	?>
+    
+    <!-- START LEVEL 2 UL -->
+    <ul class="nav nav-children"><?	
+	
+	$result_get_menu_2 = mysqli_query($con,$get_menu_2_SQL);
+	// while loop
+	while($row_get_menu_2 = mysqli_fetch_array($result_get_menu_2)) {
+		
+			// set vars:  
+			$page_2_id = $row_get_menu_2['ID'];
+			$page_2_name_EN = $row_get_menu_2['name_EN'];
+			$page_2_name_CN = $row_get_menu_2['name_CN'];
+			$page_2_parent_ID = $row_get_menu_2['parent_ID'];
+			$page_2_dept_ID = $row_get_menu_2['dept_ID'];
+			$page_2_filename = $row_get_menu_2['filename'];
+			$page_2_icon = $row_get_menu_2['icon'];
+			$page_2_privacy = $row_get_menu_2['privacy'];
+			$page_2_og_type = $row_get_menu_2['og_type'];
+			
+			// count sub-items:	
+			if ($menu_id == 1) {
+				$count_sub_pages_2_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ". $page_2_id ."" . $add_SQL . "";
+			}
+			else if ($menu_id == 2) {
+				$count_sub_pages_2_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 2 AND `record_status` = 2 AND `parent_ID` = ". $page_2_id ."" . $add_SQL . "";
+			}		
+			$count_sub_pages_2_query = mysqli_query($con, $count_sub_pages_2_sql);
+			$count_sub_pages_2_row = mysqli_fetch_row($count_sub_pages_2_query);
+			// Here we have the total row count
+			$total_sub_pages_2 = $count_sub_pages_2_row[0];
+	
+	?>
+    
+    <li class="<?php if ($total_sub_pages_2 > 0) { ?>nav-parent<?php } if ($this_file == $page_2_filename) { ?> nav-active<?php } ?>"><a href="<?php echo $page_2_filename; ?>" title="<?php echo $page_2_name_EN; if (($page_2_name_CN!='')&&($page_2_name_CN!='中文名')) { ?> / <?php echo $page_2_name_CN; } ?>">
+	<i class="fa <?php echo $page_2_icon; ?>" aria-hidden="true"></i> 
+	<span><?php echo $page_2_name_EN; if (($page_2_name_CN!='')&&($page_2_name_CN!='中文名')) { ?> / <?php echo $page_2_name_CN; } ?></span></a><?php 
+if ($menu_id == 1) {
+		$count_pages_3_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_2_id."" . $add_SQL . " ORDER BY `order` ASC";
+		$get_menu_3_SQL = "SELECT * FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_2_id."" . $add_SQL . " ORDER BY `order` ASC";
+	}
+	else if ($menu_id == 2) {
+		$count_pages_3_sql = "SELECT COUNT(ID) FROM `pages` WHERE `footer_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_2_id."" . $add_SQL . " ORDER BY `order` ASC";
+		$get_menu_3_SQL = "SELECT * FROM `pages` WHERE `footer_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ".$page_2_id."" . $add_SQL . " ORDER BY `order` ASC";
+	}
+	else {
+		echo "<h4>Something strange happened to level 3...?!</h4>";
+	}
+	
+	// echo "<h3>".$count_pages_3_sql."</h3>";
+	// echo "<h3>".$get_menu_3_SQL."</h3>";
+	
+	// first, let's check to make sure we have menu items:
+	
+				
+	$count_pages_3_query = mysqli_query($con, $count_pages_3_sql);
+	
+	$count_pages_3_row = mysqli_fetch_row($count_pages_3_query);
+	// Here we have the total row count
+	$total_pages_3 = $count_pages_3_row[0];
+	
+	if ($total_pages_3 > 0) {
+	
+	?>
+    
+    <!-- START LEVEL 3 UL -->
+    <ul class="nav nav-children"><?	
+	
+	$result_get_menu_3 = mysqli_query($con,$get_menu_3_SQL);
+	// while loop
+	while($row_get_menu_3 = mysqli_fetch_array($result_get_menu_3)) {
+		
+			// set vars:  
+			$page_3_id = $row_get_menu_3['ID'];
+			$page_3_name_EN = $row_get_menu_3['name_EN'];
+			$page_3_name_CN = $row_get_menu_3['name_CN'];
+			$page_3_parent_ID = $row_get_menu_3['parent_ID'];
+			$page_3_dept_ID = $row_get_menu_3['dept_ID'];
+			$page_3_filename = $row_get_menu_3['filename'];
+			$page_3_icon = $row_get_menu_3['icon'];
+			$page_3_privacy = $row_get_menu_3['privacy'];
+			$page_3_og_type = $row_get_menu_3['og_type'];
+			
+			// count sub-items:	
+			if ($menu_id == 1) {
+				$count_sub_pages_3_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 1 AND `record_status` = 2 AND `parent_ID` = ". $page_3_id ."" . $add_SQL . "";
+			}
+			else if ($menu_id == 2) {
+				$count_sub_pages_3_sql = "SELECT COUNT(ID) FROM `pages` WHERE `main_menu` = 2 AND `record_status` = 2 AND `parent_ID` = ". $page_3_id ."" . $add_SQL . "";
+			}		
+			$count_sub_pages_3_query = mysqli_query($con, $count_sub_pages_3_sql);
+			$count_sub_pages_3_row = mysqli_fetch_row($count_sub_pages_3_query);
+			// Here we have the total row count
+			$total_sub_pages_3 = $count_sub_pages_3_row[0];
+	?>
+    
+    <li class="<?php if ($total_sub_pages_3 > 0) { ?>nav-parent<?php }if ($this_file == $page_3_filename) { ?>nav-active<?php } ?>"><a href="<?php echo $page_3_filename; ?>" title="<?php echo $page_3_name_EN; if (($page_3_name_CN!='')&&($page_3_name_CN!='中文名')) { ?> / <?php echo $page_3_name_CN; } ?>">
+	<i class="fa <?php echo $page_3_icon; ?>" aria-hidden="true"></i> 
+     <?php echo $page_3_name_EN; ?></a>
+    <!-- FINISH LEVEL 3 LIST ITEM -->
+    </li>
+    <?php 
+	// END WHILE MENU_3
+	}
+	?>
+    
+  <!-- close the level 3 list -->
+  </ul>
+  <?php } // end if ($total_pages_3 > 0) ?>
+
+    <!-- FINISH LEVEL 2 LIST ITEM -->
+    </li>
+    <?php } // END WHILE MENU_3  ?>
+    
+  <!-- close the level 2 list -->
+  </ul>
+  <?php 
+	} // end if ($total_pages_2 > 0)
+    ////////////////////////////////////////////////////
+	//                END LEVEL 2 CODE: 
+    //////////////////////////////////////////////////// ?>
+    
+    <!-- END MENU LIST ITEM 1 -->
+    </li>
+    <?php 
+	// END WHILE MENU_1
+	}
+	
+	// NOW SHOW LOG OUT!
+	if (!isset($_SESSION["user_level"])) { ?>
+    	<li class="<?php if ($this_file == 'login.php') { ?>nav-active<?php } ?>">
+        	<a href="login.php" title="Login">
+				<i class="fa fa-power-off" aria-hidden="true" style="color:#0C0;"></i> 
+     			<span>Login / 注册</span>
+            </a>
+        </li>
+	<?php } ?>
+        
+  <!-- close the level 1 list -->
+  </ul>
+  <?php 
+	} // end if ($total_pages_1 > 0)
+  ?>
+  
+    <!-- FINISH MENU ID <?php echo $menu_id; ?> --> <?php 
+} // END OF MAIN MENU FUNCTION
+
+
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////

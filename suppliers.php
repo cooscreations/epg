@@ -28,48 +28,66 @@ pagehead($page_id);
 
 // FILTER INFO:
 
-$add_SQL = " WHERE `record_status` = '2'";
-$add_URL_vars_sup_status = '';
-$add_URL_vars_sort = '';
-$add_URL_vars_dir = '';
-$add_URL_vars_dir_opp = '';
-$add_URL_vars_controlled = '';
-$sort_SQL = " ORDER BY `record_status` DESC , `part_classification` ASC, `epg_supplier_ID` ASC"; // default sort
-$dir_SQL = '';
+$add_SQL 					= " WHERE `record_status` = '2'";
+$add_URL_vars_sup_status 	= '';
+$add_URL_vars_sort 			= '';
+$add_URL_vars_dir 			= '';
+$add_URL_vars_dir_opp 		= '';
+$add_URL_vars_controlled 	= '';
+$add_URL_vars_part_type 	= '';
+$add_URL_vars_part_class 	= '';
+$controlled_add_SQL 		= '';
+$sup_status_id_add_SQL 		= '';
+$part_type_SQL_add_SQL 		= '';
+$part_class_add_SQL 		= '';
+$sort_SQL 					= " ORDER BY `record_status` DESC , `part_classification` ASC, `epg_supplier_ID` ASC"; // default sort
+$dir_SQL 					= '';
 
 if (isset($_REQUEST['sort'])) {
-	$sort_SQL = " ORDER BY `" . $_REQUEST['sort'] . "`";
+	$sort_SQL 	= " ORDER BY `" . $_REQUEST['sort'] . "`";
 	$add_URL_vars_sort = "&sort=". $_REQUEST['sort'];
 	if (isset($_REQUEST['dir'])) {
-		$sort_SQL .= " " . $_REQUEST['dir'];
-		$add_URL_vars_dir = "&dir=" . $_REQUEST['dir'];
+		$sort_SQL 			.= " " . $_REQUEST['dir'];
+		$add_URL_vars_dir 	= "&dir=" . $_REQUEST['dir'];
 	}
 	else {
-		$sort_SQL .= " ASC";
-		$add_URL_vars_dir = "&dir=ASC";
+		$sort_SQL 			.= " ASC";
+		$add_URL_vars_dir 	= "&dir=ASC";
 	}
 	
 	if ($_REQUEST['dir'] == 'ASC') {
-		$add_URL_vars_dir_opp = 'DESC';
-		$alfa_sort_icon = "fa fa-sort-alpha-desc";
+		$add_URL_vars_dir_opp 	= 'DESC';
+		$alfa_sort_icon 		= "fa fa-sort-alpha-desc";
 	}
 	else {
-		$add_URL_vars_dir_opp = 'ASC';
-		$alfa_sort_icon = "fa fa-sort-alpha-asc";
+		$add_URL_vars_dir_opp 	= 'ASC';
+		$alfa_sort_icon 		= "fa fa-sort-alpha-asc";
 	}
 	
 }
 
 if (isset($_REQUEST['sup_status_id'])) {
-	$sup_status_id_add_SQL = " AND `supplier_status` = '" . $_REQUEST['sup_status_id'] . "'";
-	$add_SQL .= $sup_status_id_add_SQL;
-	$add_URL_vars_sup_status = "&sup_status_id=" . $_REQUEST['sup_status_id'];
+	$sup_status_id_add_SQL 		= " AND `supplier_status` = '" . $_REQUEST['sup_status_id'] . "'";
+	$add_SQL 					.= $sup_status_id_add_SQL;
+	$add_URL_vars_sup_status 	= "&sup_status_id=" . $_REQUEST['sup_status_id'];
 }
 
 if (isset($_REQUEST['controlled'])) {
-	$add_URL_vars_controlled = '&controlled=' . $_REQUEST['controlled'];
-	$controlled_add_SQL .= " AND `controlled` = '" . $_REQUEST['controlled'] . "'";
-	$add_SQL .= $controlled_add_SQL;
+	$add_URL_vars_controlled 	= '&controlled=' . $_REQUEST['controlled'];
+	$controlled_add_SQL 		= " AND `controlled` = '" . $_REQUEST['controlled'] . "'";
+	$add_SQL 					.= $controlled_add_SQL;
+}
+
+if (isset($_REQUEST['part_type'])) {
+	$add_URL_vars_part_type 	= '&part_type=' . $_REQUEST['part_type'];
+	$part_type_SQL_add_SQL 		= " AND `part_type_ID` = '" . $_REQUEST['part_type'] . "'";
+	$add_SQL 					.= $part_type_SQL_add;
+}
+
+if (isset($_REQUEST['part_class'])) {
+	$add_URL_vars_part_class 	= '&part_class=' . $_REQUEST['part_class'];
+	$part_class_add_SQL 		= " AND `part_classification` = '" . $_REQUEST['part_class'] . "'";
+	$add_SQL 					.= $part_class_add_SQL;
 }
 
 // OUTPUT VAR COMBO:
@@ -129,7 +147,33 @@ if (isset($_REQUEST['controlled'])) {
                 <th><abbr title="(EPG Supplier ID, NOT Database Unique ID!)">ID</abbr></ht>
                 <th class="text-center">
                   <a href="suppliers.php?sort=name_EN<?php echo $add_URL_vars_sup_status; ?>&dir=<?php echo $add_URL_vars_dir_opp; ?>">
-                	Name / 名字 <i class="<?php echo $alfa_sort_icon; ?> pull-right"></i>
+                	Name / 名字 <a class="<?php echo $alfa_sort_icon; ?> pull-right"></a>
+                  </a>
+                	<br />
+                	<!-- Supplier JUMPER -->
+					<select onchange="document.location = this.value" data-plugin-selecttwo class="form-control populate">
+						<option value="#" selected="selected">SELECT:</option>
+						<?php
+
+						$get_j_sups_SQL = "SELECT * FROM `suppliers` WHERE `record_status` = '2'";
+						// echo $get_j_sups_SQL;
+
+						$result_get_j_sups = mysqli_query($con,$get_j_sups_SQL);
+									// while loop
+						while($row_get_j_sup = mysqli_fetch_array($result_get_j_sups)) {
+
+							$j_sup_ID 		= $row_get_j_sup['ID'];
+							$j_sup_en 		= $row_get_j_sup['name_EN'];
+							$j_sup_cn 		= $row_get_j_sup['name_CN'];
+							$j_sup_EPG_ID 	= $row_get_j_sup['epg_supplier_ID'];
+
+									   ?>
+						<option value="supplier_view.php?id=<?php echo $j_sup_ID; ?>"><?php echo $j_sup_EPG_ID . " - " . $j_sup_en; if (($j_sup_cn != '')&&($j_sup_cn != '中文名')) { ?> / <?php echo $j_sup_cn; } ?></option>
+						<?php
+									  } // end get supplier list
+									  ?>
+					</select>
+					<!-- / Supplier JUMPER -->
                   </a>
                 </th>
                 <th class="text-center">
@@ -137,7 +181,7 @@ if (isset($_REQUEST['controlled'])) {
                 	<br />
                 	<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
 						<option value="#" selected="selected">Filter:</option>
-							<option value="suppliers.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp . $add_URL_vars_controlled; ?>">Clear This Filter</option>
+							<option value="suppliers.php?1<?php echo $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_controlled . $add_URL_vars_part_type . $add_URL_vars_part_class; ?>">Clear This Filter</option>
 							<option value="suppliers.php">Clear All Filters</option>
 							<?php
 							$get_j_sup_status_SQL = "SELECT * FROM `supplier_status`";
@@ -149,20 +193,21 @@ if (isset($_REQUEST['controlled'])) {
 									$j_sup_status_id 					= $row_j_get_sup_status['ID'];
 									$j_sup_status_name_EN 				= $row_j_get_sup_status['name_EN'];
 									$j_sup_status_name_CN 				= $row_j_get_sup_status['name_CN'];
-									$j_sup_status_status_level 			= $row_j_get_sup_status['status_level'];
+									$j_sup_status_status_level 			= $row_j_get_sup_status['status_level']; 		// THIS IS THE REFERENCE!!!
 									$j_sup_status_status_description 	= $row_j_get_sup_status['status_description'];
 									$j_sup_status_color_code 			= $row_j_get_sup_status['color_code'];
 									$j_sup_status_icon 					= $row_j_get_sup_status['icon'];
 
 						
 									// count docs in this category:
-									$count_j_sup_status_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `supplier_status` = '" . $j_sup_status_id . "'" . $add_URL_vars_controlled;
+									$count_j_sup_status_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `supplier_status` = '" . $j_sup_status_status_level . "'" . $controlled_add_SQL . $part_type_SQL_add_SQL . $part_class_add_SQL;
+									echo '<h1>SQL HERE IS ' . $count_j_sup_status_sql . '</h1>';
 									$count_j_sup_status_query = mysqli_query($con, $count_j_sup_status_sql);
 									$count_j_sup_status_row = mysqli_fetch_row($count_j_sup_status_query);
 									$total_j_sup_status = $count_j_sup_status_row[0];
 
 									?>
-									<option value="suppliers.php?sup_status_id=<?php echo $j_sup_status_id . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp . $add_URL_vars_controlled; ?>"<?php if ($_REQUEST['sup_status_id'] == $j_sup_status_id) { ?> selected="selected"<?php } ?>><?php 
+									<option value="suppliers.php?sup_status_id=<?php echo $j_sup_status_id . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_controlled . $add_URL_vars_part_type . $add_URL_vars_part_class; ?>"<?php if ($_REQUEST['sup_status_id'] == $j_sup_status_id) { ?> selected="selected"<?php } ?>><?php 
 					
 										echo $j_sup_status_name_EN; 
 										if (($j_sup_status_name_CN!='')&&($j_sup_status_name_CN!='中文名')) { 
@@ -179,35 +224,103 @@ if (isset($_REQUEST['controlled'])) {
 					<br />
 					<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
 						<option value="#" selected="selected">Filter:</option>
-						<option value="suppliers.php?1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp; ?>">Clear This Filter</option>
+						<option value="suppliers.php?1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_part_type . $add_URL_vars_part_class; ?>">Clear This Filter</option>
 						<option value="suppliers.php">Clear All Filters</option>
 						<?php 
 						
-						
-						// now count POs by status:
+						// now count suppliers by status:
 						
 						$total_not_controlled 	= 0; // NOT CONTROLLED
 						$total_controlled 		= 0; // CONTROLLED
 						
-						$count_not_con_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `controlled` = '0'" . $sup_status_id_add_SQL;
+						$count_not_con_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `controlled` = '0'" . $sup_status_id_add_SQL . $part_type_SQL_add_SQL . $part_class_add_SQL;
 						// echo "<h1>SQL here: " . $count_not_con_sql . "</h1>";
 						$count_not_con_query = mysqli_query($con, $count_not_con_sql);
 						$count_not_con_row = mysqli_fetch_row($count_not_con_query);
 						$total_not_con = $count_not_con_row[0];
 						
-						$count_con_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `controlled` = '1'" . $sup_status_id_add_SQL;
+						$count_con_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `controlled` = '1'" . $sup_status_id_add_SQL . $part_type_SQL_add_SQL . $part_class_add_SQL;
 						// echo "<h1>SQL here: " . $count_con_sql . "</h1>";
 						$count_con_query = mysqli_query($con, $count_con_sql);
 						$count_con_row = mysqli_fetch_row($count_con_query);
 						$total_con = $count_con_row[0];
 						
 						?>
-						<option value="suppliers.php?controlled=0<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp; ?>"<?php if ( $_REQUEST['controlled'] == 0 ) { ?> selected="selected"<?php } ?>>NO (<?php echo $total_not_con; ?>)</option>
-						<option value="suppliers.php?controlled=1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_dir_opp; ?>"<?php if ( $_REQUEST['controlled'] == 1 ) { ?> selected="selected"<?php } ?>>YES (<?php echo $total_con; ?>)</option>
+						<option value="suppliers.php?controlled=0<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_part_type . $add_URL_vars_part_class; ?>"<?php if ( $_REQUEST['controlled'] == 0 ) { ?> selected="selected"<?php } ?>>NO (<?php echo $total_not_con; ?>)</option>
+						<option value="suppliers.php?controlled=1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_part_type . $add_URL_vars_part_class; ?>"<?php if ( $_REQUEST['controlled'] == 1 ) { ?> selected="selected"<?php } ?>>YES (<?php echo $total_con; ?>)</option>
 					</select>
 				</th>
-                <th class="text-center">Type</th>
-                <th class="text-center">Product Type</th>
+                <th class="text-center">
+                	Type
+                	<br />
+                	<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+						<option value="#" selected="selected">Filter:</option>
+						<option value="suppliers.php?1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir; ?>">Clear This Filter</option>
+						<option value="suppliers.php">Clear All Filters</option>
+						<option value="suppliers.php?part_class=1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_controlled; ?>"<?php if ( $_REQUEST['part_class'] == '1' ) { ?> selected="selected"<?php } ?>>Critical / 关键</option>
+						<option value="suppliers.php?part_class=2<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_controlled; ?>"<?php if ( $_REQUEST['part_class'] == '2' ) { ?> selected="selected"<?php } ?>>Non-Critical / 非关键</option>
+						<option value="suppliers.php?part_class=3<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_controlled; ?>"<?php if ( $_REQUEST['part_class'] == '3' ) { ?> selected="selected"<?php } ?>>N/A</option>
+                  </select>
+                </th>
+                <th class="text-center">
+                	Product Type
+                	<br />
+                	<select onChange="document.location = this.value" data-plugin-selectTwo class="form-control populate">
+						<option value="#" selected="selected">Filter:</option>
+						<option value="suppliers.php?1<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_part_class; ?>">Clear This Filter</option>
+						<option value="suppliers.php">Clear All Filters</option>
+						<?php 
+						
+						// now count suppliers by status:
+						
+						$total_no_part_type 	= 0; // NOT CONTROLLED
+						$total_this_part_type 	= 0; // CONTROLLED
+						
+						$count_no_part_type_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `part_type_ID` = '0'" . $sup_status_id_add_SQL . $controlled_add_SQL . $part_class_add_SQL;
+						// echo "<h1>SQL here: " . $count_no_part_type_sql . "</h1>";
+						$count_no_part_type_query = mysqli_query($con, $count_no_part_type_sql);
+						$count_no_part_type_row = mysqli_fetch_row($count_no_part_type_query);
+						$total_no_part_type = $count_no_part_type_row[0];
+						
+						?>
+						<option value="suppliers.php?part_type=0<?php echo $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_part_class; ?>"<?php if ( $_REQUEST['part_type'] == 0 ) { ?> selected="selected"<?php } ?>>Not Set (<?php echo $total_no_part_type; ?>)</option>
+						<?php 
+					
+						$get_j_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `record_status` = '2'";
+						// echo $get_j_part_type_SQL;
+
+						$result_get_j_part_type = mysqli_query($con,$get_j_part_type_SQL);
+						// while loop
+						while($row_get_j_part_type = mysqli_fetch_array($result_get_j_part_type)) {
+							$j_part_type_ID = $row_get_j_part_type['ID'];
+							$j_part_type_EN = $row_get_j_part_type['name_EN'];
+							$j_part_type_CN = $row_get_j_part_type['name_CN'];
+						
+							// now count the records:
+													
+							$count_this_part_type_sql = "SELECT COUNT( ID ) FROM  `suppliers` WHERE `record_status` = '2' AND `part_type_ID` = '" . $j_part_type_ID . "'" . $sup_status_id_add_SQL . $controlled_add_SQL . $part_class_add_SQL;
+							// echo "<h1>SQL here: " . $count_this_part_type_sql . "</h1>";
+							$count_this_part_type_query = mysqli_query($con, $count_this_part_type_sql);
+							$count_this_part_type_row = mysqli_fetch_row($count_this_part_type_query);
+							$total_this_part_type = $count_this_part_type_row[0];
+						
+							?>
+							<option value="suppliers.php?part_type=<?php echo $j_part_type_ID . $add_URL_vars_sup_status . $add_URL_vars_sort . $add_URL_vars_dir . $add_URL_vars_part_class; ?>"<?php if ( $_REQUEST['part_type'] == $j_part_type_ID ) { ?> selected="selected"<?php } ?>><?php 
+						
+								echo $j_part_type_EN;
+								if (($j_part_type_CN!='')&&($j_part_type_CN!='中文名')) {
+									echo ' / ' . $j_part_type_CN;
+								}
+								echo " (" . $total_this_part_type . ")";
+						
+							?></option>
+							<?php
+						
+						}
+					
+						?>
+                  </select>
+                </th>
                 <th class="text-center">More Info</th>
                 <th class="text-center">Cert.</th>
                 <th class="text-center">Expires</th>
@@ -256,7 +369,7 @@ if (isset($_REQUEST['controlled'])) {
 								// VENDOR CLASSIFICATION BY STATUS:
 
 								$get_sup_status_SQL = "SELECT * FROM `supplier_status` WHERE `status_level` ='" . $sup_status . "'";
-								// echo $get_vendor_status_SQL;
+								// echo '<h2>' . $get_sup_status_SQL . '</h2>';
 
 								$result_get_sup_status = mysqli_query($con,$get_sup_status_SQL);
 								// while loop
@@ -406,12 +519,18 @@ if (isset($_REQUEST['controlled'])) {
 				 </td>
             	<td class="text-right">
             	  <?php 
-            	
-            		echo '<span';
-            		if ($sup_internal_ID == 0) { echo ' class="text-danger" title="Internal ID number not entered. Please update this record!"'; }
-            		echo '>';
+            		if ($sup_internal_ID == 0) { 
+            			echo '
+            			<a href="supplier_edit.php?id=' . $sup_ID . '" title="Click here to edit this record">
+            			<span class="text-danger" title="Internal ID number not entered. Please update this record!">'; 
+            		}
+            		else {
+            			echo '
+            			<a href="supplier_view.php?id=' . $sup_ID . '" title="Click to view this supplier record">
+            			<span>';
+            		}
             		echo $sup_internal_ID; 
-            		echo '</span>';
+            		echo '</span></a>';
             		
             	  ?>
             	</td>
@@ -440,6 +559,7 @@ if (isset($_REQUEST['controlled'])) {
                   }?></td>
                 <td><?php 
                 
+				  if ( ( $sup_part_type_ID != '' ) && ( $sup_part_type_ID != '0' ) ) {
                 	// get the part type info:
                 	
                 	$get_part_type_SQL = "SELECT * FROM  `part_type` WHERE  `ID` ='" . $sup_part_type_ID . "'";
@@ -460,9 +580,17 @@ if (isset($_REQUEST['controlled'])) {
 							}
 						  ?>
 						</a>
+					<?php
+					} // END OF WHILE LOOP
+				  }
+				  else {
+						?>
+						  <a href="supplier_edit.php?id=<?php echo $sup_ID; ?>" title="Click here to edit this record" class="text-danger">
+							NO PART SET!
+						  </a>
 						<?php
+				  }
 						
-					}
                 
                 ?>
                 </td>

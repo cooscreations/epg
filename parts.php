@@ -370,7 +370,7 @@ if (($_REQUEST['type_id'] == 10)||($_REQUEST['show'] == 'products')) { $show_cla
 
 										if ($rev_photo_filename!='') {
 											// now apply filename
-											$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
+											$rev_photo_location = "" . $rev_photo_location . "/" . $rev_photo_filename;
 										}
 										else {
 											$rev_photo_location = "assets/images/no_image_found.jpg";

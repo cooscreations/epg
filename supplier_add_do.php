@@ -50,7 +50,7 @@ $sup_fax 						= checkaddslashes($_REQUEST['fax']);
 $sup_email_1 					= checkaddslashes($_REQUEST['email_1']);
 $sup_email_2 					= checkaddslashes($_REQUEST['email_2']);
 $sup_controlled 				= checkaddslashes($_REQUEST['controlled']);
-
+if ($sup_controlled == '') { $sup_controlled = 0; }
 
 $update_note = "Adding a new supplier to the system.";
 

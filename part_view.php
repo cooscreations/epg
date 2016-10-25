@@ -319,61 +319,7 @@ pagehead($page_id);
 									$rev_body_price_USD 			= $row_get_part_rev_body['price_USD'];
 									$rev_body_weight_g 				= $row_get_part_rev_body['weight_g'];
 
-									// get user
-					  				$get_rev_user_SQL = "SELECT * FROM  `users` WHERE  `ID` =" . $rev_body_user;
-									$result_get_rev_user = mysqli_query($con,$get_rev_user_SQL);
-									// while loop
-									while($row_get_rev_user = mysqli_fetch_array($result_get_rev_user)) {
-											// now print each record:
-											$rev_user_first_name 	= $row_get_rev_user['first_name'];
-											$rev_user_last_name 	= $row_get_rev_user['last_name'];
-											$rev_user_name_CN 		= $row_get_rev_user['name_CN'];
-									}
-
-									// now get the part revision photo!
-
-									$num_rev_photos_found = 0;
-
-									$get_part_rev_photo_SQL = "SELECT * FROM `documents` WHERE  `lookup_table` LIKE  'part_revisions' AND  `lookup_ID` =" . $rev_body_id;
-									// echo "<h1>".$get_part_rev_photo_SQL."</h1>";
-									$result_get_part_rev_photo = mysqli_query($con,$get_part_rev_photo_SQL);
-									// while loop
-									while($row_get_part_rev_photo = mysqli_fetch_array($result_get_part_rev_photo)) {
-
-										$num_rev_photos_found = $num_rev_photos_found + 1;
-
-										// now print each record:
-										$rev_photo_id 					= $row_get_part_rev_photo['ID'];
-										$rev_photo_name_EN 				= $row_get_part_rev_photo['name_EN'];
-										$rev_photo_name_CN 				= $row_get_part_rev_photo['name_CN'];
-										$rev_photo_filename 			= $row_get_part_rev_photo['filename'];
-										$rev_photo_filetype_ID 			= $row_get_part_rev_photo['filetype_ID'];
-										$rev_photo_location 			= $row_get_part_rev_photo['file_location'];
-										$rev_photo_lookup_table 		= $row_get_part_rev_photo['lookup_table'];
-										$rev_photo_lookup_id 			= $row_get_part_rev_photo['lookup_ID'];
-										$rev_photo_document_category 	= $row_get_part_rev_photo['document_category'];
-										$rev_photo_record_status 		= $row_get_part_rev_photo['record_status'];
-										$rev_photo_created_by 			= $row_get_part_rev_photo['created_by'];
-										$rev_photo_date_created 		= $row_get_part_rev_photo['date_created'];
-										$rev_photo_filesize_bytes 		= $row_get_part_rev_photo['filesize_bytes'];
-										$rev_photo_document_icon 		= $row_get_part_rev_photo['document_icon'];
-										$rev_photo_document_remarks 	= $row_get_part_rev_photo['document_remarks'];
-										$rev_photo_doc_revision 		= $row_get_part_rev_photo['doc_revision'];
-
-									}
-
-									// echo "<h1>Revs Found: " . $num_rev_photos_found . "</h1>";
-
-									if ($num_rev_photos_found != 0) {
-										$rev_photo_location = "assets/images/" . $rev_photo_location . "/" . $rev_photo_filename;
-									}
-									else {
-										$rev_photo_location = "assets/images/no_image_found.jpg";
-									}
-
-
 									?>
-
 
 							<div id="rev_<?php echo $rev_body_id; ?>" class="tab-pane <?php if ((($loop_body_count == 1)&&($rev_to_show == 0))||($rev_to_show == $rev_body_id)) { ?>active<?php } ?>">
 																
@@ -387,7 +333,8 @@ pagehead($page_id);
 									<section class="panel">
 								<div class="panel-body">
 									<div class="thumb-info mb-md">
-										<img src="<?php echo $rev_photo_location; ?>" class="rounded img-responsive" alt="<?php echo $part_code; ?> - <?php echo $name_EN; if (($name_CN!='')&&($name_CN!='中文名')) { ?> / <?php echo $name_CN; } ?>">
+										<!--<img src="<?php echo $rev_photo_location; ?>" class="rounded img-responsive" alt="<?php echo $part_code; ?> - <?php echo $name_EN; if (($name_CN!='')&&($name_CN!='中文名')) { ?> / <?php echo $name_CN; } ?>">-->
+										<?php part_img($rev_body_id, 0, 250); ?>
 										<div class="thumb-info-title">
 											<span class="thumb-info-inner"><?php echo $part_code; ?></span>
 											<span class="thumb-info-type">Rev. <?php echo $rev_body_number; ?></span>
@@ -456,6 +403,20 @@ pagehead($page_id);
 														</tr>
 													  </thead>
 													  <tbody>
+													  
+													  
+													  <tr>
+														  <td>Add Photo</td>
+														  <td>
+															<a class="mb-xs mt-xs mr-xs btn btn-primary" href="upload_file.php?lookup_ID=<?php echo $form_ID; ?>&table=part_revisions" target="_blank" title="Click here to add a new photo (New Window)"><i class="fa fa-file-photo-o"></i></a>
+														  </td>
+														  <td>Add a new photo</td>
+														</tr>
+														<tr>
+														  <td>&nbsp;</td>
+														  <td>&nbsp;</td>
+														  <td>&nbsp;</td>
+														</tr>
 														<tr>
 														  <td>EDIT REV. # <?php echo $rev_body_number; ?></td>
 														  <td>
@@ -869,62 +830,117 @@ pagehead($page_id);
 								<div class="panel-body">
 									<div class="content">
 
+								  <?php add_button($rev_body_id, 'upload_file', 'lookup_ID', 'Add a new document to this part revision', '&table=part_revisions'); ?>
 										<div class="table-responsive">
 										 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
 										   <thead>
 											<tr>
-												<th>Type</th>
-												<th>Name</th>
-												<th>Rev.</th>
+												<th class="text-center">Type</th>
+												<th class="text-center">Name</th>
+												<th class="text-center">Rev.</th>
 											 </tr>
 											</thead>
 											<tbody>
+											<?php 
+											$total_docs = 0;
+											$get_doc_SQL = "SELECT * FROM  `documents` WHERE `record_status` = '2' AND `lookup_table` = 'part_revisions' AND `lookup_ID` = '" . $rev_body_id . "'";
+											$result_get_doc = mysqli_query($con,$get_doc_SQL);
+											// while loop
+											while($row_get_doc = mysqli_fetch_array($result_get_doc)) {
+
+													// now print each record:
+													$doc_id 				= $row_get_doc['ID']; // same as $record_id
+													$doc_name_EN 			= $row_get_doc['name_EN'];
+													$doc_name_CN 			= $row_get_doc['name_CN'];
+													$doc_filename 			= $row_get_doc['filename'];
+													$doc_filetype_ID 		= $row_get_doc['filetype_ID'];
+													$doc_file_location 		= $row_get_doc['file_location'];
+													$doc_lookup_table 		= $row_get_doc['lookup_table'];
+													$doc_lookup_ID 			= $row_get_doc['lookup_ID'];
+													$doc_document_category 	= $row_get_doc['document_category'];
+													$doc_record_status 		= $row_get_doc['record_status'];
+													$doc_created_by 		= $row_get_doc['created_by'];
+													$doc_date_created 		= $row_get_doc['date_created'];
+													$doc_filesize_bytes 	= $row_get_doc['filesize_bytes'];
+													$doc_document_icon 		= $row_get_doc['document_icon'];
+													$doc_document_remarks 	= $row_get_doc['document_remarks'];
+													$doc_doc_revision 		= $row_get_doc['doc_revision'];
+		
+													// SPECIFY FULL FILE LOCATION:
+		
+													if ($doc_document_category == 5) {
+														// this is a part photo -  let's link to it
+														$file_path = '';
+													}
+													else {
+														// DEFAULT?
+														$file_path = '';
+													}
+													// now build the link:
+													$full_file_path = 'http://120.24.71.207/' . $file_path .  $doc_file_location . '/' . $doc_filename;
+													// echo '<h4>Path: ' . $full_file_path . '</h4>';
+		
+													// GET DOC CATEGORY
+		
+													$get_this_doc_cat_SQL = "SELECT * FROM `document_categories` WHERE `ID` = '" . $doc_document_category . "'";
+													$result_get_this_doc_cat = mysqli_query($con,$get_this_doc_cat_SQL);
+													// while loop
+													while($row_get_this_doc_cat = mysqli_fetch_array($result_get_this_doc_cat)) {
+
+															// now print each record:
+															$doc_cat_id 			= $row_get_this_doc_cat['ID'];
+															$doc_cat_name_EN 		= $row_get_this_doc_cat['name_EN'];
+															$doc_cat_name_CN 		= $row_get_this_doc_cat['name_CN'];
+															$doc_cat_record_status 	= $row_get_this_doc_cat['record_status'];
+				
+													}
+		
+													// GET FILETYPE
+		
+													$get_this_filetype_SQL = "SELECT * FROM `document_filetype` WHERE `ID` = '" . $doc_filetype_ID . "'";
+													$result_get_this_filetype = mysqli_query($con,$get_this_filetype_SQL);
+													// while loop
+													while($row_get_this_filetype = mysqli_fetch_array($result_get_this_filetype)) {
+
+															// now print each record:
+															$filetype_id 			= $row_get_this_filetype['ID'];
+															$filetype_type_name_EN 	= $row_get_this_filetype['type_name_EN'];
+															$filetype_type_name_CN 	= $row_get_this_filetype['type_name_CN'];
+															$filetype_default_icon 	= $row_get_this_filetype['default_icon'];
+															$filetype_record_status = $row_get_this_filetype['record_status'];
+															$filetype_created_by 	= $row_get_this_filetype['created_by'];
+															$filetype_created_date 	= $row_get_this_filetype['created_date'];
+				
+													}
+											?>
 											<tr>
-											  <td><i class="fa fa-file-excel-o"></i></td>
-											  <td><a href="#">ICQ Form</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
+											  <td class="text-center"><i class="fa fa-<?php echo $doc_document_icon; ?>"></i></td>
+											  <td><a href="document_view.php?id=<?php echo $doc_id; ?>"><?php 
+											  	echo $doc_name_EN; 
+											  	if (($doc_name_CN!='')&&($doc_name_CN!='中文名')) {
+											  		echo $doc_name_CN;
+											  	}
+											  	?></a></td>
+											  <td class="text-center"><?php echo $doc_doc_revision; ?></td>
 											</tr>
+											<?php 
+												$total_docs = $total_docs + 1;
+											} // END GET DOCS
+											?>
 
 
 											<tr>
-											  <td><i class="fa fa-file-word-o"></i></td>
-											  <td><a href="#">Technical Specifications</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
-											</tr>
-
-
-											<tr>
-											  <td><i class="fa fa-file-pdf-o"></i></td>
-											  <td><a href="#">Technical Drawing</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>1</a></td>
-											</tr>
-
-
-											<tr>
-											  <td><i class="fa fa-file-pdf-o"></i></td>
-											  <td><a href="#">Technical Drawing</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>2</a></td>
-											</tr>
-
-
-											<tr>
-											  <td><i class="fa fa-file-pdf-o"></i></td>
-											  <td><a href="#">Technical Drawing</a></td>
-											  <td><a href="#"><?php echo $rev_body_number; ?>3</a></td>
-											</tr>
-
-
-											<tr>
-											  <th colspan="3">TOTAL DOCUMENTS: 5</th>
+											  <th colspan="3">TOTAL DOCUMENTS: <?php echo $total_docs; ?></th>
 											</tr>
 										  </tbody>
 										</table>
 									   </div>
+								  <?php add_button($rev_body_id, 'upload_file', 'lookup_ID', 'Add a new document to this part revision', '&table=part_revisions'); ?>
 
 							</div>
 								  <div class="panel-footer">
 									<div class="text-right">
-											<a class="text-uppercase text-muted" href="#">(View All)</a>
+											<a class="text-uppercase text-muted" href="documents.php">(View All)</a>
 										</div>
 								  </div>
 								</div>

@@ -75,7 +75,8 @@ if ($record_id != 0) {
 			// ADDING NEW VARIABLES - DEFAULT CURRENCY!
 		
 			$PO_default_currency		= $row_get_PO['default_currency']; // look this up!
-			$PO_default_currency_rate	= $row_get_PO['default_currency_rate'];
+			$PO_default_currency_rate	= $row_get_PO['default_currency_rate'];		// look this up?
+			$PO_tax_rate 				= $row_get_PO['tax_rate'];
 
 
 	} // end while loop
@@ -363,6 +364,45 @@ if ($record_id != 0) {
 										
 									</div>
 									
+									<div class="form-group">
+										<label class="col-md-3 control-label">Tax Rate:</label>
+										<div class="col-md-5">
+											<select class="form-control populate text-right" name="tax_rate" id="tax_rate">
+												
+												<?php 
+												
+												// break down current tax rate:
+												$tax_DN = substr($PO_tax_rate,-2); 					// EXAMPLE: 17.50 returns '50'
+												// echo '<h3>TAX DN is ' . $tax_DN . '</h3>';
+												
+												$tax_WN = ($PO_tax_rate - ('0.' . $tax_DN)); 		// is this very messy?
+												// echo '<h3>TAX WN is ' . $tax_WN . '</h3>';
+												
+												$start_tax_WN_loop 	= 0;
+												$end_tax_WN_loop 	= 99;
+												
+												
+												while ($start_tax_WN_loop <= $end_tax_WN_loop) {
+												
+													$start_tax_DN_loop 	= 0;
+													$end_tax_DN_loop 	= 9;
+												
+													while ($start_tax_DN_loop <= $end_tax_DN_loop) {
+														?>
+														<option value="<?php echo $start_tax_WN_loop; ?>.<?php echo ( $start_tax_DN_loop * 10 ); ?>"<?php if ( ($tax_WN == $start_tax_WN_loop) && (( $tax_DN / 10 ) == $start_tax_DN_loop) ) { ?> selected="selected"<?php } ?>><?php echo $start_tax_WN_loop . '.' . $start_tax_DN_loop . '%'; ?></option>
+														<?php
+														$start_tax_DN_loop = $start_tax_DN_loop + 1;
+													}
+													$start_tax_WN_loop = $start_tax_WN_loop + 1;
+												}
+												?>
+											</select>
+										</div>
+
+										<div class="col-md-1">
+											&nbsp;
+										</div>
+									</div>
 									
 									
 								  </div>	

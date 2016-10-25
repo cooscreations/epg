@@ -76,6 +76,7 @@ while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
 		$PO_HQ_location_ID 			= $row_get_PO['HQ_location_ID'];			// use function! get_location($PO_HQ_location_ID,1);
 		$PO_ship_to_location_ID		= $row_get_PO['ship_to_location_ID'];		// use function! get_location($PO_ship_to_location_ID,0); (show title ONLY)
 		$PO_order_status 			= $row_get_PO['order_status'];
+		$PO_tax_rate 				= $row_get_PO['tax_rate'];
 
 		// ADDING NEW VARIABLES - DEFAULT CURRENCY!
 		
@@ -1390,6 +1391,9 @@ else { ?><td><?php }
 		// $subtotal calculated above
 		$grand_total = ($handling_total + $shipping_total + $subtotal);
 		
+		$grand_total_tax = ( ( $grand_total * $PO_tax_rate ) / 100 );
+		$grand_total_inc_tax = $grand_total + $grand_total_tax;
+		
 		?>
 				
 				<div class="table-responsive">
@@ -1426,11 +1430,28 @@ else { ?><td><?php }
                             </td>
                         </tr>
                         <tr>
+                            <th>Tax Rate</th>
+                            <td class="text-right">
+                              <?php 
+                                echo number_format($PO_tax_rate, 2) . '%';
+                              ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tax Amount</th>
+                            <td class="text-right">
+                              <?php  
+                                echo $PO_default_currency_symbol;
+                                echo number_format($grand_total_tax, 2);
+                              ?>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>TOTAL DUE</th>
                             <td class="text-right">
                               <?php 
                             	echo $PO_default_currency_symbol; 
-                            	echo number_format($grand_total, 2);; 
+                            	echo number_format($grand_total_inc_tax, 2);; 
                               ?>
                             </td>
                         </tr>

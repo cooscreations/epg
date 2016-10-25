@@ -56,15 +56,17 @@ while($row_get_doc = mysqli_fetch_array($result_get_doc)) {
 
 		// SPECIFY FULL FILE LOCATION:
 		
+		$file_path = '';
+		
 		if ($doc_document_category == 5) {
 			// this is a part photo -  let's link to it
-			$file_path = 'assets/images';
-			$full_file_path = 'http://120.24.71.207/' . $file_path . '/' .  $doc_file_location . '/' . $doc_filename;
+			$file_path = 'assets/images/';
+			$full_file_path = 'http://120.24.71.207/' .  $doc_file_location . '/' . $doc_filename;
 		}
 		else {
 			// DEFAULT?
-			$file_path = 'assets/files';
-			$full_file_path = 'http://120.24.71.207/' . $file_path . '/' .  $doc_file_location . '/' . $doc_filename;
+			$file_path = '';
+			$full_file_path = 'http://120.24.71.207/' .  $doc_file_location . '/' . $doc_filename;
 		}
 		
 		// GET DOC CATEGORY
@@ -168,7 +170,7 @@ pagehead ( $page_id );
     <!-- start: page -->
     
     
-    <?php add_button(0, 'document_add'); ?>
+    <?php add_button(0, 'upload_file'); ?>
     
     <!-- START PANEL - ORDER INFORMATION -->
 	<section class="panel">
@@ -347,7 +349,7 @@ pagehead ( $page_id );
     </section>
     
     
-    <?php add_button(0, 'document_add'); ?>
+    <?php add_button(0, 'upload_file'); ?>
     
     <!-- end: page -->
 </section>

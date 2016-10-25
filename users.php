@@ -291,10 +291,14 @@ pagehead($page_id); ?>
 						echo ' ' . $user_last_name; 
 					?>" style="width:100px;" />
 					<?php
-				} else {
+				} 
+				else {
+					get_img('users', $user_ID, 0, 100);
+					/*
 					?>
 					<img src="assets/images/no_image_found.jpg" title="Failed to locate image: <?php echo $find_user_image; ?>" style="width:100px;" />
 					<?php
+					*/
 				}
                 
                 ?>

@@ -71,7 +71,8 @@ $po_remarks 					= checkaddslashes($_REQUEST['remarks']);						//
 $po_record_status 				= checkaddslashes($_REQUEST['record_status']);					//
 $po_completion_status			= checkaddslashes($_REQUEST['completion_status']);				//
 $po_default_currency_rate 		= checkaddslashes($_REQUEST['po_default_currency_rate']);		//				
-$po_currency_id					= checkaddslashes($_REQUEST['currency_id']);					//
+$po_currency_id					= checkaddslashes($_REQUEST['currency_id']);					//			
+$po_tax_rate					= checkaddslashes($_REQUEST['tax_rate']);						//
 
 if ($po_include_CoC == '') { $po_include_CoC = 0; }
 
@@ -103,7 +104,8 @@ $edit_purchaseorder_SQL = "UPDATE `purchase_orders` SET
 `HQ_location_ID`			='" . $po_HQ_location_ID . "',
 `ship_to_location_ID`		='" . $po_ship_to_location_ID . "',
 `default_currency`			='" . $po_currency_id . "',
-`default_currency_rate`		='" . $po_default_currency_rate . "'
+`default_currency_rate`		='" . $po_default_currency_rate . "',
+`tax_rate`					='" . $po_tax_rate . "'
 WHERE `ID` 					= '". $po_id . "' ";
 
 

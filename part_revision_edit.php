@@ -168,6 +168,21 @@ pagehead($page_id);
 
 
 						<div class="form-group">
+							<label class="col-md-3 control-label">Photo:</label>
+							<div class="col-md-5">
+								
+								<a class="btn btn-primary" href="upload_file.php?lookup_ID=<?php echo $record_id; ?>&table=part_revisions" target="_blank" title="Click here to add a new photo (New Window)"><i class="fa fa-external-link"></i> Edit in new window</a>	
+
+							</div>
+
+							<div class="col-md-1">
+								<a href="upload_file.php?lookup_ID=<?php echo $record_id; ?>&table=part_revisions" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
+							</div>
+						</div>
+						
+						
+						
+						<div class="form-group">
 							<label class="col-md-3 control-label">Material:</label>
 							<div class="col-md-5">
 								
@@ -179,6 +194,8 @@ pagehead($page_id);
 								<a href="material_add.php" class="mb-xs mt-xs mr-xs btn btn-success pull-right"><i class="fa fa-plus-square"></i></a>
 							</div>
 						</div>
+
+
 
 						<div class="form-group">
 							<label class="col-md-3 control-label">Part Treatment:</label>
