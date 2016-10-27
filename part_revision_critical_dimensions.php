@@ -399,12 +399,12 @@ else {
 					<!-- ********************************************************* -->
                 </td>
             
-            	<td class="text-center"><?php 
-            		part_name_from_rev($crit_dim_part_revision_ID);
-					echo '&nbsp;';
+            	<td class="text-left"><?php 
 					part_num_from_rev($crit_dim_part_revision_ID);
 					echo '&nbsp;';
-					part_rev($crit_dim_part_revision_ID); 
+					part_rev($crit_dim_part_revision_ID);
+					echo '&nbsp;';
+            		part_name_from_rev($crit_dim_part_revision_ID); 
 				?></td>
             	<td class="text-center"><a href="inpection_method_class_view.php?id=<?php echo $this_method_method_class_ID; ?>"><?php 
             		echo $this_method_class_name_EN;
@@ -421,7 +421,7 @@ else {
             		<?php echo $crit_dim_AQL_level; ?>
             	  </span>
             	</td>
-            	<td class="text-center"><?php echo 'Q' . $crit_dim_drawing_QC_ID; ?></td>
+            	<td class="text-center"><?php echo 'QC' . $crit_dim_drawing_QC_ID; ?></td>
             	<td class="text-center">
             	<?php 
             	

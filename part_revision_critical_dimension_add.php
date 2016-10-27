@@ -421,15 +421,18 @@ pagehead($page_id);
                             <!-- START FORM ROW -->
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Tech. Drawing QC ID:</label>
-                                <div class="col-md-5">
-                                    <input type="text" class="form-control" id="inputDefault" name="drawing_QC_ID" value="Q<?php echo $crit_dim_drawing_QC_ID; ?>" />
+                                <div class="col-md-1 text-right">
+                                	QC
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" id="inputDefault" name="drawing_QC_ID" value="<?php echo $crit_dim_drawing_QC_ID; ?>" />
                                 </div>
 
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-primary m-xs" data-toggle="popover" data-container="body" data-placement="top" title="Existing QC Drawing Numbers" data-content="<?php 
                                     
                                     if ($crit_dim_drawing_QC_ID == 1) {
-                                    	echo 'No other dimensions found. Suggested: Q' . $crit_dim_drawing_QC_ID;
+                                    	echo 'No other dimensions found. Suggested: QC' . $crit_dim_drawing_QC_ID;
                                     }
                                     else {
                                     	// get existing crit dims:
@@ -446,12 +449,12 @@ pagehead($page_id);
 												echo ", "; 
 											}
 											
-											echo "Q" . $existing_crit_dim_ID;
+											echo "QC" . $existing_crit_dim_ID;
 											
 											$existing_crit_dims_found = $existing_crit_dims_found + 1;
 										}
 										
-                                    	echo ". Suggested: Q" . $crit_dim_drawing_QC_ID;
+                                    	echo ". Suggested: QC" . $crit_dim_drawing_QC_ID;
                                     	
                                     }
                                     
@@ -483,6 +486,7 @@ pagehead($page_id);
                             <input type="hidden" name="crit_dim_dimension_minimum" value="<?php echo $crit_dim_dimension_minimum; ?>" />
                             <input type="hidden" name="crit_dim_dimension_maximum" value="<?php echo $crit_dim_dimension_maximum; ?>" />
                             <input type="hidden" name="crit_dim_measurement_type" value="4" />
+                            <input type="hidden" name="crit_dim_dimension_type" value="4" />
                             
                             	<?
                             }
@@ -538,7 +542,6 @@ pagehead($page_id);
                             <input type="hidden" name="crit_dim_specification_notes" value="<?php echo $crit_dim_specification_notes; ?>" />
                             
                             
-                            
                             <!-- START FORM ROW -->
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Dimension Type:</label>
@@ -564,7 +567,7 @@ pagehead($page_id);
 
 		
 										?>
-										<option value="<?php echo $file_type_ID; ?>"<?php if ($crit_dim_dimension_type_ID == $this_dimension_type_ID) { ?> selected="selected"<?php } ?>><?php 
+										<option value="<?php echo $this_dimension_type_ID; ?>"<?php if ($crit_dim_dimension_type_ID == $this_dimension_type_ID) { ?> selected="selected"<?php } ?>><?php 
 											echo $this_dimension_type_name_EN;
 											if (($this_dimension_type_name_CN!='')&&($this_dimension_type_name_CN!='中文名')){
 												echo ' / ' . $this_dimension_type_name_CN;
