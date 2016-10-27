@@ -40,7 +40,8 @@ $update_note = "Editing a purchase order item in the system.";
  
 // $po_remarks = nl2br(htmlentities($_REQUEST['remarks'], ENT_QUOTES, 'UTF-8'));
  
-$record_id 						= checkaddslashes($_REQUEST['id']);									//
+// $record_id 					= checkaddslashes($_REQUEST['id']);									// WRONG! THIS IS SOMEHOW THE PO NUMBER!!!
+$record_id						= checkaddslashes($_REQUEST['PO_line_item_ID']);
 $po_id 							= checkaddslashes($_REQUEST['PO_ID']);								//
 $part_rev_ID 					= checkaddslashes($_REQUEST['part_rev_ID']);						//
 $item_qty 						= checkaddslashes($_REQUEST['amount']);								//
@@ -73,6 +74,7 @@ $edit_purchase_order_item_SQL = "UPDATE `purchase_order_items` SET
 WHERE `ID` = '" . $record_id . "'";
 
 // echo '<h1>SQL QUERY: ' . $edit_purchase_order_item_SQL . '</h1>';
+
 
 if (mysqli_query($con, $edit_purchase_order_item_SQL)) {
 

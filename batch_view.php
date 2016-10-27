@@ -62,7 +62,25 @@ while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
 		$part_name_CN 	= $row_get_part['name_CN'];
 
 	}
+	
+	// establish the size of the first in-coming batch:
+			$get_first_batch_movement_SQL = "SELECT * FROM  `part_batch_movement` WHERE  `part_batch_ID` =" . $record_id . " AND `amount_in` > 0 AND `record_status` = '2' ORDER BY `date` ASC LIMIT 0,1";
 
+			$result_get_first_batch_movement = mysqli_query($con,$get_first_batch_movement_SQL);
+			// while loop
+			while($row_get_first_batch_movement = mysqli_fetch_array($result_get_first_batch_movement)) {
+
+					// now print each record:
+					$first_batch_movement_id 		= $row_get_first_batch_movement['ID'];
+					$first_amount_in 				= $row_get_first_batch_movement['amount_in'];
+					$first_amount_out 				= $row_get_first_batch_movement['amount_out'];
+					$first_part_batch_status_ID 	= $row_get_first_batch_movement['part_batch_status_ID'];
+					$first_movement_remarks 		= $row_get_first_batch_movement['remarks'];
+					$first_movement_user_ID 		= $row_get_first_batch_movement['user_ID'];
+					$first_movement_date 			= $row_get_first_batch_movement['date'];
+					$first_movement_record_status 	= $row_get_first_batch_movement['record_status'];
+					
+			}
 
 
 			// get part revision info:
@@ -242,10 +260,6 @@ pagehead($page_id);
 					 					    	<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>" title="Click to view all batches associated to this purchase order">
 					 					    		<?php echo $total_batches; ?>
 					 					    	</a>
-					 					    	&nbsp;
-					 					    	<a href="purchase_order_view.php?id=<?php echo $PO_id; ?>" class="btn btn-default btn-xs" title="Click to view all batches associated to this purchase order">
-					 					    		<i class="fa fa-search"></i>
-					 					    	</a>
 					 					    </td>
 					 					  </tr>
 					 					  <tr>
@@ -263,6 +277,7 @@ pagehead($page_id);
 
 
 						<div class="col-md-4">
+						  <div class="row">
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -306,10 +321,6 @@ pagehead($page_id);
 					 					    	<a href="batch_log.php?part_id=<?php echo $part_id; ?>" title="Click to view all batches associated to this part">
 					 					    		<?php echo $total_j_batches; ?>
 					 					    	</a>
-					 					    	&nbsp;
-					 					    	<a href="batch_log.php?part_id=<?php echo $part_id; ?>" class="btn btn-default btn-xs" title="Click to view all batches associated to this part">
-					 					    		<i class="fa fa-search"></i>
-					 					    	</a>
 					 					     </td>
 					 					  </tr>
 					 					</table>
@@ -317,7 +328,195 @@ pagehead($page_id);
 
 								</div>
 							</section>
+							
+						  </div><!-- end ROW -->
+							
+						  <div class="row">
+							
+							
+							<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+
+									<h2 class="panel-title">
+										<a href="sample_size_code_letters.php" target="_blank" title="Click to launch reference sheet" class="label label-primary label-sm text-normal va-middle mr-sm">
+											<i class="fa fa-question"></i>
+										</a>
+										<span class="va-middle"><acronym title="Incoming Quality Control">IQC</acronym> Details:</span>
+										
+									</h2>
+								</header>
+								<div class="panel-body">
+
+									<div class="table-responsive">
+					 					<table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					 					  
+					 					  <tr>
+					 					    <th>ITEM</th>
+					 					    <th class="text-center">Amount</th>
+					 					  </tr>
+					 					  <tr>
+					 					    <th>Initial Incoming QTY:</th>
+					 					    <td class="text-right">
+					 					    <?php 
+					 					    echo number_format($first_amount_in,0);
+					 					    ?>
+					 					    </td>
+					 					  </tr><?php
+					 					    	// 1. Firstly, let's cycle through the existing critical dimensions for this part revision:
+					 					    	$total_crit_dims = 0;
+					 					    	// $first_amount_in is specified above
+					 					    	
+					 					    	$get_this_part_rev_crit_dims_SQL = "SELECT * FROM `part_rev_critical_dimensions` WHERE `part_revision_ID` = '" . $part_rev . "' AND `record_status` = '2'";
+					 					    	$result_get_this_part_rev_crit_dims = mysqli_query($con,$get_this_part_rev_crit_dims_SQL);
+												// while loop
+												while($row_get_this_part_rev_crit_dims = mysqli_fetch_array($result_get_this_part_rev_crit_dims)) {
+
+													// now print each record:
+													$crit_dims_ID 						= $row_get_this_part_rev_crit_dims['ID'];
+													$crit_dims_part_revision_ID 		= $row_get_this_part_rev_crit_dims['part_revision_ID'];
+													$crit_dims_drawing_QC_ID 			= $row_get_this_part_rev_crit_dims['drawing_QC_ID'];
+													$crit_dims_dimension_type_ID 		= $row_get_this_part_rev_crit_dims['dimension_type_ID'];
+													$crit_dims_dimension_minimum 		= $row_get_this_part_rev_crit_dims['dimension_minimum'];
+													$crit_dims_dimension_maximum 		= $row_get_this_part_rev_crit_dims['dimension_maximum'];
+													$crit_dims_specification_notes 		= $row_get_this_part_rev_crit_dims['specification_notes'];
+													$crit_dims_inspection_method_ID 	= $row_get_this_part_rev_crit_dims['inspection_method_ID'];
+													$crit_dims_inspection_level 		= $row_get_this_part_rev_crit_dims['inspection_level'];
+													$crit_dims_AQL_level 				= $row_get_this_part_rev_crit_dims['AQL_level'];
+													$crit_dims_record_status 			= $row_get_this_part_rev_crit_dims['record_status'];
+													
+													$total_crit_dims = $total_crit_dims + 1;
+													
+													// 2. Now let's establish the sample size RANGE, based on data in the DB and the dimension info:
+													
+													$get_AQL_letter_SQL = "SELECT * FROM `AQL_letter` WHERE `AQL_code` LIKE '" . $crit_dims_inspection_level . "' AND `order_qty_max` > '" . $first_amount_in .  "' LIMIT 0,1";
+													$result_get_AQL_letter = mysqli_query($con,$get_AQL_letter_SQL);
+													// while loop
+													while($row_get_AQL_letter = mysqli_fetch_array($result_get_AQL_letter)) {
+
+														// now print each record:
+														$AQL_letter_ID = $row_get_AQL_letter['ID'];
+														$AQL_letter_AQL_code = $row_get_AQL_letter['AQL_code'];
+														$AQL_letter_order_qty_min = $row_get_AQL_letter['order_qty_min'];
+														$AQL_letter_order_qty_max = $row_get_AQL_letter['order_qty_max'];
+														$AQL_letter_result = $row_get_AQL_letter['AQL_letter_result'];
+														
+													}
+													
+													// 3. Now let's get the sample size!
+													$get_sample_size_SQL = "SELECT * FROM `AQL_level` WHERE `AQL_level` = '" . $crit_dims_AQL_level . "' AND `letter_code` LIKE '" . $AQL_letter_result . "'";
+													$result_get_sample_size = mysqli_query($con,$get_sample_size_SQL);
+													// while loop
+													while($row_get_sample_size = mysqli_fetch_array($result_get_sample_size)) {
+
+														// now print each record:
+														$sample_size_ID 			= $row_get_sample_size['ID'];
+														$sample_size_AQL_level 		= $row_get_sample_size['AQL_level'];		// SHOULD HAVE THIS
+														$sample_size_fail_max_qty 	= $row_get_sample_size['fail_max_qty'];
+														$sample_size_letter_code 	= $row_get_sample_size['letter_code'];		// SHOULD HAVE THIS
+														$sample_size_sample_size 	= $row_get_sample_size['sample_size'];
+														
+													}
+													
+													// 4. now get the method data:
+													$get_this_method_SQL = "SELECT `inspection_method`.`ID` AS `method_ID`, `inspection_method`.`name_EN` AS `method_name_EN`, `inspection_method`.`name_CN` AS `method_name_CN`, `inspection_method`.`description`, `inspection_method_class`.`ID` AS `method_class_ID`, `inspection_method_class`.`name_EN` AS `class_name_EN`, `inspection_method_class`.`name_CN` AS `class_name_CN`, `AQL_level`, `sample_level` 
+													FROM `inspection_method` 
+													JOIN `inspection_method_class` 
+													ON `inspection_method`.`method_class_ID` = `inspection_method_class`.`ID`
+													WHERE `inspection_method`.`ID` = '" . $crit_dims_inspection_method_ID . "' 
+													AND `inspection_method`.`record_status` = '2'
+													AND `inspection_method_class`.`record_status` = '2'";
+													$result_get_this_method = mysqli_query($con,$get_this_method_SQL);
+													// while loop
+													while($row_get_this_method = mysqli_fetch_array($result_get_this_method)) {
+
+														// now print each record:
+														$this_method_ID 				= $row_get_this_method['method_ID'];
+														$this_method_method_name_EN 	= $row_get_this_method['method_name_EN'];
+														$this_method_method_name_CN 	= $row_get_this_method['method_name_CN'];
+														$this_method_description 		= $row_get_this_method['description'];
+														$this_method_method_class_ID 	= $row_get_this_method['method_class_ID'];
+														$this_method_class_name_EN 		= $row_get_this_method['class_name_EN'];
+														$this_method_class_name_CN 		= $row_get_this_method['class_name_CN'];
+														$this_method_AQL_level 			= $row_get_this_method['AQL_level'];
+														$this_method_sample_level 		= $row_get_this_method['sample_level'];
+													} // end get method and class loop
+													
+													// now get the dymension type data:
+													$get_this_dimension_type_SQL = "SELECT * FROM `dimension_types` WHERE `ID` = '" . $crit_dims_dimension_type_ID . "'";
+													$result_get_this_dimension_type = mysqli_query($con,$get_this_dimension_type_SQL);
+													// while loop
+													while($row_get_this_dimension_type = mysqli_fetch_array($result_get_this_dimension_type)) {
+
+														// now print each record:
+														$this_dimension_type_ID 					= $row_get_this_dimension_type['ID'];
+														$this_dimension_type_name_EN 				= $row_get_this_dimension_type['name_EN'];
+														$this_dimension_type_name_CN 				= $row_get_this_dimension_type['name_CN'];
+														$this_dimension_type_symbol 				= $row_get_this_dimension_type['symbol'];
+														$this_dimension_type_unit_of_measurement 	= $row_get_this_dimension_type['unit_of_measurement'];
+														$this_dimension_type_icon_code			 	= $row_get_this_dimension_type['icon_code'];
+													} // end get dimension type loop
+												
+												// now output the results!
+												
+												?>
+											  <tr>
+												<th><?php echo 'Q' . $crit_dims_drawing_QC_ID; ?>: Sample Size:
+												  <br />
+												  	  <span class="btn btn-xs btn-success">
+												  	  	<i class="fa fa-<?php echo $this_dimension_type_icon_code; ?>"></i>
+												  	  </span>
+												  	  &nbsp;
+													  <span class="btn btn-xs btn-primary">
+														<?php echo $AQL_letter_AQL_code; ?>
+													  </span>
+													  &nbsp;
+													  <span class="btn btn-xs btn-warning">
+														<?php echo $crit_dims_AQL_level; ?>
+													  </span>
+												</th>
+												<td class="text-right">
+												<?php
+												
+												if ($total_crit_dims == 0) {
+													?><a href="part_rev_critical_dimensions_add.php?part_rev_ID=<?php echo $part_rev; ?>" class="text-danger">0 Ciritcal Dimensions Found - click to add one</a><?php
+												}
+												else {
+												
+													if ($sample_size_sample_size < $first_amount_in) {
+														echo number_format($sample_size_sample_size,0);
+													}
+													else {
+														echo number_format($first_amount_in,0);
+													} 
+													
+												} 
+												
+												// now close the row:
+												
+												?>
+												</td>
+					 					  </tr>
+												<?php
+												
+												} // end results loop for crit dims
+												?>
+					 					 </table>
+					 				</div>
+					 				
+					 			</div>
+					 		</section>
+					 		
+					 	  </div><!-- end ROW -->
+					 		
 						</div>
+						
+						
+						
+						
 
 						<div class="col-md-4">
 							<section class="panel">

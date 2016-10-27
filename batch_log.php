@@ -549,7 +549,7 @@ else {
 					    	}
 					    ?> Part Profile"><?php
 					    // now do a quick check to make sure that the batch number (first 5 chars) matches the part code:
-					    if (substr($batch_number,0,5)!= $part_code) {
+					    if (substr($batch_number,0,5)!= substr($part_code,0,5)) {
 					    	echo '<span class="text-danger" title="Batch Number Does Not Match Part Code!">' . $part_code . '</span>';
 					    }
 					    else {

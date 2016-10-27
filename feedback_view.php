@@ -162,29 +162,10 @@ while($row_get_bug_report = mysqli_fetch_array($result_get_bug_report)) {
                           <div class="content">
                             <ul class="simple-user-list">
                             <li>
+                            
                                 <figure class="image rounded">
-                                            <a href="view_user_profile.php?id=<?php echo $bug_report_created_by; ?>"><?php
-                                        // default:
-                                        $show_upload_link = false;
-
-                                        // check image file exists:
-
-                                        $image_file_name = 'assets/images/users/user_' . $bug_report_created_by . '.png';
-
-                                        if (file_exists($image_file_name)) {
-                                            $show_img = $image_file_name;
-                                            $show_upload_link = false;
-                                        }
-                                        else {
-
-                                            $show_upload_link = true;
-                                            $show_img = 'assets/images/users/user_0.png';
-                                        }
-
-                                        ?>
-                                        <img src="<?php echo $show_img; ?>" class="img-circle" alt="Click to view this user profile">
-                                        </a>
-                                        </figure>
+									<?php get_img('users', $bug_report_created_by, 1, 50); ?>
+								</figure>
 
                                 <span class="title"><?php
 								if ($bug_report_created_by != 0) {
@@ -293,28 +274,8 @@ while($row_get_bug_report = mysqli_fetch_array($result_get_bug_report)) {
                             <?php if ( ($bug_report_closed_by != '') && ($bug_report_closed_by != 0) ) { ?>
                             <li>
                                 <figure class="image rounded">
-                                            <a href="view_user_profile.php?id=<?php echo $bug_report_closed_by; ?>"><?php
-                                        // default:
-                                        $show_upload_link = false;
-
-                                        // check image file exists:
-
-                                        $image_file_name = 'assets/images/users/user_' . $bug_report_closed_by . '.png';
-
-                                        if (file_exists($image_file_name)) {
-                                            $show_img = $image_file_name;
-                                            $show_upload_link = false;
-                                        }
-                                        else {
-
-                                            $show_upload_link = true;
-                                            $show_img = 'assets/images/users/user_0.png';
-                                        }
-
-                                        ?>
-                                        <img src="<?php echo $show_img; ?>" class="img-circle" alt="Click to view this user profile">
-                                        </a>
-                                        </figure>
+									<?php get_img('users', $bug_report_closed_by, 1, 50); ?>
+								</figure>
 
                                 <span class="title"><?php echo get_creator($bug_report_closed_by); ?></span>
                                 <span class="message truncate">Bug Report Closer</span>
@@ -337,28 +298,8 @@ while($row_get_bug_report = mysqli_fetch_array($result_get_bug_report)) {
 
 								<li>
                                 <figure class="image rounded">
-                                            <a href="view_user_profile.php?id=<?php echo $_SESSION['user_ID']; ?>"><?php
-                                        // default:
-                                        $show_upload_link = false;
-
-                                        // check image file exists:
-
-                                        $image_file_name = 'assets/images/users/user_' . $_SESSION['user_ID'] . '.png';
-
-                                        if (file_exists($image_file_name)) {
-                                            $show_img = $image_file_name;
-                                            $show_upload_link = false;
-                                        }
-                                        else {
-
-                                            $show_upload_link = true;
-                                            $show_img = 'assets/images/users/user_0.png';
-                                        }
-
-                                        ?>
-                                        <img src="<?php echo $show_img; ?>" class="img-circle" alt="Click to view this user profile">
-                                        </a>
-                                        </figure>
+                                        <?php get_img('users', $_SESSION['user_ID'], 1, 50); ?>
+									</figure>
 
                                 <span class="title"><?php echo get_creator($_SESSION['user_ID']); ?></span>
                                 <span class="message truncate">This could be you! Click here to <a href="edit_bug_report.php?id=<?php echo $record_id; ?>"><strong>CLAIM THIS BUG</strong></a> and make our data system a better place.</span>

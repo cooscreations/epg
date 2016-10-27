@@ -117,7 +117,7 @@ while($row_get_part = mysqli_fetch_array($result_get_part)) {
 	}
 
 	// check for revisions. If there are none, we will create one!
-    $count_revs_sql 	= "SELECT COUNT( ID ) FROM  `part_revisions` WHERE  `part_ID` = " . $record_id;
+    $count_revs_sql 	= "SELECT COUNT( ID ) FROM  `part_revisions` WHERE  `part_ID` = '" . $record_id . "' AND `record_status` = '2'";
     $count_revs_query 	= mysqli_query($con, $count_revs_sql);
     $count_revs_row 	= mysqli_fetch_row($count_revs_query);
     $total_revs 		= $count_revs_row[0];
@@ -318,6 +318,13 @@ pagehead($page_id);
 									$rev_body_user 					= $row_get_part_rev_body['user_ID'];
 									$rev_body_price_USD 			= $row_get_part_rev_body['price_USD'];
 									$rev_body_weight_g 				= $row_get_part_rev_body['weight_g'];
+									
+	
+									// check for critical dimensions.
+									$count_crit_dims_sql 	= "SELECT COUNT( ID ) FROM `part_rev_critical_dimensions` WHERE `part_revision_ID` = '" . $rev_body_id . "'";
+									$count_crit_dims_query 	= mysqli_query($con, $count_crit_dims_sql);
+									$count_crit_dims_row 	= mysqli_fetch_row($count_crit_dims_query);
+									$total_crit_dims 		= $count_crit_dims_row[0];
 
 									?>
 
@@ -347,6 +354,7 @@ pagehead($page_id);
 									  <li><strong>Type:</strong> <?php echo $part_type_EN; if (($part_type_CN!='')&&($part_type_CN!='中文名')) { echo " / " . $part_type_CN; } ?></li>
 									  <li><strong>Release Date:</strong> <?php echo date("Y-m-d", strtotime($rev_body_date)); ?></li>
 									  <li><strong>Released By:</strong> <?php get_creator($rev_body_user); ?></li>
+									  <li><strong># Critical Dimensions:</strong> <a href="part_revision_critical_dimensions.php?part_rev_id=<?php echo $rev_body_id; ?>" title="VIEW CRITICAL DIMENSIONS FOR THIS REVISION" class="btn btn-xs btn-primary"><?php echo $total_crit_dims; ?></a> <a href="part_revision_critical_dimension_add.php?part_rev_id=<?php echo $rev_body_id; ?>" class="btn btn-xs btn-success" title="ADD NEW CRITICAL DIMENSION TO THIS REVISION"><i class="fa fa-plus"></i></a></li>
 									</ul>
 									
 									<hr />
@@ -951,6 +959,391 @@ pagehead($page_id);
 						<div class="clearfix">&nbsp;</div>
 
 
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+<!-- ******************************************************************************************************** -->
+
+
+
+
+									<div class="row">
+
+							<section class="panel">
+								<header class="panel-heading">
+									<div class="panel-actions">
+										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
+										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
+									</div>
+
+									<h2 class="panel-title">
+										<span class="va-middle">Batch History</span>
+										<a name="batch_history_<?php echo $rev_body_id; ?>"></a>
+									</h2>
+								</header>
+								<div class="panel-body">
+									<div class="content">
+
+					<?php
+					// firstly, let's make sure we have some batches to display...
+
+					// count variants for this purchase order
+        			$count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_rev` = '" . $rev_body_id . "' AND `record_status` = '2'";
+        			$count_batches_query 	= mysqli_query($con, $count_batches_sql);
+        			$count_batches_row 		= mysqli_fetch_row($count_batches_query);
+        			$total_batches 			= $count_batches_row[0];
+
+					if ($total_batches == 0) {
+						?><center>No batches found. <a href="part_batch_add.php?new_record_id=<?php echo $rev_body_id; ?>" class="btn btn-success"><i class="fa fa-plus"></i> Add one? <i class="fa fa-plus"></i></a></center><?php
+					}
+					else { // FOUND BATCHES - SHOW THEM!
+
+					?>
+
+
+					<?php add_button($rev_body_id, 'part_batch_add', 'new_record_id'); ?>
+
+					<div class="table-responsive">
+					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
+					   <thead>
+						  <tr>
+						  	<th class="text-center"><i class="fa fa-cog"></i></th>
+							<th class="text-center">Batch #</th>
+							<th class="text-center">P.O. #</th>
+							<th class="text-center">P.O. Date</th>
+							<th class="text-center">QTY In</th>
+							<th class="text-center">QTY Out</th>
+							<th class="text-center">Batch Balance</th>
+							<th class="text-center">Status</th>
+							<th class="text-center">Remarks</th>
+						  </tr>
+					  </thead>
+					  <tbody>
+
+					  <!-- START DATASET -->
+					  <?php
+
+					  // get batch list
+
+					  $grand_total_in 			= 0; // default
+					  $grand_total_out 			= 0; // default
+					  $grand_total_remaining 	= 0; // default
+					  $total_batches 			= 0; // default
+
+					  if ($sort == '') {
+					  	$sort_SQL = " ORDER BY `PO_ID` ASC";
+					  }
+					  else if ($sort == 'batch_num') {
+					  	$sort_SQL = " ORDER BY `batch_number` " . $sort_dir;
+					  }
+					  else if ($sort == 'PO_ID') {
+					  	$sort_SQL = " ORDER BY `PO_ID` " . $sort_dir;
+					  }
+					  else if ($sort == 'part_ID') {
+					  	$sort_SQL = " ORDER BY `part_ID` " . $sort_dir;
+					  }
+
+					  $get_batch_SQL = "SELECT * FROM  `part_batch` WHERE `record_status` = '2' AND `part_rev` = ".$rev_body_id."" . $sort_SQL;
+						$result_get_batch = mysqli_query($con,$get_batch_SQL);
+						// while loop
+						while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
+
+								// now print each record:
+								$batch_id 		= $row_get_batch['ID'];
+								$PO_ID 			= $row_get_batch['PO_ID'];
+								$part_ID 		= $row_get_batch['part_ID'];
+								$batch_number 	= $row_get_batch['batch_number'];
+								$part_rev 		= $row_get_batch['part_rev'];
+								
+								// get first INCOMING Batch amount & status:
+								$get_first_movement_SQL = "SELECT * FROM `part_batch_movement` WHERE `part_batch_ID` = '" . $batch_id . "' AND `amount_in` > 0 ORDER BY `date` ASC LIMIT 0,1";
+								$result_get_first_movement = mysqli_query($con,$get_first_movement_SQL);
+								// while loop
+								while($row_get_first_movement = mysqli_fetch_array($result_get_first_movement)) {
+
+										// now print each record:
+										$first_movement_batch_movement_id 		= $row_get_first_movement['ID'];
+										$first_movement_amount_in 				= $row_get_first_movement['amount_in'];
+										$first_movement_amount_out 				= $row_get_first_movement['amount_out'];
+										$first_movement_part_batch_status_ID 	= $row_get_first_movement['part_batch_status_ID'];
+										$first_movement_remarks 				= $row_get_first_movement['remarks'];
+										$first_movement_user_ID 				= $row_get_first_movement['user_ID'];
+										$first_movement_date 					= $row_get_first_movement['date'];
+										$first_movement_record_status 			= $row_get_first_movement['record_status'];
+										
+										// now get the movement status
+
+										$get_mvmnt_status_SQL = "SELECT * FROM  `part_batch_status` WHERE  `ID` =" . $first_movement_part_batch_status_ID;
+
+										$result_get_mvmnt_status = mysqli_query($con,$get_mvmnt_status_SQL);
+										// while loop
+										while($row_get_mvmnt_status = mysqli_fetch_array($result_get_mvmnt_status)) {
+
+												// now print each record:
+												$mvmnt_status_name_EN 	= $row_get_mvmnt_status['name_EN'];
+												$mvmnt_status_name_CN 	= $row_get_mvmnt_status['name_CN'];
+												$mvmnt_status_desc 		= $row_get_mvmnt_status['desc'];
+												$mvmnt_status_icon 		= $row_get_mvmnt_status['icon'];
+												$mvmnt_status_color 	= $row_get_mvmnt_status['color'];
+										}
+								
+								} // end get first batch movement
+								
+
+								// GET PART DETAILS:
+								$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
+								$result_get_part = mysqli_query($con,$get_part_SQL);
+								// while loop
+								while($row_get_part = mysqli_fetch_array($result_get_part)) {
+
+									// now print each result to a variable:
+									$part_id 		= $row_get_part['ID'];
+									$part_code 		= $row_get_part['part_code'];
+									$part_name_EN 	= $row_get_part['name_EN'];
+									$part_name_CN 	= $row_get_part['name_CN'];
+
+								}
+
+
+								// GET P.O. DETAILS:
+								$get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $PO_ID;
+								$result_get_PO = mysqli_query($con,$get_PO_SQL);
+								// while loop
+								while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
+
+									// now print each record:
+									$PO_id 				= $row_get_PO['ID'];
+									$PO_number 			= $row_get_PO['PO_number'];
+									$PO_created_date 	= $row_get_PO['created_date'];
+									$PO_description 	= $row_get_PO['description'];
+
+								} // end while loop
+
+								// get part revision info:
+								$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
+								$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
+								// while loop
+								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
+
+									// now print each record:
+									$rev_id 		= $row_get_part_rev['ID'];
+									$rev_part_id 	= $row_get_part_rev['part_ID'];
+									$rev_number 	= $row_get_part_rev['revision_number'];
+									$rev_remarks 	= $row_get_part_rev['remarks'];
+									$rev_date 		= $row_get_part_rev['date_approved'];
+									$rev_user 		= $row_get_part_rev['user_ID'];
+
+								}
+								
+								// UPDATE: Let's calculate total in-bound QTY over all time
+								
+								$get_in_and_out_totals_SQL = "SELECT sum(`amount_in`), sum(`amount_out`) FROM `part_batch_movement` WHERE `part_batch_ID` = '" . $batch_id . "' AND `record_status` = 2";
+								$result_get_in_and_out_totals = mysqli_query($con,$get_in_and_out_totals_SQL);
+								// while loop
+								while($row_get_in_and_out_totals = mysqli_fetch_array($result_get_in_and_out_totals)) {
+
+									// now print each result:
+									$total_qty_in 	= $row_get_in_and_out_totals['sum(`amount_in`)'];
+									$total_qty_out 	= $row_get_in_and_out_totals['sum(`amount_out`)'];
+
+								}
+								
+								// THEN let's calculate how many are in stock at present
+								$qty_remaining = $total_qty_in - $total_qty_out;
+
+					// NOW LET'S DO THIS!
+
+					  ?>
+					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
+							<td class="text-center">
+					
+							<!-- ********************************************************* -->
+							<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
+							<!-- ********************************************************* -->
+			
+							<?php 
+			
+							// VARS YOU NEED TO WATCH / CHANGE:
+							$add_to_form_name 	= 'batch_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
+							$form_ID 			= $batch_id;				// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
+							$edit_URL 			= 'part_batch_edit'; 			// REQUIRED - specify edit page URL
+							$add_URL 			= 'part_batch_add'; 				// REQURED - specify add page URL
+							$table_name 		= 'part_batch';				// REQUIRED - which table are we updating?
+							$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
+							$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
+			
+							?>
+	 
+								<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+				
+								?>"><i class="fa fa-gear"></i></a>
+
+								<!-- Modal Form -->
+								<div id="modalForm_<?php 
+				
+									echo $add_to_form_name; 
+									echo $form_ID; 
+					
+								?>" class="modal-block modal-block-primary mfp-hide">
+									<section class="panel">
+										<header class="panel-heading">
+											<h2 class="panel-title">Admin Options</h2>
+										</header>
+										<div class="panel-body">
+				
+											<div class="table-responsive">
+											 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
+											 <thead>
+												<tr>
+													<th class="text-left" colspan="2">Action</th>
+													<th>Decsription</th>
+												</tr>
+											  </thead>
+											  <tbody>
+												<tr>
+												  <td>EDIT</td>
+												  <td>
+													<a href="<?php 
+														echo $edit_URL; 
+													?>.php?id=<?php 
+														echo $form_ID; 
+													?>" class="mb-xs mt-xs mr-xs btn btn-warning">
+														<i class="fa fa-pencil" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Edit this record</td>
+												</tr>
+												<tr>
+												  <td>DELETE</td>
+												  <td>
+													<a href="record_delete_do.php?table_name=<?php 
+														echo $table_name; 
+													?>&src_page=<?php 
+														echo $src_page; 
+													?>&id=<?php 
+														echo $form_ID;
+														echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
+													?>" class="mb-xs mt-xs mr-xs btn btn-danger">
+														<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Delete this record</td>
+												</tr>
+												<tr>
+												  <td>ADD</td>
+												  <td>
+													<a href="<?php 
+														echo $add_URL; 
+														echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
+													?>" class="mb-xs mt-xs mr-xs btn btn-success">
+														<i class="fa fa-plus" stlye="color: #999"></i>
+													</a>
+												  </td>
+												  <td>Add a similar item to this table</td>
+												</tr>
+											  </tbody>
+											  <tfoot>
+												<tr>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												  <td>&nbsp;</td>
+												</tr>
+											  </tfoot>
+											  </table>
+											</div><!-- end of responsive table -->	
+				
+										</div><!-- end panel body -->
+										<footer class="panel-footer">
+											<div class="row">
+												<div class="col-md-12 text-left">
+													<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
+												</div>
+											</div>
+										</footer>
+									</section>
+								</div>
+		
+							<!-- ********************************************************* -->
+							<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
+							<!-- ********************************************************* -->
+						</td>
+					    <td class="text-center"><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
+					    <td class="text-center"><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
+					    <td class="text-center"><?php echo date("Y-m-d", strtotime($PO_created_date)); ?></td>
+					    <td class="text-right"><?php echo number_format($total_qty_in); ?></td>
+					    <td class="text-right"><?php echo number_format($total_qty_out); ?></td>
+					    <td class="text-right"><?php echo number_format($qty_remaining); ?></td>
+					    <td><span class="button btn-xs btn-<?php echo $mvmnt_status_color; ?>"><i class="fa <?php echo $mvmnt_status_icon; ?>"></i> <?php echo $mvmnt_status_name_EN; ?> / <?php echo $mvmnt_status_name_CN; ?></span></td>
+					    <td><?php echo $first_movement_remarks; ?></td>
+					  </tr>
+					  <?php
+					  
+					  $grand_total_in 			= $grand_total_in + $total_qty_in;
+					  $grand_total_out 			= $grand_total_out + $total_qty_out;
+					  $grand_total_remaining 	= $grand_total_remaining + $qty_remaining;
+					  // $grand_total_remaining	= $grand_total_in - $grand_total_out; // should be the same as line above! :)
+					  $total_batches 			= $total_batches + 1;
+					  } // END GET BATCH 'WHILE' LOOP
+
+					  ?>
+					  <!-- END DATASET -->
+
+					  </tbody>
+
+					  <tfoot>
+						  <tr>
+							<th colspan="4">Total batches for rev. <?php echo $rev_number; ?>: <?php echo $total_batches ;
+
+
+												// now count the total batches for ALL revisions:
+												$count_j_batches_sql 	= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $part_ID . " AND `record_status` = '2'";
+												$count_j_batches_query 	= mysqli_query($con, $count_j_batches_sql);
+												$count_j_batches_row 	= mysqli_fetch_row($count_j_batches_query);
+												$total_j_batches 		= $count_j_batches_row[0];
+
+												if ($total_j_batches > $total_batches) {
+
+													// found even more batches - link to the entire list!
+													echo ' <span style="font-weight:normal;">(<a href="batch_log.php?part_id='.$part_ID.'">VIEW ALL ' . $total_j_batches . ' BATCHES</a>)</span>';
+												 } ?>
+
+							</th>
+							<th class="text-right"><?php echo number_format($grand_total_in); ?></th>
+							<th class="text-right"><?php echo number_format($grand_total_out); ?></th>
+							<th class="text-right"><?php echo number_format($grand_total_remaining); ?></th>
+					    	<th>&nbsp;</th>
+					    	<th>&nbsp;</th>
+						  </tr>
+					  </tfoot>
+
+					 </table>
+					</div>
+					
+					<?php add_button($rev_body_id, 'part_batch_add', 'new_record_id'); ?>
+
+					<?php
+
+					} // END FOUND BATCHES ELSE STATEMENT
+
+					?>
+
+
+					</div>
+								  <div class="panel-footer">
+									<div class="text-right">
+											<a class="text-uppercase text-muted" href="batch_log.php?part_id=<?php echo $part_ID; ?>">(View All)</a>
+										</div>
+								  </div>
+								</div>
+							</section>
+
+						</div>
+
+						<div class="clearfix">&nbsp;</div>
 <!-- ******************************************************************************************************** -->
 <!-- ******************************************************************************************************** -->
 <!-- ******************************************************************************************************** -->
@@ -1638,391 +2031,6 @@ pagehead($page_id);
 							</section>
 
 						</div>
-
-						<div class="clearfix">&nbsp;</div>
-
-
-
-
-									<div class="row">
-
-							<section class="panel">
-								<header class="panel-heading">
-									<div class="panel-actions">
-										<a href="#" class="panel-action panel-action-toggle" data-panel-toggle></a>
-										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
-									</div>
-
-									<h2 class="panel-title">
-										<span class="va-middle">Batch History</span>
-										<a name="batch_history_<?php echo $rev_body_id; ?>"></a>
-									</h2>
-								</header>
-								<div class="panel-body">
-									<div class="content">
-
-					<?php
-					// firstly, let's make sure we have some batches to display...
-
-					// count variants for this purchase order
-        			$count_batches_sql 		= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_rev` = '" . $rev_body_id . "' AND `record_status` = '2'";
-        			$count_batches_query 	= mysqli_query($con, $count_batches_sql);
-        			$count_batches_row 		= mysqli_fetch_row($count_batches_query);
-        			$total_batches 			= $count_batches_row[0];
-
-					if ($total_batches == 0) {
-						?><center>No batches found. <a href="part_batch_add.php?new_record_id=<?php echo $rev_body_id; ?>" class="btn btn-success"><i class="fa fa-plus"></i> Add one? <i class="fa fa-plus"></i></a></center><?php
-					}
-					else { // FOUND BATCHES - SHOW THEM!
-
-					?>
-
-
-					<?php add_button($rev_body_id, 'part_batch_add', 'new_record_id'); ?>
-
-					<div class="table-responsive">
-					 <table class="table table-bordered table-striped table-hover table-condensed mb-none">
-					   <thead>
-						  <tr>
-						  	<th class="text-center"><i class="fa fa-cog"></i></th>
-							<th class="text-center">Batch #</th>
-							<th class="text-center">P.O. #</th>
-							<th class="text-center">P.O. Date</th>
-							<th class="text-center">QTY In</th>
-							<th class="text-center">QTY Out</th>
-							<th class="text-center">Batch Balance</th>
-							<th class="text-center">Status</th>
-							<th class="text-center">Remarks</th>
-						  </tr>
-					  </thead>
-					  <tbody>
-
-					  <!-- START DATASET -->
-					  <?php
-
-					  // get batch list
-
-					  $grand_total_in 			= 0; // default
-					  $grand_total_out 			= 0; // default
-					  $grand_total_remaining 	= 0; // default
-					  $total_batches 			= 0; // default
-
-					  if ($sort == '') {
-					  	$sort_SQL = " ORDER BY `PO_ID` ASC";
-					  }
-					  else if ($sort == 'batch_num') {
-					  	$sort_SQL = " ORDER BY `batch_number` " . $sort_dir;
-					  }
-					  else if ($sort == 'PO_ID') {
-					  	$sort_SQL = " ORDER BY `PO_ID` " . $sort_dir;
-					  }
-					  else if ($sort == 'part_ID') {
-					  	$sort_SQL = " ORDER BY `part_ID` " . $sort_dir;
-					  }
-
-					  $get_batch_SQL = "SELECT * FROM  `part_batch` WHERE `record_status` = '2' AND `part_rev` = ".$rev_body_id."" . $sort_SQL;
-						$result_get_batch = mysqli_query($con,$get_batch_SQL);
-						// while loop
-						while($row_get_batch = mysqli_fetch_array($result_get_batch)) {
-
-								// now print each record:
-								$batch_id 		= $row_get_batch['ID'];
-								$PO_ID 			= $row_get_batch['PO_ID'];
-								$part_ID 		= $row_get_batch['part_ID'];
-								$batch_number 	= $row_get_batch['batch_number'];
-								$part_rev 		= $row_get_batch['part_rev'];
-								
-								// get first INCOMING Batch amount & status:
-								$get_first_movement_SQL = "SELECT * FROM `part_batch_movement` WHERE `part_batch_ID` = '" . $batch_id . "' AND `amount_in` > 0 ORDER BY `date` ASC LIMIT 0,1";
-								$result_get_first_movement = mysqli_query($con,$get_first_movement_SQL);
-								// while loop
-								while($row_get_first_movement = mysqli_fetch_array($result_get_first_movement)) {
-
-										// now print each record:
-										$first_movement_batch_movement_id 		= $row_get_first_movement['ID'];
-										$first_movement_amount_in 				= $row_get_first_movement['amount_in'];
-										$first_movement_amount_out 				= $row_get_first_movement['amount_out'];
-										$first_movement_part_batch_status_ID 	= $row_get_first_movement['part_batch_status_ID'];
-										$first_movement_remarks 				= $row_get_first_movement['remarks'];
-										$first_movement_user_ID 				= $row_get_first_movement['user_ID'];
-										$first_movement_date 					= $row_get_first_movement['date'];
-										$first_movement_record_status 			= $row_get_first_movement['record_status'];
-										
-										// now get the movement status
-
-										$get_mvmnt_status_SQL = "SELECT * FROM  `part_batch_status` WHERE  `ID` =" . $first_movement_part_batch_status_ID;
-
-										$result_get_mvmnt_status = mysqli_query($con,$get_mvmnt_status_SQL);
-										// while loop
-										while($row_get_mvmnt_status = mysqli_fetch_array($result_get_mvmnt_status)) {
-
-												// now print each record:
-												$mvmnt_status_name_EN 	= $row_get_mvmnt_status['name_EN'];
-												$mvmnt_status_name_CN 	= $row_get_mvmnt_status['name_CN'];
-												$mvmnt_status_desc 		= $row_get_mvmnt_status['desc'];
-												$mvmnt_status_icon 		= $row_get_mvmnt_status['icon'];
-												$mvmnt_status_color 	= $row_get_mvmnt_status['color'];
-										}
-								
-								} // end get first batch movement
-								
-
-								// GET PART DETAILS:
-								$get_part_SQL = "SELECT * FROM `parts` WHERE `ID` = " . $part_ID;
-								$result_get_part = mysqli_query($con,$get_part_SQL);
-								// while loop
-								while($row_get_part = mysqli_fetch_array($result_get_part)) {
-
-									// now print each result to a variable:
-									$part_id 		= $row_get_part['ID'];
-									$part_code 		= $row_get_part['part_code'];
-									$part_name_EN 	= $row_get_part['name_EN'];
-									$part_name_CN 	= $row_get_part['name_CN'];
-
-								}
-
-
-								// GET P.O. DETAILS:
-								$get_PO_SQL = "SELECT * FROM  `purchase_orders` WHERE `ID` = " . $PO_ID;
-								$result_get_PO = mysqli_query($con,$get_PO_SQL);
-								// while loop
-								while($row_get_PO = mysqli_fetch_array($result_get_PO)) {
-
-									// now print each record:
-									$PO_id 				= $row_get_PO['ID'];
-									$PO_number 			= $row_get_PO['PO_number'];
-									$PO_created_date 	= $row_get_PO['created_date'];
-									$PO_description 	= $row_get_PO['description'];
-
-								} // end while loop
-
-								// get part revision info:
-								$get_part_rev_SQL = "SELECT * FROM  `part_revisions` WHERE  `ID` =" . $part_rev;
-								$result_get_part_rev = mysqli_query($con,$get_part_rev_SQL);
-								// while loop
-								while($row_get_part_rev = mysqli_fetch_array($result_get_part_rev)) {
-
-									// now print each record:
-									$rev_id 		= $row_get_part_rev['ID'];
-									$rev_part_id 	= $row_get_part_rev['part_ID'];
-									$rev_number 	= $row_get_part_rev['revision_number'];
-									$rev_remarks 	= $row_get_part_rev['remarks'];
-									$rev_date 		= $row_get_part_rev['date_approved'];
-									$rev_user 		= $row_get_part_rev['user_ID'];
-
-								}
-								
-								// UPDATE: Let's calculate total in-bound QTY over all time
-								
-								$get_in_and_out_totals_SQL = "SELECT sum(`amount_in`), sum(`amount_out`) FROM `part_batch_movement` WHERE `part_batch_ID` = '" . $batch_id . "' AND `record_status` = 2";
-								$result_get_in_and_out_totals = mysqli_query($con,$get_in_and_out_totals_SQL);
-								// while loop
-								while($row_get_in_and_out_totals = mysqli_fetch_array($result_get_in_and_out_totals)) {
-
-									// now print each result:
-									$total_qty_in 	= $row_get_in_and_out_totals['sum(`amount_in`)'];
-									$total_qty_out 	= $row_get_in_and_out_totals['sum(`amount_out`)'];
-
-								}
-								
-								// THEN let's calculate how many are in stock at present
-								$qty_remaining = $total_qty_in - $total_qty_out;
-
-					// NOW LET'S DO THIS!
-
-					  ?>
-					  <tr<?php if ($batch_id == $_REQUEST['new_record_id']) { ?> class="success"<?php } ?>>
-							<td class="text-center">
-					
-							<!-- ********************************************************* -->
-							<!-- START THE ADMIN POP-UP PANEL OPTIONS FOR THIS RECORD SET: -->
-							<!-- ********************************************************* -->
-			
-							<?php 
-			
-							// VARS YOU NEED TO WATCH / CHANGE:
-							$add_to_form_name 	= 'batch_';					// OPTIONAL - use if there are more than one group of admin button GROUPS on the page. It's prettier with a trailing '_' :)
-							$form_ID 			= $batch_id;				// REQUIRED - What is driving each pop-up's uniqueness? MAY be record_id, may not!
-							$edit_URL 			= 'part_batch_edit'; 			// REQUIRED - specify edit page URL
-							$add_URL 			= 'part_batch_add'; 				// REQURED - specify add page URL
-							$table_name 		= 'part_batch';				// REQUIRED - which table are we updating?
-							$src_page 			= $this_file;				// REQUIRED - this SHOULD be coming from page_functions.php
-							$add_VAR 			= ''; 						// REQUIRED - DEFAULT = id - this can change, for example when we add a line item to a PO
-			
-							?>
-	 
-								<a class="modal-with-form btn btn-default" href="#modalForm_<?php 
-				
-									echo $add_to_form_name; 
-									echo $form_ID; 
-				
-								?>"><i class="fa fa-gear"></i></a>
-
-								<!-- Modal Form -->
-								<div id="modalForm_<?php 
-				
-									echo $add_to_form_name; 
-									echo $form_ID; 
-					
-								?>" class="modal-block modal-block-primary mfp-hide">
-									<section class="panel">
-										<header class="panel-heading">
-											<h2 class="panel-title">Admin Options</h2>
-										</header>
-										<div class="panel-body">
-				
-											<div class="table-responsive">
-											 <table class="table table-bordered table-striped table-hover table-condensed mb-none" id="data_table_id">
-											 <thead>
-												<tr>
-													<th class="text-left" colspan="2">Action</th>
-													<th>Decsription</th>
-												</tr>
-											  </thead>
-											  <tbody>
-												<tr>
-												  <td>EDIT</td>
-												  <td>
-													<a href="<?php 
-														echo $edit_URL; 
-													?>.php?id=<?php 
-														echo $form_ID; 
-													?>" class="mb-xs mt-xs mr-xs btn btn-warning">
-														<i class="fa fa-pencil" stlye="color: #999"></i>
-													</a>
-												  </td>
-												  <td>Edit this record</td>
-												</tr>
-												<tr>
-												  <td>DELETE</td>
-												  <td>
-													<a href="record_delete_do.php?table_name=<?php 
-														echo $table_name; 
-													?>&src_page=<?php 
-														echo $src_page; 
-													?>&id=<?php 
-														echo $form_ID;
-														echo '&' . $add_VAR; // NOTE THE LEADING '&' <<<  
-													?>" class="mb-xs mt-xs mr-xs btn btn-danger">
-														<i class="fa fa-trash modal-icon" stlye="color: #999"></i>
-													</a>
-												  </td>
-												  <td>Delete this record</td>
-												</tr>
-												<tr>
-												  <td>ADD</td>
-												  <td>
-													<a href="<?php 
-														echo $add_URL; 
-														echo '.php?' . $add_VAR;  // NOTE THE LEADING '?' <<<
-													?>" class="mb-xs mt-xs mr-xs btn btn-success">
-														<i class="fa fa-plus" stlye="color: #999"></i>
-													</a>
-												  </td>
-												  <td>Add a similar item to this table</td>
-												</tr>
-											  </tbody>
-											  <tfoot>
-												<tr>
-												  <td>&nbsp;</td>
-												  <td>&nbsp;</td>
-												  <td>&nbsp;</td>
-												</tr>
-											  </tfoot>
-											  </table>
-											</div><!-- end of responsive table -->	
-				
-										</div><!-- end panel body -->
-										<footer class="panel-footer">
-											<div class="row">
-												<div class="col-md-12 text-left">
-													<button class="btn btn-danger modal-dismiss"><i class="fa fa-times" stlye="color: #999"></i> Cancel</button>
-												</div>
-											</div>
-										</footer>
-									</section>
-								</div>
-		
-							<!-- ********************************************************* -->
-							<!-- 			   END THE ADMIN POP-UP OPTIONS 			   -->
-							<!-- ********************************************************* -->
-						</td>
-					    <td class="text-center"><a href="batch_view.php?id=<?php echo $batch_id; ?>"><?php echo $batch_number; ?></a></td>
-					    <td class="text-center"><a href="purchase_order_view.php?id=<?php echo $PO_id; ?>"><?php echo $PO_number; ?></a></td>
-					    <td class="text-center"><?php echo date("Y-m-d", strtotime($PO_created_date)); ?></td>
-					    <td class="text-right"><?php echo number_format($total_qty_in); ?></td>
-					    <td class="text-right"><?php echo number_format($total_qty_out); ?></td>
-					    <td class="text-right"><?php echo number_format($qty_remaining); ?></td>
-					    <td><span class="button btn-xs btn-<?php echo $mvmnt_status_color; ?>"><i class="fa <?php echo $mvmnt_status_icon; ?>"></i> <?php echo $mvmnt_status_name_EN; ?> / <?php echo $mvmnt_status_name_CN; ?></span></td>
-					    <td><?php echo $first_movement_remarks; ?></td>
-					  </tr>
-					  <?php
-					  
-					  $grand_total_in 			= $grand_total_in + $total_qty_in;
-					  $grand_total_out 			= $grand_total_out + $total_qty_out;
-					  $grand_total_remaining 	= $grand_total_remaining + $qty_remaining;
-					  // $grand_total_remaining	= $grand_total_in - $grand_total_out; // should be the same as line above! :)
-					  $total_batches 			= $total_batches + 1;
-					  } // END GET BATCH 'WHILE' LOOP
-
-					  ?>
-					  <!-- END DATASET -->
-
-					  </tbody>
-
-					  <tfoot>
-						  <tr>
-							<th colspan="4">Total batches for rev. <?php echo $rev_number; ?>: <?php echo $total_batches ;
-
-
-												// now count the total batches for ALL revisions:
-												$count_j_batches_sql 	= "SELECT COUNT( ID ) FROM  `part_batch` WHERE `part_ID` = " . $part_ID . " AND `record_status` = '2'";
-												$count_j_batches_query 	= mysqli_query($con, $count_j_batches_sql);
-												$count_j_batches_row 	= mysqli_fetch_row($count_j_batches_query);
-												$total_j_batches 		= $count_j_batches_row[0];
-
-												if ($total_j_batches > $total_batches) {
-
-													// found even more batches - link to the entire list!
-													echo ' <span style="font-weight:normal;">(<a href="batch_log.php?part_id='.$part_ID.'">VIEW ALL ' . $total_j_batches . ' BATCHES</a>)</span>';
-												 } ?>
-
-							</th>
-							<th class="text-right"><?php echo number_format($grand_total_in); ?></th>
-							<th class="text-right"><?php echo number_format($grand_total_out); ?></th>
-							<th class="text-right"><?php echo number_format($grand_total_remaining); ?></th>
-					    	<th>&nbsp;</th>
-					    	<th>&nbsp;</th>
-						  </tr>
-					  </tfoot>
-
-					 </table>
-					</div>
-					
-					<?php add_button($rev_body_id, 'part_batch_add', 'new_record_id'); ?>
-
-					<?php
-
-					} // END FOUND BATCHES ELSE STATEMENT
-
-					?>
-
-
-					</div>
-								  <div class="panel-footer">
-									<div class="text-right">
-											<a class="text-uppercase text-muted" href="batch_log.php?part_id=<?php echo $part_ID; ?>">(View All)</a>
-										</div>
-								  </div>
-								</div>
-							</section>
-
-						</div>
-<!-- ******************************************************************************************************** -->
-<!-- ******************************************************************************************************** -->
-<!-- ******************************************************************************************************** -->
-<!-- ******************************************************************************************************** -->
-<!-- ******************************************************************************************************** -->
 
 
 

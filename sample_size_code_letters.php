@@ -71,6 +71,13 @@ pagehead ( $page_id );
 
     <!-- start: page -->
  
+ <div class="row">
+ 
+ 	<a href="part_revision_critical_dimensions.php" class="btn btn-xs btn-primary">
+ 		VIEW CRITICAL DIMENSIONS
+ 	</a>
+ 
+ </div>
  
  <div class="row">
  <!-- START PANEL - 1 -->

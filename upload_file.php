@@ -699,8 +699,8 @@ pagehead($page_id);
 					   <!-- NEXT STEP SELECTION -->
 							
 							<?php 
-							if ($_REQUEST['next_step'] == 'add') {
-								$next_step_selected = 'add';
+							if ($_REQUEST['next_step'] == 'view_list') {
+								$next_step_selected = 'view_list';
 							}
 							else {
 								$next_step_selected = 'view';
@@ -716,7 +716,7 @@ pagehead($page_id);
 								</div>
 
 								<div class="radio-custom radio-warning">
-									<input type="radio" id="next_step" name="next_step" value="view_list"<?php if ($next_step_selected == 'add') { ?> checked="checked"<?php } ?>>
+									<input type="radio" id="next_step" name="next_step" value="view_list"<?php if ($next_step_selected == 'view_list') { ?> checked="checked"<?php } ?>>
 									<label for="radioExample10">View ALL Documents</label>
 								</div>
 							</div>

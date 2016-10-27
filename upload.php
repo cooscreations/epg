@@ -38,7 +38,7 @@ move_uploaded_file(...);
 
 */	
 
-	  $allowedExts = array("gif", "jpeg", "jpg", "png", "pdf", "doc", "docx", "xsl", "xlsx");
+	  $allowedExts = array("gif", "jpeg", "jpg", "png", "pdf", "doc", "docx", "xsl", "xlsx", "GIF", "JPEG", "JPG", "PNG", "PDF", "DOC", "DOCX", "XLS", "XLSX");
       $temp = explode(".", $_FILES["file"]["name"]);
       $extension = end($temp);
 	  $max_size = 500000;
@@ -207,8 +207,7 @@ move_uploaded_file(...);
 									exit();
 								}
 								else {
-									// add record
-									// send them to the add form
+									// send them to the doc list
 									header("Location: documents.php?msg=OK&action=add&new_record_id=".$record_id."");
 									exit();
 								}

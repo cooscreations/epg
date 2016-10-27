@@ -417,7 +417,7 @@ while($row_get_sup = mysqli_fetch_array($result_get_sups)) {
                     <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                 </div>
 
-                <h2 class="panel-title">Purchase Orders From <?php echo $sup_en; if (($sup_cn!='') && ($sup_cn!='中文名')) { ?> / <?php echo $sup_cn; } ?></h2>
+                <h2 class="panel-title">Purchase Orders</h2>
             </header>
             
             

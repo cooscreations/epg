@@ -115,7 +115,7 @@ pagehead($page_id);
                                 <div class="panel-body">
                                     <div class="thumb-info mb-md">
                                         <img src="assets/images/users/user_<?php echo $user_ID; ?>.png" title="<?php echo $user_fn; echo ' ' . $user_mn; echo ' ' . $user_ln; ?>" style="width:100px;" />
-                                    	<div class="upload_div text-center btn btn-xs btn-primary"><a href="add_file.php?file_type=user&id=<?php echo $user_ID; ?>&history=new" onclick="NewWindow(this.href,'Upload a New Image','600','400','no','center');return false" onfocus="this.blur()" title="Click to upload a new image"><i class="fa fa-cloud-upload"></i><i class="fa fa-file-photo-o"></i></a></div>
+                                    	<div class="upload_div text-center btn btn-xs btn-primary"><a href="upload_file.php?table=users&lookup_ID=<?php echo $user_ID; ?>&history=new" onclick="NewWindow(this.href,'Upload a New Image','600','400','no','center');return false" onfocus="this.blur()" title="Click to upload a new image"><i class="fa fa-cloud-upload"></i><i class="fa fa-file-photo-o"></i></a></div>
                                     </div>
                                 </div>
                             </section>

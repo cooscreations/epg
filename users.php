@@ -93,7 +93,7 @@ pagehead($page_id); ?>
           <thead>
             <tr>
                 <th class="text-center"><i class="fa fa-cog" title="Actions"></i></th>
-                <th class="text-center">Photo<i class="fa fa-file-image-o" title="Photo / 照片"></i></th>
+                <th class="text-center">Photo <i class="fa fa-file-image-o" title="Photo / 照片"></i></th>
                 <th class="text-center">Name</th>
                 <th class="text-center">名字</th>
                 <th class="text-center"><i class="fa fa-envelope-o" title="E-mail / 邮件地址"></i></th>
@@ -102,6 +102,7 @@ pagehead($page_id); ?>
                 <th class="text-center">Last Log In</th>
                 <th class="text-center">Level</th>
                 <th class="text-center">Status</th>
+                <th class="text-center"># Updates</th>
             </tr>
           </thead>
           <tbody>
@@ -151,7 +152,13 @@ pagehead($page_id); ?>
 					$user_wechat_profile 	= $row_get_users['wechat_profile'];
 					$user_record_status 	= $row_get_users['record_status'];
 					$user_mobile_number 	= $row_get_users['mobile_number'];
-
+									
+	
+					// count updates:
+					$count_updates_sql 		= "SELECT COUNT( * ) FROM `update_log` WHERE `user_ID` = '" . $user_ID . "'";
+					$count_updates_query 	= mysqli_query($con, $count_updates_sql);
+					$count_updates_row 		= mysqli_fetch_row($count_updates_query);
+					$total_updates 			= $count_updates_row[0];
 			  ?>
 
             <tr<?php 
@@ -333,6 +340,7 @@ pagehead($page_id); ?>
                 ?></td>
                 <td class="text-center"><?php echo $user_level; ?></td>
                 <td class="text-center"><?php record_status($user_record_status); ?></td>
+                <td class="text-right"><?php echo number_format($total_updates); ?></td>
             </tr>
 
             <?php
@@ -344,7 +352,7 @@ pagehead($page_id); ?>
 		  </tbody>
 		  <tfoot>
             <tr>
-            	<th colspan="10">TOTAL: <?php echo $user_count; ?></th>
+            	<th colspan="11">TOTAL: <?php echo $user_count; ?></th>
             </tr>
           </tfoot>
         </table>

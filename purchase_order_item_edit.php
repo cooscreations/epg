@@ -130,7 +130,11 @@ if ($record_id != 0) {
 		
 		if ($PO_default_currency_ID != $po_item_original_currency) {
 			// CURRENCY NEEDS ADJUSTING!
-			echo '<h1>WARNING - CURRENCY (ID# ' . $po_item_original_currency . ') DOES NOT MATCH DEFAULT PO CURRENCY (ID# ' . $PO_default_currency_ID . ')!</h1>';
+			// echo '<h1>WARNING - CURRENCY (ID# ' . $po_item_original_currency . ') DOES NOT MATCH DEFAULT PO CURRENCY (ID# ' . $PO_default_currency_ID . ')!</h1>';
+			echo '<h4 class="text-danger" title="Line Item Currency ID: ' . $po_item_original_currency . '; P.O. Currency ID: ' . $PO_default_currency_ID . '"><i class="fa fa-exclamation-triangle"></i> WARNING - LINE ITEM CURRENCY DOES NOT MATCH DEFAULT PO CURRENCY!</h4>
+					<br />
+					<a href="purchase_order_edit.php?id=' . $PO_id . '" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> EDIT P.O.</a>
+					<br /><br />';
 		
 			// curencies don't match - let's fix it!
 			// CONVERT ALL TO DOLLARS (PO AND PO LINE ITEM)
@@ -430,7 +434,8 @@ if ($record_id != 0) {
 								
 									<!-- ADD ANY OTHER HIDDEN VARS HERE -->
 								  <div class="col-md-5 text-left">	
-									<?php form_buttons('purchase_order_view', $record_id); ?>
+								  	<input type="hidden" name="PO_line_item_ID" value="<?php echo $po_item_ID; ?>" />
+									<?php form_buttons('purchase_order_view', $po_item_purchase_order_ID); ?>
 								  </div>
 								  
 								  

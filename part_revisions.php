@@ -73,9 +73,7 @@ pagehead ( $page_id );
 							?>
 
 		<!-- start: page -->
-		<?php
-		add_button(0, 'part_revision_add');
-		?>
+		<?php add_button(0, 'part_revision_add'); ?>
 		
 	<div class="table-responsive">
 		<table class="table table-bordered table-striped table-condensed mb-none">

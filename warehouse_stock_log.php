@@ -74,8 +74,7 @@ pagehead($page_id);
 					  <tr>
 					    <th rowspan="2" class="text-center">Part #</th>
 					    <th rowspan="2" class="text-center">Part Rev.</th>
-					    <th rowspan="2" class="text-center">Part Name EN</th>
-					    <th rowspan="2" class="text-center">中文名</th>
+					    <th rowspan="2" class="text-center">Part Name EN / 中文名</th>
 					    <th class="dark center" colspan="3">TOTAL</th>
 					    <th class="success center" colspan="2">USEFUL</th>
 					    <th class="warning center" colspan="2">QUARANTINE</th>
@@ -200,7 +199,9 @@ pagehead($page_id);
 								`part_batch_movement`.`amount_out`,
 								`part_batch_movement`.`part_batch_status_ID`
 								FROM `part_batch`, `part_batch_movement`
-								WHERE `part_batch`.`part_ID` = '".$part_ID."'
+								WHERE `part_batch`.`record_status` = '2'
+								AND `part_batch_movement`.`record_status` = '2'
+								AND `part_batch`.`part_ID` = '".$part_ID."'
 								AND `part_batch`.`part_rev` = '".$rev_id."'
 								AND `part_batch_movement`.`part_batch_ID` = `part_batch`.`ID`";
 								$result_get_batch_list = mysqli_query($con,$get_batch_list_SQL);
@@ -258,14 +259,15 @@ pagehead($page_id);
 					if ($show_this_row == 1) { // OK to display:
 					  ?>
 					    <tr>
-					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_code; ?></a></td>
-					    <td class="text-center"><span class="btn btn-xs btn-warning" title="Rev. #: <?php echo $rev_id; ?>"><?php echo $rev_number; ?></span></td>
-					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php echo $part_name_EN; ?></a></td>
-					    <td class="text-center"><a href="part_view.php?id=<?php echo $part_ID; ?>"><?php
-					    if (($part_name_CN!='')&&($part_name_CN!='中文名')) {
-					    	echo $part_name_CN;
-					    }
-					    ?></a></td>
+					    <td class="text-center">
+					    	<?php part_num_from_rev($part_rev); ?>
+					    </td>
+					    <td class="text-center">
+					    	<?php part_rev($part_rev); ?>
+					    </td>
+					    <td class="text-center">
+					    	<?php part_name_from_rev($part_rev); ?>
+					    </td>
 					    <td class="text-right"><?php echo number_format($total_in, 0, ".", ","); ?></td>
 					    <td class="text-right"><?php echo number_format($total_out, 0, ".", ","); ?></td>
 					    <td class="info text-right"><strong><?php echo number_format($total_now, 0, ".", ","); ?></strong></td>
@@ -290,16 +292,7 @@ pagehead($page_id);
 					  </tbody>
 					  <tfoot>
 					  <tr>
-					    <th colspan="4">TOTAL UNIQUE PARTS: <?php echo $total_unique_parts ;?></th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
-					    <th>&nbsp;</th>
+					    <th colspan="12">TOTAL UNIQUE PARTS: <?php echo $total_unique_parts ;?></th>
 					  </tr>
 					  </tfoot>
 

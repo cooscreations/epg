@@ -2644,7 +2644,10 @@ function add_button($record_id, $add_page_url, $record_var = 'id', $add_title='C
 			
 		?>=<?php 
 		
-			echo $record_id; 
+			echo $record_id;
+			if ((substr($add_url,0,1)!='&')) {
+				echo '&';
+			} 
 			echo $add_url; 
 			
 		?>" class="mb-xs mt-xs mr-xs btn btn-success pull-left" title="<?php 
