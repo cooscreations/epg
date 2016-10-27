@@ -1,4 +1,4 @@
-<?php 
+<?php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,11 +12,12 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -24,19 +25,19 @@ $page_id = 20;
 
 // THIS IS A LOOK-UP RECORD PAGE - GET THE RECORD INFO FIRST:
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: index.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 $get_page_by_id_SQL = "SELECT * FROM  `pages` WHERE `ID` = " . $record_id;
 $result_get_pages = mysqli_query($con,$get_page_by_id_SQL);
 // while loop
 while($row_get_pages = mysqli_fetch_array($result_get_pages)) {
-					  	
+
 							$page_ID = $row_get_pages['ID'];
 							$page_name_EN = $row_get_pages['name_EN'];
 							$page_name_CN = $row_get_pages['name_CN'];
@@ -58,21 +59,21 @@ while($row_get_pages = mysqli_fetch_array($result_get_pages)) {
 							$page_og_section = $row_get_pages['og_section'];
 							$page_side_bar_config = $row_get_pages['side_bar_config'];
 							$page_lookup_table = $row_get_pages['lookup_table'];
-							
-							
+
+
 							if (($page_parent_ID != '')&&($page_parent_ID != 0)) {
-							
+
 								// get the parent page info:
-					
+
 								$get_parent_page_SQL = "SELECT * FROM `pages` WHERE `id` = '" . $page_parent_ID . "'";
 								// echo $get_parent_page_SQL;
 
 								$result_get_parent_page = mysqli_query($con,$get_parent_page_SQL);
 								// while loop
-			  
-			  
+
+
 								while($row_get_parent_page = mysqli_fetch_array($result_get_parent_page)) {
-				
+
 									$parent_page_ID = $row_get_parent_page['ID'];
 									$parent_page_name_EN = $row_get_parent_page['name_EN'];
 									$parent_page_name_CN = $row_get_parent_page['name_CN'];
@@ -94,23 +95,23 @@ while($row_get_pages = mysqli_fetch_array($result_get_pages)) {
 									$parent_page_og_section = $row_get_parent_page['og_section'];
 									$parent_page_side_bar_config = $row_get_parent_page['side_bar_config'];
 									$parent_page_lookup_table = $row_get_parent_page['lookup_table'];
-					
+
 								} // END WHILE LOOP
-							
+
 							} // END page_parent_ID = 0 / NULL
-							
-							
+
+
 							// Now we will count the number of sub-categories:
 							$count_sub_pages_sql = "SELECT COUNT(ID) FROM `pages` WHERE `parent_ID` = '" . $page_ID . "'";
 							$count_sub_pages_query = mysqli_query($con, $count_sub_pages_sql);
 							$count_sub_pages_row = mysqli_fetch_row($count_sub_pages_query);
 							// Here we have the total row count
 							$total_sub_pages = $count_sub_pages_row[0];
-							
+
 		} // END WHILE GET PAGE INFO LOOP
 
 // pull the header and template stuff:
-pagehead($page_id); 
+pagehead($page_id);
 
 ?>
 
@@ -121,7 +122,7 @@ pagehead($page_id);
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Edit A Page</h2>
-					
+
 						<div class="right-wrapper pull-right">
 							<ol class="breadcrumbs">
 								<li>
@@ -134,11 +135,11 @@ pagehead($page_id);
 								</li>
 								<li><span>Edit Page Record</span></li>
 							</ol>
-					
+
 							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
 						</div>
 					</header>
-					
+
 					<div class="row">
 						<div class="col-md-12">
 							<section class="panel">
@@ -153,7 +154,7 @@ pagehead($page_id);
 								<div class="panel-body">
 
 <!-- START PAGE EDIT FORM -->
-									<div class="form-group">				
+									<div class="form-group">
 								<div class="table-responsive">
 									<table class="table table-bordered table-striped table-condensed mb-none">
   <tr>
@@ -177,8 +178,8 @@ pagehead($page_id);
     </td>
   </tr>
   <tr>
-    <td>Parent Page<br /><?php 
-    
+    <td>Parent Page<br /><?php
+
     // have parent, let's link to it here:
     if ($page_parent_ID != '0') {
     	?><a href="<?php echo $parent_page_filename; ?>" title="FILE: <?php echo $parent_page_filename; ?>">VIEW CURRENT PARENT PAGE</a><?php
@@ -186,25 +187,25 @@ pagehead($page_id);
     else {
     	?><span class="text-warning">No Parent Set</span><?php
     }
-    
+
     ?></td>
     <td>
-    
+
 		<select data-plugin-selectTwo class="form-control populate" form="form_<?php echo $page_ID; ?>" name="parent_page_ID">
 			<option value="0" selected="selected">None Selected / 无</option>
-    <?php 
-					
+    <?php
+
 					$get_P_pages_SQL = "SELECT * FROM `pages` ORDER BY `order`";
 					// echo $get_P_pages_SQL;
-					  
+
 					  $P_page_count = 0;
-	
+
 					  $result_get_P_pages = mysqli_query($con,$get_P_pages_SQL);
 					  // while loop
-					  
-					  
+
+
 					  while($row_get_P_pages = mysqli_fetch_array($result_get_P_pages)) {
-					  	
+
 							$P_page_ID = $row_get_P_pages['ID'];
 							$P_page_name_EN = $row_get_P_pages['name_EN'];
 							$P_page_name_CN = $row_get_P_pages['name_CN'];
@@ -226,13 +227,13 @@ pagehead($page_id);
 							$P_page_og_section = $row_get_P_pages['og_section'];
 							$P_page_side_bar_config = $row_get_P_pages['side_bar_config'];
 							$P_page_lookup_table = $row_get_P_pages['lookup_table'];
-						
+
 						?>
 							<option value="$page_parent_ID"<?php if ($page_parent_ID == $P_page_ID){ ?> selected="selected"<?php } ?>><?php echo $P_page_ID; ?>: <?php echo $P_page_name_EN; if (($P_page_name_CN!='')&&($P_page_name_CN!='中文名')) { echo ' / ' . $P_page_name_CN; } ?> [ <?php echo $P_page_filename; ?> ]</option>
 						<?php
-							
-						
-						} // END LOOP	
+
+
+						} // END LOOP
 					  ?>
     	</select>
     </td>
@@ -240,36 +241,36 @@ pagehead($page_id);
   <tr>
     <td>Main Menu</td>
     <td>
-    
+
     	<div class="switch switch-success"">
 			<input type="checkbox" name="page_main_menu" data-plugin-ios-switch<?php if ($page_main_menu == 1) { ?> checked="checked"<?php } ?> form="form_<?php echo $page_ID; ?>" />
 		</div>
-    
+
     </td>
   </tr>
   <tr>
     <td>Filename</td>
     <td>
-    <input type="text" class="form-control" id="filename" value="<?php echo $page_filename; ?>" form="form_<?php echo $page_ID; ?>"> 
+    <input type="text" class="form-control" id="filename" value="<?php echo $page_filename; ?>" form="form_<?php echo $page_ID; ?>">
     <br /><em>(changes must be manually reflected in the file name itself)</em></td>
   </tr>
   <tr>
     <td>Created By</td>
     <td>
 			<select data-plugin-selectTwo class="form-control populate" form="form_<?php echo $page_ID; ?>" name="created_by">
-			<?php 
+			<?php
 					  $get_users_SQL = "SELECT * FROM  `users`";
 					  // echo $get_ratings_SQL;
-					  
+
 					  $user_count = 0;
-	
+
 					  $result_get_users = mysqli_query($con,$get_users_SQL);
 					  // while loop
 					  while($row_get_users = mysqli_fetch_array($result_get_users)) {
-					  
+
 					  ?>
 				<option value="<?php echo $row_get_users['ID']; ?>"<?php if ($page_created_by == $row_get_users['ID']) { ?> selected="selected"<?php } ?>><?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['last_name']; if (($row_get_users['name_CN'] != '')&&($row_get_users['name_CN'] != '中文名')) { echo ' / ' . $row_get_users['name_CN']; } ?></option>
-				<?php 
+				<?php
 					  } // end while loop
 					  ?>
 			</select>
@@ -277,35 +278,35 @@ pagehead($page_id);
   </tr>
   <tr>
     <td>Date Created</td>
-    
+
     <td>
-    <input type="text" class="form-control" id="date_created" value="<?php echo $page_date_created; ?>" form="form_<?php echo $page_ID; ?>"> 
+    <input type="text" class="form-control" id="date_created" value="<?php echo $page_date_created; ?>" form="form_<?php echo $page_ID; ?>">
     <br />
     <em title="It is vital that the format be 4-digit YEAR, no space, dash, 2-digit MONTH, no space, dash, 2-digit DAY, space, 24-hour format 2-digit HOUR, colon, 2-digit MINUTE, colon, 2-digit SECOND">(YYYY-MM-DD HH:MM:SS)</em>
-    
+
     </td>
   </tr>
   <tr>
     <td>Status</td>
     <td>
-    
+
     <select class="form-control mb-md" form="form_<?php echo $page_ID; ?>" name="status">
 		<option value="2"<?php if ($page_status == 2) { ?> selected="selected"<?php } ?>>✔ APPROVED ✔</option>
 		<option value="1"<?php if ($page_status == 1) { ?> selected="selected"<?php } ?>>? PENDING ?</option>
 		<option value="0"<?php if ($page_status == 0) { ?> selected="selected"<?php } ?>>✘ DELETED ✘</option>
 	</select>
-    
+
     </td>
   </tr>
   <tr>
     <td>Privacy</td>
     <td>
-    
+
     <select class="form-control mb-md" form="form_<?php echo $page_ID; ?>" name="privacy">
 		<option value="2"<?php if ($page_privacy == 'PUBLIC') { ?> selected="selected"<?php } ?>>PUBLIC</option>
 		<option value="0"<?php if ($page_privacy == 'PRIVATE') { ?> selected="selected"<?php } ?>>PRIVATE</option>
 	</select>
-	
+
 	</td>
   </tr>
   <tr>
@@ -328,10 +329,10 @@ pagehead($page_id);
     <a href="http://fontawesome.io/icons/" target="_blank" title="We use the FONTAWESOME icons. See them all here">Reference</a>
     </td>
     <td>
-    
+
     	<input type="text" class="form-control" id="icon" value="<?php echo $page_icon; ?>" form="form_<?php echo $page_ID; ?>">
     	<br /><em>(MUST include the 'fa-' at the start)</em>
-    
+
     </td>
   </tr>
   <tr>
@@ -847,8 +848,8 @@ pagehead($page_id);
 														</optgroup>
 													</select>
 
-    	
-    	
+
+
     </td>
   </tr>
   <tr>
@@ -887,20 +888,20 @@ pagehead($page_id);
     <th>NAME</th>
     <th>ACTION</th>
   </tr>
-  
-  <?php 
-					
+
+  <?php
+
 					$get_C_pages_SQL = "SELECT * FROM `pages` WHERE `parent_ID` = '". $page_ID ."'";
 					// echo $get_C_pagesSQL;
-					  
+
 					  $C_page_count = 0;
-	
+
 					  $result_get_C_pages = mysqli_query($con,$get_C_pages_SQL);
 					  // while loop
-					  
-					  
+
+
 					  while($row_get_C_pages = mysqli_fetch_array($result_get_C_pages)) {
-					  	
+
 							$C_page_ID = $row_get_C_pages['ID'];
 							$C_page_name_EN = $row_get_C_pages['name_EN'];
 							$C_page_name_CN = $row_get_C_pages['name_CN'];
@@ -922,9 +923,9 @@ pagehead($page_id);
 							$C_page_og_section = $row_get_C_pages['og_section'];
 							$C_page_side_bar_config = $row_get_C_pages['side_bar_config'];
 							$C_page_lookup_table = $row_get_C_pages['lookup_table'];
-							
+
 					  ?>
-  
+
   <tr>
     <td align="center"><i class="fa <?php echo $C_page_icon; ?>" title="PAGE ID: <?php echo $C_page_ID; ?>"></i></td>
 												<td>
@@ -934,8 +935,8 @@ pagehead($page_id);
 												</td>
     <td><a href="<?php echo $C_page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-external-link"></i></a></td>
   </tr>
-  
-  <?php 
+
+  <?php
   $C_page_count = $C_page_count +1;
   } // end WHILE FOUND CHILD PAGES LOOP
   ?>
@@ -961,13 +962,13 @@ pagehead($page_id);
 							</section>
 						</div>
 					</div> <!-- end row! -->
-						
+
 					<!-- end: page -->
 				</section>
-				
+
 <!-- : END MAIN PAGE BODY -->
 
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

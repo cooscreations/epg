@@ -19,6 +19,7 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
@@ -48,7 +49,7 @@ pagehead ( $page_id );
 		</div>
 	</header>
 					  <?php
-							
+
 							// run notifications function:
 							$msg = 0;
 							if (isset ( $_REQUEST ['msg'] )) {
@@ -66,7 +67,7 @@ pagehead ( $page_id );
 							if (isset ( $record_id )) {
 								$page_record_id = $record_id;
 							}
-							
+
 							// now run the function:
 							notify_me ( $page_id, $msg, $action, $change_record_id, $page_record_id );
 							?>
@@ -82,18 +83,18 @@ pagehead ( $page_id );
 				<th>Color</th>
 				<th class="text-center">Actions</th>
 			</tr>
-						  
+
 						  <?php
 								$get_part_classification_SQL = "SELECT * FROM  `part_classification` ORDER BY  `part_classification`.`name_EN` ASC";
-								
+
 								$part_classification_count = 0;
-								
+
 								$result_get_part_classification = mysqli_query ( $con, $get_part_classification_SQL );
 								/* Part Classification Details */
 								while ( $row_get_part_classification = mysqli_fetch_array ( $result_get_part_classification ) ) {
-								
+
 									?>
-						  
+
 			<tr>
 				<td><?php echo $row_get_part_classification['name_EN']; ?></td>
 				<td><?php echo $row_get_part_classification['name_CN']; ?></td>
@@ -106,13 +107,13 @@ pagehead ( $page_id );
 					<a href="record_delete_do.php?table_name=part_classification&src_page=part_classification.php&id=<?php echo $row_get_part_classification['ID']; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-danger"><i class="fa fa-trash"></i></a>
                 </td>
 			</tr>
-						  
+
 						  <?php
-									
+
 									$part_classification_count = $part_classification_count + 1;
 								} // end while loop
 								?>
-						  
+
 			 <tr>
 				<th colspan="4">TOTAL: <?php echo $part_classification_count; ?></th>
 				<th class="text-center"><a href="part_classification_add.php"
