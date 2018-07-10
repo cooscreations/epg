@@ -1,4 +1,5 @@
 <?php
+// 2017-02-21 update: page title and breadcrumbs moved to page_functions.php
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
 // ////////////////////////////////////////////////
@@ -19,34 +20,14 @@ include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$page_id = 99;
-
 // pull the header and template stuff:
-pagehead ( $page_id );
+pagehead();
 
 ?>
-<!-- START MAIN PAGE BODY : -->
-
-<section role="main" class="content-body">
-	<header class="page-header">
-		<h2>Add A New Part Classification</h2>
-
-		<div class="right-wrapper pull-right">
-			<ol class="breadcrumbs">
-				<li><a href="index.php"> <i class="fa fa-home"></i>
-				</a></li>
-				<li><a href="part_classification.php">All Part Classification</a></li>
-				<li><span>Add New Part Classification</span></li>
-			</ol>
-
-			<a class="sidebar-right-toggle" data-open="sidebar-right"><i
-				class="fa fa-chevron-left"></i></a>
-		</div>
-	</header>
-
 	<!-- start: page -->
 
 	<div class="row">
@@ -98,7 +79,7 @@ pagehead ( $page_id );
 							<div class="col-md-1">&nbsp;</div>
 
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3 control-label">Color:</label>
 							<div class="col-md-5">
@@ -130,9 +111,6 @@ pagehead ( $page_id );
 	<!-- end row! -->
 
 	<!-- end: page -->
-</section>
-
-<!-- : END MAIN PAGE BODY -->
 
 <?php
 // now close the page out:

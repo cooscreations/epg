@@ -18,7 +18,7 @@ $show_msg = '';
 global $page_access;
 $page_access = 0;
 
-// echo "<h3>Page Access ln 20: " . $page_access . "</h3>";
+// echo "<h3>Page Access ln 21: " . $page_access . "</h3>";
 
 global $site_status;
 $site_status = '0';
@@ -38,7 +38,7 @@ while($row_get_stats = mysqli_fetch_array($result_get_stats)) {
 	$site_default_og_image = $row_get_stats['default_og_image'];
 }
 
-// echo "<h3>Site Status: " . $site_status . "</h3>";
+// echo "<!-- DEBUG Site Status: " . $site_status . "-->";
 
 if ($site_status==2) {
 	// site is OK and running!
@@ -89,13 +89,16 @@ if ($site_status==2) {
 				
 				// 1. Minimum auth check:
 				if (($_SESSION["user_level"] < $page_min_user_level)&&($page_min_user_level!=0)) {
-					header("Location: user_message.php?msg=NG&error=level&page_id=" . $page_id . "&mul=" . $page_min_user_level . "&sul=" . $_SESSION["user_level"] . "");
+					header("Location: login.php?msg=NG&error=level&page_id=" . $page_id . "&mul=" . $page_min_user_level . "&sul=" . $_SESSION["user_level"] . "");
 					exit();	
+				}
+				else {
+					// echo '<h2>USER CHECK OK</h2>';
 				}
 				
 				// 2. Check to make sure the page is live
 				if ($page_status<2) {
-					if ($_SESSION["user_level"]>5) {
+					// if ($_SESSION['user_level']>5) {
 						
 						if ($page_status==1) { $show_page_status = 'pending'; }
 						else if ($page_status==0) { $show_page_status = 'deleted'; }
@@ -110,7 +113,7 @@ if ($site_status==2) {
 						// echo "<h3>Access Granted at Ln 100</h3>";
 						$page_access = 1;
 					
-				  	} // end if EXEC OR ABOVE
+				  	// } // end if EXEC OR ABOVE
 					
 					
 				} // END IF PAGE STATUS IS NOT 2
@@ -262,6 +265,7 @@ if ($page_access == 1) {
 
 return $page_access;
 return $show_msg;
+$GLOBALS['show_msg'] = $show_msg;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

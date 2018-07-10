@@ -1,5 +1,16 @@
 <?php
 
+/* 
+NOTES:
+
+There are a few tables that refer to the DB name directly (primarily when looking up all tables), including:
+
+1. search.php
+2. upload-file.php
+
+
+*/
+
 // Create connection
 
 // $dbhost = 'localhost:3036';

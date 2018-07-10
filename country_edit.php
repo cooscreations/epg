@@ -1,4 +1,5 @@
-<?php 
+<?php
+// 2017-02-21 update: page title and breadcrumbs moved to page_functions.php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,24 +13,23 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$page_id = 99;
-
 $record_id = 0;
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: countries.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 if ($record_id != 0) {
@@ -45,37 +45,14 @@ if ($record_id != 0) {
         $name_EN = $row_get_con['name_EN'];
         $name_CN = $row_get_con['name_CN'];
         $code = $row_get_con['code'];
-        
+
     } // end get info WHILE loop
 }
 
 // pull the header and template stuff:
-pagehead($page_id);
+pagehead();
 
 ?>
-<!-- START MAIN PAGE BODY : -->
-
-<section role="main" class="content-body">
-    <header class="page-header">
-        <h2>Edit Country<?php if ($record_id != 0) { ?> : <? echo $id;
-                              } ?>
-        </h2>
-
-        <div class="right-wrapper pull-right">
-            <ol class="breadcrumbs">
-                <li>
-                    <a href="index.php">
-                        <i class="fa fa-home"></i>
-                    </a>
-                </li>
-                <li><a href="materials.php">All Countries</a></li>
-                <li><span>Edit Country</span></li>
-            </ol>
-
-            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
-        </div>
-    </header>
-
     <!-- start: page -->
 
     <div class="row">
@@ -91,7 +68,7 @@ pagehead($page_id);
                             <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                         </div>
 
-                        <h2 class="panel-title">Edit country Details:</h2>
+                        <h2 class="panel-title">Edit Country Details:</h2>
                     </header>
                     <div class="panel-body">
                         <div class="form-group">
@@ -117,13 +94,13 @@ pagehead($page_id);
 							<div class="col-md-1">
 								<a href="https://www.iso.org/obp/ui/#search" target="_blank" class="mb-xs mt-xs mr-xs btn btn-info pull-right"><i class="fa fa-question-circle"></i></a>
 							</div>
-                            
+
                         </div>
 
                     </div>
 
                     <footer class="panel-footer">
-                        <?php 
+                        <?php
 										if (isset($_REQUEST['id'])) {
 											?>
                         <input type="hidden" value="<?php echo $_REQUEST['id']; ?>" name="id" />
@@ -143,11 +120,7 @@ pagehead($page_id);
     <!-- end row! -->
 
     <!-- end: page -->
-</section>
-
-<!-- : END MAIN PAGE BODY -->
-
-<?php 
+<?php
 // now close the page out:
 pagefoot($page_id);
 

@@ -1,4 +1,5 @@
-<?php 
+<?php
+// 2017-02-21 update: page title and breadcrumbs moved to page_functions.php
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -12,135 +13,114 @@
 //////////////////////////////////////////////////
 
 header('Content-Type: text/html; charset=utf-8');
-require ('page_functions.php'); 
+require ('page_functions.php');
 include 'db_conn.php';
 
 /* session check */
 if (!isset($_SESSION['username'])) {
+	$_SESSION['url'] = $_SERVER['REQUEST_URI'];
 	header("Location: login.php"); // send them to the Login page.
 }
 
-$page_id = 20;
-
 // THIS IS A LOOK-UP RECORD PAGE - GET THE RECORD INFO FIRST:
 
-if (isset($_REQUEST['id'])) { 
-	$record_id = $_REQUEST['id']; 
+if (isset($_REQUEST['id'])) {
+	$record_id = $_REQUEST['id'];
 }
-else {	
+else {
 	header("Location: index.php?msg=NG&action=view&error=no_id");
-	exit();		
+	exit();
 }
 
 $get_page_by_id_SQL = "SELECT * FROM  `pages` WHERE `ID` = " . $record_id;
-$result_get_pages = mysqli_query($con,$get_page_by_id_SQL);
+$result_get_this_pages = mysqli_query($con,$get_page_by_id_SQL);
 // while loop
-while($row_get_pages = mysqli_fetch_array($result_get_pages)) {
-					  	
-							$page_ID = $row_get_pages['ID'];
-							$page_name_EN = $row_get_pages['name_EN'];
-							$page_name_CN = $row_get_pages['name_CN'];
-							$page_parent_ID = $row_get_pages['parent_ID'];
-							$page_dept_ID = $row_get_pages['dept_ID'];
-							$page_main_menu = $row_get_pages['main_menu'];
-							$page_footer_menu = $row_get_pages['footer_menu'];
-							$page_filename = $row_get_pages['filename'];
-							$page_created_by = $row_get_pages['created_by'];
-							$page_date_created = $row_get_pages['date_created'];
-							$page_status = $row_get_pages['status'];
-							$page_privacy = $row_get_pages['privacy'];
-							$page_min_user_level = $row_get_pages['min_user_level'];
-							$page_order = $row_get_pages['order'];
-							$page_icon = $row_get_pages['icon'];
-							$page_og_locale = $row_get_pages['og_locale'];
-							$page_og_type = $row_get_pages['og_type'];
-							$page_og_desc = $row_get_pages['og_desc'];
-							$page_og_section = $row_get_pages['og_section'];
-							$page_side_bar_config = $row_get_pages['side_bar_config'];
-							$page_lookup_table = $row_get_pages['lookup_table'];
-							
-							
-							if (($page_parent_ID != '')&&($page_parent_ID != 0)) {
-							
+while($row_get_this_pages = mysqli_fetch_array($result_get_this_pages)) {
+
+							$this_page_ID 					= $row_get_this_pages['ID'];
+							$this_page_name_EN 				= $row_get_this_pages['name_EN'];
+							$this_page_name_CN 				= $row_get_this_pages['name_CN'];
+							$this_page_parent_ID 			= $row_get_this_pages['parent_ID'];
+							$this_page_dept_ID 				= $row_get_this_pages['dept_ID'];
+							$this_page_main_menu 			= $row_get_this_pages['main_menu'];
+							$this_page_footer_menu 			= $row_get_this_pages['footer_menu'];
+							$this_page_filename 			= $row_get_this_pages['filename'];
+							$this_page_created_by 			= $row_get_this_pages['created_by'];
+							$this_page_date_created 		= $row_get_this_pages['date_created'];
+							$this_page_status				= $row_get_this_pages['record_status'];
+							$this_page_privacy 				= $row_get_this_pages['privacy'];
+							$this_page_min_user_level 		= $row_get_this_pages['min_user_level'];
+							$this_page_order 				= $row_get_this_pages['order'];
+							$this_page_icon 				= $row_get_this_pages['icon'];
+							$this_page_og_locale 			= $row_get_this_pages['og_locale'];
+							$this_page_og_type 				= $row_get_this_pages['og_type'];
+							$this_page_og_desc 				= $row_get_this_pages['og_desc'];
+							$this_page_og_section 			= $row_get_this_pages['og_section'];
+							$this_page_side_bar_config 		= $row_get_this_pages['side_bar_config'];
+							$this_page_lookup_table 		= $row_get_this_pages['lookup_table'];
+
+
+							if (($this_page_parent_ID != '')&&($this_page_parent_ID != 0)) {
+
 								// get the parent page info:
-					
-								$get_parent_page_SQL = "SELECT * FROM `pages` WHERE `id` = '" . $page_parent_ID . "'";
+
+								$get_this_parent_page_SQL = "SELECT * FROM `pages` WHERE `id` = '" . $this_page_parent_ID . "'";
 								// echo $get_parent_page_SQL;
 
-								$result_get_parent_page = mysqli_query($con,$get_parent_page_SQL);
+								$result_get_this_parent_page = mysqli_query($con,$get_this_parent_page_SQL);
 								// while loop
-			  
-			  
-								while($row_get_parent_page = mysqli_fetch_array($result_get_parent_page)) {
-				
-									$parent_page_ID = $row_get_parent_page['ID'];
-									$parent_page_name_EN = $row_get_parent_page['name_EN'];
-									$parent_page_name_CN = $row_get_parent_page['name_CN'];
-									$parent_page_parent_ID = $row_get_parent_page['parent_ID'];
-									$parent_page_dept_ID = $row_get_parent_page['dept_ID'];
-									$parent_page_main_menu = $row_get_parent_page['main_menu'];
-									$parent_page_footer_menu = $row_get_parent_page['footer_menu'];
-									$parent_page_filename = $row_get_parent_page['filename'];
-									$parent_page_created_by = $row_get_parent_page['created_by'];
-									$parent_page_date_created = $row_get_parent_page['date_created'];
-									$parent_page_status = $row_get_parent_page['status'];
-									$parent_page_privacy = $row_get_page['privacy'];
-									$parent_page_min_user_level = $row_get_parent_page['min_user_level'];
-									$parent_page_order = $row_get_parent_page['order'];
-									$parent_page_icon = $row_get_parent_page['icon'];
-									$parent_page_og_locale = $row_get_parent_page['og_locale'];
-									$parent_page_og_type = $row_get_parent_page['og_type'];
-									$parent_page_og_desc = $row_get_parent_page['og_desc'];
-									$parent_page_og_section = $row_get_parent_page['og_section'];
-									$parent_page_side_bar_config = $row_get_parent_page['side_bar_config'];
-									$parent_page_lookup_table = $row_get_parent_page['lookup_table'];
-					
+
+
+								while($row_get_this_parent_page = mysqli_fetch_array($result_get_this_parent_page)) {
+
+									$this_parent_page_ID 				= $row_get_this_parent_page['ID'];
+									$this_parent_page_name_EN 			= $row_get_this_parent_page['name_EN'];
+									$this_parent_page_name_CN 			= $row_get_this_parent_page['name_CN'];
+									$this_parent_page_parent_ID 		= $row_get_this_parent_page['parent_ID'];
+									$this_parent_page_dept_ID 			= $row_get_this_parent_page['dept_ID'];
+									$this_parent_page_main_menu 		= $row_get_this_parent_page['main_menu'];
+									$this_parent_page_footer_menu 		= $row_get_this_parent_page['footer_menu'];
+									$this_parent_page_filename 			= $row_get_this_parent_page['filename'];
+									$this_parent_page_created_by 		= $row_get_this_parent_page['created_by'];
+									$this_parent_page_date_created 		= $row_get_this_parent_page['date_created'];
+									$this_parent_page_status 			= $row_get_this_parent_page['status'];
+									$this_parent_page_privacy 			= $row_get_this_parent_page['privacy'];
+									$this_parent_page_min_user_level 	= $row_get_this_parent_page['min_user_level'];
+									$this_parent_page_order 			= $row_get_this_parent_page['order'];
+									$this_parent_page_icon 				= $row_get_this_parent_page['icon'];
+									$this_parent_page_og_locale 		= $row_get_this_parent_page['og_locale'];
+									$this_parent_page_og_type 			= $row_get_this_parent_page['og_type'];
+									$this_parent_page_og_desc 			= $row_get_this_parent_page['og_desc'];
+									$this_parent_page_og_section 		= $row_get_this_parent_page['og_section'];
+									$this_parent_page_side_bar_config 	= $row_get_this_parent_page['side_bar_config'];
+									$this_parent_page_lookup_table 		= $row_get_this_parent_page['lookup_table'];
+
 								} // END WHILE LOOP
-							
+
 							} // END page_parent_ID = 0 / NULL
-							
-							
+
+
 							// Now we will count the number of sub-categories:
-							$count_sub_pages_sql = "SELECT COUNT(ID) FROM `pages` WHERE `parent_ID` = '" . $page_ID . "'";
-							$count_sub_pages_query = mysqli_query($con, $count_sub_pages_sql);
-							$count_sub_pages_row = mysqli_fetch_row($count_sub_pages_query);
+							$count_this_sub_pages_sql = "SELECT COUNT(ID) FROM `pages` WHERE `parent_ID` = '" . $this_page_ID . "'";
+							$count_this_sub_pages_query = mysqli_query($con, $count_this_sub_pages_sql);
+							$count_this_sub_pages_row = mysqli_fetch_row($count_this_sub_pages_query);
 							// Here we have the total row count
-							$total_sub_pages = $count_sub_pages_row[0];
-							
+							$total_this_sub_pages = $count_this_sub_pages_row[0];
+
 		} // END WHILE GET PAGE INFO LOOP
 
 // pull the header and template stuff:
-pagehead($page_id); 
+pagehead();
 
 ?>
-
-
-
-<!-- START MAIN PAGE BODY : -->
-
-				<section role="main" class="content-body">
-					<header class="page-header">
-						<h2>Edit A Page</h2>
-					
-						<div class="right-wrapper pull-right">
-							<ol class="breadcrumbs">
-								<li>
-									<a href="index.php">
-										<i class="fa fa-home"></i>
-									</a>
-								</li>
-								<li>
-									<a href="<?php echo $page_filename; ?>">View Page</a>
-								</li>
-								<li><span>Edit Page Record</span></li>
-							</ol>
-					
-							<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
-						</div>
-					</header>
-					
+<!-- start page -->
 					<div class="row">
 						<div class="col-md-12">
+
+			<!-- START THE FORM! -->
+			 			  <form class="form-horizontal form-bordered" action="page_edit_do.php" method="post">
+			 
+			 
 							<section class="panel">
 								<header class="panel-heading">
 									<div class="panel-actions">
@@ -148,12 +128,12 @@ pagehead($page_id);
 										<a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
 									</div>
 
-									<h2 class="panel-title"><?php echo $page_name_EN; if (($page_name_CN!='')&&($page_name_CN!='中文名')) { echo ' / ' . $page_name_CN; } ?> (<?php echo $page_filename; ?>)</h2>
+									<h2 class="panel-title"><?php echo $this_page_name_EN; if (($this_page_name_CN!='')&&($this_page_name_CN!='中文名')) { echo ' / ' . $this_page_name_CN; } ?> (<?php echo $this_page_filename; ?>)</h2>
 								</header>
 								<div class="panel-body">
 
 <!-- START PAGE EDIT FORM -->
-									<div class="form-group">				
+									<div class="form-group">
 								<div class="table-responsive">
 									<table class="table table-bordered table-striped table-condensed mb-none">
   <tr>
@@ -162,77 +142,77 @@ pagehead($page_id);
   </tr>
   <tr>
     <td>ID</td>
-    <td><a href="<?php echo $page_filename; ?>" title="Click to launch this page"><?php echo $page_ID; ?></a> <em>(This cannot be changed once created)</em></td>
+    <td><a href="<?php echo $this_page_filename; ?>" title="Click to launch this page"><?php echo $this_page_ID; ?></a> <em>(This cannot be changed once created)</em></td>
   </tr>
   <tr>
     <td>Name</td>
     <td>
-    	<input type="text" class="form-control" id="name_EN_<?php echo $page_ID; ?>" value="<?php echo $page_name_EN; ?>" form="form_<?php echo $page_ID; ?>">
+    	<input type="text" class="form-control" name="name_EN" value="<?php echo $this_page_name_EN; ?>">
     </td>
   </tr>
   <tr>
     <td>中文名</td>
     <td>
-    	<input type="text" class="form-control" id="name_CN_<?php echo $page_ID; ?>" value="<?php echo $page_name_CN; ?>" form="form_<?php echo $page_ID; ?>">
+    	<input type="text" class="form-control" name="name_CN" value="<?php echo $this_page_name_CN; ?>">
     </td>
   </tr>
   <tr>
-    <td>Parent Page<br /><?php 
-    
+    <td>Parent Page<br /><?php
+
     // have parent, let's link to it here:
-    if ($page_parent_ID != '0') {
-    	?><a href="<?php echo $parent_page_filename; ?>" title="FILE: <?php echo $parent_page_filename; ?>">VIEW CURRENT PARENT PAGE</a><?php
+    if ($this_page_parent_ID != '0') {
+    	?><a href="<?php echo $this_parent_page_filename; ?>" title="FILE: <?php echo $this_parent_page_filename; ?>">VIEW CURRENT PARENT PAGE</a><?php
     }
     else {
     	?><span class="text-warning">No Parent Set</span><?php
     }
-    
+
     ?></td>
     <td>
-    
-		<select data-plugin-selectTwo class="form-control populate" form="form_<?php echo $page_ID; ?>" name="parent_page_ID">
+
+		<select data-plugin-selectTwo class="form-control populate" name="parent_page_ID" id="parent_page_ID">
 			<option value="0" selected="selected">None Selected / 无</option>
-    <?php 
-					
+    <?php
+
 					$get_P_pages_SQL = "SELECT * FROM `pages` ORDER BY `order`";
 					// echo $get_P_pages_SQL;
-					  
+
 					  $P_page_count = 0;
-	
+
 					  $result_get_P_pages = mysqli_query($con,$get_P_pages_SQL);
 					  // while loop
-					  
-					  
+
+
 					  while($row_get_P_pages = mysqli_fetch_array($result_get_P_pages)) {
-					  	
-							$P_page_ID = $row_get_P_pages['ID'];
-							$P_page_name_EN = $row_get_P_pages['name_EN'];
-							$P_page_name_CN = $row_get_P_pages['name_CN'];
-							$P_page_parent_ID = $row_get_P_pages['parent_ID'];
-							$P_page_dept_ID = $row_get_P_pages['dept_ID'];
-							$P_page_main_menu = $row_get_P_pages['main_menu'];
-							$P_page_footer_menu = $row_get_P_pages['footer_menu'];
-							$P_page_filename = $row_get_P_pages['filename'];
-							$P_page_created_by = $row_get_P_pages['created_by'];
-							$P_page_date_created = $row_get_P_pages['date_created'];
-							$P_page_status = $row_get_P_pages['status'];
-							$P_page_privacy = $row_get_P_pages['privacy'];
-							$P_page_min_user_level = $row_get_P_pages['min_user_level'];
-							$P_page_order = $row_get_P_pages['order'];
-							$P_page_icon = $row_get_P_pages['icon'];
-							$P_page_og_locale = $row_get_P_pages['og_locale'];
-							$P_page_og_type = $row_get_P_pages['og_type'];
-							$P_page_og_desc = $row_get_P_pages['og_desc'];
-							$P_page_og_section = $row_get_P_pages['og_section'];
-							$P_page_side_bar_config = $row_get_P_pages['side_bar_config'];
-							$P_page_lookup_table = $row_get_P_pages['lookup_table'];
-						
+
+							$P_page_ID 					= $row_get_P_pages['ID'];
+							$P_page_name_EN 			= $row_get_P_pages['name_EN'];
+							$P_page_name_CN 			= $row_get_P_pages['name_CN'];
+							$P_page_parent_ID 			= $row_get_P_pages['parent_ID'];
+							$P_page_dept_ID 			= $row_get_P_pages['dept_ID'];
+							$P_page_main_menu 			= $row_get_P_pages['main_menu'];
+							$P_page_footer_menu 		= $row_get_P_pages['footer_menu'];
+							$P_page_filename 			= $row_get_P_pages['filename'];
+							$P_page_created_by 			= $row_get_P_pages['created_by'];
+							$P_page_date_created 		= $row_get_P_pages['date_created'];
+							$P_page_status 				= $row_get_P_pages['status'];
+							$P_page_privacy 			= $row_get_P_pages['privacy'];
+							$P_page_min_user_level 		= $row_get_P_pages['min_user_level'];
+							$P_page_order 				= $row_get_P_pages['order'];
+							$P_page_icon 				= $row_get_P_pages['icon'];
+							$P_page_og_locale 			= $row_get_P_pages['og_locale'];
+							$P_page_og_type 			= $row_get_P_pages['og_type'];
+							$P_page_og_desc 			= $row_get_P_pages['og_desc'];
+							$P_page_og_section 			= $row_get_P_pages['og_section'];
+							$P_page_side_bar_config 	= $row_get_P_pages['side_bar_config'];
+							$P_page_lookup_table 		= $row_get_P_pages['lookup_table'];
+
 						?>
-							<option value="$page_parent_ID"<?php if ($page_parent_ID == $P_page_ID){ ?> selected="selected"<?php } ?>><?php echo $P_page_ID; ?>: <?php echo $P_page_name_EN; if (($P_page_name_CN!='')&&($P_page_name_CN!='中文名')) { echo ' / ' . $P_page_name_CN; } ?> [ <?php echo $P_page_filename; ?> ]</option>
+							<option value="<?php echo $P_page_ID; ?>"<?php if ($this_page_parent_ID == $P_page_ID){ ?> selected="selected"<?php } ?>><?php echo $P_page_ID; ?>: <?php echo $P_page_name_EN; if (($P_page_name_CN!='')&&($P_page_name_CN!='中文名')) { echo ' / ' . $P_page_name_CN; } ?> [ <?php echo $P_page_filename; ?> ]</option>
 						<?php
-							
-						
-						} // END LOOP	
+
+
+						} // END LOOP
 					  ?>
     	</select>
     </td>
@@ -240,36 +220,36 @@ pagehead($page_id);
   <tr>
     <td>Main Menu</td>
     <td>
-    
+
     	<div class="switch switch-success"">
-			<input type="checkbox" name="page_main_menu" data-plugin-ios-switch<?php if ($page_main_menu == 1) { ?> checked="checked"<?php } ?> form="form_<?php echo $page_ID; ?>" />
+			<input type="checkbox" name="page_main_menu" data-plugin-ios-switch<?php if ($this_page_main_menu == 1) { ?> checked="checked"<?php } ?> />
 		</div>
-    
+
     </td>
   </tr>
   <tr>
     <td>Filename</td>
     <td>
-    <input type="text" class="form-control" id="filename" value="<?php echo $page_filename; ?>" form="form_<?php echo $page_ID; ?>"> 
+    <input type="text" class="form-control" name="filename" value="<?php echo $this_page_filename; ?>">
     <br /><em>(changes must be manually reflected in the file name itself)</em></td>
   </tr>
   <tr>
     <td>Created By</td>
     <td>
-			<select data-plugin-selectTwo class="form-control populate" form="form_<?php echo $page_ID; ?>" name="created_by">
-			<?php 
+			<select data-plugin-selectTwo class="form-control populate" name="created_by">
+			<?php
 					  $get_users_SQL = "SELECT * FROM  `users`";
 					  // echo $get_ratings_SQL;
-					  
+
 					  $user_count = 0;
-	
+
 					  $result_get_users = mysqli_query($con,$get_users_SQL);
 					  // while loop
 					  while($row_get_users = mysqli_fetch_array($result_get_users)) {
-					  
+
 					  ?>
-				<option value="<?php echo $row_get_users['ID']; ?>"<?php if ($page_created_by == $row_get_users['ID']) { ?> selected="selected"<?php } ?>><?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['last_name']; if (($row_get_users['name_CN'] != '')&&($row_get_users['name_CN'] != '中文名')) { echo ' / ' . $row_get_users['name_CN']; } ?></option>
-				<?php 
+				<option value="<?php echo $row_get_users['ID']; ?>"<?php if ($this_page_created_by == $row_get_users['ID']) { ?> selected="selected"<?php } ?>><?php echo $row_get_users['first_name']; echo ' ' . $row_get_users['last_name']; if (($row_get_users['name_CN'] != '')&&($row_get_users['name_CN'] != '中文名')) { echo ' / ' . $row_get_users['name_CN']; } ?></option>
+				<?php
 					  } // end while loop
 					  ?>
 			</select>
@@ -277,48 +257,48 @@ pagehead($page_id);
   </tr>
   <tr>
     <td>Date Created</td>
-    
+
     <td>
-    <input type="text" class="form-control" id="date_created" value="<?php echo $page_date_created; ?>" form="form_<?php echo $page_ID; ?>"> 
+    <input type="text" class="form-control" name="date_created" value="<?php echo $this_page_date_created; ?>">
     <br />
     <em title="It is vital that the format be 4-digit YEAR, no space, dash, 2-digit MONTH, no space, dash, 2-digit DAY, space, 24-hour format 2-digit HOUR, colon, 2-digit MINUTE, colon, 2-digit SECOND">(YYYY-MM-DD HH:MM:SS)</em>
-    
+
     </td>
   </tr>
   <tr>
     <td>Status</td>
     <td>
-    
-    <select class="form-control mb-md" form="form_<?php echo $page_ID; ?>" name="status">
-		<option value="2"<?php if ($page_status == 2) { ?> selected="selected"<?php } ?>>✔ APPROVED ✔</option>
-		<option value="1"<?php if ($page_status == 1) { ?> selected="selected"<?php } ?>>? PENDING ?</option>
-		<option value="0"<?php if ($page_status == 0) { ?> selected="selected"<?php } ?>>✘ DELETED ✘</option>
+
+    <select class="form-control mb-md" name="status">
+		<option value="2"<?php if ($this_page_status == 2) { ?> selected="selected"<?php } ?>>✔ APPROVED ✔</option>
+		<option value="1"<?php if ($this_page_status == 1) { ?> selected="selected"<?php } ?>>? PENDING ?</option>
+		<option value="0"<?php if ($this_page_status == 0) { ?> selected="selected"<?php } ?>>✘ DELETED ✘</option>
 	</select>
-    
+
     </td>
   </tr>
   <tr>
     <td>Privacy</td>
     <td>
-    
-    <select class="form-control mb-md" form="form_<?php echo $page_ID; ?>" name="privacy">
-		<option value="2"<?php if ($page_privacy == 'PUBLIC') { ?> selected="selected"<?php } ?>>PUBLIC</option>
-		<option value="0"<?php if ($page_privacy == 'PRIVATE') { ?> selected="selected"<?php } ?>>PRIVATE</option>
+
+    <select class="form-control mb-md" name="privacy">
+		<option value="PUBLIC"<?php if ($this_page_privacy == 'PUBLIC') { ?> selected="selected"<?php } ?>>PUBLIC</option>
+		<option value="PRIVATE"<?php if ($this_page_privacy == 'PRIVATE') { ?> selected="selected"<?php } ?>>PRIVATE</option>
 	</select>
-	
+
 	</td>
   </tr>
   <tr>
     <td>Minimum User Level</td>
     <td>
-    <input type="text" class="form-control" id="min_user_level" value="<?php echo $page_min_user_level; ?>" form="form_<?php echo $page_ID; ?>">
+    <input type="text" class="form-control" name="min_user_level" value="<?php echo $this_page_min_user_level; ?>">
     <br /><em>(feature coming soon!)</em>
     </td>
   </tr>
   <tr>
     <td>Order</td>
     <td>
-    <input type="text" class="form-control" id="page_order" value="<?php echo $page_order; ?>" form="form_<?php echo $page_ID; ?>">
+    <input type="text" class="form-control" name="page_order" value="<?php echo $this_page_order; ?>">
     <br /><em>(feature coming soon!)</em>
     </td>
   </tr>
@@ -328,16 +308,16 @@ pagehead($page_id);
     <a href="http://fontawesome.io/icons/" target="_blank" title="We use the FONTAWESOME icons. See them all here">Reference</a>
     </td>
     <td>
-    
-    	<input type="text" class="form-control" id="icon" value="<?php echo $page_icon; ?>" form="form_<?php echo $page_ID; ?>">
+
+    	<input type="text" class="form-control" id="icon" value="<?php echo $this_page_icon; ?>" name="icon">
     	<br /><em>(MUST include the 'fa-' at the start)</em>
-    
+
     </td>
   </tr>
   <tr>
     <td>OG Locale</td>
     <td>
-    	<select data-plugin-selectTwo class="form-control populate" form="form_<?php echo $page_ID; ?>" name="OG_locale">
+    	<select data-plugin-selectTwo class="form-control populate" name="OG_locale">
 	<option value="af_NA">Afrikaans (Namibia)</option>
 	<option value="af_ZA">Afrikaans (South Africa)</option>
 	<option value="af">Afrikaans</option>
@@ -778,7 +758,7 @@ pagehead($page_id);
   <tr>
     <td>OG Type</td>
     <td>
-													<select data-plugin-selectTwo class="form-control populate">
+	<select data-plugin-selectTwo class="form-control populate" name="OG_type">
 
 
 <optgroup label="Activities">
@@ -847,25 +827,52 @@ pagehead($page_id);
 														</optgroup>
 													</select>
 
-    	
-    	
+
+
     </td>
   </tr>
   <tr>
     <td>OG Description</td>
-    <td><?php echo $page_og_desc; ?></td>
+    <td>
+      <input type="text" class="form-control" value="<?php echo $this_page_og_desc; ?>" name="OG_desc">
+    </td>
   </tr>
   <tr>
     <td>OG Section</td>
-    <td><?php echo $page_og_section; ?></td>
+    <td>
+      <input type="text" class="form-control" value="<?php echo $this_page_og_section; ?>" name="OG_section">
+    </td>
   </tr>
   <tr>
     <td>Sidebar Config</td>
-    <td><?php echo $page_side_bar_config; ?></td>
+    <td>
+      <input type="text" class="form-control" value="<?php echo $this_page_side_bar_config; ?>" name="sidebar_config">
+    </td>
   </tr>
   <tr>
     <td>Lookup Table</td>
-    <td><?php echo $page_lookup_table; ?></td>
+    <td>
+    
+    <select class="form-control mb-md" name="lookup_table">
+			<option value=""<?php if ($this_page_lookup_table == "") { ?> selected="selected"<?php } ?>>NONE</option>
+    
+    <?php 
+    
+    $table_lookup_result = mysqli_query($con,"show tables"); // run the query and assign the result to $result
+	while($table_lookup_table = mysqli_fetch_array($table_lookup_result)) { // go through each row that was returned in $result
+		    // print the table that was returned on that row.
+		    $this_table_name = $table_lookup_table[0];
+		
+		?>
+			<option value="<?php echo $this_table_name; ?>"<?php if ($this_page_lookup_table == $this_table_name) { ?> selected="selected"<?php } ?>><?php echo $this_table_name; ?></option>
+		<?php
+	}
+	
+    ?>
+
+	</select>
+    
+    </td>
   </tr>
   <tr>
     <td class="text-muted">Dept. ID</td>
@@ -887,20 +894,20 @@ pagehead($page_id);
     <th>NAME</th>
     <th>ACTION</th>
   </tr>
-  
-  <?php 
-					
-					$get_C_pages_SQL = "SELECT * FROM `pages` WHERE `parent_ID` = '". $page_ID ."'";
+
+  <?php
+
+					$get_C_pages_SQL = "SELECT * FROM `pages` WHERE `parent_ID` = '". $this_page_ID ."'";
 					// echo $get_C_pagesSQL;
-					  
+
 					  $C_page_count = 0;
-	
+
 					  $result_get_C_pages = mysqli_query($con,$get_C_pages_SQL);
 					  // while loop
-					  
-					  
+
+
 					  while($row_get_C_pages = mysqli_fetch_array($result_get_C_pages)) {
-					  	
+
 							$C_page_ID = $row_get_C_pages['ID'];
 							$C_page_name_EN = $row_get_C_pages['name_EN'];
 							$C_page_name_CN = $row_get_C_pages['name_CN'];
@@ -922,9 +929,9 @@ pagehead($page_id);
 							$C_page_og_section = $row_get_C_pages['og_section'];
 							$C_page_side_bar_config = $row_get_C_pages['side_bar_config'];
 							$C_page_lookup_table = $row_get_C_pages['lookup_table'];
-							
+
 					  ?>
-  
+
   <tr>
     <td align="center"><i class="fa <?php echo $C_page_icon; ?>" title="PAGE ID: <?php echo $C_page_ID; ?>"></i></td>
 												<td>
@@ -932,10 +939,20 @@ pagehead($page_id);
 														<?php echo $C_page_name_EN; if (($C_page_name_CN!='')&&($C_page_name_CN!='中文名')) { echo ' / ' . $C_page_name_CN; } ?>
 													</a>
 												</td>
-    <td><a href="<?php echo $C_page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-primary"><i class="fa fa-external-link"></i></a></td>
+    <td>
+    	
+    	<a href="<?php echo $C_page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-primary">
+    		<i class="fa fa-external-link"></i> VIEW
+    	</a>
+    	
+    	<a href="page_edit.php?id=<?php echo $C_page_ID; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-default">
+    		<i class="fa fa-pencil"></i> EDIT
+    	</a>
+    
+    </td>
   </tr>
-  
-  <?php 
+
+  <?php
   $C_page_count = $C_page_count +1;
   } // end WHILE FOUND CHILD PAGES LOOP
   ?>
@@ -948,26 +965,35 @@ pagehead($page_id);
   </div>
 
 </div>
-<input type="hidden" value="<?php echo $page_ID; ?>" name="page_ID" />
+<input type="hidden" value="<?php echo $this_page_ID; ?>" name="page_ID" />
 </form>
 												</div>
+												<?php /* 
 												<div class="modal-footer">
-													<a href="<?php echo $page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-arrow-right"></i> Launch Page</a>
+													<a href="<?php echo $this_page_filename; ?>" type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-arrow-right"></i> Launch Page</a>
 													<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 												</div>
+												*/ 
+												?>
+												
+												
+												<footer class="panel-footer">
+													<?php form_buttons('index', $record_id); ?>
+						
+												</footer>
+												
 <!-- END OF MODEL POP-UP CONTAINING PAGE INFO -->
 <!-- now close the panel -->
 								</div>
 							</section>
+							
+						  </form>
 						</div>
 					</div> <!-- end row! -->
-						
-					<!-- end: page -->
-				</section>
-				
-<!-- : END MAIN PAGE BODY -->
 
-<?php 
+					<!-- end: page -->
+
+<?php
 // now close the page out:
 pagefoot($page_id);
 

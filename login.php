@@ -59,6 +59,7 @@ $page_id = 19;
 		<title>Log In</title>
 		
 	</head>
+	<body>
 	<?php
 							
 							// run notifications function:
@@ -73,7 +74,6 @@ $page_id = 19;
 							// now run the function:
 							notify_me ( $page_id, $msg, $action, null, null );
 	?>
-	<body>
 
 
 <!-- START MAIN PAGE BODY : -->
